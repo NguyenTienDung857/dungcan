@@ -1,0 +1,598 @@
+/*@!Encoding:1252*/
+
+/*
+  Test Case: OWD_001
+  Title: [Continuous recording while driving] - (1)
+  Verification items: Check the initial values of the driving recording settings
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+    - ICUPowerAutoCutModesta = 0x0 (Factory mode)
+
+  Step 1: Change from Factory mode to Customer mode and check default values after FRS reset
+    Actions:
+      1. Set ICUPowerAutoCutModSta: 0x0 (Factory mode) via panel (verify status)
+      2. Set ICUPowerAutoCutModSta: 0x2 (Customer mode) via panel (verify status)
+      3. Enter Built-in cam main screen
+      4. Perform FRS reset: [ccNC Settings] - [General] - [Reset] - [Delete Guest Profile/Reset Entire System]
+      5. Check default values
+    Expected:
+      BLTN_CAM_RecSet_OWD = 0x1(OFF) - Initialized to OFF after changing from Factory mode to Customer mode
+
+  Step 2: Turn on OWD recording, then perform FRS reset again
+    Actions:
+      1. Turn ON OWD recording setting (via panel)
+      2. Perform FRS reset again
+      3. Check values after reset
+    Expected:
+      - Europe (DistributeInfo = 0x04): BLTN_CAM_RecSet_OWD = 0x1(OFF)
+      - Other regions: BLTN_CAM_RecSet_OWD = 0x2(ON)
+
+  NOTE: Script only monitors signals. Manual actions required for:
+        - Changing ICUPowerAutoCutModesta (Factory->Customer mode)
+        - KEY ON/OFF
+        - UI mode switching
+        Only uses panel to turn ON OWD setting.
+*/
+
+variables
+{
+  long max_wait_time = 180000; // 180 seconds = 3 minutes max wait
+  byte initial_RecSet_OWD = 0;
+  byte final_RecSet_OWD = 0;
+  byte distribute_info = 0;
+  int step1_passed = 0;
+  int step2_passed = 0;
+
+  // Message declarations - based on correct database
+}
+
+// Set Factory/Customer mode using setSignal()
+int Set_PowerAutoCut_Mode(byte target_mode, long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte current_mode;
+  char mode_name[50];
+
+  if(target_mode == 0)
+    snprintf(mode_name, elcount(mode_name), "%s", "Factory Mode");
+  else if(target_mode == 1)
+    snprintf(mode_name, elcount(mode_name), "%s", "Dealer Mode");
+  else if(target_mode == 2)
+    snprintf(mode_name, elcount(mode_name), "%s", "Customer Mode");
+  else
+    snprintf(mode_name, elcount(mode_name), "%s", "Unknown Mode");
+
+  write("Setting PowerAutoCutMode to 0x%X (%s)...", target_mode, mode_name);
+
+  // Use setSignal() to inject value to CAN bus
+  setSignal(ICU_PowerAutoCutModSta, target_mode);
+
+  testWaitForTimeout(500);  // Short delay for bus to update
+
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+
+  // Wait for confirmation - read back from bus
+  while(elapsed < timeout_ms)
+  {
+    current_mode = $ICU_PowerAutoCutModSta;  // Read from bus
+
+    if(current_mode == target_mode)
+    {
+      write(">>> SUCCESS: PowerAutoCutMode = 0x%X (%s) <<<", current_mode, mode_name);
+      return 1;
+    }
+
+    if(elapsed == 0 || elapsed % log_interval == 0)  // Log every ~timeout/6
+    {
+      write("  [%d s] PowerAutoCutMode=0x%X (waiting for 0x%X)", elapsed/1000, current_mode, target_mode);
+      // Re-send to ensure bus gets the value
+      setSignal(ICU_PowerAutoCutModSta, target_mode);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  write(">>> TIMEOUT: Could not set PowerAutoCutMode to 0x%X <<<", target_mode);
+  return 0;
+}
+
+// Verify Factory/Customer mode
+int Verify_PowerAutoCut_Mode(byte expected_mode)
+{
+  byte current_mode;
+  char mode_name[50];
+
+  current_mode = $ICU_PowerAutoCutModSta;  // Read from bus
+
+  if(expected_mode == 0)
+    snprintf(mode_name, elcount(mode_name), "%s", "Factory Mode");
+  else if(expected_mode == 1)
+    snprintf(mode_name, elcount(mode_name), "%s", "Dealer Mode");
+  else if(expected_mode == 2)
+    snprintf(mode_name, elcount(mode_name), "%s", "Customer Mode");
+  else
+    snprintf(mode_name, elcount(mode_name), "%s", "Unknown Mode");
+
+  write("Verifying PowerAutoCutMode: Current=0x%X, Expected=0x%X (%s)", current_mode, expected_mode, mode_name);
+
+  if(current_mode == expected_mode)
+  {
+    write(">>> VERIFIED: PowerAutoCutMode = 0x%X (%s) <<<", current_mode, mode_name);
+    return 1;
+  }
+  else
+  {
+    write(">>> FAILED: PowerAutoCutMode = 0x%X, Expected 0x%X <<<", current_mode, expected_mode);
+    return 0;
+  }
+}
+
+// Wait for FRS reset complete - monitoring RecSet_OWD (for Step 1)
+int Wait_For_Reset(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte reset_sta = 0;
+
+  write("Waiting for FRS reset... (max %d seconds)", timeout_ms/1000);
+
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+
+  while(elapsed < timeout_ms)
+  {
+    // Check if RecSet_OWD changed back to default (OFF) after reset
+    if($BLTN_CAM_RecSet_OWD == 0x1)
+    {
+      write(">>> Reset detected! RecSet_OWD = 0x1 (OFF) <<<");
+      return 1;
+    }
+
+    if(elapsed == 0 || elapsed % log_interval == 0) // Log every ~timeout/6
+    {
+      write("  [%d s] RecSet_OWD=0x%X | RecSta_OWD=0x%X",
+            elapsed/1000, $BLTN_CAM_RecSet_OWD, $BLTN_CAM_RecSta_OWD);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  write(">>> Timeout! <<<");
+  return 0;
+}
+
+// Wait for FRS reset by monitoring CF_AVN_BLTN_CAM_RecReset signal (for Step 2)
+int Wait_For_Reset_By_Status(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte reset_signal = 0;
+  int reset_detected = 0;
+
+  write("Monitoring CF_AVN_BLTN_CAM_RecReset for reset detection...");
+  write("Waiting for value = 0x1 (Record Data Reset)");
+  write("(max %d seconds)", timeout_ms/1000);
+
+  log_interval = (timeout_ms / 6 / 100) * 100;
+  if(log_interval < 100) log_interval = 100;
+
+  // Monitor for reset signal
+  while(elapsed < timeout_ms)
+  {
+    reset_signal = $CF_AVN_BLTN_CAM_RecReset;
+
+    // Detect reset command (value = 1)
+    if(reset_signal == 0x1)
+    {
+      write(">>> Reset detected! CF_AVN_BLTN_CAM_RecReset = 0x1 <<<");
+      reset_detected = 1;
+      break;
+    }
+
+    // Log every ~timeout/6
+    if(elapsed == 0 || elapsed % log_interval == 0)
+    {
+      write("  [%d s] CF_AVN_BLTN_CAM_RecReset=0x%X | RecSta_OWD=0x%X | RecSet_OWD=0x%X",
+            elapsed/1000, reset_signal, $BLTN_CAM_RecSta_OWD, $BLTN_CAM_RecSet_OWD);
+    }
+
+    // Check every 100ms
+    testWaitForTimeout(100);
+    elapsed += 100;
+  }
+
+  if(!reset_detected)
+  {
+    write(">>> Timeout! Reset not detected <<<");
+    return 0;
+  }
+
+  return 1;
+}
+
+// Wait for Built-in Cam mode - monitoring signal only
+int Wait_For_BLTN_CAM_Mode(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte ui_mode = 0;
+
+  write("Waiting for Built-in Cam mode... (max %d seconds)", timeout_ms/1000);
+
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+
+  while(elapsed < timeout_ms)
+  {
+    ui_mode = $BLTN_CAM_HU_UI_Mode;  // Read from bus
+
+    if(ui_mode == 0x1) // Built-in Cam mode
+    {
+      write(">>> Now in Built-in Cam mode! <<<");
+      return 1;
+    }
+
+    if(elapsed == 0 || elapsed % log_interval == 0) // Log every ~timeout/6
+    {
+      write("  [%d s] UI_Mode=0x%X (0=HU, 1=BLTN_CAM)", elapsed/1000, ui_mode);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  write(">>> Timeout! <<<");
+  return 0;
+}
+
+// Turn ON OWD via panel - ONLY FUNCTION THAT CONTROLS SOMETHING
+void Turn_ON_OWD()
+{
+  int retry = 0;
+  byte ui_mode = 0;
+
+  write("=== Turn ON OWD via panel ===");
+  @panel::Switch_CGWNM = 1;
+
+  // MUST be in Built-in Cam mode to set OWD
+  ui_mode = $BLTN_CAM_HU_UI_Mode;  // Read from bus
+  write("Current UI Mode: 0x%X", ui_mode);
+
+  if(ui_mode != 0x1)
+  {
+    write("");
+    write("*** ACTION REQUIRED: Please enter Built-in Cam mode first! ***");
+    write("*** (Press Built-in Cam icon on screen) ***");
+    write("*** Cannot set OWD without being in Built-in Cam mode ***");
+    write("");
+
+    if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+    {
+      write(">>> FAILED: Not in Built-in Cam mode. Cannot set OWD. <<<");
+      return;
+    }
+  }
+
+  write("Now in Built-in Cam mode. Setting OWD to ON...");
+
+  while($BLTN_CAM_RecSet_OWD != 0x2 && retry < 10)
+  {
+    // Double check still in Built-in Cam mode
+    ui_mode = $BLTN_CAM_HU_UI_Mode;  // Read from bus
+    if(ui_mode != 0x1)
+    {
+      write(">>> WARNING: Lost Built-in Cam mode! UI_Mode=0x%X <<<", ui_mode);
+      write("*** Please return to Built-in Cam mode ***");
+      if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+      {
+        write(">>> FAILED: Cannot continue without Built-in Cam mode <<<");
+        return;
+      }
+    }
+
+    @panel::LED_Ctrl_SetOWD = 1;
+    testWaitForTimeout(2000);
+
+    write("  Attempt %d: RecSet_OWD=0x%X | UI_Mode=0x%X", retry+1, $BLTN_CAM_RecSet_OWD, ui_mode);
+    retry++;
+  }
+
+  if($BLTN_CAM_RecSet_OWD == 0x2)
+    write(">>> SUCCESS: OWD = ON (0x2) <<<");
+  else
+    write(">>> FAILED: Could not set OWD to ON <<<");
+}
+
+// Get region info - NOTE: DistributeInfo not available in this database
+void Get_Region()
+{
+  write("=== Region Info ===");
+  write("NOTE: BLTN_CAM_DistributeInfo not available in current database");
+  write("Expected behavior:");
+  write("  - Europe: OWD default = OFF (0x1)");
+  write("  - Non-Europe: OWD default = ON (0x2)");
+  distribute_info = 0x00; // Unknown
+}
+
+// Capture graph window screenshot with specified signals
+void CaptureGraphics(char signalList[])
+{
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD", signalList, "Screenshot");
+  write(">>> Screenshot captured <<<");
+}
+
+
+// Set SMK to IGN (0x2) via panel
+void Set_SMK_IGN()
+{
+  write("=== Setting SMK_Signal to IGN via panel ===");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);  // IGN
+  testWaitForTimeout(2000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (IGN)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+// Click USM Reset button on panel
+void Click_USM_Reset()
+{
+  write("=== Clicking USM Reset button on panel ===");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(2000);
+  write("  USM Reset clicked");
+}
+
+// Click Rec Reset button on panel
+void Click_Rec_Reset()
+{
+  write("=== Clicking Rec Reset button on panel ===");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(2000);
+  write("  Rec Reset clicked");
+}
+
+
+testcase OWD_001_Init()
+{
+  write("========================================");
+  write("=== START TEST OWD_001 ===");
+  write("========================================");
+
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  Get_Region();
+}
+
+testcase OWD_001_1()
+{
+  //============================================================================
+  // STEP 1: Change from Factory mode to Customer mode
+  //============================================================================
+  write("");
+  write("=== STEP 1: Factory mode -> Customer mode ===");
+
+  // Step 1.1: Set to Factory mode (0x0)
+  write("");
+  write("Step 1.1: Setting to Factory mode (0x0)...");
+  if(Set_PowerAutoCut_Mode(0x0, 30000) == 0)  // 30 seconds timeout
+  {
+    write(">>> FAILED to set Factory mode <<<");
+    testStepFail("Step1.1", "Failed to set Factory mode");
+  }
+  else
+  {
+    testStepPass("Step1.1", "Factory mode set successfully");
+  }
+  testWaitForTimeout(2000);
+
+  // Step 1.2: Set to Customer mode (0x2)
+  write("");
+  write("Step 1.2: Setting to Customer mode (0x2)...");
+  if(Set_PowerAutoCut_Mode(0x2, 30000) == 0)  // 30 seconds timeout
+  {
+    write(">>> FAILED to set Customer mode <<<");
+    testStepFail("Step1.2", "Failed to set Customer mode");
+  }
+  else
+  {
+    testStepPass("Step1.2", "Customer mode set successfully");
+  }
+  testWaitForTimeout(2000);
+
+  // Step 1.3: Verify Customer mode
+  write("");
+  write("Step 1.3: Verifying Customer mode...");
+  if(Verify_PowerAutoCut_Mode(0x2) == 0)
+  {
+    testStepFail("Step1.3", "PowerAutoCutMode verification failed");
+  }
+  else
+  {
+    testStepPass("Step1.3", "PowerAutoCutMode = Customer mode (0x2)");
+  }
+
+  // Step 1.4: Check OWD initial value after mode change
+  write("");
+  write("Step 1.4: Checking OWD initial value...");
+  testWaitForTimeout(2000);  // Wait for signal to update
+
+  initial_RecSet_OWD = $BLTN_CAM_RecSet_OWD;
+  write("BLTN_CAM_RecSet_OWD = 0x%X", initial_RecSet_OWD);
+
+  if(initial_RecSet_OWD == 0x1)
+  {
+    step1_passed = 1;
+    write(">>> PASS: RecSet_OWD = 0x1 (OFF) <<<");
+    write("Expected: Initialized to OFF after changing from Factory mode to Customer mode");
+    testStepPass("Step1", "BLTN_CAM_RecSet_OWD = 0x1 (OFF) - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL: RecSet_OWD = 0x%X, expected 0x1 (OFF) <<<", initial_RecSet_OWD);
+    testStepFail("Step1", "BLTN_CAM_RecSet_OWD = 0x%X, expected 0x1 - FAIL", initial_RecSet_OWD);
+  }
+
+  write("");
+  write(">>> STEP 1 COMPLETE <<<");
+
+  // Capture screenshot after Step 1
+  write("Capturing screenshot after Step 1...");
+  CaptureGraphics("ICU_PowerAutoCutModSta;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_State");
+}
+
+testcase OWD_001_2()
+{
+  //============================================================================
+  // STEP 2: Turn ON OWD, then FRS reset again, determine region by final value
+  //============================================================================
+  write("");
+  write("=== STEP 2: Turn ON OWD, then FRS reset again ===");
+
+  // Turn ON OWD via panel
+  Turn_ON_OWD();
+  testWaitForTimeout(3000);
+
+  // Capture screenshot after turning ON OWD
+  write("Capturing screenshot after turning ON OWD...");
+  CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode;BLTN_CAM_State");
+
+  // Verify OWD is ON before reset
+  if($BLTN_CAM_RecSet_OWD == 0x2 && $BLTN_CAM_RecSta_OWD == 0x2)
+  {
+    write("Confirmed: OWD is ON (RecSet=0x2, RecSta=0x2)");
+  }
+  else
+  {
+    write("WARNING: OWD status unexpected - RecSet=0x%X, RecSta=0x%X",
+          $BLTN_CAM_RecSet_OWD, $BLTN_CAM_RecSta_OWD);
+  }
+
+  write("");
+  write("ACTION REQUIRED:");
+  write("  1. Enter Built-in Cam mode if not already");
+  write("  2. Perform FRS reset: [ccNC Settings] - [General] - [Reset]");
+  write("  3. Script will automatically detect reset and determine region");
+  write("");
+
+  // Wait for Built-in Cam mode
+  if($BLTN_CAM_HU_UI_Mode != 0x1)
+    Wait_For_BLTN_CAM_Mode(max_wait_time);
+
+  // Wait for reset by monitoring RecSta_OWD transition (ON->OFF)
+  write("Waiting for FRS reset (monitoring RecSta_OWD transition)...");
+  if(Wait_For_Reset_By_Status(max_wait_time) == 0)
+  {
+    write(">>> FAILED: Reset not detected <<<");
+    step2_passed = 0;
+    testStepFail("Step2", "FRS reset not detected");
+  }
+  else
+  {
+    write(">>> Reset detected successfully <<<");
+
+    // Wait 20 seconds for system to stabilize after reset
+    write("");
+    write("Waiting 20 seconds for system to stabilize after reset...");
+    testWaitForTimeout(20000);
+
+    // Read final value to determine region
+    final_RecSet_OWD = $BLTN_CAM_RecSet_OWD;
+
+    write("");
+    write("=== STEP 2 Result ===");
+    write("BLTN_CAM_RecSet_OWD = 0x%X after FRS reset", final_RecSet_OWD);
+
+    // Determine region based on final value
+    if(final_RecSet_OWD == 0x2)
+    {
+      step2_passed = 1;
+      write("Region: Domestic/Japan/North America/Russia/Middle East");
+      write("Expected: RecSet_OWD = 0x2 (ON) - Default is ON after FRS reset");
+      testStepPass("Step2", "RecSet_OWD = 0x2 (ON) - Non-Europe region - PASS");
+    }
+    else if(final_RecSet_OWD == 0x1)
+    {
+      step2_passed = 1;
+      write("Region: Europe");
+      write("Expected: RecSet_OWD = 0x1 (OFF) - Default is OFF after FRS reset");
+      testStepPass("Step2", "RecSet_OWD = 0x1 (OFF) - Europe region - PASS");
+    }
+    else
+    {
+      step2_passed = 0;
+      write("ERROR: Unexpected value RecSet_OWD = 0x%X", final_RecSet_OWD);
+      testStepFail("Step2", "RecSet_OWD = 0x%X - Unexpected value - FAIL", final_RecSet_OWD);
+    }
+
+    // Capture screenshot after Step 2
+    write("Capturing screenshot after Step 2...");
+    CaptureGraphics("CF_AVN_BLTN_CAM_RecReset;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;ICU_PowerAutoCutModSta;BLTN_CAM_State");
+  }
+}
+
+testcase OWD_001_Summary()
+{
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_passed == 1 && step2_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_001: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_001: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  //============================================================================
+  // SUMMARY
+  //============================================================================
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_passed)
+    write("Step 1: After Factory->Customer mode change: PASS");
+  else
+    write("Step 1: After Factory->Customer mode change: FAIL");
+  write("        RecSet_OWD = 0x%X (expected 0x1 OFF)", initial_RecSet_OWD);
+  if(step2_passed)
+    write("Step 2: After OWD ON + FRS reset: PASS");
+  else
+    write("Step 2: After OWD ON + FRS reset: FAIL");
+  write("        RecSet_OWD = 0x%X", final_RecSet_OWD);
+  if(final_RecSet_OWD == 0x2)
+    write("        Region: Non-Europe (Default = ON)");
+  else if(final_RecSet_OWD == 0x1)
+    write("        Region: Europe (Default = OFF)");
+  else
+    write("        Region: Unknown (Unexpected value)");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("");
+  write("========================================");
+  write("=== END TEST OWD_001 ===");
+  write("========================================");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_001 - 2.0 generation_report");
+  OWD_001_Init();
+  OWD_001_1();
+  OWD_001_2();
+  OWD_001_Summary();
+}

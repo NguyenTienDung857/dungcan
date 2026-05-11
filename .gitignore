@@ -1,0 +1,13 @@
+# Generic ignore patterns
+*.blf
+*.log
+*.tmp
+*.bak
+
+# CANoe specific
+Logging/
+CAN/Logging/
+CANFD/Logging/
+TestReports/
+CANFD/TestReports/
+CAN/TestReports/

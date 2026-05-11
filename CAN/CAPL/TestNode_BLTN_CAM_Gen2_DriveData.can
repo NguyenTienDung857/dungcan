@@ -1,0 +1,180 @@
+/*@!Encoding:949*/
+includes
+{
+  
+}
+
+variables
+{
+}
+
+void MainTest()
+{
+
+  testWaitForTimeout(500); 
+  
+  //SignalInit();
+  //test1();
+  test_break();
+  
+  SignalInit();
+  test2();
+  
+  //test_turn();
+  
+  
+  SignalInit();
+  
+}
+
+void SignalInit()
+{
+  setSignal(CAN2::TCU_01_10ms_1::TCU_GearSlctDis, 0x0);//P
+  setSignal(CAN2::EMS_02_10ms_2::ENG_AccelPdlVal, 0);
+  setSignal(CAN2::SAS_01_10ms_1::SAS_AnglVal, 0);
+  setSignal(CAN2::CLU_01_20ms_1::CLU_DisSpdVal, 0);
+  setSignal(CAN2::CLU_01_20ms_1::CLU_SpdUnitTyp, 0);// km/S
+  setSignal(CAN2::EMS_02_10ms_1::ENG_BrkSwSta, 0);
+  
+  testWaitForTimeout(1000);
+}
+
+void test1()
+{  
+  
+   int i = 0;
+
+  //Turn Signal
+  for(i=0; i < 5; i++)
+  {
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 2);//Left ON
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 1);//Right OFF
+    testWaitForTimeout(1000);
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 1);//Left OFF
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 2);//Right ON
+    testWaitForTimeout(1000);
+  }
+  
+  //Gear
+  for(i=0; i < 2; i++)
+  {
+    setSignal(CAN2::TCU_01_10ms_1::TCU_GearSlctDis, 0x0);//P
+    testWaitForTimeout(2000);
+    setSignal(CAN2::TCU_01_10ms_1::TCU_GearSlctDis, 0x7);//R
+    testWaitForTimeout(2000);
+    setSignal(CAN2::TCU_01_10ms_1::TCU_GearSlctDis, 0x6);//N
+    testWaitForTimeout(2000);
+    setSignal(CAN2::TCU_01_10ms_1::TCU_GearSlctDis, 0x5);//D
+    testWaitForTimeout(2000);
+  }
+  
+  //Break
+  for(i=0; i < 3; i++)
+  {
+    setSignal(CAN2::EMS_02_10ms_1::ENG_BrkSwSta, 1);
+    testWaitForTimeout(2000);
+    setSignal(CAN2::EMS_02_10ms_1::ENG_BrkSwSta, 0);
+    testWaitForTimeout(2000);
+  }
+  
+  //Accel
+  for(i=0; i < 6; i++)
+  {
+    setSignal(CAN2::EMS_02_10ms_2::ENG_AccelPdlVal, i*20);
+    testWaitForTimeout(1500);
+  }
+  
+  //SAS Angle
+  for(i=0; i < 8; i++)
+  {
+    setSignal(CAN2::SAS_01_10ms_1::SAS_AnglVal, i*200 -700);
+    testWaitForTimeout(1500);
+  } 
+  
+  //Speed
+  setSignal(CAN2::CLU_01_20ms_1::CLU_SpdUnitTyp, 0);// km/S
+  for(i=0; i < 5; i++)
+  {
+    setSignal(CAN2::CLU_01_20ms_1::CLU_DisSpdVal, i*100);
+    testWaitForTimeout(1500);
+  }
+  
+  setSignal(CAN2::CLU_01_20ms_1::CLU_SpdUnitTyp, 1);// MPH
+  for(i=0; i < 5; i++)
+  {
+    setSignal(CAN2::CLU_01_20ms_1::CLU_DisSpdVal, i*100);
+    testWaitForTimeout(1500);
+  }  
+}
+
+void test2()
+{
+  
+  int i=0;
+  //Accel
+  for(i=0; i < 100; i++)
+  {
+    setSignal(CAN2::EMS_02_10ms_2::ENG_AccelPdlVal, i);
+    testWaitForTimeout(10);
+  }
+  
+  //SAS Angle
+  for(i=-700; i < 720; i++)
+  {
+    setSignal(CAN2::SAS_01_10ms_1::SAS_AnglVal, i);
+    testWaitForTimeout(10);
+  } 
+  
+  //Speed
+  setSignal(CAN2::CLU_01_20ms_1::CLU_SpdUnitTyp, 0);// km/S
+  for(i=0; i < 400; i++)
+  {
+    setSignal(CAN2::CLU_01_20ms_1::CLU_DisSpdVal, i);
+    testWaitForTimeout(20);
+  }
+
+}
+
+void test_break()
+{
+  int i;
+  //Break
+  for(i=0; i < 5; i++)
+  {
+    setSignal(CAN2::EMS_02_10ms_1::ENG_BrkSwSta, 1);
+    testWaitForTimeout(500);
+    setSignal(CAN2::EMS_02_10ms_1::ENG_BrkSwSta, 0);
+    testWaitForTimeout(500);
+  }
+}
+
+void test_turn()  //턴시그널만 100번 반복
+{
+  int i = 0;
+  //Turn Signal
+  for(i=0; i < 100; i++)
+  {
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 2);//Left ON
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 1);//Right OFF
+    testWaitForTimeout(1000);
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 1);//Left OFF
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 2);//Right ON
+    testWaitForTimeout(1000);
+  }
+}
+
+void tunrsignal_85pm()  //현대기아
+{
+  int i = 0;
+  //Turn Signal
+  for(i=0; i < 85; i++)
+  {
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 2);//Right ON
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 2);//Left ON
+    testWaitForTimeout(350);
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpRtOnReq, 1);//Right OFF
+    setSignal(CAN2::ICU_04_200ms::Lamp_TrnSigLmpLftOnReq, 1);//Left OFF
+    testWaitForTimeout(350);
+  }
+}
+

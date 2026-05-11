@@ -1,0 +1,378 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Case: PowerSupply_CH2_Test
+  Title: [Power Supply CH2 Control Test - TL305TP]
+
+  Purpose: Test voltage control on Channel 2 via RS232
+
+  Preconditions:
+    - TL305TP power supply connected to COM3
+    - VN1600_1 AIN connected to measure voltage
+
+  Test Steps:
+    1. Connect to power supply via COM3
+    2. Set CH2 to 12V, turn ON output, verify AIN reading
+    3. Set CH2 to 9V, verify AIN = ~9V
+    4. Set CH2 to 16V, verify AIN = ~16V
+    5. Restore CH2 to 12V
+    6. Turn OFF output, disconnect
+*/
+
+variables
+{
+  // Power supply configuration
+  int rs232_PortNum = 3;      // COM3
+  int PowerSupplyModel = 1;    // TL305TP
+  int isConnected = 0;         // Connection status
+
+  // Power supply models enum
+  enum Model_PowerSupply
+  {
+    OPE305QI = 0x0,
+    TL305TP = 0x1,
+    GPP2323 = 0x2
+  };
+}
+
+// ============================================================================
+// RS232 Communication Functions
+// ============================================================================
+
+void Rs232SendString(int port, int model, char text[])
+{
+  byte buffer[50];
+  int i;
+  int length;
+
+  length = strlen(text);
+
+  if(!isConnected)
+  {
+    write(">>> ERROR: Power Supply NOT connected! <<<");
+    return;
+  }
+
+  // Initialize buffer
+  for(i = 0; i < 50; i++) buffer[i] = 0;
+
+  // Convert char to byte
+  for(i = 0; i < length; i++) buffer[i] = text[i];
+
+  // Send command
+  if(model == TL305TP)
+  {
+    // TL305TP: No line feed required
+    if(RS232Send(port, buffer, length) == 1)
+    {
+      write("  TX: %s", text);
+    }
+    else
+    {
+      write("  TX FAILED: %s", text);
+    }
+  }
+  else if((model == OPE305QI) || (model == GPP2323))
+  {
+    // OPE305QI and GPP2323: Add line feed
+    buffer[length] = 0xA;  // Line Feed
+    if(RS232Send(port, buffer, length + 1) == 1)
+    {
+      write("  TX: %s", text);
+    }
+    else
+    {
+      write("  TX FAILED: %s", text);
+    }
+  }
+}
+
+// ============================================================================
+// Power Supply Control Functions
+// ============================================================================
+
+int Connect_PowerSupply()
+{
+  write("");
+  write("=================================================================");
+  write("=== Connecting to Power Supply ===");
+  write("=================================================================");
+  write("  Port: COM%d", rs232_PortNum);
+  write("  Model: TL305TP");
+
+  if(RS232Open(rs232_PortNum))
+  {
+    if(rs232Configure(rs232_PortNum, 9600, 8, 1, 0))
+    {
+      isConnected = 1;
+      write(">>> Power Supply connected successfully <<<");
+      return 1;
+    }
+    else
+    {
+      write(">>> ERROR: RS232 configuration failed <<<");
+      isConnected = 0;
+      return 0;
+    }
+  }
+  else
+  {
+    write(">>> ERROR: Cannot open COM%d <<<", rs232_PortNum);
+    write(">>> Check: Power ON, Cable connected, Correct COM port <<<");
+    isConnected = 0;
+    return 0;
+  }
+}
+
+void Disconnect_PowerSupply()
+{
+  write("");
+  write("=== Disconnecting Power Supply ===");
+
+  if(isConnected)
+  {
+    RS232Close(rs232_PortNum);
+    isConnected = 0;
+    write(">>> Power Supply disconnected <<<");
+  }
+}
+
+void SetVoltage_CH2(double voltage)
+{
+  char cmd[50];
+  int i;
+
+  write("");
+  write("=== Setting CH2 Voltage ===");
+  write("  Target: %.1f V", voltage);
+
+  // Clear command buffer
+  for(i = 0; i < 50; i++) cmd[i] = 0;
+
+  // Build command for TL305TP CH2
+  // Format: SET:001,VS:12.00,IS:5.00/n
+  // 001 = CH2 (000=CH1, 001=CH2)
+  snprintf(cmd, 50, "SET:001,VS:%05.2f,IS:5.00/n", voltage);
+
+  Rs232SendString(rs232_PortNum, PowerSupplyModel, cmd);
+
+  write(">>> Voltage command sent <<<");
+}
+
+void TurnOn_Output_CH2()
+{
+  write("");
+  write("=== Turning ON CH2 Output ===");
+
+  // TL305TP: OUTPUT1/n (turns on current output)
+  Rs232SendString(rs232_PortNum, PowerSupplyModel, "OUTPUT1/n");
+
+  write(">>> Output ON command sent <<<");
+}
+
+void TurnOff_Output_CH2()
+{
+  write("");
+  write("=== Turning OFF CH2 Output ===");
+
+  // TL305TP: OUTPUT0/n (turns off current output)
+  Rs232SendString(rs232_PortNum, PowerSupplyModel, "OUTPUT0/n");
+
+  write(">>> Output OFF command sent <<<");
+}
+
+double Read_AIN_Voltage()
+{
+  double ain_value = 0.0;
+
+  // Read from VN1600_1 AIN channel
+  ain_value = @sysvar::IO::VN1600_1::AIN;
+
+  write("  AIN Reading: %.2f V", ain_value);
+
+  return ain_value;
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase TC_PowerSupply_CH2_VoltageControl()
+{
+  double ain_value = 0.0;
+  double expected_voltage = 0.0;
+  double tolerance = 0.5;  // +/- 0.5V tolerance
+  int pass_count = 0;
+  int fail_count = 0;
+
+  write("");
+  write("=================================================================");
+  write("=== TEST START: Power Supply CH2 Voltage Control ===");
+  write("=================================================================");
+
+  testStep("Init", "Initialize Power Supply Connection");
+
+  // Step 1: Connect to power supply
+  if(Connect_PowerSupply() == 0)
+  {
+    testStepFail("Init", "Failed to connect to power supply");
+    write(">>> TEST ABORTED <<<");
+    return;
+  }
+
+  testStepPass("Init", "Power supply connected");
+  testWaitForTimeout(2000);
+
+  // ========================================================================
+  // Step 2: Set 12V and verify
+  // ========================================================================
+  testStep("Step1", "Set CH2 to 12V");
+
+  expected_voltage = 12.0;
+  write("");
+  write("--- Step 1: Set CH2 to %.1f V ---", expected_voltage);
+
+  SetVoltage_CH2(expected_voltage);
+  testWaitForTimeout(2000);
+
+  TurnOn_Output_CH2();
+  testWaitForTimeout(3000);  // Wait for output to stabilize
+
+  ain_value = Read_AIN_Voltage();
+
+  if((ain_value >= (expected_voltage - tolerance)) &&
+     (ain_value <= (expected_voltage + tolerance)))
+  {
+    write(">>> PASS: Voltage within range (%.1f V +/- %.1f V) <<<",
+          expected_voltage, tolerance);
+    testStepPass("Step1", "12V setting verified");
+    pass_count++;
+  }
+  else
+  {
+    write(">>> FAIL: Voltage out of range <<<");
+    testStepFail("Step1", "12V setting failed");
+    fail_count++;
+  }
+
+  // ========================================================================
+  // Step 3: Set 9V and verify
+  // ========================================================================
+  testStep("Step2", "Set CH2 to 9V");
+
+  expected_voltage = 9.0;
+  write("");
+  write("--- Step 2: Set CH2 to %.1f V ---", expected_voltage);
+
+  SetVoltage_CH2(expected_voltage);
+  testWaitForTimeout(5000);  // Wait longer for voltage change
+
+  ain_value = Read_AIN_Voltage();
+
+  if((ain_value >= (expected_voltage - tolerance)) &&
+     (ain_value <= (expected_voltage + tolerance)))
+  {
+    write(">>> PASS: Voltage within range (%.1f V +/- %.1f V) <<<",
+          expected_voltage, tolerance);
+    testStepPass("Step2", "9V setting verified");
+    pass_count++;
+  }
+  else
+  {
+    write(">>> FAIL: Voltage out of range <<<");
+    testStepFail("Step2", "9V setting failed");
+    fail_count++;
+  }
+
+  // ========================================================================
+  // Step 4: Set 16V and verify
+  // ========================================================================
+  testStep("Step3", "Set CH2 to 16V");
+
+  expected_voltage = 16.0;
+  write("");
+  write("--- Step 3: Set CH2 to %.1f V ---", expected_voltage);
+
+  SetVoltage_CH2(expected_voltage);
+  testWaitForTimeout(5000);  // Wait for voltage change
+
+  ain_value = Read_AIN_Voltage();
+
+  if((ain_value >= (expected_voltage - tolerance)) &&
+     (ain_value <= (expected_voltage + tolerance)))
+  {
+    write(">>> PASS: Voltage within range (%.1f V +/- %.1f V) <<<",
+          expected_voltage, tolerance);
+    testStepPass("Step3", "16V setting verified");
+    pass_count++;
+  }
+  else
+  {
+    write(">>> FAIL: Voltage out of range <<<");
+    testStepFail("Step3", "16V setting failed");
+    fail_count++;
+  }
+
+  // ========================================================================
+  // Step 5: Restore to 12V
+  // ========================================================================
+  testStep("Step4", "Restore CH2 to 12V");
+
+  write("");
+  write("--- Step 4: Restore to 12V ---");
+
+  SetVoltage_CH2(12.0);
+  testWaitForTimeout(3000);
+
+  ain_value = Read_AIN_Voltage();
+  write("  Restored voltage: %.2f V", ain_value);
+
+  testStepPass("Step4", "Voltage restored to 12V");
+
+  // ========================================================================
+  // Step 6: Turn OFF and disconnect
+  // ========================================================================
+  testStep("Cleanup", "Turn OFF output and disconnect");
+
+  testWaitForTimeout(2000);
+  TurnOff_Output_CH2();
+  testWaitForTimeout(1000);
+
+  Disconnect_PowerSupply();
+
+  testStepPass("Cleanup", "Power supply disconnected");
+
+  // ========================================================================
+  // Test Summary
+  // ========================================================================
+  write("");
+  write("=================================================================");
+  write("=== TEST SUMMARY ===");
+  write("=================================================================");
+  write("  Total Tests: %d", pass_count + fail_count);
+  write("  PASS: %d", pass_count);
+  write("  FAIL: %d", fail_count);
+  write("=================================================================");
+
+  // Overall Test Verdict
+  if(fail_count == 0)
+  {
+    testStepPass("Overall_Verdict", "Test TC_PowerSupply_CH2_VoltageControl: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test TC_PowerSupply_CH2_VoltageControl: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  write("=================================================================");
+  write("=== TEST COMPLETE ===");
+  write("=================================================================");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\Test_PowerSupply_TL305TP_report");
+  TC_PowerSupply_CH2_VoltageControl();
+}

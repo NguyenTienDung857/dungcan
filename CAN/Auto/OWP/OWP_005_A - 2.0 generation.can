@@ -1,0 +1,922 @@
+/*@!Encoding:65001*/
+includes { #include "DeclarationFunction_OWP_Gen2.h" }
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSta_OWP, BLTN_CAM_RecSet_OWP,
+//                             BLTN_CAM_RecSta_MAR, BLTN_CAM_RecSta_PEV,
+//                             BLTN_CAM_State, BLTN_CAM_Set_FR_Ver_Pos,
+//                             BLTN_CAM_Set_RR_Ver_Pos
+
+/*
+  Test Case: OWP_005_A - 2.0
+  Title: [OWP Recording - Camera Disconnect/Reconnect, Event, NM Off, BLTN Settings]
+
+  Step 1:  KEY ON, USM Reset, Rec Reset, KEY OFF,
+           Wait OWP ON, log "thao camera truoc", wait 25s, log "lap camera truoc",
+           log "tac dong su kien" + Click_Evt_Switch,
+           Check MAR=ON & PEV=ON -> PASS, wait 30s, KEY ON, log check video 1
+
+  Step 2:  KEY OFF, Wait OWP ON, log "thao camera sau", wait 25s, log "lap camera",
+           log "tac dong su kien" + Click_Evt_Switch,
+           Check MAR=ON & PEV=ON -> PASS, wait 30s, KEY ON, log check video 2
+
+  Step 3:  KEY OFF, Wait OWP ON, log "thao camera truoc va sau", wait 25s, log "lap camera",
+           log "tac dong su kien" + Click_Evt_Switch,
+           Check MAR=ON & PEV=ON -> PASS, wait 30s, KEY ON, log check video 3
+
+  Step 4:  KEY OFF, Wait OWP ON, log "thao lap lai camera truoc", wait 20s, KEY ON,
+           log check video 4
+
+  Step 5:  KEY OFF, Wait OWP ON, log "thao lap lai camera truoc", wait 20s, KEY ON,
+           Capture OWP + BLTN_CAM_State, log check video 5
+
+  Step 6:  KEY OFF, Disable CGWNM, wait 20s, log "thao cam truoc va sau",
+           wait 20s, KEY ON, log "video 6 bi den cuoi man hinh", re-enable CGWNM
+
+  Step 7:  Log "phai test man hinh live"
+
+  Step 8:  Enter BLTN_CAM, iterate FR_Ver_Pos 1~11 and RR_Ver_Pos 1~11,
+           Capture FR/RR VerPos screenshot
+
+  Step 9:  Exit BLTN_CAM, KEY OFF, Wait OWP ON, log "thao lap lai camera truoc",
+           wait 20s, KEY ON, Capture OWP + BLTN_CAM_State, log video 7
+
+  Step 10: KEY OFF, Wait OWP ON, wait 30s, log "thao cam truoc", wait 25s,
+           log "lap lai cam + tac dong PEV", Click_Evt_Switch, wait few sec, KEY ON,
+           log check video 8
+
+  Step 11: Log "repeat but use old image from video 8"
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+  int step10_passed = 0;
+  int step11_passed = 0;
+
+  // Message Declaration for CAN
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_00 _HU_BLTN_CAM_E_00;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+}
+
+// ============================================================================
+// File-specific Utility Functions
+// ============================================================================
+
+void Log_OWP_Signals()
+{
+  write("");
+  write("=== OWP Signal Status ===");
+  write("  BLTN_CAM_RecSet_OWP    = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP    = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_RecSta_MAR    = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  BLTN_CAM_RecSta_PEV    = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_State         = 0x%X", $BLTN_CAM_State);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("========================================");
+  write("");
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_005A_Init()
+{
+  write("========================================");
+  write("=== START TEST OWP_005_A - 2.0 ===");
+  write("========================================");
+  write("===START TEST===");
+}
+
+// ============================================================================
+// STEP 1: KEY ON, USM Reset, Rec Reset, KEY OFF,
+//         Wait OWP ON, thao camera truoc 25s, lap lai,
+//         tac dong su kien + Click_Evt_Switch, check MAR+PEV,
+//         wait 30s, KEY ON, check video 1
+// ============================================================================
+testcase OWP_005A_Step1()
+{
+  int mar_ok;
+  int pev_ok;
+
+  write("");
+  write("=== STEP 1 ===");
+  testStep("Step1", "KEY ON, USM/Rec Reset, KEY OFF, Camera FR disconnect, Event, Check MAR+PEV");
+
+  // 1.1: Enable CGWNM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+
+  // 1.2: KEY ON (IGN)
+  write("Step 1.1: KEY ON (IGN = 0x2)...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.3: USM Reset
+  write("Step 1.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 1.4: Rec Reset
+  write("Step 1.3: Rec Reset...");
+  Click_Rec_Reset();
+
+  // 1.5: KEY OFF
+  write("Step 1.4: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 1.6: Check OWP = ON within 60s
+  write("Step 1.5: Checking BLTN_CAM_RecSta_OWP = ON...");
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 1.");
+    testStepFail("Step1", "BLTN_CAM_RecSta_OWP did not turn ON within 60s");
+    CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+    step1_passed = 0;
+    return;
+  }
+
+  // 1.7: Wait 25s + log thao camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO CAMERA TRUOC ra!           ***");
+  write("*************************************************************");
+  write("  Waiting 25 seconds...");
+  Clock_Down_ms(25000);
+
+  // 1.8: Log lap camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay LAP CAMERA TRUOC vao lai!       ***");
+  write("*************************************************************");
+  testWaitForTimeout(3000);
+
+  // 1.9: Log "tac dong su kien" + Click_Evt_Switch dong thoi
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] TAC DONG SU KIEN + Manual are acknowledged     ***");
+  write("*************************************************************");
+  Click_Evt_Switch();
+
+  // 1.10: Check MAR + PEV
+  testWaitForTimeout(5000);
+  Log_OWP_Signals();
+
+  mar_ok = 0;
+  pev_ok = 0;
+
+  if ($BLTN_CAM_RecSta_MAR == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x1 (ON) <<<");
+    mar_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X, expected 0x1 <<<", $BLTN_CAM_RecSta_MAR);
+  }
+
+  if ($BLTN_CAM_RecSta_PEV == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_PEV = 0x1 (ON) <<<");
+    pev_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_PEV = 0x%X, expected 0x1 <<<", $BLTN_CAM_RecSta_PEV);
+  }
+
+  if (mar_ok == 1 && pev_ok == 1)
+  {
+    write(">>> [PASS] Step 1: MAR=ON, PEV=ON <<<");
+    step1_passed = 1;
+    testStepPass("Step1", "MAR=ON, PEV=ON - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Step 1: MAR=%d, PEV=%d <<<", mar_ok, pev_ok);
+    step1_passed = 0;
+    testStepFail("Step1", "MAR or PEV not ON - FAIL");
+  }
+
+  // 1.11: Wait 30s then KEY ON
+  write("  Waiting 30 seconds before KEY ON...");
+  Clock_Down_ms(30000);
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 1 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+  write("=== FINISH STEP 1 ===");
+}
+
+// ============================================================================
+// STEP 2: KEY OFF, Wait OWP ON, thao camera sau 25s, lap lai,
+//         tac dong su kien + Click_Evt_Switch, check MAR+PEV,
+//         wait 30s, KEY ON, check video 2
+// ============================================================================
+testcase OWP_005A_Step2()
+{
+  int mar_ok;
+  int pev_ok;
+
+  write("");
+  write("=== STEP 2 ===");
+  testStep("Step2", "KEY OFF, Camera RR disconnect, Event, Check MAR+PEV");
+
+  // 2.1: KEY OFF
+  write("Step 2.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 2.2: Check OWP = ON within 60s
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 2.");
+    testStepFail("Step2", "OWP did not start");
+    step2_passed = 0;
+    return;
+  }
+
+  // 2.3: Wait 25s + log thao camera sau
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO CAMERA SAU ra!             ***");
+  write("*************************************************************");
+  write("  Waiting 25 seconds...");
+  Clock_Down_ms(25000);
+
+  // 2.4: Log lap camera
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay LAP CAMERA TRUOC vao lai!       ***");
+  write("*************************************************************");
+  testWaitForTimeout(3000);
+
+  // 2.5: tac dong su kien + Click_Evt_Switch
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] TAC DONG SU KIEN + Manual are acknowledged     ***");
+  write("*************************************************************");
+  Click_Evt_Switch();
+
+  // 2.6: Check MAR + PEV
+  testWaitForTimeout(5000);
+  Log_OWP_Signals();
+
+  mar_ok = 0;
+  pev_ok = 0;
+
+  if ($BLTN_CAM_RecSta_MAR == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x1 (ON) <<<");
+    mar_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+  }
+
+  if ($BLTN_CAM_RecSta_PEV == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_PEV = 0x1 (ON) <<<");
+    pev_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_PEV = 0x%X <<<", $BLTN_CAM_RecSta_PEV);
+  }
+
+  if (mar_ok == 1 && pev_ok == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "MAR=ON, PEV=ON - PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    testStepFail("Step2", "MAR or PEV not ON - FAIL");
+  }
+
+  // 2.7: Wait 30s then KEY ON
+  write("  Waiting 30 seconds before KEY ON...");
+  Clock_Down_ms(30000);
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 2 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+  write("=== FINISH STEP 2 ===");
+}
+
+// ============================================================================
+// STEP 3: KEY OFF, Wait OWP ON, thao camera truoc va sau 25s, lap lai,
+//         tac dong su kien + Click_Evt_Switch, check MAR+PEV,
+//         wait 30s, KEY ON, check video 3
+// ============================================================================
+testcase OWP_005A_Step3()
+{
+  int mar_ok;
+  int pev_ok;
+
+  write("");
+  write("=== STEP 3 ===");
+  testStep("Step3", "KEY OFF, Camera FR+RR disconnect, Event, Check MAR+PEV");
+
+  // 3.1: KEY OFF
+  write("Step 3.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 3.2: Check OWP = ON within 60s
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 3.");
+    testStepFail("Step3", "OWP did not start");
+    step3_passed = 0;
+    return;
+  }
+
+  // 3.3: Wait 25s + log thao camera truoc va sau
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO CA CAMERA TRUOC VA SAU!    ***");
+  write("*************************************************************");
+  write("  Waiting 25 seconds...");
+  Clock_Down_ms(25000);
+
+  // 3.4: Log lap camera
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay LAP CAMERA TRUOC vao lai!       ***");
+  write("*************************************************************");
+  testWaitForTimeout(3000);
+
+  // 3.5: tac dong su kien + Click_Evt_Switch
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] TAC DONG SU KIEN + Manual are acknowledged     ***");
+  write("*************************************************************");
+  Click_Evt_Switch();
+
+  // 3.6: Check MAR + PEV
+  testWaitForTimeout(5000);
+  Log_OWP_Signals();
+
+  mar_ok = 0;
+  pev_ok = 0;
+
+  if ($BLTN_CAM_RecSta_MAR == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x1 (ON) <<<");
+    mar_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+  }
+
+  if ($BLTN_CAM_RecSta_PEV == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_PEV = 0x1 (ON) <<<");
+    pev_ok = 1;
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_PEV = 0x%X <<<", $BLTN_CAM_RecSta_PEV);
+  }
+
+  if (mar_ok == 1 && pev_ok == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "MAR=ON, PEV=ON - PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    testStepFail("Step3", "MAR or PEV not ON - FAIL");
+  }
+
+  // 3.7: Wait 30s then KEY ON
+  write("  Waiting 30 seconds before KEY ON...");
+  Clock_Down_ms(30000);
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 3 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+  write("=== FINISH STEP 3 ===");
+}
+
+// ============================================================================
+// STEP 4: KEY OFF, Wait OWP ON, thao lap lai camera truoc, wait 20s,
+//         KEY ON, check video 4
+// ============================================================================
+testcase OWP_005A_Step4()
+{
+  write("");
+  write("=== STEP 4 ===");
+  testStep("Step4", "KEY OFF, OWP ON, thao lap camera truoc, KEY ON, video 4");
+
+  // 4.1: KEY OFF
+  write("Step 4.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 4.2: Check OWP = ON within 60s
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 4.");
+    testStepFail("Step4", "OWP did not start");
+    step4_passed = 0;
+    return;
+  }
+
+  // 4.3: Log thao lap lai camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO roi LAP LAI CAMERA TRUOC!  ***");
+  write("*************************************************************");
+  write("  Waiting 20 seconds...");
+  Clock_Down_ms(20000);
+
+  // 4.4: KEY ON
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 4 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  step4_passed = 1;
+  testStepPass("Step4", "Video 4 - manual check required");
+  write("=== FINISH STEP 4 ===");
+}
+
+// ============================================================================
+// STEP 5: KEY OFF, Wait OWP ON, thao lap lai camera truoc, wait 20s,
+//         KEY ON, Capture OWP + BLTN_CAM_State, log video 5
+// ============================================================================
+testcase OWP_005A_Step5()
+{
+  write("");
+  write("=== STEP 5 ===");
+  testStep("Step5", "KEY OFF, OWP ON, thao lap camera truoc, KEY ON, Capture + video 5");
+
+  // 5.1: KEY OFF
+  write("Step 5.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 5.2: Check OWP = ON within 60s
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 5.");
+    testStepFail("Step5", "OWP did not start");
+    step5_passed = 0;
+    return;
+  }
+
+  // 5.3: Log thao lap lai camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO roi LAP LAI CAMERA TRUOC!  ***");
+  write("*************************************************************");
+  write("  Waiting 20 seconds...");
+  Clock_Down_ms(20000);
+
+  // 5.4: KEY ON
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 5.5: Capture screenshot OWP + camera validity
+  write("Step 5.4: Capturing BLTN_CAM_RecSta_OWP and BLTN_CAM_State (camera validity)...");
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_State      = 0x%X (0=Valid, 1=FR Invalid, 2=RR Invalid, 3=FR+RR Invalid)", $BLTN_CAM_State);
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_State;BLTN_CAM_RecSet_OWP");
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 5 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  step5_passed = 1;
+  testStepPass("Step5", "Video 5 - screenshot captured");
+  write("=== FINISH STEP 5 ===");
+}
+
+// ============================================================================
+// STEP 6: KEY OFF, Disable CGWNM, wait 20s, log thao cam truoc + sau,
+//         wait 20s, KEY ON, log video 6 bi den cuoi man hinh, enable CGWNM
+// ============================================================================
+testcase OWP_005A_Step6()
+{
+  write("");
+  write("=== STEP 6 ===");
+  testStep("Step6", "KEY OFF, Disable NM, thao cam, KEY ON, video 6 den cuoi");
+
+  // 6.1: KEY OFF
+  write("Step 6.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  // 6.2: Disable CGWNM
+  write("Step 6.2: Disabling CGWNM...");
+  @panel::Switch_CGWNM = 0;
+  testWaitForTimeout(2000);
+
+  // 6.3: Wait 20s
+  write("  Waiting 20 seconds (NM disabled)...");
+  Clock_Down_ms(20000);
+
+  // 6.4: Log thao cam truoc va sau
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO CAMERA TRUOC VA CAMERA SAU!***");
+  write("*************************************************************");
+  write("  Waiting 20 seconds...");
+  Clock_Down_ms(20000);
+
+  // 6.5: KEY ON
+  write("Step 6.5: KEY ON...");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] VIDEO 6: Kiem tra video bi DEN CUOI MAN HINH! ***");
+  write("*************************************************************");
+
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_State;SMK_TrmnlCtrlGrpStaBDC");
+
+  // 6.6: Re-enable CGWNM (already enabled above for KEY ON)
+  write("Step 6.6: CGWNM already re-enabled.");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+
+  step6_passed = 1;
+  testStepPass("Step6", "Video 6 - NM off test, manual check video den");
+  write("=== FINISH STEP 6 ===");
+}
+
+// ============================================================================
+// STEP 7: Log phai test man hinh live
+// ============================================================================
+testcase OWP_005A_Step7()
+{
+  write("");
+  write("=== STEP 7 ===");
+  testStep("Step7", "Test man hinh live");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL TEST] PHAI TEST MAN HINH LIVE tren thiet bi!  ***");
+  write("*** Hay kiem tra man hinh live hien thi dung khong.        ***");
+  write("*************************************************************");
+
+  step7_passed = 1;
+  testStepPass("Step7", "Manual live screen test required");
+  write("=== FINISH STEP 7 ===");
+}
+
+// ============================================================================
+// STEP 8: Enter BLTN_CAM, iterate FR_Ver_Pos 1~11, RR_Ver_Pos 1~11,
+//         capture FR/RR VerPos signals
+// ============================================================================
+testcase OWP_005A_Step8()
+{
+  int i;
+
+  write("");
+  write("=== STEP 8 ===");
+  testStep("Step8", "BLTN setting - FR/RR VerPos sweep -5 to +5");
+
+  // 8.1: Enter BLTN_CAM mode
+  write("Step 8.1: Entering BLTN_CAM mode...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  // 8.2: Sweep FR_Ver_Pos from 1 to 11 (= -5 to +5)
+  write("");
+  write("=== Sweeping TrackBar_FR_Ver_Pos: 1 -> 11 (-5 to +5) ===");
+  for (i = 1; i <= 11; i++)
+  {
+    write("  Setting TrackBar_FR_Ver_Pos = %d ...", i);
+    @sysvar::panel::TrackBar_FR_Ver_Pos = i;
+    testWaitForTimeout(3000);
+    write("  BLTN_CAM_Set_FR_Ver_Pos = 0x%X", $BLTN_CAM_Set_FR_Ver_Pos);
+  }
+
+  // 8.3: Capture FR screenshot
+  write("  Capturing FR VerPos signals...");
+  CaptureGraphics("BLTN_CAM_Set_FR_Ver_Pos;BLTN_CAM_Set_RR_Ver_Pos");
+
+  // 8.4: Sweep RR_Ver_Pos from 1 to 11 (= -5 to +5)
+  write("");
+  write("=== Sweeping TrackBar_RR_Ver_Pos: 1 -> 11 (-5 to +5) ===");
+  for (i = 1; i <= 11; i++)
+  {
+    write("  Setting TrackBar_RR_Ver_Pos = %d ...", i);
+    @sysvar::panel::TrackBar_RR_Ver_Pos = i;
+    testWaitForTimeout(3000);
+    write("  BLTN_CAM_Set_RR_Ver_Pos = 0x%X", $BLTN_CAM_Set_RR_Ver_Pos);
+  }
+
+  // 8.5: Capture RR screenshot
+  write("  Capturing RR VerPos signals...");
+  CaptureGraphics("BLTN_CAM_Set_FR_Ver_Pos;BLTN_CAM_Set_RR_Ver_Pos");
+
+  step8_passed = 1;
+  testStepPass("Step8", "FR/RR VerPos sweep -5 to +5 completed");
+  write("=== FINISH STEP 8 ===");
+}
+
+// ============================================================================
+// STEP 9: Exit BLTN_CAM, KEY OFF, Wait OWP ON, thao lap camera truoc,
+//         wait 20s, KEY ON, Capture OWP + BLTN_CAM_State, log video 7
+// ============================================================================
+testcase OWP_005A_Step9()
+{
+  write("");
+  write("=== STEP 9 ===");
+  testStep("Step9", "Exit BLTN, KEY OFF, OWP ON, thao lap camera, KEY ON, Capture + video 7");
+
+  // 9.1: Exit BLTN_CAM mode
+  write("Step 9.1: Exiting BLTN_CAM mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  // 9.2: KEY OFF
+  write("Step 9.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 9.3: Check OWP = ON within 60s
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    write(">>> [FAIL] OWP did not start. Aborting Step 9.");
+    testStepFail("Step9", "OWP did not start");
+    step9_passed = 0;
+    return;
+  }
+
+  // 9.4: Log thao lap lai camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO roi LAP LAI CAMERA TRUOC!  ***");
+  write("*************************************************************");
+  write("  Waiting 20 seconds...");
+  Clock_Down_ms(20000);
+
+  // 9.5: KEY ON
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 9.6: Capture screenshot OWP + camera validity
+  write("Step 9.5: Capturing BLTN_CAM_RecSta_OWP and BLTN_CAM_State...");
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_State      = 0x%X (0=Valid, 1=FR Invalid, 2=RR Invalid, 3=FR+RR Invalid)", $BLTN_CAM_State);
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_State;BLTN_CAM_RecSet_OWP");
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 7 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  step9_passed = 1;
+  testStepPass("Step9", "Video 7 - screenshot captured");
+  write("=== FINISH STEP 9 ===");
+}
+
+// ============================================================================
+// STEP 10: KEY OFF, Wait OWP ON, wait 30s, thao cam truoc, wait 25s,
+//          lap lai cam + tac dong PEV (Click_Evt_Switch), wait few sec,
+//          KEY ON, check video 8
+// ============================================================================
+testcase OWP_005A_Step10()
+{
+  write("");
+  write("=== STEP 10 ===");
+  testStep("Step10", "KEY OFF, OWP ON, wait 30s, thao cam, lap + PEV, KEY ON, video 8");
+
+  // 10.1: KEY OFF
+  write("Step 10.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 10.2: Wait for OWP ON
+  write("Step 10.2: Waiting for BLTN_CAM_RecSta_OWP = ON...");
+  if (WaitFor_OWP_ON_60s() == 0)
+  {
+    // Try extended wait
+    if (WaitFor_RecSta_OWP_Recording(30000) == 0)
+    {
+      write(">>> [FAIL] OWP did not start. Aborting Step 10.");
+      testStepFail("Step10", "OWP did not start");
+      step10_passed = 0;
+      return;
+    }
+  }
+
+  // 10.3: Wait 30s after OWP ON
+  write("  BLTN_CAM_RecSta_OWP = ON. Waiting 30 seconds...");
+  Clock_Down_ms(30000);
+
+  // 10.4: Log thao camera truoc
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay THAO CAMERA TRUOC ra!           ***");
+  write("*************************************************************");
+  write("  Waiting 25 seconds...");
+  Clock_Down_ms(25000);
+
+  // 10.5: Log lap lai cam + tac dong PEV luon
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] Hay LAP LAI CAMERA + TAC DONG PEV!  ***");
+  write("*************************************************************");
+  Click_Evt_Switch();
+
+  // 10.6: Wait a few seconds
+  testWaitForTimeout(5000);
+  Log_OWP_Signals();
+
+  // 10.7: KEY ON
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO 8 tren thiet bi!              ***");
+  write("*************************************************************");
+
+  CaptureGraphics("BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  step10_passed = 1;
+  testStepPass("Step10", "Video 8 - manual check required");
+  write("=== FINISH STEP 10 ===");
+}
+
+// ============================================================================
+// STEP 11: Log - repeat but use old image from video 8
+// ============================================================================
+testcase OWP_005A_Step11()
+{
+  write("");
+  write("=== STEP 11 ===");
+  testStep("Step11", "Repeat - use old image from video 8");
+
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] LAP LAI buoc 10 nhung LAY ANH CU cua VIDEO 8.  ***");
+  write("*** Khong can thuc hien lai, su dung ket qua video 8.     ***");
+  write("*************************************************************");
+
+  step11_passed = 1;
+  testStepPass("Step11", "Repeat with old image from video 8");
+  write("=== FINISH STEP 11 ===");
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+testcase OWP_005A_Summary()
+{
+  int all_passed;
+
+  write("");
+  write("========================================");
+  write("=== TEST SUMMARY OWP_005_A - 2.0 ===");
+  write("========================================");
+
+  all_passed = 1;
+
+  if (step1_passed == 1)
+    write("Step  1: KEY ON, USM/Rec Reset, KEY OFF, Thao/Lap FR, Event -> MAR+PEV, Video 1 => PASS");
+  else
+  { write("Step  1: KEY ON, USM/Rec Reset, KEY OFF, Thao/Lap FR, Event -> MAR+PEV, Video 1 => FAIL"); all_passed = 0; }
+
+  if (step2_passed == 1)
+    write("Step  2: KEY OFF, Thao/Lap RR, Event -> MAR+PEV, Video 2 => PASS");
+  else
+  { write("Step  2: KEY OFF, Thao/Lap RR, Event -> MAR+PEV, Video 2 => FAIL"); all_passed = 0; }
+
+  if (step3_passed == 1)
+    write("Step  3: KEY OFF, Thao/Lap FR+RR, Event -> MAR+PEV, Video 3 => PASS");
+  else
+  { write("Step  3: KEY OFF, Thao/Lap FR+RR, Event -> MAR+PEV, Video 3 => FAIL"); all_passed = 0; }
+
+  if (step4_passed == 1)
+    write("Step  4: KEY OFF, Thao/Lap FR, Video 4 => PASS");
+  else
+  { write("Step  4: KEY OFF, Thao/Lap FR, Video 4 => FAIL"); all_passed = 0; }
+
+  if (step5_passed == 1)
+    write("Step  5: KEY OFF, Thao/Lap FR, Screenshot OWP+State, Video 5 => PASS");
+  else
+  { write("Step  5: KEY OFF, Thao/Lap FR, Screenshot OWP+State, Video 5 => FAIL"); all_passed = 0; }
+
+  if (step6_passed == 1)
+    write("Step  6: KEY OFF, NM Off, Thao cam, KEY ON, Video 6 den, NM On => PASS");
+  else
+  { write("Step  6: KEY OFF, NM Off, Thao cam, KEY ON, Video 6 den, NM On => FAIL"); all_passed = 0; }
+
+  if (step7_passed == 1)
+    write("Step  7: Test man hinh live [Manual] => PASS");
+  else
+  { write("Step  7: Test man hinh live [Manual] => FAIL"); all_passed = 0; }
+
+  if (step8_passed == 1)
+    write("Step  8: BLTN FR/RR VerPos sweep -5 to +5 => PASS");
+  else
+  { write("Step  8: BLTN FR/RR VerPos sweep -5 to +5 => FAIL"); all_passed = 0; }
+
+  if (step9_passed == 1)
+    write("Step  9: Exit BLTN, KEY OFF, Thao/Lap FR, Screenshot, Video 7 => PASS");
+  else
+  { write("Step  9: Exit BLTN, KEY OFF, Thao/Lap FR, Screenshot, Video 7 => FAIL"); all_passed = 0; }
+
+  if (step10_passed == 1)
+    write("Step 10: KEY OFF, OWP ON, Thao FR, Lap+PEV, Video 8 => PASS");
+  else
+  { write("Step 10: KEY OFF, OWP ON, Thao FR, Lap+PEV, Video 8 => FAIL"); all_passed = 0; }
+
+  if (step11_passed == 1)
+    write("Step 11: Repeat with old image Video 8 => PASS");
+  else
+  { write("Step 11: Repeat with old image Video 8 => FAIL"); all_passed = 0; }
+
+  write("");
+
+  if (all_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWP_005_A - 2.0: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWP_005_A - 2.0: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  // Cleanup
+  @panel::Switch_CGWNM = 0;
+
+  testStep("Notifications", "Finish OWP_005_A - 2.0");
+  write("");
+  write("========================================");
+  write("=== FINISH OWP_005_A - 2.0 ===");
+  write("========================================");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_005_A - 2.0 generation_report");
+
+  OWP_005A_Init();
+
+  OWP_005A_Step1();
+  OWP_005A_Step2();
+  OWP_005A_Step3();
+  OWP_005A_Step4();
+  OWP_005A_Step5();
+  OWP_005A_Step6();
+  OWP_005A_Step7();
+  OWP_005A_Step8();
+  OWP_005A_Step9();
+  OWP_005A_Step10();
+  OWP_005A_Step11();
+
+  OWP_005A_Summary();
+}

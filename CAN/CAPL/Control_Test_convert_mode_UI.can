@@ -1,0 +1,197 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Module: Control_Test
+  Purpose: Test BLTN_CAM control functions without keyboard input
+  
+  Test Cases:
+    TC_01: Enter BLTN_CAM Mode
+    TC_02: Exit BLTN_CAM Mode
+    TC_03: Set NvalueSet High (0x2)
+    TC_04: Set NvalueSet Low (0x1)
+    TC_05: Full Sequence Test
+    TC_06: Mode Cycle Test
+*/
+
+includes
+{
+  
+}
+
+variables
+{ 
+    message HU_BLTN_CAM_E_00 _HU_BLTN_CAM_E_00;
+    message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+// Hàm Enter BLTN_CAM
+void Enter_BLTN_CAM(){
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
+    output(_HU_BLTN_CAM_PE_00_200ms);
+    write(">>> Enter BLTN_CAM mode - UI_Mode set to 0x1");
+}
+
+// Hàm Exit BLTN_CAM
+void Exit_BLTN_CAM(){
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0;
+    output(_HU_BLTN_CAM_PE_00_200ms);
+    write(">>> Exit BLTN_CAM mode - UI_Mode set to 0x0");
+}
+
+// Hàm Set NvalueSet = 0x2
+void Set_NvalueSet_High(){
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWD_NvalueSet = 0x2;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWP_NvalueSet = 0x2;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_DEV_NvalueSet = 0x2;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_PEV_NvalueSet = 0x2;
+    output(_HU_BLTN_CAM_E_00);
+    write(">>> Set all NvalueSet to 0x2");
+}
+
+// Hàm Set NvalueSet = 0x1
+void Set_NvalueSet_Low(){
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWD_NvalueSet = 0x1;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWP_NvalueSet = 0x1;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_DEV_NvalueSet = 0x1;
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_PEV_NvalueSet = 0x1;
+    output(_HU_BLTN_CAM_E_00);
+    write(">>> Set all NvalueSet to 0x1");
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+// Test 1: Enter BLTN_CAM Mode
+testcase TC_01_Enter_BLTN_CAM() 
+{
+    write("====================================");
+    write("TC_01: Enter BLTN_CAM Mode");
+    write("====================================");
+    
+    Enter_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("TC_01: PASSED\n");
+}
+
+// Test 2: Exit BLTN_CAM Mode
+testcase TC_02_Exit_BLTN_CAM() 
+{
+    write("====================================");
+    write("TC_02: Exit BLTN_CAM Mode");
+    write("====================================");
+    
+    Exit_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("TC_02: PASSED\n");
+}
+
+// Test 3: Set NvalueSet High (0x2)
+testcase TC_03_Set_NvalueSet_High() 
+{
+    write("====================================");
+    write("TC_03: Set NvalueSet High (0x2)");
+    write("====================================");
+    
+    Set_NvalueSet_High();
+    testWaitForTimeout(10000);
+    
+    write("TC_03: PASSED\n");
+}
+
+// Test 4: Set NvalueSet Low (0x1)
+testcase TC_04_Set_NvalueSet_Low() 
+{
+    write("====================================");
+    write("TC_04: Set NvalueSet Low (0x1)");
+    write("====================================");
+    
+    Set_NvalueSet_Low();
+    testWaitForTimeout(10000);
+    
+    write("TC_04: PASSED\n");
+}
+
+// Test 5: Full Sequence Test
+testcase TC_05_Full_Sequence() 
+{
+    write("====================================");
+    write("TC_05: Full Sequence Test");
+    write("====================================");
+    
+    write("Step 1: Enter BLTN_CAM Mode");
+    Enter_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("Step 2: Set NvalueSet High (0x2)");
+    Set_NvalueSet_High();
+    testWaitForTimeout(10000);
+    
+    write("Step 3: Set NvalueSet Low (0x1)");
+    Set_NvalueSet_Low();
+    testWaitForTimeout(10000);
+    
+    write("Step 4: Exit BLTN_CAM Mode");
+    Exit_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("====================================");
+    write("TC_05: PASSED - All steps completed");
+    write("====================================\n");
+}
+
+// Test 6: Cycle Test (Enter -> Exit -> Enter)
+testcase TC_06_Mode_Cycle() 
+{
+    write("====================================");
+    write("TC_06: Mode Cycle Test");
+    write("====================================");
+    
+    write("Cycle 1: Enter");
+    Enter_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("Cycle 1: Exit");
+    Exit_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("Cycle 2: Enter");
+    Enter_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("Cycle 2: Exit");
+    Exit_BLTN_CAM();
+    testWaitForTimeout(10000);
+    
+    write("====================================");
+    write("TC_06: PASSED - Mode cycling completed");
+    write("====================================\n");
+}
+
+// ============================================================================
+// Main Test Entry Point
+// ============================================================================
+void MainTest()
+{
+    write("========================================");
+    write("=== BLTN_CAM Control Test Suite ===");
+    write("========================================\n");
+    
+    // Chạy tất cả test cases
+    TC_01_Enter_BLTN_CAM();
+    TC_02_Exit_BLTN_CAM();
+    TC_03_Set_NvalueSet_High();
+    TC_04_Set_NvalueSet_Low();
+    TC_05_Full_Sequence();
+    TC_06_Mode_Cycle();
+    
+    write("\n========================================");
+    write("=== All Tests Completed ===");
+    write("========================================");
+}

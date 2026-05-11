@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=15.5.23.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=15.5.23.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="test">
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=15.5.23.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand1" ControlName="LED Band 1">
+      <Property Name="Name">LEDBand1</Property>
+      <Property Name="Size">300, 30</Property>
+      <Property Name="Location">155, 140</Property>
+      <Property Name="Color">Orange</Property>
+      <Property Name="LedBandLength">270</Property>
+      <Property Name="StartingPoint">15;15</Property>
+      <Property Name="SymbolConfiguration">
+      </Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">580, 270</Property>
+    <Property Name="BackColor">White</Property>
+  </Object>
+</Panel>

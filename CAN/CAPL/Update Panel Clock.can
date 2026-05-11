@@ -1,0 +1,16 @@
+/*@!Encoding:949*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message CAN2::HU_CLOCK_PE_02
+{ 
+  setClockControlTime("BLTN_CAM_Gen2_DrvInfo","Clock Control 1", $HU_CLOCK_PE_02::HU_DisplayHour,$HU_CLOCK_PE_02::HU_DisplayMinute,$HU_CLOCK_PE_02::HU_DisplaySecond);
+  setClockControlTime("BLTN_CAM_Setting","Clock Control 1", $HU_CLOCK_PE_02::HU_DisplayHour,$HU_CLOCK_PE_02::HU_DisplayMinute,$HU_CLOCK_PE_02::HU_DisplaySecond);
+}

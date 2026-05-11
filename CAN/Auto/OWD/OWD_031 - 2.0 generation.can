@@ -1,0 +1,525 @@
+/*@!Encoding:1252*/
+
+/*
+  Test Case: OWD_031
+  Title: [TML Recording + SMK OFF -> OWP Auto-Start Test]
+  Verification items:
+    - Step 1: SMK IGN + USM Reset + Rec Reset + AVN mode + TML Start
+              Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+              Set SMK OFF, wait 5s, Screenshot (include AIN)
+    - Step 2: After SMK OFF, wait 5s
+              Check BLTN_CAM_RecSet_OWP = 0x2 (ON) and BLTN_CAM_RecSta_OWP = 0x1 (ON)
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF)
+              Screenshot (include AIN)
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_10s = 10000;   // 10 seconds timeout
+
+  // Message declarations for CAN
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step2_passed = 0;
+
+  int flag_RecSet_error = 0;
+}
+
+// ============================================================================
+// Panel Control Helper Functions
+// ============================================================================
+
+// Set SMK to IGN (0x2) via panel combo box
+void Set_SMK_IGN()
+{
+  write("=== Setting SMK_Signal to IGN via panel ===");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);  // IGN
+  testWaitForTimeout(2000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (IGN)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+// Set SMK to OFF (0x0) via panel combo box
+void Set_SMK_OFF()
+{
+  write("=== Setting SMK_Signal to OFF via panel ===");
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);  // OFF
+  testWaitForTimeout(2000);
+  @panel::Switch_CGWNM = 0;
+  testWaitForTimeout(2000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (OFF)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+// Click USM Reset button on panel
+void Click_USM_Reset()
+{
+  write("=== Clicking USM Reset button on panel ===");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(2000);
+  write("  USM Reset clicked");
+}
+
+// Click Rec Reset button on panel
+void Click_Rec_Reset()
+{
+  write("=== Clicking Rec Reset button on panel ===");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(2000);
+  write("  Rec Reset clicked");
+}
+
+// Click TML Start button on panel Recording_Setting
+void Click_TML_Start()
+{
+  write("=== Clicking TML Start button on panel ===");
+  @panel::Button_Timelaps_Start = 0;
+  testWaitForTimeout(500);
+  @panel::Button_Timelaps_Start = 1;
+  testWaitForTimeout(2000);
+  write("  TML Start clicked");
+}
+
+// Enter Built-in Cam mode (HU_BLTN_CAM_UI_Mode = 0x1)
+void Enter_BLTN_CAM()
+{
+  int i;
+  write(">>> Enter BLTN_CAM mode <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+
+  for (i = 0; i < 10; i++) {
+    testWaitForTimeout(500);
+    if (getSignal(BLTN_CAM_HU_UI_Mode) == 0x1) {
+      write(">>> [OK] BLTN_CAM mode confirmed <<<");
+      return;
+    }
+  }
+  write(">>> [NG] Timeout: BLTN_CAM_HU_UI_Mode = 0x%X <<<",
+        getSignal(BLTN_CAM_HU_UI_Mode));
+}
+
+// Exit to AVN HU UI mode (HU_BLTN_CAM_UI_Mode = 0x0)
+void Exit_BLTN_CAM()
+{
+  int i;
+  write(">>> Exit to AVN mode <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+
+  for (i = 0; i < 10; i++) {
+    testWaitForTimeout(500);
+    if (getSignal(BLTN_CAM_HU_UI_Mode) == 0x0) {
+      write(">>> [OK] AVN mode confirmed <<<");
+      return;
+    }
+  }
+  write(">>> [NG] Timeout: BLTN_CAM_HU_UI_Mode = 0x%X <<<",
+        getSignal(BLTN_CAM_HU_UI_Mode));
+}
+
+// ============================================================================
+// Check Functions
+// ============================================================================
+
+// Wait for BLTN_CAM_RecSta_TML = 0x1 (ON) with timeout
+int WaitFor_RecSta_TML_ON(long timeout_ms)
+{
+  long elapsed = 0;
+  long check_interval = 1000;
+  byte rec_sta_tml = 0;
+  long log_interval;
+
+  write("=== Waiting for TML Recording ON (max %d seconds) ===", timeout_ms / 1000);
+  log_interval = (timeout_ms / 6 / check_interval) * check_interval; if(log_interval < check_interval) log_interval = check_interval;
+
+  while(elapsed < timeout_ms)
+  {
+    rec_sta_tml = $BLTN_CAM_RecSta_TML;
+    if(elapsed == 0 || elapsed % log_interval == 0)
+    {
+      write("  [%d s / %d s] BLTN_CAM_RecSta_TML = 0x%X",
+            elapsed / 1000, timeout_ms / 1000, rec_sta_tml);
+    }
+
+    if(rec_sta_tml == 0x1)
+    {
+      write(">>> DETECTED: TML Recording ON after %d seconds <<<", elapsed / 1000);
+      write(">>> PASS: BLTN_CAM_RecSta_TML = 0x1 (ON) <<<");
+      return 1;
+    }
+
+    testWaitForTimeout(check_interval);
+    elapsed += check_interval;
+  }
+
+  write(">>> TIMEOUT: TML Recording NOT ON after %d seconds <<<", timeout_ms / 1000);
+  write(">>> FAIL: BLTN_CAM_RecSta_TML is still 0x%X <<<", rec_sta_tml);
+  return 0;
+}
+
+// Check BLTN_CAM_RecSta_TML current value = 0x0 (OFF)
+int Check_RecSta_TML_OFF()
+{
+  byte rec_sta_tml = 0;
+
+  rec_sta_tml = $BLTN_CAM_RecSta_TML;
+  write("  BLTN_CAM_RecSta_TML = 0x%X", rec_sta_tml);
+
+  if(rec_sta_tml == 0x0)
+  {
+    write(">>> PASS: BLTN_CAM_RecSta_TML = 0x0 (OFF) <<<");
+    return 1;
+  }
+  else
+  {
+    write(">>> FAIL: BLTN_CAM_RecSta_TML is NOT OFF (value = 0x%X) <<<", rec_sta_tml);
+    return 0;
+  }
+}
+
+// Check BLTN_CAM_RecSet_OWP = 0x2 (ON)
+int Check_RecSet_OWP_ON()
+{
+  byte rec_set_owp = 0;
+
+  rec_set_owp = $BLTN_CAM_RecSet_OWP;
+  write("  BLTN_CAM_RecSet_OWP = 0x%X", rec_set_owp);
+
+  if(rec_set_owp == 0x2)
+  {
+    write(">>> PASS: BLTN_CAM_RecSet_OWP = 0x2 (ON) <<<");
+    return 1;
+  }
+  else
+  {
+    write(">>> FAIL: BLTN_CAM_RecSet_OWP is NOT ON (value = 0x%X) <<<", rec_set_owp);
+    return 0;
+  }
+}
+
+// Check BLTN_CAM_RecSta_OWP = 0x1 (ON)
+int Check_RecSta_OWP_ON()
+{
+  byte rec_sta_owp = 0;
+
+  rec_sta_owp = $BLTN_CAM_RecSta_OWP;
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", rec_sta_owp);
+
+  if(rec_sta_owp == 0x1)
+  {
+    write(">>> PASS: BLTN_CAM_RecSta_OWP = 0x1 (ON) <<<");
+    return 1;
+  }
+  else
+  {
+    write(">>> FAIL: BLTN_CAM_RecSta_OWP is NOT ON (value = 0x%X) <<<", rec_sta_owp);
+    return 0;
+  }
+}
+
+// Read AIN voltage from CANoe VN1600 hardware
+float Get_AIN_Voltage()
+{
+  float ain_value = 0.0;
+
+  // Read from VN1600_1 AIN channel
+  ain_value = @sysvar::IO::VN1600_1::AIN;
+
+  write("  AIN Voltage: %.2f V", ain_value);
+  return ain_value;
+}
+
+// ============================================================================
+// Rec Reset Function
+// ============================================================================
+void Rec_Reset()
+{
+  @panel::Switch_CGWNM = 1;
+
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);
+  testWaitForTimeout(2000);
+
+  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1)
+  {
+    @panel::Button_RecReset = 1;
+    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State, 500);
+  }
+
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);
+  testWaitForTimeout(2000);
+
+  @panel::Switch_CGWNM = 0;
+}
+
+// ============================================================================
+// Capture Screenshot Functions
+// ============================================================================
+
+// Capture screenshot with specified signal list
+void CaptureGraphics(char signalList[])
+{
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD", signalList, "Screenshot");
+  write(">>> Screenshot captured <<<");
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_031_Init()
+{
+  write("========================================");
+  write("=== START TEST OWD_031 ===");
+  write("=== TML Recording + SMK OFF ->      ===");
+  write("=== OWP Auto-Start Test             ===");
+  write("========================================");
+}
+
+testcase OWD_031_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK IGN, USM Reset, Rec Reset, AVN mode,
+  //         Click TML Start, Check BLTN_CAM_RecSta_TML = 0x1 (ON),
+  //         Set SMK OFF, wait 5s, Screenshot (include AIN)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Rec Reset + AVN mode      ===");
+  write("===         TML Start + Check RecSta_TML = 0x1 (ON)         ===");
+  write("===         SMK OFF + Wait 5s + Screenshot (include AIN)     ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Rec Reset + AVN + TML Start + TML ON + SMK OFF + Screenshot");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Ensure AVN mode (Exit BLTN_CAM if needed)
+  write("[1.4] Ensuring AVN mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 1.5 Click TML Start on panel
+  write("[1.5] Clicking TML Start on panel...");
+  Click_TML_Start();
+
+  // 1.6 Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  write("[1.6] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_ON(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    write(">>> Step 1: TML ON confirmed <<<");
+  }
+  else
+  {
+    write(">>> Step 1: WARNING - TML did NOT turn ON, continuing test... <<<");
+  }
+
+  // 1.7 Set SMK to OFF via panel combo box
+  write("[1.7] Setting SMK_Signal to OFF via panel...");
+  Set_SMK_OFF();
+
+  // 1.8 Wait 5 seconds for signal propagation
+  write("[1.8] Waiting 5 seconds after SMK OFF...");
+  testWaitForTimeout(5000);
+  write("  5 seconds elapsed after SMK OFF.");
+
+  // 1.9 Read AIN voltage
+  write("[1.9] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 1.10 Log current signal status
+  write("[1.10] Current signal status:");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.11 Capture screenshot (include AIN and related signals)
+  write("[1.11] Capturing screenshot...");
+  CaptureGraphics("BLTN_CAM_RecSta_TML;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "TML ON confirmed, SMK set to OFF, screenshot captured - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1", "TML did NOT turn ON after TML Start - FAIL");
+  }
+}
+
+testcase OWD_031_2()
+{
+  int result_owp_set = 0;
+  int result_owp_sta = 0;
+  int result_tml_off = 0;
+
+  //============================================================================
+  // STEP 2: SMK is OFF, wait 5s,
+  //         Check BLTN_CAM_RecSet_OWP = 0x2 (ON)
+  //         Check BLTN_CAM_RecSta_OWP = 0x1 (ON)
+  //         Check BLTN_CAM_RecSta_TML = 0x0 (OFF)
+  //         Screenshot (include AIN)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: SMK OFF -> Wait 5s                              ===");
+  write("===         Check RecSet_OWP = 0x2 (ON)                     ===");
+  write("===         Check RecSta_OWP = 0x1 (ON)                     ===");
+  write("===         Check RecSta_TML = 0x0 (OFF)                    ===");
+  write("===         Screenshot (include AIN)                         ===");
+  write("=================================================================");
+  testStep("Step2", "SMK OFF + Wait 5s + Check OWP ON + TML OFF + Screenshot");
+
+  // 2.1 Confirm SMK is still OFF
+  write("[2.1] Confirming SMK is OFF...");
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 2.2 Wait 5 seconds for signal stabilization
+  write("[2.2] Waiting 5 seconds for signal stabilization...");
+  testWaitForTimeout(5000);
+  write("  5 seconds elapsed.");
+
+  // 2.3 Check BLTN_CAM_RecSet_OWP = 0x2 (ON)
+  write("[2.3] Checking BLTN_CAM_RecSet_OWP = 0x2 (ON)...");
+  result_owp_set = Check_RecSet_OWP_ON();
+
+  // 2.4 Check BLTN_CAM_RecSta_OWP = 0x1 (ON)
+  write("[2.4] Checking BLTN_CAM_RecSta_OWP = 0x1 (ON)...");
+  result_owp_sta = Check_RecSta_OWP_ON();
+
+  // 2.5 Check BLTN_CAM_RecSta_TML = 0x0 (OFF)
+  write("[2.5] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF)...");
+  result_tml_off = Check_RecSta_TML_OFF();
+
+  // 2.6 Read AIN voltage
+  write("[2.6] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 2.7 Log full signal status
+  write("[2.7] Full signal status:");
+  write("  BLTN_CAM_RecSet_OWP = 0x%X (expected 0x2 ON)", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP = 0x%X (expected 0x1 ON)", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_RecSta_TML = 0x%X (expected 0x0 OFF)", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 2.8 Capture screenshot (include AIN and all related signals)
+  write("[2.8] Capturing screenshot...");
+  CaptureGraphics("BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // 2.9 Evaluate Step 2 result
+  if(result_owp_set == 1 && result_owp_sta == 1 && result_tml_off == 1)
+  {
+    step2_passed = 1;
+    write(">>> Step 2: PASS - OWP ON and TML OFF confirmed after SMK OFF <<<");
+    testStepPass("Step2", "RecSet_OWP=ON, RecSta_OWP=ON, RecSta_TML=OFF - All checks PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    write(">>> Step 2: FAIL - One or more checks failed <<<");
+    if(result_owp_set != 1)
+      write("  -> BLTN_CAM_RecSet_OWP != 0x2 (ON)");
+    if(result_owp_sta != 1)
+      write("  -> BLTN_CAM_RecSta_OWP != 0x1 (ON)");
+    if(result_tml_off != 1)
+      write("  -> BLTN_CAM_RecSta_TML != 0x0 (OFF)");
+    testStepFail("Step2", "OWP/TML check FAIL after SMK OFF - See log for details");
+  }
+}
+
+testcase OWD_031_Summary()
+{
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_passed == 1 && step2_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_031: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_031: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  //============================================================================
+  // TEST COMPLETE - Cleanup
+  //============================================================================
+  write("");
+  write("========================================");
+  write("=== TEST OWD_031 COMPLETE ===");
+  write("========================================");
+
+  // Cleanup: KEY OFF
+  write("=== Cleanup: KEY OFF ===");
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);  // KEY OFF
+  testWaitForTimeout(2000);
+  @panel::Switch_CGWNM = 0;
+
+  // Final status
+  write("");
+  write("=== FINAL STATUS ===");
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
+
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_passed == 1)
+    write("Step 1: SMK IGN + USM Reset + Rec Reset + TML Start + TML ON + SMK OFF + Wait 5s [Screenshot AIN] - PASS");
+  else
+    write("Step 1: SMK IGN + USM Reset + Rec Reset + TML Start + TML ON + SMK OFF + Wait 5s [Screenshot AIN] - FAIL");
+
+  if(step2_passed == 1)
+    write("Step 2: SMK OFF + Wait 5s + OWP ON + TML OFF [Screenshot AIN] - PASS");
+  else
+    write("Step 2: SMK OFF + Wait 5s + OWP ON + TML OFF [Screenshot AIN] - FAIL");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_031 - 2.0 generation_report");
+
+  //write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_031_Init();
+  OWD_031_1();
+  OWD_031_2();
+  OWD_031_Summary();
+}

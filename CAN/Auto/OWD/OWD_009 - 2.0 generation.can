@@ -1,0 +1,568 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Case: OWD_009
+  Title: [DEV Recording Default Settings after FRS Reset]
+  Verification items:
+    - Check BLTN_CAM_RecSet_DEV default value after Factory->Customer mode transition
+    - Check default recording setting by region after FRS reset
+    - Check BLTN_CAM_SenSet_DEV default value
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Step 1: Set SMK_Signal to IGN (0x2), Click USM Reset, change to Factory mode, wait 3s, change to Customer mode
+          -> Check BLTN_CAM_RecSet_DEV = 0x1 (OFF)
+          -> Capture screenshot
+
+  Step 2: Log message to ask user to enter Build-in Cam screen manually
+          -> Set BLTN_CAM_RecSet_DEV = 0x2 (ON)
+          -> Log message to ask user to perform FRS reset
+          -> Wait up to 60s with reset detection logic (monitor CF_AVN_BLTN_CAM_RecReset)
+          -> Check default value and determine region:
+             * Domestic/Japan/North America/Russia/Middle East: BLTN_CAM_RecSet_DEV = 0x2 (ON)
+             * Europe: BLTN_CAM_RecSet_DEV = 0x1 (OFF)
+          -> Capture screenshot
+
+  Step 3: Check BLTN_CAM_SenSet_DEV = 0x3 (LV.3)
+          -> Capture screenshot
+
+  NOTE: Uses 2s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time = 60000;  // 60 seconds max wait for reset detection
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+
+  // Message declarations
+  // CAN Message Declaration
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+// Set SMK to IGN (0x2) via panel
+void Set_SMK_IGN()
+{
+  write("=== Setting SMK_Signal to IGN (0x2) via panel ===");
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);  // IGN
+  testWaitForTimeout(3000);  // Wait 3s for signal propagation and system stabilization
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (IGN)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+void Click_USM_Reset()
+{
+  write("=== Clicking USM Reset button on panel ===");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(5000);
+  write("  USM Reset clicked");
+}
+
+// Click Rec Reset button on panel
+void Click_Rec_Reset()
+{
+  write("=== Clicking Rec Reset button on panel ===");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(2000);
+  write("  Rec Reset clicked");
+}
+
+// Set Factory Mode (0x0) via panel
+void Set_Factory_Mode()
+{
+  write("=== Setting Mode_State to Factory Mode (0x0) ===");
+  setSignal(ICU_PowerAutoCutModSta, 0x0);
+  testWaitForTimeout(3000);  // Wait 3s for mode transition
+  write("  ICU_PowerAutoCutModSta = 0x%X (Factory Mode)", $ICU_PowerAutoCutModSta);
+}
+
+// Set Customer Mode (0x2) via panel
+void Set_Customer_Mode()
+{
+  write("=== Setting Mode_State to Customer Mode (0x2) ===");
+  setSignal(ICU_PowerAutoCutModSta, 0x2);
+  testWaitForTimeout(3000);  // Wait 3s for mode transition
+  write("  ICU_PowerAutoCutModSta = 0x%X (Customer Mode)", $ICU_PowerAutoCutModSta);
+}
+
+// Set BLTN_CAM_RecSet_DEV to ON (0x2) via panel
+void Set_RecSet_DEV_ON()
+{
+  int retry = 0;
+  byte current_dev = 0;
+
+  write("=== Setting BLTN_CAM_RecSet_DEV to ON (0x2) via panel ===");
+
+  current_dev = $BLTN_CAM_RecSet_DEV;
+  write("  Current BLTN_CAM_RecSet_DEV = 0x%X", current_dev);
+
+  // If already ON (0x2), no need to toggle
+  if(current_dev == 0x2)
+  {
+    write("  Already ON (0x2), no action needed");
+    return;
+  }
+
+  // Use panel variable to toggle DEV setting (like in BLTN_CAM_Gen2.can)
+  // LED_Ctrl_SetDEV triggers the toggle logic
+  while($BLTN_CAM_RecSet_DEV != 0x2 && retry < 10)
+  {
+    @panel::LED_Ctrl_SetDEV = 1;
+    testWaitForTimeout(3000);  // Wait 3s for signal propagation and stabilization
+
+    current_dev = $BLTN_CAM_RecSet_DEV;
+    write("  Attempt %d: BLTN_CAM_RecSet_DEV = 0x%X", retry+1, current_dev);
+    retry++;
+  }
+
+  if($BLTN_CAM_RecSet_DEV == 0x2)
+  {
+    write(">>> SUCCESS: BLTN_CAM_RecSet_DEV = 0x2 (ON) <<<");
+  }
+  else
+  {
+    write(">>> FAILED: Could not set BLTN_CAM_RecSet_DEV to ON <<<");
+    write("    Current value: 0x%X", $BLTN_CAM_RecSet_DEV);
+  }
+}
+
+// Wait for FRS reset by monitoring CF_AVN_BLTN_CAM_RecReset signal
+int Wait_For_Reset(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte reset_signal = 0;
+  int reset_detected = 0;
+
+  write("Monitoring CF_AVN_BLTN_CAM_RecReset for reset detection...");
+  write("Waiting for value = 0x1 (Record Data Reset)");
+  write("(max %d seconds)", timeout_ms/1000);
+
+  log_interval = (timeout_ms / 6 / 100) * 100;
+  if(log_interval < 100) log_interval = 100;
+
+  // Monitor for reset signal
+  while(elapsed < timeout_ms)
+  {
+    reset_signal = $CF_AVN_BLTN_CAM_RecReset;
+
+    // Detect reset command (value = 1)
+    if(reset_signal == 0x1)
+    {
+      write(">>> Reset detected! CF_AVN_BLTN_CAM_RecReset = 0x1 <<<");
+      reset_detected = 1;
+      break;
+    }
+
+    // Log every ~timeout/6
+    if(elapsed == 0 || elapsed % log_interval == 0)
+    {
+      write("  [%d s / %d s] CF_AVN_BLTN_CAM_RecReset=0x%X | RecSet_DEV=0x%X",
+            elapsed/1000, timeout_ms/1000, reset_signal, $BLTN_CAM_RecSet_DEV);
+    }
+
+    // Check every 100ms for quick detection
+    testWaitForTimeout(100);
+    elapsed += 100;
+  }
+
+  if(!reset_detected)
+  {
+    write(">>> TIMEOUT: Reset not detected within %d seconds <<<", timeout_ms/1000);
+    return 0;
+  }
+
+  return 1;
+}
+
+// Wait for Built-in Cam mode
+int Wait_For_BLTN_CAM_Mode(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte ui_mode = 0;
+
+  write("Waiting for Built-in Cam mode... (max %d seconds)", timeout_ms/1000);
+
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+
+  while(elapsed < timeout_ms)
+  {
+    ui_mode = $BLTN_CAM_HU_UI_Mode;
+
+    if(ui_mode == 0x1)
+    {
+      write(">>> Now in Built-in Cam mode! <<<");
+      return 1;
+    }
+
+    if(elapsed == 0 || elapsed % log_interval == 0)
+    {
+      write("  [%d s] UI_Mode=0x%X (0=HU, 1=BLTN_CAM)", elapsed/1000, ui_mode);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  write(">>> TIMEOUT: Not in Built-in Cam mode <<<");
+  return 0;
+}
+
+// Check BLTN_CAM_RecSet_DEV value
+int Check_RecSet_DEV(byte expected_value)
+{
+  byte rec_set_dev = 0;
+
+  rec_set_dev = $BLTN_CAM_RecSet_DEV;
+  write("  BLTN_CAM_RecSet_DEV = 0x%X", rec_set_dev);
+
+  if(rec_set_dev == expected_value)
+  {
+    if(expected_value == 0x1)
+      write(">>> PASS: BLTN_CAM_RecSet_DEV = 0x1 (OFF) <<<");
+    else if(expected_value == 0x2)
+      write(">>> PASS: BLTN_CAM_RecSet_DEV = 0x2 (ON) <<<");
+    return 1;
+  }
+  else
+  {
+    write(">>> FAIL: BLTN_CAM_RecSet_DEV = 0x%X, expected 0x%X <<<", rec_set_dev, expected_value);
+    return 0;
+  }
+}
+
+// Check BLTN_CAM_SenSet_DEV value
+int Check_SenSet_DEV(byte expected_value)
+{
+  byte sen_set_dev = 0;
+
+  sen_set_dev = $BLTN_CAM_SenSet_DEV;
+  write("  BLTN_CAM_SenSet_DEV = 0x%X", sen_set_dev);
+
+  if(sen_set_dev == expected_value)
+  {
+    write(">>> PASS: BLTN_CAM_SenSet_DEV = 0x%X (LV.%d) <<<", expected_value, expected_value);
+    return 1;
+  }
+  else
+  {
+    write(">>> FAIL: BLTN_CAM_SenSet_DEV = 0x%X, expected 0x%X <<<", sen_set_dev, expected_value);
+    return 0;
+  }
+}
+
+// Capture screenshot
+void CaptureGraphics(char signalList[])
+{
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD", signalList, "Screenshot");
+  write(">>> Screenshot captured <<<");
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_009_Init()
+{
+  write("========================================");
+  write("=== START TEST OWD_009 ===");
+  write("========================================");
+
+  // Enable CGW NM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+}
+
+testcase OWD_009_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK IGN, Click USM Reset, Factory mode -> Customer mode, Check RecSet_DEV = 0x1 (OFF)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Factory -> Customer mode ===");
+  write("=== Check BLTN_CAM_RecSet_DEV = 0x1 (OFF) ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Mode transition + RecSet_DEV check");
+
+  // 1.0 Set SMK to IGN via panel
+  write("[1.0] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);  // Extra delay after SMK change
+
+  // 1.1 Click USM Reset button
+  write("[1.1] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);  // Extra delay after USM Reset
+
+  // 1.1b Click Rec Reset button
+  write("[1.1b] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.2 Set to Factory Mode (0x0)
+  write("[1.2] Setting to Factory Mode (0x0)...");
+  Set_Factory_Mode();
+  testWaitForTimeout(2000);  // Extra delay after mode change
+
+  // 1.3 Wait 3 seconds
+  write("[1.3] Waiting 3 seconds...");
+  testWaitForTimeout(3000);
+
+  // 1.4 Set to Customer Mode (0x2)
+  write("[1.4] Setting to Customer Mode (0x2)...");
+  Set_Customer_Mode();
+  testWaitForTimeout(2000);  // Extra delay after mode change
+
+  // 1.5 Check BLTN_CAM_RecSet_DEV = 0x1 (OFF)
+  write("[1.5] Checking BLTN_CAM_RecSet_DEV...");
+  testWaitForTimeout(3000);  // Wait 3s for signal propagation and stabilization
+  result = Check_RecSet_DEV(0x1);
+
+  // 1.6 Capture screenshot
+  write("[1.6] Capturing screenshot...");
+  CaptureGraphics("BLTN_CAM_RecSet_DEV;BLTN_CAM_SenSet_DEV;ICU_PowerAutoCutModSta;SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSet_DEV = 0x1 (OFF) after Factory->Customer mode - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1", "BLTN_CAM_RecSet_DEV check failed - FAIL");
+  }
+}
+
+testcase OWD_009_2()
+{
+  int result = 0;
+  byte final_RecSet_DEV = 0;
+
+  //============================================================================
+  // STEP 2: Enter Build-in Cam, Set DEV ON, FRS Reset, Check default value by region
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Set DEV ON + FRS Reset + Check default by region ===");
+  write("=================================================================");
+  testStep("Step2", "DEV ON + FRS Reset + Region check");
+
+  // 2.1 Log message - Ask user to enter Build-in Cam screen
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED ***");
+  write("*** Please manually enter Build-in Cam screen now! ***");
+  write("*** (Enter Settings - Build-in Cam on the real device) ***");
+  write("*************************************************************");
+  write("");
+
+  // Wait for user to enter Build-in Cam mode
+  write("[2.1] Waiting for user to enter Build-in Cam mode...");
+  if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+  {
+    write(">>> WARNING: Not in Build-in Cam mode, proceeding anyway <<<");
+  }
+  testWaitForTimeout(3000);  // Extra delay after entering Build-in Cam mode
+
+  // 2.2 Set BLTN_CAM_RecSet_DEV to ON (0x2)
+  write("[2.2] Setting BLTN_CAM_RecSet_DEV to ON (0x2)...");
+  Set_RecSet_DEV_ON();
+  testWaitForTimeout(3000);  // Extra delay after setting DEV
+
+  // Verify DEV is ON
+  if($BLTN_CAM_RecSet_DEV == 0x2)
+  {
+    write(">>> Confirmed: DEV is ON (0x2) <<<");
+  }
+  else
+  {
+    write(">>> WARNING: DEV may not be ON - current value: 0x%X <<<", $BLTN_CAM_RecSet_DEV);
+  }
+
+  // 2.3 Log message - Ask user to perform FRS reset
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED ***");
+  write("*** Please perform FRS reset now! ***");
+  write("*** Go to: [ccNC Settings] - [General] - [Reset] ***");
+  write("***        [Delete Guest Profile/Reset Entire System] ***");
+  write("*** Script will automatically detect reset within 60s ***");
+  write("*************************************************************");
+  write("");
+
+  // 2.4 Wait for reset detection (max 60 seconds)
+  write("[2.4] Waiting for FRS reset detection (max 60 seconds)...");
+  result = Wait_For_Reset(max_wait_time);
+
+  if(result == 1)
+  {
+    write(">>> Reset detected successfully! <<<");
+
+    // Wait for system to stabilize after reset
+    write("Waiting 15 seconds for system to stabilize after reset...");
+    testWaitForTimeout(15000);
+
+    // 2.5 Read final value and determine region
+    write("[2.5] Checking default value and determining region...");
+    testWaitForTimeout(3000);  // Extra delay before reading final value
+    final_RecSet_DEV = $BLTN_CAM_RecSet_DEV;
+
+    write("");
+    write("=== Region Detection Result ===");
+    write("BLTN_CAM_RecSet_DEV = 0x%X after FRS reset", final_RecSet_DEV);
+
+    if(final_RecSet_DEV == 0x2)
+    {
+      write("");
+      write("*************************************************************");
+      write("*** REGION: Domestic/Japan/North America/Russia/Middle East ***");
+      write("*** BLTN_CAM_RecSet_DEV = 0x2 (ON) ***");
+      write("*** The default recording setting is ON when initialized ***");
+      write("*** after FRS setup operation. ***");
+      write("*************************************************************");
+      write("");
+      step2_passed = 1;
+      testStepPass("Step2", "Region: Non-Europe - RecSet_DEV = 0x2 (ON) - PASS");
+    }
+    else if(final_RecSet_DEV == 0x1)
+    {
+      write("");
+      write("*************************************************************");
+      write("*** REGION: Europe ***");
+      write("*** BLTN_CAM_RecSet_DEV = 0x1 (OFF) ***");
+      write("*** The default recording setting is OFF when initialized ***");
+      write("*** after FRS setup operation. ***");
+      write("*************************************************************");
+      write("");
+      step2_passed = 1;
+      testStepPass("Step2", "Region: Europe - RecSet_DEV = 0x1 (OFF) - PASS");
+    }
+    else
+    {
+      write(">>> ERROR: Unexpected value RecSet_DEV = 0x%X <<<", final_RecSet_DEV);
+      step2_passed = 0;
+      testStepFail("Step2", "RecSet_DEV = 0x%X - Unexpected value - FAIL", final_RecSet_DEV);
+    }
+  }
+  else
+  {
+    write(">>> Reset not detected within timeout <<<");
+    step2_passed = 0;
+    testStepFail("Step2", "FRS reset not detected within 60 seconds - FAIL");
+  }
+
+  // 2.6 Capture screenshot
+  write("[2.6] Capturing screenshot...");
+  CaptureGraphics("BLTN_CAM_RecSet_DEV;CF_AVN_BLTN_CAM_RecReset;ICU_PowerAutoCutModSta;BLTN_CAM_HU_UI_Mode");
+}
+
+testcase OWD_009_3()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 3: Check BLTN_CAM_SenSet_DEV = 0x3 (LV.3)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: Check BLTN_CAM_SenSet_DEV = 0x3 (LV.3) ===");
+  write("=================================================================");
+  testStep("Step3", "SenSet_DEV = 0x3 (LV.3) check");
+
+  // 3.1 Check BLTN_CAM_SenSet_DEV = 0x3
+  write("[3.1] Checking BLTN_CAM_SenSet_DEV...");
+  testWaitForTimeout(3000);  // Wait 3s for signal propagation and stabilization
+  result = Check_SenSet_DEV(0x3);
+
+  // 3.2 Capture screenshot
+  write("[3.2] Capturing screenshot...");
+  CaptureGraphics("BLTN_CAM_SenSet_DEV;BLTN_CAM_RecSet_DEV;ICU_PowerAutoCutModSta;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "BLTN_CAM_SenSet_DEV = 0x3 (LV.3) - PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    testStepFail("Step3", "BLTN_CAM_SenSet_DEV check failed - FAIL");
+  }
+}
+
+testcase OWD_009_Summary()
+{
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_009: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_009: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  //============================================================================
+  // TEST COMPLETE
+  //============================================================================
+  write("");
+  write("========================================");
+  write("=== TEST OWD_009 COMPLETE ===");
+  write("========================================");
+
+  // Cleanup - disable CGW NM
+  @panel::Switch_CGWNM = 0;
+
+  write("");
+  write("=== FINAL STATUS ===");
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("  ICU_PowerAutoCutModSta = 0x%X", $ICU_PowerAutoCutModSta);
+  write("  BLTN_CAM_RecSet_DEV = 0x%X", $BLTN_CAM_RecSet_DEV);
+  write("  BLTN_CAM_SenSet_DEV = 0x%X", $BLTN_CAM_SenSet_DEV);
+  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
+
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_passed == 1)
+    write("Step 1: SMK IGN + USM Reset + Factory->Customer mode + RecSet_DEV = 0x1 (OFF) [Screenshot] => PASS");
+  else
+    write("Step 1: SMK IGN + USM Reset + Factory->Customer mode + RecSet_DEV = 0x1 (OFF) [Screenshot] => FAIL");
+
+  if(step2_passed == 1)
+    write("Step 2: DEV ON + FRS Reset + Region detection [Screenshot] => PASS");
+  else
+    write("Step 2: DEV ON + FRS Reset + Region detection [Screenshot] => FAIL");
+
+  if(step3_passed == 1)
+    write("Step 3: SenSet_DEV = 0x3 (LV.3) [Screenshot] => PASS");
+  else
+    write("Step 3: SenSet_DEV = 0x3 (LV.3) [Screenshot] => FAIL");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_009 - 2.0 generation_report");
+  OWD_009_Init();
+  OWD_009_1();
+  OWD_009_2();
+  OWD_009_3();
+  OWD_009_Summary();
+}

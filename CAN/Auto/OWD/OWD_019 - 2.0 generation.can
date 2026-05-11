@@ -1,0 +1,512 @@
+/*@!Encoding:1252*/
+
+/*
+  Test Case: OWD_019
+  Title: [MAR Recording Test - IGN Mode + 3x Event Switch in AVN Mode with 12s intervals]
+  Verification items:
+    - Set IGN mode, USM Reset, Rec Reset
+    - Go to AVN screen, wait 11s
+    - Click Evt Switch 3 times (12s intervals), each time verify BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+    - Screenshot after 3rd Evt Switch cycle
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test Steps:
+    Step 1: Set SMK to IGN, USM Reset, Rec Reset, go to AVN,
+            wait 11s, click Evt Switch, check MAR = 0x1,
+            wait 12s, click Evt Switch, check MAR = 0x1,
+            wait 12s, click Evt Switch, check MAR = 0x1,
+            wait 12s - Screenshot
+    Step 2-5: Log - check video (manual)
+
+  NOTE: Uses 2s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_10s = 10000;   // 10 seconds for MAR recording detection
+
+  // Message declarations for CAN
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+
+  // Result tracking variables
+  int step1_evt1_passed = 0;
+  int step1_evt2_passed = 0;
+  int step1_evt3_passed = 0;
+
+  int flag_RecSet_error = 0;
+}
+
+// ============================================================================
+// Panel Control Helper Functions
+// ============================================================================
+
+// Set SMK to IGN (0x2) via panel combo box
+void Set_SMK_IGN()
+{
+  write("=== Setting SMK_Signal to IGN via panel ===");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);  // IGN
+  testWaitForTimeout(2000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (IGN)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+// Click USM Reset button on panel
+void Click_USM_Reset()
+{
+  write("=== Clicking USM Reset button on panel ===");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(2000);
+  write("  USM Reset clicked");
+}
+
+// Click Rec Reset button on panel
+void Click_Rec_Reset()
+{
+  write("=== Clicking Rec Reset button on panel ===");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(2000);
+  write("  Rec Reset clicked");
+}
+
+// Click Evt Switch button on panel (toggle off then on)
+void Click_Evt_Switch()
+{
+  _HU_BLTN_CAM_E_01.MEV_Rec_Req = 0x0;
+  output(_HU_BLTN_CAM_E_01);
+   testWaitForTimeout(500);
+  write("=== Sending MEV_Rec_Req = 0x1 directly ===");
+  _HU_BLTN_CAM_E_01.MEV_Rec_Req = 0x1;
+  output(_HU_BLTN_CAM_E_01);
+  write("  MEV_Rec_Req sent");
+}
+
+// Exit to AVN HU UI mode (HU_BLTN_CAM_UI_Mode = 0x0)
+void Exit_BLTN_CAM()
+{
+  write(">>> Exit BLTN_CAM mode - Return to AVN <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+  testWaitForTimeout(2000);
+}
+
+// Enter Built-in Cam mode (HU_BLTN_CAM_UI_Mode = 0x1)
+void Enter_BLTN_CAM()
+{
+  int i;
+  write(">>> Enter BLTN_CAM mode <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+
+  for (i = 0; i < 10; i++) {
+    testWaitForTimeout(500);
+    if (getSignal(BLTN_CAM_HU_UI_Mode) == 0x1) {
+      write(">>> [OK] BLTN_CAM mode confirmed <<<");
+      return;
+    }
+  }
+  write(">>> [NG] Timeout: BLTN_CAM_HU_UI_Mode = 0x%X <<<",
+        getSignal(BLTN_CAM_HU_UI_Mode));
+}
+
+// ============================================================================
+// Check Functions
+// ============================================================================
+
+// Wait for BLTN_CAM_RecSta_MAR = 0x1 (Recording) with timeout
+int WaitFor_RecSta_MAR_Recording(long timeout_ms)
+{
+  long elapsed = 0;
+  long check_interval = 1000;  // Check every 1 second
+  byte rec_sta_mar = 0;
+  long log_interval;
+
+  write("=== Waiting for MAR Recording (max %d seconds) ===", timeout_ms / 1000);
+  write("Checking every %d second...", check_interval / 1000);
+
+  log_interval = (timeout_ms / 6 / check_interval) * check_interval;
+  if(log_interval < check_interval) log_interval = check_interval;
+
+  while(elapsed < timeout_ms)
+  {
+    rec_sta_mar = $BLTN_CAM_RecSta_MAR;
+
+    if(elapsed == 0 || elapsed % log_interval == 0)
+    {
+      write("  [%d s / %d s] BLTN_CAM_RecSta_MAR = 0x%X",
+            elapsed / 1000, timeout_ms / 1000, rec_sta_mar);
+    }
+
+    if(rec_sta_mar == 0x1)
+    {
+      write(">>> DETECTED: MAR Recording started after %d seconds <<<", elapsed / 1000);
+      write(">>> PASS: BLTN_CAM_RecSta_MAR = 0x1 (Recording) <<<");
+      return 1;
+    }
+
+    testWaitForTimeout(check_interval);
+    elapsed += check_interval;
+  }
+
+  // Timeout - MAR recording not detected
+  write(">>> TIMEOUT: MAR Recording NOT detected after %d seconds <<<", timeout_ms / 1000);
+  write(">>> FAIL: BLTN_CAM_RecSta_MAR is still 0x%X <<<", rec_sta_mar);
+  return 0;
+}
+
+// ============================================================================
+// Rec Reset Function
+// ============================================================================
+void Rec_Reset()
+{
+  @panel::Switch_CGWNM = 1;
+
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);
+  testWaitForTimeout(2000);
+
+  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1)
+  {
+    @panel::Button_RecReset = 1;
+    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State, 500);
+  }
+
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);
+  testWaitForTimeout(2000);
+
+  @panel::Switch_CGWNM = 0;
+}
+
+// ============================================================================
+// Capture Screenshot Functions
+// ============================================================================
+
+// Capture screenshot with specified signal list
+void CaptureGraphics(char signalList[])
+{
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD", signalList, "Screenshot");
+  write(">>> Screenshot captured <<<");
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_019_Init()
+{
+  write("========================================");
+  write("=== START TEST OWD_019 ===");
+  write("=== MAR Recording Test - IGN Mode   ===");
+  write("=== 3x Evt Switch + 12s intervals   ===");
+  write("========================================");
+}
+
+testcase OWD_019_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK to IGN, USM Reset, Rec Reset, go to AVN,
+  //         wait 11s, then click Evt Switch 3 times (12s intervals)
+  //         each time check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: IGN + USM Reset + Rec Reset + AVN mode            ===");
+  write("===         3x Evt Switch (12s intervals) + MAR Recording     ===");
+  write("=================================================================");
+  testStep("Step1", "IGN + USM Reset + Rec Reset + AVN + 3x Evt Switch MAR Recording");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Go to AVN screen (ensure AVN mode)
+  write("[1.4] Ensuring AVN HU UI mode (home screen)...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 1.5 Wait 11 seconds
+  write("[1.5] Waiting 11 seconds...");
+  testWaitForTimeout(11000);
+  write("  11 seconds elapsed");
+
+  // ---- 1st Evt Switch ----
+  write("");
+  write("--- 1st Evt Switch ---");
+  write("[1.6] Clicking Evt Switch button (1st time)...");
+  Click_Evt_Switch();
+
+  // Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  write("[1.7] Checking BLTN_CAM_RecSta_MAR = 0x1 (Recording) after 1st Evt Switch...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step1_evt1_passed = 1;
+    write(">>> 1st Evt Switch: PASS - MAR Recording = 0x1 <<<");
+  }
+  else
+  {
+    step1_evt1_passed = 0;
+    write(">>> 1st Evt Switch: FAIL - MAR Recording NOT detected <<<");
+  }
+
+  // Capture screenshot after 1st Evt Switch
+  write("[1.8] Capturing screenshot after 1st Evt Switch...");
+  CaptureGraphics("BLTN_CAM_RecSta_MAR;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // Wait 12 seconds
+  write("[1.9] Waiting 12 seconds...");
+  testWaitForTimeout(12000);
+  write("  12 seconds elapsed");
+
+  // ---- 2nd Evt Switch ----
+  write("");
+  write("--- 2nd Evt Switch ---");
+  write("[1.10] Clicking Evt Switch button (2nd time)...");
+  Click_Evt_Switch();
+
+  // Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  write("[1.11] Checking BLTN_CAM_RecSta_MAR = 0x1 (Recording) after 2nd Evt Switch...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step1_evt2_passed = 1;
+    write(">>> 2nd Evt Switch: PASS - MAR Recording = 0x1 <<<");
+  }
+  else
+  {
+    step1_evt2_passed = 0;
+    write(">>> 2nd Evt Switch: FAIL - MAR Recording NOT detected <<<");
+  }
+
+  // Capture screenshot after 2nd Evt Switch
+  write("[1.12] Capturing screenshot after 2nd Evt Switch...");
+  CaptureGraphics("BLTN_CAM_RecSta_MAR;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // Wait 12 seconds
+  write("[1.13] Waiting 12 seconds...");
+  testWaitForTimeout(12000);
+  write("  12 seconds elapsed");
+
+  // ---- 3rd Evt Switch ----
+  write("");
+  write("--- 3rd Evt Switch ---");
+  write("[1.14] Clicking Evt Switch button (3rd time)...");
+  Click_Evt_Switch();
+
+  // Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  write("[1.15] Checking BLTN_CAM_RecSta_MAR = 0x1 (Recording) after 3rd Evt Switch...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step1_evt3_passed = 1;
+    write(">>> 3rd Evt Switch: PASS - MAR Recording = 0x1 <<<");
+  }
+  else
+  {
+    step1_evt3_passed = 0;
+    write(">>> 3rd Evt Switch: FAIL - MAR Recording NOT detected <<<");
+  }
+
+  // Wait 12 seconds
+  write("[1.16] Waiting 12 seconds...");
+  testWaitForTimeout(12000);
+  write("  12 seconds elapsed");
+
+  // Capture screenshot after 3rd Evt Switch + 12s wait
+  write("[1.17] Capturing screenshot after 3rd Evt Switch + 12s wait...");
+  CaptureGraphics("BLTN_CAM_RecSta_MAR;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // Step 1 overall result
+  if(step1_evt1_passed == 1 && step1_evt2_passed == 1 && step1_evt3_passed == 1)
+  {
+    testStepPass("Step1", "All 3 Evt Switch clicks -> MAR Recording = 0x1 - PASS");
+  }
+  else
+  {
+    testStepFail("Step1", "One or more Evt Switch clicks did NOT trigger MAR Recording - FAIL");
+  }
+}
+
+testcase OWD_019_2()
+{
+  //============================================================================
+  // STEP 2: Log - Check Video (Manual)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Check Video (Manual)                              ===");
+  write("=================================================================");
+  testStep("Step2", "Check video - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 2: LOG INFORMATION ***");
+  write("*** Please check the recorded video directly ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include video check result in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step2", "Check video logged - Manual verification required");
+}
+
+testcase OWD_019_3()
+{
+  //============================================================================
+  // STEP 3: Log - Check Video (Manual)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: Check Video (Manual)                              ===");
+  write("=================================================================");
+  testStep("Step3", "Check video - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 3: LOG INFORMATION ***");
+  write("*** Please check the recorded video directly ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include video check result in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step3", "Check video logged - Manual verification required");
+}
+
+testcase OWD_019_4()
+{
+  //============================================================================
+  // STEP 4: Log - Check Video (Manual)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Check Video (Manual)                              ===");
+  write("=================================================================");
+  testStep("Step4", "Check video - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 4: LOG INFORMATION ***");
+  write("*** Please check the recorded video directly ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include video check result in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step4", "Check video logged - Manual verification required");
+}
+
+testcase OWD_019_5()
+{
+  //============================================================================
+  // STEP 5: Log - Check Video (Manual)
+  //============================================================================
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Check Video (Manual)                              ===");
+  write("=================================================================");
+  testStep("Step5", "Check video - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 5: LOG INFORMATION ***");
+  write("*** Please check the recorded video directly ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include video check result in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step5", "Check video logged - Manual verification required");
+}
+
+testcase OWD_019_Summary()
+{
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_evt1_passed == 1 && step1_evt2_passed == 1 && step1_evt3_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_019: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_019: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  //============================================================================
+  // TEST COMPLETE - Cleanup
+  //============================================================================
+  write("");
+  write("========================================");
+  write("=== TEST OWD_019 COMPLETE ===");
+  write("========================================");
+
+  // Cleanup
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);  // KEY OFF
+  testWaitForTimeout(2000);
+  @panel::Switch_CGWNM = 0;
+
+  // Final status
+  write("");
+  write("=== FINAL STATUS ===");
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
+
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_evt1_passed == 1)
+    write("Step 1 - 1st Evt Switch: MAR Recording = 0x1 - PASS");
+  else
+    write("Step 1 - 1st Evt Switch: MAR Recording = 0x1 - FAIL");
+  if(step1_evt2_passed == 1)
+    write("Step 1 - 2nd Evt Switch: MAR Recording = 0x1 - PASS");
+  else
+    write("Step 1 - 2nd Evt Switch: MAR Recording = 0x1 - FAIL");
+  if(step1_evt3_passed == 1)
+    write("Step 1 - 3rd Evt Switch: MAR Recording = 0x1 [Screenshot] - PASS");
+  else
+    write("Step 1 - 3rd Evt Switch: MAR Recording = 0x1 [Screenshot] - FAIL");
+  write("Step 2: Check video [Manual] - PASS");
+  write("Step 3: Check video [Manual] - PASS");
+  write("Step 4: Check video [Manual] - PASS");
+  write("Step 5: Check video [Manual] - PASS");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_019 - 2.0 generation_report");
+
+  //write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_019_Init();
+  OWD_019_1();
+  OWD_019_2();
+  OWD_019_3();
+  OWD_019_4();
+  OWD_019_5();
+  OWD_019_Summary();
+}

@@ -1,0 +1,104 @@
+/*@!Encoding:949*/
+variables
+{
+  long DelayTestTime = 1*3600*1000; //1시간 - 1 hour.
+  int DelayTime_5s = 5 * 1000; // 5s
+  int DelayTime_3s = 3 * 1000; //3s
+  int DelayTime_1s = 1 * 1000; //3s
+  long judgeTime = 1 * 1000; // 판단 대기시간(초) - Decision waiting time (seconds).
+
+  
+  int isRecStaON = 1;
+  int isRecStaOFF = 0;
+  
+  int MeasuredOperableTime;
+  int MeasuredOWPSta;
+  int BatterySet_SOC;
+  
+  int SoC_Battery_99 = 99; // Start with State of Charge is 100%
+  int RemainingOWPTime = 20; //Remaining parking recording time
+  int Oprable_Time_Expect = 0x14; //Start with 20Hr
+  
+  char titleString[200]; //Test Case Title
+  char resultString[200]; //Test Case Result
+  
+  int arr_SoC_input[21]= {99,96,90,86,81,76,71,65,60,57,51,47,42,38,31,27,22,16,13,6,2};
+  int arr_SoC_input_1[20] = {6,13,16,22,27,31,38,42,47,51,57,60,65,71,76,81,86,90,96,99};
+}
+
+void MainTest()
+{
+  int i = 0;
+  testWaitForTimeout(DelayTime_3s);
+  InitSignal();
+  testWaitForTimeout(DelayTime_3s);
+
+  TestCase_Prk_OperableTime();
+  testWaitForTimeout(DelayTime_3s);
+ 
+}
+void InitSignal()
+{
+  @panel::Switch_CGWNM = 1; //CAN Netwrok Wake up(CGW_NM 신호 입력 스위치 ON - CGW_NM signal input switch ON)
+  setSignal(BAT_SOC_for_BLTN_CAM, SoC_Battery_99);//Set begin State of Charge is 100
+}
+testCase TestCase_Prk_OperableTime()
+{
+  int i = 0;
+  for(i = 0; i<21;i++)
+  {
+    snprintf(titleString, elcount(titleString), "%d Time passed", i); // %d hours elapsed.
+    testCaseTitle("",titleString);
+    
+    testWaitForTimeout(judgeTime);
+    
+    // Set BAT_SOC_for_BLTN_CAM value
+    setSignal(BAT_SOC_for_BLTN_CAM, arr_SoC_input[i]);
+    testWaitForTimeout(DelayTime_3s);
+    
+    //Get Park Operable Time 
+    MeasuredOperableTime = $CAN2::BLTN_CAM::BLTN_CAM_STAT_PE_00_200ms::BLTN_CAM_Prk_Oprable_Time;
+    testWaitForTimeout(DelayTime_3s);
+    
+    if(MeasuredOperableTime == Oprable_Time_Expect)
+    {
+      //testStepPass("상세결과",  "기대값: %d시간, 측정값: %d시간", remainingOWPTime, MeasuredOperableTime);
+      testStepPass("Detailed results", "Expected: %d hours, Measured: %d hours", Oprable_Time_Expect, MeasuredOperableTime);
+      Oprable_Time_Expect--;
+    }
+    else
+    {
+      //testStepFail("상세결과",  "기대값: %d시간, 측정값: %d시간", remainingOWPTime, MeasuredOperableTime);
+      testStepFail("Detailed results", "Expected: %d hours, Measured: %d hours", Oprable_Time_Expect, MeasuredOperableTime);
+    }
+  
+  }
+  //Case SoC = 0xFF
+  snprintf(titleString, elcount(titleString), "%d Time passed", 21); // %d hours elapsed.
+  testCaseTitle("",titleString);
+  
+  testWaitForTimeout(judgeTime);
+  
+  // Set BAT_SOC_for_BLTN_CAM value
+  setSignal(BAT_SOC_for_BLTN_CAM, 0xFF);
+  testWaitForTimeout(DelayTime_3s);
+  
+  //Get Park Operable Time 
+  MeasuredOperableTime = $CAN2::BLTN_CAM::BLTN_CAM_STAT_PE_00_200ms::BLTN_CAM_Prk_Oprable_Time;
+  testWaitForTimeout(DelayTime_3s);
+  
+  if(MeasuredOperableTime == 0)
+  {
+    testStepPass("Detailed results", "Expected: 0 hour, Measured: %d hours", MeasuredOperableTime);
+  }
+  else
+  {
+    testStepFail("Detailed results", "Expected: 0 hour, Measured: %d hours", MeasuredOperableTime);
+  }
+   // Capture Grapic
+   testWaitForTimeout(DelayTime_3s);
+   testReportAddWindowCapture("Graphics 2","BAT_SOC_for_BLTN_CAM;BLTN_CAM_Prk_Oprable_Time","Sreenshot","./Husign.jpg");
+   testWaitForTimeout(DelayTime_3s);
+}
+
+

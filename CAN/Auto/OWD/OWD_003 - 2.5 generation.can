@@ -1,0 +1,652 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Case: OWD_003
+  Title: [Continuous recording while driving] - (3)
+  Verification items: Check OWD recording behavior with timing and AIN voltage
+  
+  Preconditions: 
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+    
+  Step 1: Enter Built-in Cam mode, ensure OWD is ON, exit to AVN, wait 3 minutes, 
+          re-enter Built-in Cam mode, capture screenshot (verify 3-min video in store)
+  Step 2-5: Log verification for video creation
+  Step 6: Enter Built-in Cam mode, exit to AVN, wait 5 minutes, verify OWD not OFF
+  Step 7: Enter Built-in Cam mode, turn OFF OWD via panel, verify OFF
+  Step 8: Exit to AVN (wait 2s), verify RecSta_OWD = OFF
+  Step 9: Check AIN voltage below 4V
+  
+  NOTE: Script requires manual actions for UI mode switching.
+        Uses panel to control OWD settings.
+*/
+
+variables
+{
+  long max_wait_time = 180000; // 180 seconds = 3 minutes max wait
+  float ain_threshold = 4.0;   // 4V threshold for AIN check
+
+  // Result tracking variables for TEST SUMMARY
+  int step1_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+// Read AIN voltage from CANoe VN1600 hardware
+float Get_AIN_Voltage()
+{
+  float ain_value = 0.0;
+  
+  // Read from VN1600_1 AIN channel
+  ain_value = @sysvar::IO::VN1600_1::AIN;
+  
+  write("  AIN Voltage: %.2f V", ain_value);
+  return ain_value;
+}
+
+// Wait for Built-in Cam mode - monitoring signal only (manual action required)
+int Wait_For_BLTN_CAM_Mode(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte ui_mode = 0;
+  
+  write("Waiting for Built-in Cam mode... (max %d seconds)", timeout_ms/1000);
+  write("*** ACTION REQUIRED: Please enter Built-in Cam mode ***");
+  
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+  
+  while(elapsed < timeout_ms)
+  {
+    ui_mode = $BLTN_CAM_HU_UI_Mode;  // Read from bus
+    
+    if(ui_mode == 0x1) // Built-in Cam mode
+    {
+      write(">>> Now in Built-in Cam mode! <<<");
+      return 1;
+    }
+    
+    if(elapsed == 0 || elapsed % log_interval == 0) // Log every ~timeout/6
+    {
+      write("  [%d s] UI_Mode=0x%X (0=HU, 1=BLTN_CAM)", elapsed/1000, ui_mode);
+    }
+    
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+  
+  write(">>> Timeout! Still not in Built-in Cam mode <<<");
+  return 0;
+}
+
+// Wait for AVN Home mode - monitoring signal only (manual action required)
+int Wait_For_AVN_Home(long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  byte hu_ui_mode = 0;
+  
+  write("Waiting for AVN Home mode... (max %d seconds)", timeout_ms/1000);
+  write("*** ACTION REQUIRED: Please return to AVN home screen ***");
+  
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+  
+  while(elapsed < timeout_ms)
+  {
+    hu_ui_mode = $HU_BLTN_CAM_UI_Mode;  // Read from bus
+    
+    if(hu_ui_mode == 0x0) // AVN Home mode
+    {
+      write(">>> Now in AVN Home mode! <<<");
+      return 1;
+    }
+    
+    if(elapsed == 0 || elapsed % log_interval == 0) // Log every ~timeout/6
+    {
+      write("  [%d s] HU_UI_Mode=0x%X (0=AVN, 1=BLTN_CAM)", elapsed/1000, hu_ui_mode);
+    }
+    
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+  
+  write(">>> Timeout! Still not in AVN Home mode <<<");
+  return 0;
+}
+
+// Turn ON OWD via panel
+void Turn_ON_OWD()
+{
+  int retry = 0;
+  byte ui_mode = 0;
+  
+  write("=== Turn ON OWD via panel ===");
+  
+  // MUST be in Built-in Cam mode to set OWD
+  ui_mode = $BLTN_CAM_HU_UI_Mode;
+  write("Current BLTN_CAM_HU_UI_Mode: 0x%X", ui_mode);
+  
+  if(ui_mode != 0x1)
+  {
+    write("*** WARNING: Not in Built-in Cam mode. OWD control may not work ***");
+  }
+  
+  write("Setting OWD to ON...");
+  
+  while($BLTN_CAM_RecSet_OWD != 0x2 && retry < 10)
+  {
+    @panel::LED_Ctrl_SetOWD = 1;
+    testWaitForTimeout(2000);
+    
+    write("  Attempt %d: RecSet_OWD=0x%X", retry+1, $BLTN_CAM_RecSet_OWD);
+    retry++;
+  }
+  
+  if($BLTN_CAM_RecSet_OWD == 0x2)
+    write(">>> SUCCESS: OWD = ON (0x2) <<<");
+  else
+    write(">>> FAILED: Could not set OWD to ON <<<");
+}
+
+// Turn OFF OWD via panel
+void Turn_OFF_OWD()
+{
+  int retry = 0;
+  byte ui_mode = 0;
+  
+  write("=== Turn OFF OWD via panel ===");
+  
+  // MUST be in Built-in Cam mode to set OWD
+  ui_mode = $BLTN_CAM_HU_UI_Mode;
+  write("Current BLTN_CAM_HU_UI_Mode: 0x%X", ui_mode);
+  
+  if(ui_mode != 0x1)
+  {
+    write("*** WARNING: Not in Built-in Cam mode. OWD control may not work ***");
+  }
+  
+  write("Setting OWD to OFF...");
+  
+  while($BLTN_CAM_RecSet_OWD != 0x1 && retry < 10)
+  {
+    @panel::LED_Ctrl_SetOWD = 0;
+    testWaitForTimeout(2000);
+    
+    write("  Attempt %d: RecSet_OWD=0x%X", retry+1, $BLTN_CAM_RecSet_OWD);
+    retry++;
+  }
+  
+  if($BLTN_CAM_RecSet_OWD == 0x1)
+    write(">>> SUCCESS: OWD = OFF (0x1) <<<");
+  else
+    write(">>> FAILED: Could not set OWD to OFF <<<");
+}
+
+// Wait at AVN for 3 minutes with monitoring
+void Wait_At_AVN_3Minutes()
+{
+  long time_3min = 0;
+  long log_interval = 30000;  // Log every 30 seconds (~duration/6)
+  long duration_ms = 180000;  // 3 minutes
+  
+  write("=== Waiting at AVN for 3 minutes ===");
+  write("Monitoring signals during wait period...");
+  
+  while(time_3min < duration_ms)
+  {
+    if(time_3min % log_interval == 0)
+    {
+      write("  [%d s / %d s] RecSet_OWD=0x%X | RecSta_OWD=0x%X | HU_UI_Mode=0x%X", 
+            time_3min/1000, duration_ms/1000, 
+            $BLTN_CAM_RecSet_OWD, $BLTN_CAM_RecSta_OWD, $HU_BLTN_CAM_UI_Mode);
+    }
+    
+    testWaitForTimeout(1000);
+    time_3min += 1000;
+  }
+  
+  write(">>> Wait complete: 3 minutes elapsed <<<");
+}
+
+// Wait at AVN for 5 minutes with monitoring
+void Wait_At_AVN_5Minutes()
+{
+  long time_5min = 0;
+  long log_interval = 50000;  // Log every 50 seconds (~duration/6)
+  long duration_ms = 300000;  // 5 minutes
+  
+  write("=== Waiting at AVN for 5 minutes ===");
+  write("Monitoring signals during wait period...");
+  
+  while(time_5min < duration_ms)
+  {
+    if(time_5min % log_interval == 0)
+    {
+      write("  [%d s / %d s] RecSet_OWD=0x%X | RecSta_OWD=0x%X | HU_UI_Mode=0x%X", 
+            time_5min/1000, duration_ms/1000, 
+            $BLTN_CAM_RecSet_OWD, $BLTN_CAM_RecSta_OWD, $HU_BLTN_CAM_UI_Mode);
+    }
+    
+    testWaitForTimeout(1000);
+    time_5min += 1000;
+  }
+  
+  write(">>> Wait complete: 5 minutes elapsed <<<");
+}
+
+// Check AIN voltage below threshold
+int Check_AIN_Below_Threshold(float threshold, long timeout_ms)
+{
+  long elapsed = 0;
+  long log_interval;
+  float ain_voltage = 0.0;
+  
+  write("Checking AIN voltage below %.1f V... (max %d seconds)", threshold, timeout_ms/1000);
+  
+  log_interval = (timeout_ms / 6 / 1000) * 1000;
+  if(log_interval < 1000) log_interval = 1000;
+  
+  while(elapsed < timeout_ms)
+  {
+    ain_voltage = Get_AIN_Voltage();
+    
+    if(ain_voltage < threshold)
+    {
+      write(">>> PASS: AIN = %.2f V < %.1f V <<<", ain_voltage, threshold);
+      return 1;
+    }
+    
+    if(elapsed == 0 || elapsed % log_interval == 0) // Log every ~timeout/6
+    {
+      write("  [%d s] AIN=%.2f V (waiting for < %.1f V)", elapsed/1000, ain_voltage, threshold);
+    }
+    
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+  
+  write(">>> Timeout! AIN = %.2f V still >= %.1f V <<<", ain_voltage, threshold);
+  return 0;
+}
+
+// Capture graph window screenshot with time range
+void CaptureGraphics(char signalList[], char filename[])
+{
+  char filepath[256];
+  snprintf(filepath, elcount(filepath), "D:\\project\\CAN FD\\[CANoe] CANFD\\Screenshots\\%s", filename);
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD", signalList, "Screenshot", filepath);
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_003()
+{
+  byte rec_set_owd = 0;
+  byte rec_sta_owd = 0;
+  float ain_voltage = 0.0;
+  
+  write("========================================");
+  write("=== START TEST OWD_003 ===");
+  write("========================================");
+  
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+  
+  //============================================================================
+  // STEP 1: Enter Built-in Cam, ensure OWD ON, wait 3 min at AVN, re-enter
+  //============================================================================
+  write("");
+  write("=== STEP 1: 3-minute recording test ===");
+  testStep("Step1", "3-minute OWD recording verification");
+  
+  // 1.1 Wait for user to enter Built-in Cam mode
+  write("");
+  write("*** ACTION REQUIRED: Please enter Built-in Cam mode ***");
+  if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+  {
+    testStepFail("Step1", "Failed to enter Built-in Cam mode");
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    return;
+  }
+  
+  // 1.2 Check if OWD is ON, if not turn it ON via panel
+  rec_set_owd = $BLTN_CAM_RecSet_OWD;
+  write("Current BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
+  
+  if(rec_set_owd != 0x2)  // Not ON
+  {
+    write("OWD is not ON. Turning ON via panel...");
+    Turn_ON_OWD();
+    testWaitForTimeout(2000);
+    
+    rec_set_owd = $BLTN_CAM_RecSet_OWD;
+    if(rec_set_owd != 0x2)
+    {
+      testStepFail("Step1", "Failed to turn ON OWD");
+      testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+      return;
+    }
+  }
+  write(">>> OWD is ON (0x2) <<<");
+  
+  // 1.3 Ask user to exit to AVN home screen
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED: Please exit to AVN Home screen ***");
+  write("*************************************************************");
+  
+  if(Wait_For_AVN_Home(max_wait_time) == 0)
+  {
+    testStepFail("Step1", "Failed to exit to AVN Home");
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    return;
+  }
+  
+  // 1.4 Wait exactly 3 minutes at AVN while monitoring signals
+  write("");
+  write(">>> Starting 3-minute wait at AVN <<<");
+  Wait_At_AVN_3Minutes();
+  
+  // 1.5 Ask user to re-enter Built-in Cam mode
+  write("");
+  write("*************************************************************");
+  write("*** 3 MINUTES ELAPSED! ***");
+  write("*** ACTION REQUIRED: Please enter Built-in Cam mode NOW ***");
+  write("*************************************************************");
+  
+  if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 1)
+  {
+    write(">>> SUCCESS: Re-entered Built-in Cam mode after 3 minutes <<<");
+    
+    // Capture screenshot showing 3-minute signal process
+    CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;HU_BLTN_CAM_UI_Mode;BLTN_CAM_HU_UI_Mode", "OWD_003_01.jpg");
+
+    write("");
+    write("========================================");
+    write("*** VERIFICATION REQUIRED: ***");
+    write("*** Please check video store for 3-minute video ***");
+    write("========================================");
+
+    step1_passed = 1;
+    testStepPass("Step1", "3-minute recording test PASS - Please verify 3-min video in store");
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1", "Failed to re-enter Built-in Cam mode after 3 minutes");
+  }
+  
+  //============================================================================
+  // STEP 2-5: Log verification for video creation
+  //============================================================================
+  write("");
+  write("=== STEP 2: Video creation verification ===");
+  testStep("Step2", "Video creation verification");
+  write(">>> Please verify video was created in store <<<");
+  testStepPass("Step2", "VERIFICATION: Check video created in store");
+  
+  write("");
+  write("=== STEP 3: Video creation verification ===");
+  testStep("Step3", "Video creation verification");
+  write(">>> Please verify video was created in store <<<");
+  testStepPass("Step3", "VERIFICATION: Check video created in store");
+  
+  write("");
+  write("=== STEP 4: Video creation verification ===");
+  testStep("Step4", "Video creation verification");
+  write(">>> Please verify video was created in store <<<");
+  testStepPass("Step4", "VERIFICATION: Check video created in store");
+  
+  write("");
+  write("=== STEP 5: Video creation verification ===");
+  testStep("Step5", "Video creation verification");
+  write(">>> Please verify video was created in store <<<");
+  testStepPass("Step5", "VERIFICATION: Check video created in store");
+  
+  //============================================================================
+  // STEP 6: Wait 5 minutes at AVN, verify OWD still ON
+  //============================================================================
+  write("");
+  write("=== STEP 6: 5-minute OWD retention test ===");
+  testStep("Step6", "5-minute OWD retention verification");
+  
+  // 6.1 Check if in Built-in Cam mode, if not ask user to enter
+  if($BLTN_CAM_HU_UI_Mode != 0x1)
+  {
+    write("");
+    write("*** ACTION REQUIRED: Please enter Built-in Cam mode ***");
+    if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+    {
+      testStepFail("Step6", "Failed to enter Built-in Cam mode");
+      testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+      return;
+    }
+  }
+  
+  // 6.2 Ask user to exit to AVN home screen
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED: Please exit to AVN Home screen ***");
+  write("*************************************************************");
+  
+  if(Wait_For_AVN_Home(max_wait_time) == 0)
+  {
+    testStepFail("Step6", "Failed to exit to AVN Home");
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    return;
+  }
+  
+  // 6.3 Wait exactly 5 minutes at AVN while monitoring signals
+  write("");
+  write(">>> Starting 5-minute wait at AVN <<<");
+  Wait_At_AVN_5Minutes();
+  
+  // 6.4 Check if OWD is still ON (not OFF)
+  write("");
+  write(">>> 5 MINUTES ELAPSED! Checking OWD status... <<<");
+  
+  rec_set_owd = $BLTN_CAM_RecSet_OWD;
+  write("BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
+  
+  // Capture screenshot showing 5-minute process
+  CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;HU_BLTN_CAM_UI_Mode;BLTN_CAM_HU_UI_Mode", "OWD_003_02.jpg");
+
+  if(rec_set_owd != 0x1)  // NOT OFF means PASS
+  {
+    write(">>> PASS: OWD is NOT OFF after 5 minutes (RecSet_OWD = 0x%X) <<<", rec_set_owd);
+    step6_passed = 1;
+    testStepPass("Step6", "OWD not OFF after 5 minutes - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: OWD is OFF after 5 minutes! <<<");
+    step6_passed = 0;
+    testStepFail("Step6", "OWD turned OFF after 5 minutes - FAIL");
+  }
+  
+  //============================================================================
+  // STEP 7: Enter Built-in Cam, turn OFF OWD via panel
+  //============================================================================
+  write("");
+  write("=== STEP 7: Turn OFF OWD via panel ===");
+  testStep("Step7", "Turn OFF OWD via panel");
+  
+  // 7.1 Wait for user to enter Built-in Cam mode
+  write("");
+  write("*** ACTION REQUIRED: Please enter Built-in Cam mode ***");
+  if(Wait_For_BLTN_CAM_Mode(max_wait_time) == 0)
+  {
+    testStepFail("Step7", "Failed to enter Built-in Cam mode");
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    return;
+  }
+  
+  // 7.2 Turn OFF OWD via panel
+  Turn_OFF_OWD();
+  testWaitForTimeout(2000);
+  
+  // 7.3 Verify OWD is OFF
+  rec_set_owd = $BLTN_CAM_RecSet_OWD;
+  write("BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
+  
+  // Capture screenshot
+  CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode", "OWD_003_03.jpg");
+
+  if(rec_set_owd == 0x1)  // OFF
+  {
+    write(">>> PASS: OWD = OFF (0x1) <<<");
+    step7_passed = 1;
+    testStepPass("Step7", "OWD turned OFF successfully - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: OWD is not OFF (RecSet_OWD = 0x%X) <<<", rec_set_owd);
+    step7_passed = 0;
+    testStepFail("Step7", "Failed to turn OFF OWD - FAIL");
+  }
+  
+  //============================================================================
+  // STEP 8: Exit to AVN (wait 2s), verify RecSta_OWD = OFF
+  //============================================================================
+  write("");
+  write("=== STEP 8: Verify RecSta_OWD = OFF at AVN ===");
+  testStep("Step8", "Verify RecSta_OWD = OFF after exit to AVN");
+  
+  // 8.1 Ask user to exit to AVN
+  write("");
+  write("*** ACTION REQUIRED: Please exit to AVN Home screen ***");
+  
+  if(Wait_For_AVN_Home(max_wait_time) == 0)
+  {
+    testStepFail("Step8", "Failed to exit to AVN Home");
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    return;
+  }
+  
+  // 8.2 Wait 2 seconds at AVN
+  write("Waiting 2 seconds at AVN...");
+  testWaitForTimeout(2000);
+  
+  // 8.3 Check RecSta_OWD
+  rec_sta_owd = $BLTN_CAM_RecSta_OWD;
+  write("BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
+  
+  if(rec_sta_owd == 0x0)  // OFF status
+  {
+    write(">>> PASS: RecSta_OWD = OFF (0x0) <<<");
+
+    // Capture screenshot
+    CaptureGraphics("BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;HU_BLTN_CAM_UI_Mode", "OWD_003_04.jpg");
+
+    step8_passed = 1;
+    testStepPass("Step8", "RecSta_OWD = OFF - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: RecSta_OWD is not OFF (RecSta_OWD = 0x%X) <<<", rec_sta_owd);
+
+    // Capture screenshot even on fail
+    CaptureGraphics("BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;HU_BLTN_CAM_UI_Mode", "OWD_003_05.jpg");
+
+    step8_passed = 0;
+    testStepFail("Step8", "RecSta_OWD not OFF - FAIL");
+  }
+  
+  //============================================================================
+  // STEP 9: Check AIN voltage below 4V
+  //============================================================================
+  write("");
+  write("=== STEP 9: Check AIN voltage < 4V ===");
+  testStep("Step9", "Check AIN voltage below 4V");
+  
+  ain_voltage = Get_AIN_Voltage();
+  write("Current AIN Voltage = %.2f V", ain_voltage);
+  
+  if(ain_voltage < ain_threshold)
+  {
+    write(">>> PASS: AIN = %.2f V < 4V <<<", ain_voltage);
+
+    // Capture screenshot
+    CaptureGraphics("AIN;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;HU_BLTN_CAM_UI_Mode", "OWD_003_06.jpg");
+
+    step9_passed = 1;
+    testStepPass("Step9", "AIN voltage below 4V - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: AIN = %.2f V >= 4V <<<", ain_voltage);
+
+    // Capture screenshot even on fail
+    CaptureGraphics("AIN;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;HU_BLTN_CAM_UI_Mode", "OWD_003_07.jpg");
+
+    step9_passed = 0;
+    testStepFail("Step9", "AIN voltage not below 4V - FAIL");
+  }
+  
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_passed == 1 && step6_passed == 1 && step7_passed == 1 && step8_passed == 1 && step9_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_003: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_003: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+
+  //============================================================================
+  // SUMMARY
+  //============================================================================
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_passed)
+    write("Step 1: PASS - Enter BLTN_CAM, OWD ON, wait 3min at AVN, re-enter BLTN_CAM");
+  else
+    write("Step 1: FAIL - Enter BLTN_CAM, OWD ON, wait 3min at AVN, re-enter BLTN_CAM");
+  write("Step 2: PASS - Video creation verification (manual check)");
+  write("Step 3: PASS - Video creation verification (manual check)");
+  write("Step 4: PASS - Video creation verification (manual check)");
+  write("Step 5: PASS - Video creation verification (manual check)");
+  if(step6_passed)
+    write("Step 6: PASS - Wait 5min at AVN, verify OWD not OFF");
+  else
+    write("Step 6: FAIL - Wait 5min at AVN, verify OWD not OFF");
+  if(step7_passed)
+    write("Step 7: PASS - Enter BLTN_CAM, turn OFF OWD via panel");
+  else
+    write("Step 7: FAIL - Enter BLTN_CAM, turn OFF OWD via panel");
+  if(step8_passed)
+    write("Step 8: PASS - Exit to AVN (2s), verify RecSta_OWD = OFF");
+  else
+    write("Step 8: FAIL - Exit to AVN (2s), verify RecSta_OWD = OFF");
+  if(step9_passed)
+    write("Step 9: PASS - Check AIN voltage < 4V");
+  else
+    write("Step 9: FAIL - Check AIN voltage < 4V");
+  
+  @panel::Switch_CGWNM = 0;
+  
+  write("");
+  write("========================================");
+  write("=== END TEST OWD_003 ===");
+  write("========================================");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_003 - 2.5 generation_report");
+  OWD_003();
+}

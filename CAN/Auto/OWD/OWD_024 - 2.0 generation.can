@@ -1,0 +1,324 @@
+/*@!Encoding:65001*/
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//Add signal to graphic 2: BLTN_CAM_RecSta_MAR
+variables {
+  // Global Variable Declaration
+  int flag_RecSet_error = 0;
+  int step1_passed = 0;
+  float count_MARRec_time = 0.0;
+  byte value_Bfr = 0x0;
+  byte value_Aft = 0x0;
+  //Message Declaration for CAN
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+}
+
+void BLTN_CAM_Settings(int Choose_Option){
+  switch (Choose_Option){
+    case(1):
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break;
+    case(2):
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Aft: +15");@panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break;
+    case(3):
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Bft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;
+  }
+
+  testWaitForTimeout(1000);
+  if($BLTN_CAM_Set_EV_BfrTime != value_Bfr){
+
+    write("Bfr_time is not match");
+
+    write("Stop test"); stop();
+
+  }
+  else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
+
+    write("Aft_time is not match");
+
+    write("Stop test"); stop();
+
+  }
+}
+
+void KEY_ON(){
+  setSignal(SMK_TrmnlCtrlGrpStaBDC,0x1); // Power ON
+}
+
+void KEY_OFF(){
+   setSignal(SMK_TrmnlCtrlGrpStaBDC,0x0); // Power OFF
+}
+
+void Enter_BLTN_CAM(){
+  int i;
+  write(">>> Enter BLTN_CAM mode <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+
+  for (i = 0; i < 10; i++) {
+    testWaitForTimeout(500);
+    if (getSignal(BLTN_CAM_HU_UI_Mode) == 0x1) {
+      write(">>> [OK] BLTN_CAM mode confirmed <<<");
+      return;
+    }
+  }
+  write(">>> [NG] Timeout: BLTN_CAM_HU_UI_Mode = 0x%X <<<",
+        getSignal(BLTN_CAM_HU_UI_Mode));
+}
+
+void Exit_BLTN_CAM(){
+  int i;
+  write(">>> Exit to AVN mode <<<");
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0;
+  output(_HU_BLTN_CAM_PE_00_200ms);
+
+  for (i = 0; i < 10; i++) {
+    testWaitForTimeout(500);
+    if (getSignal(BLTN_CAM_HU_UI_Mode) == 0x0) {
+      write(">>> [OK] AVN mode confirmed <<<");
+      return;
+    }
+  }
+  write(">>> [NG] Timeout: BLTN_CAM_HU_UI_Mode = 0x%X <<<",
+        getSignal(BLTN_CAM_HU_UI_Mode));
+}
+
+void CaptureGraphics(){
+  testWaitForTimeout(3000);
+  testReportAddWindowCapture("OWD","BLTN_CAM_RecSta_MAR","Screenshot");
+  write(">>> Screenshot captured <<<");
+}
+
+void Setup_Function(int Option){
+  float start_sec, end_sec;
+
+  @panel::Switch_CGWNM = 1;
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  BLTN_CAM_Settings(Option);
+  testWaitForTimeout(2000);
+
+  @panel::Switch_Clock = 1;
+
+  Exit_BLTN_CAM();
+
+  testWaitForTimeout(21000);
+
+  _HU_BLTN_CAM_E_01.MEV_Rec_Req = 0x0;
+  output(_HU_BLTN_CAM_E_01);
+
+  testWaitForTimeout(500);
+
+  _HU_BLTN_CAM_E_01.MEV_Rec_Req = 0x1;
+  output(_HU_BLTN_CAM_E_01);
+
+  if (testWaitForSignalChange(BLTN_CAM_RecSta_MAR,100000) == 1){
+    write("MAR recording is started");
+    start_sec = timeNow()/100000.0;
+  }
+  else{
+    write("Error: MAR recording hasn't started");
+    stop();
+  }
+
+  if (testWaitForSignalChange(BLTN_CAM_RecSta_MAR,100000) == 1){
+    write("MAR recording is stopped");
+    end_sec = timeNow()/100000.0;
+  }
+
+  count_MARRec_time = end_sec - start_sec;
+}
+
+void Rec_Reset(){
+  @panel::Switch_CGWNM = 1;
+
+  KEY_ON();
+
+  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1){
+    @panel::Button_RecReset = 1;
+    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State,500);
+  }
+
+  KEY_OFF();
+
+  @panel::Switch_CGWNM = 0;
+}
+
+
+// Set SMK to IGN (0x2) via panel
+void Set_SMK_IGN()
+{
+  write("=== Setting SMK_Signal to IGN via panel ===");
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(2000);
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);  // IGN
+  testWaitForTimeout(2000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X (IGN)", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+// Click USM Reset button on panel
+void Click_USM_Reset()
+{
+  write("=== Clicking USM Reset button on panel ===");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(2000);
+  write("  USM Reset clicked");
+}
+
+// Click Rec Reset button on panel
+void Click_Rec_Reset()
+{
+  write("=== Clicking Rec Reset button on panel ===");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(2000);
+  write("  Rec Reset clicked");
+}
+
+testcase OWD_024_Init(){
+  write("Start test OWD_024 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+}
+
+testcase OWD_024_1(){
+  testStep("Notification","Start test OWD_024_1");
+  write("Start test OWD_024_1");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  Setup_Function(1); write("Run Setup_Function()");
+
+  if( count_MARRec_time >= 9 && count_MARRec_time <= 11){
+    testStepPass("Pass","Test-case is OK");
+    step1_passed = 1;
+    write("count_MARRec_time = %.2f",count_MARRec_time);
+  }
+  else{
+    testStepFail("Fail","Test-case is NG");
+    step1_passed = 0;
+    write("count_MARRec_time = %.2f",count_MARRec_time);
+  }
+
+  CaptureGraphics(); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_MARRec_time = 0.0;
+
+  KEY_OFF(); write("Run KEY_OFF()");
+
+  testStep("TEST SUMMARY","--- OWD_024_1 ---");
+  testStep("","Step 1: Start test OWD_024_1 ... PASS");
+  if (step1_passed) { testStep("","Step 2: Check MAR recording time ... PASS"); } else { testStep("","Step 2: Check MAR recording time ... FAIL"); }
+  testStep("","Step 3: Screenshot ... PASS");
+  write("Finish OWD_024_1");
+}
+
+testcase OWD_024_2(){
+  testStep("Notification","Start test OWD_024_2");
+  write("Start test OWD_024_2");
+
+  Setup_Function(2); write("Run Setup_Function()");
+
+  if( count_MARRec_time >= 14 && count_MARRec_time <= 16){
+    testStepPass("Pass","Test-case is OK");
+    step1_passed = 1;
+    write("count_MARRec_time = %.2f",count_MARRec_time);
+  }
+  else{
+    testStepFail("Fail","Test-case is NG");
+    step1_passed = 0;
+    write("count_MARRec_time = %.2f",count_MARRec_time);
+  }
+
+  CaptureGraphics(); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_MARRec_time = 0.0;
+
+  KEY_OFF(); write("Run KEY_OFF()");
+
+  testStep("TEST SUMMARY","--- OWD_024_2 ---");
+  testStep("","Step 1: Start test OWD_024_2 ... PASS");
+  if (step1_passed) { testStep("","Step 2: Check MAR recording time ... PASS"); } else { testStep("","Step 2: Check MAR recording time ... FAIL"); }
+  testStep("","Step 3: Screenshot ... PASS");
+  write("Finish OWD_024_2");
+}
+testcase OWD_024_3(){
+  testStep("Notification","Start test OWD_024_3");
+  write("Start test OWD_024_3");
+
+  Setup_Function(3); write("Run Setup_Function()");
+
+  if(count_MARRec_time >= 19 && count_MARRec_time <= 21){
+    testStepPass("Pass","Test-case is OK");
+    step1_passed = 1;
+    write("count_MARRec_time = %.2f",count_MARRec_time);
+  }
+  else{
+    testStepFail("Fail","Test-case is NG");
+    step1_passed = 0;
+  }
+
+  CaptureGraphics(); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_MARRec_time = 0.0;
+
+  KEY_OFF(); write("Run KEY_OFF()");
+
+  testStep("","Step 3: Screenshot ... PASS");
+  write("Finish OWD_024_3");
+}
+
+testcase OWD_024_Summary(){
+  //============================================================================
+  // Overall Test Verdict
+  //============================================================================
+  if(step1_passed == 1)
+  {
+    testStepPass("Overall_Verdict", "Test OWD_024: PASS");
+    write("=== OVERALL VERDICT: PASS ===");
+  }
+  else
+  {
+    testStepFail("Overall_Verdict", "Test OWD_024: FAIL");
+    write("=== OVERALL VERDICT: FAIL ===");
+  }
+}
+
+void MainTest(){
+  testReportFileName("TestReports\\OWD_024 - 2.0 generation_report");
+
+  OWD_024_Init();
+  OWD_024_1();
+  OWD_024_2();
+  OWD_024_3();
+  OWD_024_Summary();
+}

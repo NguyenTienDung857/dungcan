@@ -1,0 +1,705 @@
+/*@!Encoding:1252*/
+/* ============================================================================
+ * Module: DIA_035_SecurityAccess_Test.can
+ * Target ECU: DVRS (Drive Video Record System / Built-in Cam)
+ * Protocol: UDS (ISO 14229) - Service 0x27 SecurityAccess
+ * CAN ID: Request 0x795, Response 0x79D
+ * 
+ * Test Case: DIA_035 - OEUK SecurityAccess ($27)
+ * Description: Verify SecurityAccess service (sub-function 0x13/0x14) 
+ *              behavior across different diagnostic sessions
+ * ============================================================================
+ */
+
+variables
+{
+  // ECU Configuration
+  char gEcuName[20] = "DVRS";
+  
+  // Diagnostic Request/Response
+  diagRequest DVRS.* gReq;
+  diagResponse DVRS.* gResp;
+  
+  // Security Access Constants
+  const byte SA_SERVICE_ID = 0x27;
+  const byte SA_REQUEST_SEED_OEUK = 0x11;  // Request Seed sub-function
+  const byte SA_SEND_KEY_OEUK = 0x12;      // Send Key sub-function
+  
+  // Session Control Constants
+  const byte SESSION_DEFAULT = 0x01;
+  const byte SESSION_PROGRAMMING = 0x02;
+  const byte SESSION_EXTENDED = 0x03;
+  
+  // NRC (Negative Response Code)
+  const byte NRC_SERVICE_NOT_SUPPORTED_IN_ACTIVE_SESSION = 0x7F;
+  
+  // Seed/Key storage
+  byte gSeedBuffer[8];
+  int gSeedSize = 0;
+  byte gKeyBuffer[8];
+  
+  // Timeout configuration
+  const int DIAG_TIMEOUT_MS = 2000;
+  
+  // Security Access variant for DiagGenerateKeyFromSeed
+  char gVariant[200] = "Common";
+  char gOption[200] = "";
+}
+
+/* ============================================================================
+ * Main Test Entry Point
+ * ============================================================================
+ */
+void MainTest()
+{
+  TC_DIA_035();
+}
+
+/* ============================================================================
+ * Test Case: DIA_035 - OEUK SecurityAccess
+ * ============================================================================
+ */
+testcase TC_DIA_035()
+{
+  testCaseTitle("DIA_035", "OEUK SecurityAccess ($27) Test");
+  testCaseDescription("Verify SecurityAccess service 0x27 with OEUK sub-function (0x11/0x12) in different diagnostic sessions");
+  
+  // Initialize
+  DiagSetTarget(gEcuName);
+  
+  // ============================================================
+  // PART 1: Request Seed Only Tests
+  // ============================================================
+  testStep("Part 1", "Request Seed OEUK SecurityAccess Tests");
+  
+  // Step 1: Request Seed in Default Session - Expect NRC 0x7F
+  TC_DIA_035_Step1_RequestSeed_DefaultSession();
+  
+  // Step 2: Request Seed in Programming Session - Expect Positive Response
+  TC_DIA_035_Step2_RequestSeed_ProgrammingSession();
+  
+  // Step 3: Request Seed in Extended Session - Expect Positive Response
+  TC_DIA_035_Step3_RequestSeed_ExtendedSession();
+  
+  // ============================================================
+  // PART 2: Request Seed + Send Key Tests
+  // ============================================================
+  testStep("Part 2", "Request Seed + Send Key OEUK SecurityAccess Tests");
+  
+  // Step 4: Request Seed + Send Key in Default Session - Expect NRC 0x7F
+  TC_DIA_035_Step4_FullSequence_DefaultSession();
+  
+  // Step 5: Request Seed + Send Key in Programming Session - Expect Unlock Success
+  TC_DIA_035_Step5_FullSequence_ProgrammingSession();
+  
+  // Step 6: Request Seed + Send Key in Extended Session - Expect Unlock Success
+  TC_DIA_035_Step6_FullSequence_ExtendedSession();
+  
+  // Cleanup - Return to Default Session
+  SwitchToSession(SESSION_DEFAULT);
+}
+
+/* ============================================================================
+ * Step 1: Request Seed in Default Session
+ * Expected: Negative Response 7F 27 7F (serviceNotSupportedInActiveSession)
+ * ============================================================================
+ */
+void TC_DIA_035_Step1_RequestSeed_DefaultSession()
+{
+  long result;
+  
+  testStep("Step 1", "Request Seed OEUK - Default Session (01)");
+  
+  // Switch to Default Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 1", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  // Send Request Seed
+  result = SendRequestSeed();
+  
+  if (result == NRC_SERVICE_NOT_SUPPORTED_IN_ACTIVE_SESSION)
+  {
+    testStepPass("Step 1", "PASS: Received expected NRC 0x7F (serviceNotSupportedInActiveSession) in Default Session");
+  }
+  else if (result == -1)
+  {
+    testStepFail("Step 1", "FAIL: Unexpected Positive Response in Default Session");
+  }
+  else
+  {
+    testStepFail("Step 1", "FAIL: Unexpected NRC 0x%02X (expected 0x7F)", result);
+  }
+}
+
+/* ============================================================================
+ * Step 2: Request Seed in Programming Session
+ * Expected: Positive Response 67 13 <SEED>
+ * ============================================================================
+ */
+void TC_DIA_035_Step2_RequestSeed_ProgrammingSession()
+{
+  long result;
+  
+  testStep("Step 2", "Request Seed OEUK - Programming Session (02)");
+  
+  // Switch to Programming Session
+  if (!SwitchToSession(SESSION_PROGRAMMING))
+  {
+    testStepFail("Step 2", "FAIL: Cannot switch to Programming Session");
+    return;
+  }
+  
+  // Send Request Seed
+  result = SendRequestSeed();
+  
+  if (result == -1 && gSeedSize > 0)
+  {
+    char seedMsg[200];
+    snprintf(seedMsg, elCount(seedMsg), "PASS: Received Seed [%d bytes]: %02X %02X %02X %02X %02X %02X %02X %02X in Programming Session",
+             gSeedSize,
+             gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+             gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+    testStepPass("Step 2", seedMsg);
+    PrintSeedData();
+  }
+  else
+  {
+    testStepFail("Step 2", "FAIL: Unexpected NRC 0x%02X in Programming Session", result);
+  }
+}
+
+/* ============================================================================
+ * Step 3: Request Seed in Extended Session
+ * Expected: Positive Response 67 13 <SEED>
+ * ============================================================================
+ */
+void TC_DIA_035_Step3_RequestSeed_ExtendedSession()
+{
+  long result;
+  
+  testStep("Step 3", "Request Seed OEUK - Extended Session (03)");
+  
+  // Switch to Extended Session (need to go through Default first)
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 3", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  if (!SwitchToSession(SESSION_EXTENDED))
+  {
+    testStepFail("Step 3", "FAIL: Cannot switch to Extended Session");
+    return;
+  }
+  
+  // Send Request Seed
+  result = SendRequestSeed();
+  
+  if (result == -1 && gSeedSize > 0)
+  {
+    char seedMsg[200];
+    snprintf(seedMsg, elCount(seedMsg), "PASS: Received Seed [%d bytes]: %02X %02X %02X %02X %02X %02X %02X %02X in Extended Session",
+             gSeedSize,
+             gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+             gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+    testStepPass("Step 3", seedMsg);
+    PrintSeedData();
+  }
+  else
+  {
+    testStepFail("Step 3", "FAIL: Unexpected NRC 0x%02X in Extended Session", result);
+  }
+}
+
+/* ============================================================================
+ * Step 4: Request Seed + Send Key in Default Session
+ * Expected: Negative Response 7F 27 7F for both Request Seed and Send Key
+ * ============================================================================
+ */
+void TC_DIA_035_Step4_FullSequence_DefaultSession()
+{
+  long result;
+  
+  testStep("Step 4", "Request Seed + Send Key OEUK - Default Session (01)");
+  
+  // Switch to Default Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 4", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  // Send Request Seed - Expect NRC
+  result = SendRequestSeed();
+  
+  if (result != NRC_SERVICE_NOT_SUPPORTED_IN_ACTIVE_SESSION)
+  {
+    testStepFail("Step 4", "FAIL: Unexpected response for Request Seed");
+    return;
+  }
+  
+  // Send Key anyway - Expect NRC
+  result = SendKey();
+  
+  if (result == NRC_SERVICE_NOT_SUPPORTED_IN_ACTIVE_SESSION)
+  {
+    testStepPass("Step 4", "PASS: Both Request Seed and Send Key rejected with NRC 0x7F in Default Session");
+  }
+  else
+  {
+    testStepFail("Step 4", "FAIL: Unexpected NRC 0x%02X for Send Key", result);
+  }
+}
+
+/* ============================================================================
+ * Step 5: Request Seed + Send Key in Programming Session
+ * Expected: Positive Response 67 14 (Security Unlocked)
+ * ============================================================================
+ */
+void TC_DIA_035_Step5_FullSequence_ProgrammingSession()
+{
+  long result;
+  
+  testStep("Step 5", "Request Seed + Send Key OEUK - Programming Session (02)");
+  
+  // Switch to Default first, then Programming Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 5", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  if (!SwitchToSession(SESSION_PROGRAMMING))
+  {
+    testStepFail("Step 5", "FAIL: Cannot switch to Programming Session");
+    return;
+  }
+  
+  // Send Request Seed
+  result = SendRequestSeed();
+  
+  if (result != -1)
+  {
+    testStepFail("Step 5", "FAIL: Request Seed failed with NRC 0x%02X", result);
+    return;
+  }
+  
+  // Calculate Key from Seed
+  if (!CalculateKey())
+  {
+    testStepFail("Step 5", "FAIL: Cannot calculate key from seed");
+    return;
+  }
+  
+  // Send Key
+  result = SendKey();
+  
+  if (result == -1)
+  {
+    char unlockMsg[300];
+    snprintf(unlockMsg, elCount(unlockMsg), "PASS: Security Unlocked in Programming Session | Seed: %02X %02X %02X %02X %02X %02X %02X %02X | Key: %02X %02X %02X %02X %02X %02X %02X %02X",
+             gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+             gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7],
+             gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+             gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+    testStepPass("Step 5", unlockMsg);
+  }
+  else
+  {
+    testStepFail("Step 5", "FAIL: Send Key failed with NRC 0x%02X", result);
+  }
+}
+
+/* ============================================================================
+ * Step 6: Request Seed + Send Key in Extended Session
+ * Expected: Positive Response 67 14 (Security Unlocked)
+ * ============================================================================
+ */
+void TC_DIA_035_Step6_FullSequence_ExtendedSession()
+{
+  long result;
+  
+  testStep("Step 6", "Request Seed + Send Key OEUK - Extended Session (03)");
+  
+  // Switch to Default first, then Extended Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 6", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  if (!SwitchToSession(SESSION_EXTENDED))
+  {
+    testStepFail("Step 6", "FAIL: Cannot switch to Extended Session");
+    return;
+  }
+  
+  // Send Request Seed
+  result = SendRequestSeed();
+  
+  if (result != -1)
+  {
+    testStepFail("Step 6", "FAIL: Request Seed failed with NRC 0x%02X", result);
+    return;
+  }
+  
+  // Calculate Key from Seed
+  if (!CalculateKey())
+  {
+    testStepFail("Step 6", "FAIL: Cannot calculate key from seed");
+    return;
+  }
+  
+  // Send Key
+  result = SendKey();
+  
+  if (result == -1)
+  {
+    char unlockMsg[300];
+    snprintf(unlockMsg, elCount(unlockMsg), "PASS: Security Unlocked in Extended Session | Seed: %02X %02X %02X %02X %02X %02X %02X %02X | Key: %02X %02X %02X %02X %02X %02X %02X %02X",
+             gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+             gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7],
+             gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+             gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+    testStepPass("Step 6", unlockMsg);
+  }
+  else
+  {
+    testStepFail("Step 6", "FAIL: Send Key failed with NRC 0x%02X", result);
+  }
+}
+
+/* ============================================================================
+ * Helper Functions
+ * ============================================================================
+ */
+
+/*
+ * Switch to specified diagnostic session
+ * Returns: 1 = Success, 0 = Failure
+ */
+int SwitchToSession(byte sessionType)
+{
+  long result;
+  long respCode;
+  long respSize;
+  char sessionName[30];
+  char reqMsg[100];
+  char respMsg[200];
+  int i;
+  
+  // Get session name for logging
+  switch(sessionType)
+  {
+    case SESSION_DEFAULT:
+      snprintf(sessionName, elCount(sessionName), "Default");
+      break;
+    case SESSION_PROGRAMMING:
+      snprintf(sessionName, elCount(sessionName), "Programming");
+      break;
+    case SESSION_EXTENDED:
+      snprintf(sessionName, elCount(sessionName), "Extended");
+      break;
+    default:
+      snprintf(sessionName, elCount(sessionName), "Unknown");
+  }
+  
+  // Create DiagnosticSessionControl request: [10] [SessionType]
+  DiagResize(gReq, 2);
+  DiagSetPrimitiveByte(gReq, 0, 0x10);  // DiagnosticSessionControl SID
+  DiagSetPrimitiveByte(gReq, 1, sessionType);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 10 %02X", sessionType);
+  write(">> Tx: %s", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        char temp[10];
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Switched to %s Session (0x%02X)", sessionName, sessionType);
+      TestWaitForTimeout(100);  // Small delay for session transition
+      return 1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 10 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Failed to switch to %s Session, NRC: 0x%02X", sessionName, respCode);
+      return 0;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout switching to %s Session", sessionName);
+    return 0;
+  }
+}
+
+/*
+ * Send SecurityAccess Request Seed (0x27 0x13)
+ * Returns: -1 = Positive Response (seed stored in gSeedBuffer)
+ *          >=0 = NRC value
+ */
+long SendRequestSeed()
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  
+  // Clear seed buffer
+  gSeedSize = 0;
+  for (i = 0; i < 8; i++)
+  {
+    gSeedBuffer[i] = 0;
+  }
+  
+  // Create Request Seed: [27] [11]
+  DiagResize(gReq, 2);
+  DiagSetPrimitiveByte(gReq, 0, SA_SERVICE_ID);
+  DiagSetPrimitiveByte(gReq, 1, SA_REQUEST_SEED_OEUK);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 27 %02X", SA_REQUEST_SEED_OEUK);
+  write(">> Tx: %s", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      
+      // Extract seed (skip SID + SubFunction = 2 bytes)
+      gSeedSize = respSize - 2;
+      if (gSeedSize > 8) gSeedSize = 8;
+      
+      for (i = 0; i < gSeedSize; i++)
+      {
+        gSeedBuffer[i] = DiagGetPrimitiveByte(gResp, i + 2);
+      }
+      
+      write("Seed received [%d bytes]: %02X %02X %02X %02X %02X %02X %02X %02X",
+            gSeedSize,
+            gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+            gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+      
+      return -1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 27 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Request Seed rejected with NRC: 0x%02X", respCode);
+      return respCode;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Request Seed response");
+    return 0xFF;  // Timeout indicator
+  }
+}
+
+/*
+ * Calculate Key from Seed using DiagGenerateKeyFromSeed
+ * Returns: 1 = Success, 0 = Failure
+ */
+int CalculateKey()
+{
+  dword actualSize;
+  int securityLevel;
+  int i;
+  long genResult;
+  
+  if (gSeedSize == 0)
+  {
+    write("No seed available for key calculation");
+    return 0;
+  }
+  
+  // Security level for OEUK: Use sub-function value 0x13 directly
+  // CANoe DiagGenerateKeyFromSeed uses the request sub-function as security level
+  securityLevel = SA_REQUEST_SEED_OEUK;  // 0x13
+  
+  // Clear key buffer
+  for (i = 0; i < 8; i++)
+  {
+    gKeyBuffer[i] = 0;
+  }
+  
+  write("Calculating key for Seed: %02X %02X %02X %02X %02X %02X %02X %02X",
+        gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+        gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+  write("Security Level: 0x%02X, Variant: %s", securityLevel, gVariant);
+  
+  // Generate key from seed using CANoe Diagnostic Layer
+  // The DLL path should be configured in CANoe Diagnostic Configuration
+  genResult = DiagGenerateKeyFromSeed(gSeedBuffer, gSeedSize, securityLevel, gVariant, gOption, gKeyBuffer, 8, actualSize);
+  
+  write("DiagGenerateKeyFromSeed result: %d, actualSize: %d", genResult, actualSize);
+  
+  if (actualSize > 0)
+  {
+    write("Key calculated: %02X %02X %02X %02X %02X %02X %02X %02X", 
+          gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+          gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+    return 1;
+  }
+  else
+  {
+    write("Key generation failed - check Seed&Key DLL configuration");
+    return 0;
+  }
+}
+
+/*
+ * Send SecurityAccess Send Key (0x27 0x14 <KEY>)
+ * Returns: -1 = Positive Response (unlocked)
+ *          >=0 = NRC value
+ */
+long SendKey()
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  int reqSize;
+  char reqMsg[200];
+  char respMsg[200];
+  char temp[10];
+  
+  // Create Send Key request: [27] [12] [KEY...]
+  reqSize = 2 + gSeedSize;  // SID + SubFunc + Key
+  DiagResize(gReq, reqSize);
+  DiagSetPrimitiveByte(gReq, 0, SA_SERVICE_ID);
+  DiagSetPrimitiveByte(gReq, 1, SA_SEND_KEY_OEUK);
+  
+  for (i = 0; i < gSeedSize; i++)
+  {
+    DiagSetPrimitiveByte(gReq, 2 + i, gKeyBuffer[i]);
+  }
+  
+  // Format request message
+  snprintf(reqMsg, elCount(reqMsg), "[795] 27 %02X ", SA_SEND_KEY_OEUK);
+  for (i = 0; i < gSeedSize; i++)
+  {
+    snprintf(temp, elCount(temp), "%02X ", gKeyBuffer[i]);
+    strncat(reqMsg, temp, elCount(reqMsg) - strlen(reqMsg) - 1);
+  }
+  write(">> Tx: %s", reqMsg);
+  write("Key sent [%d bytes]: %02X %02X %02X %02X %02X %02X %02X %02X",
+        gSeedSize,
+        gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+        gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Security Access Unlocked!");
+      return -1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 27 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Send Key rejected with NRC: 0x%02X", respCode);
+      return respCode;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Send Key response");
+    return 0xFF;
+  }
+}
+
+/*
+ * Print seed data to test report
+ */
+void PrintSeedData()
+{
+  char seedStr[100];
+  char tempStr[10];
+  int i;
+  
+  snprintf(seedStr, elCount(seedStr), "Seed: ");
+  
+  for (i = 0; i < gSeedSize; i++)
+  {
+    snprintf(tempStr, elCount(tempStr), "%02X ", gSeedBuffer[i]);
+    strncat(seedStr, tempStr, elCount(seedStr) - strlen(seedStr) - 1);
+  }
+  
+  write("%s", seedStr);
+}

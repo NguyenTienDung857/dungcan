@@ -1,0 +1,165 @@
+/*@!Encoding:65001*/
+/*@!Encoding:65001*/
+includes
+{
+}
+
+variables
+{
+  // Message: HU_BLTN_CAM_01_00ms (ID: 126 / 0x7E)
+  // Sender: CGW_CCU -> Receiver: BLTN_CAM_FD
+  message HU_BLTN_CAM_01_00ms msg_HU_BLTN_CAM;
+  
+  const long TIME_WAIT_2S = 2000;  // 2 seconds between each value
+  const long TIME_WAIT_5S = 5000;  // 5 seconds between each value
+}
+
+/*
+ * Test case to set multiple signals in HU_BLTN_CAM_01_00ms message
+ * This test includes:
+ * 1. BLTN_CAM_PrkTime_NvalueSet: from 2 to 20 (2 seconds delay between each)
+ * 2. BLTN_CAM_EV_BfrTime_NvalueSet: values 10, 15, 20
+ * 3. BLTN_CAM_EV_AftTime_NvalueSet: values 10, 15, 20
+ * 4. BLTN_CAM_TML_Int_NvalueSet: values 20, 40, 100
+ * 5. BLTN_CAM_Sen_DEV_NvalueSet: from 1 to 5
+ * 6. BLTN_CAM_Sen_PEV_NvalueSet: from 1 to 5
+ */
+testcase SetAllSignalsSequentially()
+{
+  int value;
+  
+  write("========================================");
+  write("Test: Set Multiple Signals in HU_BLTN_CAM_01_00ms");
+  write("========================================");
+  
+  // 1. Set BLTN_CAM_PrkTime_NvalueSet from 2 to 20 with 2s delays
+  write("--- Setting BLTN_CAM_PrkTime_NvalueSet (2 to 20) ---");
+  for (value = 2; value <= 20; value++)
+  {
+    TestStep("1.%d", "Set BLTN_CAM_PrkTime_NvalueSet to %d", value-1, value);
+    msg_HU_BLTN_CAM.BLTN_CAM_PrkTime_NvalueSet = value;
+    output(msg_HU_BLTN_CAM);
+    write("  -> BLTN_CAM_PrkTime_NvalueSet = %d", value);
+    TestStepPass();
+    testWaitForTimeout(TIME_WAIT_2S); // Wait 2 seconds
+  }
+  
+  write("----------------------------------------");
+  
+  // 2. Set BLTN_CAM_EV_BfrTime_NvalueSet: 10, 15, 20
+  write("--- Setting BLTN_CAM_EV_BfrTime_NvalueSet (10, 15, 20) ---");
+  
+  TestStep("2.1", "Set BLTN_CAM_EV_BfrTime_NvalueSet to 10");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_BfrTime_NvalueSet = 10;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_BfrTime_NvalueSet = 10");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("2.2", "Set BLTN_CAM_EV_BfrTime_NvalueSet to 15");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_BfrTime_NvalueSet = 15;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_BfrTime_NvalueSet = 15");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("2.3", "Set BLTN_CAM_EV_BfrTime_NvalueSet to 20");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_BfrTime_NvalueSet = 20;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_BfrTime_NvalueSet = 20");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  write("----------------------------------------");
+  
+  // 3. Set BLTN_CAM_EV_AftTime_NvalueSet: 10, 15, 20
+  write("--- Setting BLTN_CAM_EV_AftTime_NvalueSet (10, 15, 20) ---");
+  
+  TestStep("3.1", "Set BLTN_CAM_EV_AftTime_NvalueSet to 10");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_AftTime_NvalueSet = 10;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_AftTime_NvalueSet = 10");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("3.2", "Set BLTN_CAM_EV_AftTime_NvalueSet to 15");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_AftTime_NvalueSet = 15;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_AftTime_NvalueSet = 15");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("3.3", "Set BLTN_CAM_EV_AftTime_NvalueSet to 20");
+  msg_HU_BLTN_CAM.BLTN_CAM_EV_AftTime_NvalueSet = 20;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_EV_AftTime_NvalueSet = 20");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  write("----------------------------------------");
+  
+  // 4. Set BLTN_CAM_TML_Int_NvalueSet: 20, 40, 100
+  write("--- Setting BLTN_CAM_TML_Int_NvalueSet (20, 40, 100) ---");
+  
+  TestStep("4.1", "Set BLTN_CAM_TML_Int_NvalueSet to 20");
+  msg_HU_BLTN_CAM.BLTN_CAM_TML_Int_NvalueSet = 20;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_TML_Int_NvalueSet = 20");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("4.2", "Set BLTN_CAM_TML_Int_NvalueSet to 40");
+  msg_HU_BLTN_CAM.BLTN_CAM_TML_Int_NvalueSet = 40;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_TML_Int_NvalueSet = 40");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  TestStep("4.3", "Set BLTN_CAM_TML_Int_NvalueSet to 100");
+  msg_HU_BLTN_CAM.BLTN_CAM_TML_Int_NvalueSet = 100;
+  output(msg_HU_BLTN_CAM);
+  write("  -> BLTN_CAM_TML_Int_NvalueSet = 100");
+  TestStepPass();
+  testWaitForTimeout(TIME_WAIT_2S);
+  
+  write("----------------------------------------");
+  
+  // 5. Set BLTN_CAM_Sen_DEV_NvalueSet from 1 to 5 with 2s delays
+  write("--- Setting BLTN_CAM_Sen_DEV_NvalueSet (1 to 5) ---");
+  for (value = 1; value <= 5; value++)
+  {
+    TestStep("5.%d", "Set BLTN_CAM_Sen_DEV_NvalueSet to %d", value, value);
+    msg_HU_BLTN_CAM.BLTN_CAM_Sen_DEV_NvalueSet = value;
+    output(msg_HU_BLTN_CAM);
+    write("  -> BLTN_CAM_Sen_DEV_NvalueSet = %d", value);
+    TestStepPass();
+    testWaitForTimeout(TIME_WAIT_2S); // Wait 2 seconds
+  }
+  
+  write("----------------------------------------");
+  
+  // 6. Set BLTN_CAM_Sen_PEV_NvalueSet from 1 to 5 with 2s delays
+  write("--- Setting BLTN_CAM_Sen_PEV_NvalueSet (1 to 5) ---");
+  for (value = 1; value <= 5; value++)
+  {
+    TestStep("6.%d", "Set BLTN_CAM_Sen_PEV_NvalueSet to %d", value, value);
+    msg_HU_BLTN_CAM.BLTN_CAM_Sen_PEV_NvalueSet = value;
+    output(msg_HU_BLTN_CAM);
+    write("  -> BLTN_CAM_Sen_PEV_NvalueSet = %d", value);
+    TestStepPass();
+    testWaitForTimeout(TIME_WAIT_2S); // Wait 2 seconds
+  }
+  
+  write("========================================");
+  write("Test Completed Successfully!");
+  write("========================================");
+}
+
+/*
+ * Main test execution
+ */
+void MainTest()
+{
+  // Execute the test case
+  SetAllSignalsSequentially();
+}

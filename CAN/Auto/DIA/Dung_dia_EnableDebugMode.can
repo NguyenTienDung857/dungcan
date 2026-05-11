@@ -1,0 +1,810 @@
+/*@!Encoding:1252*/
+/* ============================================================================
+ * Module: DIA_EnableDebugMode_Test.can
+ * Target ECU: DVRS (Drive Video Record System / Built-in Cam)
+ * Protocol: UDS (ISO 14229)
+ * CAN ID: Request 0x795, Response 0x79D
+ * 
+ * Test Case: Enable Debug Mode
+ * Description: 
+ *   1. Switch to Extended Session
+ *   2. Unlock Security Access (0x27 sub-function 0x11/0x12)
+ *   3. Read current Debug Mode value (DID 0xA210)
+ *   4. Write Debug Mode ON (0x2E A2 10 01)
+ *   5. Verify by reading Debug Mode again
+ * ============================================================================
+ */
+
+variables
+{
+  // ECU Configuration
+  char gEcuName[20] = "DVRS";
+  
+  // Diagnostic Request/Response
+  diagRequest DVRS.* gReq;
+  diagResponse DVRS.* gResp;
+  
+  // DID Configuration
+  const dword DID_DEBUG_MODE = 0xA210;
+  const byte SERVICE_READ_DATA_BY_ID = 0x22;
+  const byte SERVICE_WRITE_DATA_BY_ID = 0x2E;
+  
+  // Debug Mode Values
+  const byte DEBUG_MODE_OFF = 0x00;
+  const byte DEBUG_MODE_ON = 0x01;
+  
+  // Security Access Constants
+  const byte SA_SERVICE_ID = 0x27;
+  const byte SA_REQUEST_SEED_OEUK = 0x11;  // Request Seed sub-function
+  const byte SA_SEND_KEY_OEUK = 0x12;      // Send Key sub-function
+  
+  // Session Control Constants
+  const byte SESSION_DEFAULT = 0x01;
+  const byte SESSION_PROGRAMMING = 0x02;
+  const byte SESSION_EXTENDED = 0x03;
+  
+  // NRC (Negative Response Code)
+  const byte NRC_SERVICE_NOT_SUPPORTED_IN_ACTIVE_SESSION = 0x7F;
+  
+  // Seed/Key storage
+  byte gSeedBuffer[8];
+  int gSeedSize = 0;
+  byte gKeyBuffer[8];
+  
+  // Timeout configuration
+  const int DIAG_TIMEOUT_MS = 2000;
+  
+  // Security Access variant for DiagGenerateKeyFromSeed
+  char gVariant[200] = "Common";
+  char gOption[200] = "";
+  
+  // Current Debug Mode value
+  byte gCurrentDebugMode = 0xFF;
+}
+
+/* ============================================================================
+ * Main Test Entry Point
+ * ============================================================================
+ */
+void MainTest()
+{
+  TC_EnableDebugMode();
+}
+
+/* ============================================================================
+ * Test Case: Enable Debug Mode
+ * ============================================================================
+ */
+testcase TC_EnableDebugMode()
+{
+  testCaseTitle("DIA_EnableDebugMode", "Enable DVRS Debug Mode ($2E A210)");
+  testCaseDescription("Unlock Security Access in Extended Session and enable Debug Mode");
+  
+  // Initialize
+  DiagSetTarget(gEcuName);
+  
+  write("============================================================");
+  write("Test Case: Enable Debug Mode");
+  write("DID: 0xA210 (Developer Mode)");
+  write("Target: Enable Debug Mode (Write 0x01)");
+  write("============================================================");
+  
+  // Step 1: Switch to Extended Session
+  Step1_SwitchToExtendedSession();
+  
+  // Step 2: Unlock Security Access
+  Step2_UnlockSecurityAccess();
+  
+  // Step 3: Read current Debug Mode value
+  Step3_ReadCurrentDebugMode();
+  
+  // Step 4: Write Debug Mode ON
+  Step4_WriteDebugModeOn();
+  
+  // Step 5: Verify Debug Mode is ON
+  Step5_VerifyDebugMode();
+  
+  // Cleanup - Return to Default Session
+  SwitchToSession(SESSION_DEFAULT);
+  
+  write("============================================================");
+  write("Test Case Completed");
+  write("============================================================");
+}
+
+/* ============================================================================
+ * Step 1: Switch to Extended Session
+ * ============================================================================
+ */
+void Step1_SwitchToExtendedSession()
+{
+  testStep("Step 1", "Switch to Extended Session (03)");
+  write("------------------------------------------------------------");
+  write("Step 1: Switch to Extended Session");
+  write("------------------------------------------------------------");
+  
+  // First go to Default Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 1", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  // Then switch to Extended Session
+  if (SwitchToSession(SESSION_EXTENDED))
+  {
+    testStepPass("Step 1", "PASS: Switched to Extended Session");
+  }
+  else
+  {
+    testStepFail("Step 1", "FAIL: Cannot switch to Extended Session");
+  }
+}
+
+/* ============================================================================
+ * Step 2: Unlock Security Access (Request Seed + Send Key)
+ * ============================================================================
+ */
+void Step2_UnlockSecurityAccess()
+{
+  long result;
+  
+  testStep("Step 2", "Unlock Security Access (27 11/12)");
+  write("------------------------------------------------------------");
+  write("Step 2: Security Access - Request Seed + Send Key");
+  write("------------------------------------------------------------");
+  
+  // Request Seed
+  result = SendRequestSeed();
+  
+  if (result != -1)
+  {
+    testStepFail("Step 2", "FAIL: Request Seed failed with NRC 0x%02X", result);
+    return;
+  }
+  
+  write("Seed received successfully");
+  
+  // Calculate Key from Seed
+  if (!CalculateKey())
+  {
+    testStepFail("Step 2", "FAIL: Cannot calculate key from seed");
+    return;
+  }
+  
+  // Send Key
+  result = SendKey();
+  
+  if (result == -1)
+  {
+    char unlockMsg[300];
+    snprintf(unlockMsg, elCount(unlockMsg), 
+             "PASS: Security Unlocked | Seed: %02X %02X %02X %02X %02X %02X %02X %02X | Key: %02X %02X %02X %02X %02X %02X %02X %02X",
+             gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+             gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7],
+             gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+             gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+    testStepPass("Step 2", unlockMsg);
+  }
+  else
+  {
+    testStepFail("Step 2", "FAIL: Send Key failed with NRC 0x%02X", result);
+  }
+}
+
+/* ============================================================================
+ * Step 3: Read Current Debug Mode Value (22 A2 10)
+ * ============================================================================
+ */
+void Step3_ReadCurrentDebugMode()
+{
+  long result;
+  
+  testStep("Step 3", "Read current Debug Mode value (22 A2 10)");
+  write("------------------------------------------------------------");
+  write("Step 3: Read Debug Mode DID 0xA210");
+  write("Request: 22 A2 10");
+  write("------------------------------------------------------------");
+  
+  result = ReadDebugMode();
+  
+  if (result == 1)
+  {
+    char modeStr[50];
+    if (gCurrentDebugMode == DEBUG_MODE_OFF)
+    {
+      snprintf(modeStr, elCount(modeStr), "OFF (0x%02X)", gCurrentDebugMode);
+    }
+    else if (gCurrentDebugMode == DEBUG_MODE_ON)
+    {
+      snprintf(modeStr, elCount(modeStr), "ON (0x%02X)", gCurrentDebugMode);
+    }
+    else
+    {
+      snprintf(modeStr, elCount(modeStr), "Unknown (0x%02X)", gCurrentDebugMode);
+    }
+    testStepPass("Step 3", "PASS: Current Debug Mode = %s", modeStr);
+  }
+  else if (result == 0)
+  {
+    testStepFail("Step 3", "FAIL: Negative response when reading Debug Mode");
+  }
+  else
+  {
+    testStepFail("Step 3", "FAIL: Timeout reading Debug Mode");
+  }
+}
+
+/* ============================================================================
+ * Step 4: Write Debug Mode ON (2E A2 10 01)
+ * ============================================================================
+ */
+void Step4_WriteDebugModeOn()
+{
+  long result;
+  byte valueToWrite;
+  
+  testStep("Step 4", "Write Debug Mode ON (2E A2 10 01)");
+  write("------------------------------------------------------------");
+  write("Step 4: Write Debug Mode = ON (0x01)");
+  write("Request: 2E A2 10 01");
+  write("------------------------------------------------------------");
+  
+  // Determine value to write
+  if (gCurrentDebugMode == DEBUG_MODE_ON)
+  {
+    write("Debug Mode is already ON. Writing ON again to confirm...");
+  }
+  
+  valueToWrite = DEBUG_MODE_ON;  // 0x01
+  
+  result = WriteDebugMode(valueToWrite);
+  
+  if (result == 1)
+  {
+    testStepPass("Step 4", "PASS: Debug Mode written to ON (0x%02X)", valueToWrite);
+  }
+  else if (result == 0)
+  {
+    testStepFail("Step 4", "FAIL: Negative response when writing Debug Mode");
+  }
+  else
+  {
+    testStepFail("Step 4", "FAIL: Timeout writing Debug Mode");
+  }
+}
+
+/* ============================================================================
+ * Step 5: Verify Debug Mode is ON
+ * ============================================================================
+ */
+void Step5_VerifyDebugMode()
+{
+  long result;
+  
+  testStep("Step 5", "Verify Debug Mode is ON (22 A2 10)");
+  write("------------------------------------------------------------");
+  write("Step 5: Verify Debug Mode after write");
+  write("------------------------------------------------------------");
+  
+  result = ReadDebugMode();
+  
+  if (result == 1)
+  {
+    if (gCurrentDebugMode == DEBUG_MODE_ON)
+    {
+      testStepPass("Step 5", "PASS: Debug Mode verified = ON (0x%02X)", gCurrentDebugMode);
+      write(">>> DEBUG MODE ENABLED SUCCESSFULLY! <<<");
+    }
+    else
+    {
+      testStepFail("Step 5", "FAIL: Debug Mode = 0x%02X (expected ON = 0x01)", gCurrentDebugMode);
+    }
+  }
+  else
+  {
+    testStepFail("Step 5", "FAIL: Cannot verify Debug Mode");
+  }
+}
+
+/* ============================================================================
+ * Helper Functions
+ * ============================================================================
+ */
+
+/*
+ * Switch to specified diagnostic session
+ * Returns: 1 = Success, 0 = Failure
+ */
+int SwitchToSession(byte sessionType)
+{
+  long result;
+  long respCode;
+  long respSize;
+  char sessionName[30];
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  int i;
+  
+  // Get session name for logging
+  switch(sessionType)
+  {
+    case SESSION_DEFAULT:
+      snprintf(sessionName, elCount(sessionName), "Default");
+      break;
+    case SESSION_PROGRAMMING:
+      snprintf(sessionName, elCount(sessionName), "Programming");
+      break;
+    case SESSION_EXTENDED:
+      snprintf(sessionName, elCount(sessionName), "Extended");
+      break;
+    default:
+      snprintf(sessionName, elCount(sessionName), "Unknown");
+  }
+  
+  // Create DiagnosticSessionControl request: [10] [SessionType]
+  DiagResize(gReq, 2);
+  DiagSetPrimitiveByte(gReq, 0, 0x10);  // DiagnosticSessionControl SID
+  DiagSetPrimitiveByte(gReq, 1, sessionType);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 10 %02X", sessionType);
+  write(">> Tx: %s (Switch to %s Session)", reqMsg, sessionName);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Session switched to %s (0x%02X) - OK", sessionName, sessionType);
+      TestWaitForTimeout(100);  // Small delay for session transition
+      return 1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 10 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Failed to switch to %s Session, NRC: 0x%02X", sessionName, respCode);
+      return 0;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout switching to %s Session", sessionName);
+    return 0;
+  }
+}
+
+/*
+ * Send SecurityAccess Request Seed (0x27 0x11)
+ * Returns: -1 = Positive Response (seed stored in gSeedBuffer)
+ *          >=0 = NRC value
+ */
+long SendRequestSeed()
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  
+  // Clear seed buffer
+  gSeedSize = 0;
+  for (i = 0; i < 8; i++)
+  {
+    gSeedBuffer[i] = 0;
+  }
+  
+  // Create Request Seed: [27] [11]
+  DiagResize(gReq, 2);
+  DiagSetPrimitiveByte(gReq, 0, SA_SERVICE_ID);
+  DiagSetPrimitiveByte(gReq, 1, SA_REQUEST_SEED_OEUK);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 27 %02X", SA_REQUEST_SEED_OEUK);
+  write(">> Tx: %s (Request Seed)", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      
+      // Extract seed (skip SID + SubFunction = 2 bytes)
+      gSeedSize = respSize - 2;
+      if (gSeedSize > 8) gSeedSize = 8;
+      
+      for (i = 0; i < gSeedSize; i++)
+      {
+        gSeedBuffer[i] = DiagGetPrimitiveByte(gResp, i + 2);
+      }
+      
+      write("Seed received [%d bytes]: %02X %02X %02X %02X %02X %02X %02X %02X",
+            gSeedSize,
+            gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+            gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+      
+      return -1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 27 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Request Seed rejected with NRC: 0x%02X", respCode);
+      return respCode;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Request Seed response");
+    return 0xFF;
+  }
+}
+
+/*
+ * Calculate Key from Seed using DiagGenerateKeyFromSeed
+ * Returns: 1 = Success, 0 = Failure
+ */
+int CalculateKey()
+{
+  dword actualSize;
+  int securityLevel;
+  int i;
+  long genResult;
+  
+  if (gSeedSize == 0)
+  {
+    write("No seed available for key calculation");
+    return 0;
+  }
+  
+  // Security level for OEUK: Use sub-function value 0x11 directly
+  securityLevel = SA_REQUEST_SEED_OEUK;  // 0x11
+  
+  // Clear key buffer
+  for (i = 0; i < 8; i++)
+  {
+    gKeyBuffer[i] = 0;
+  }
+  
+  write("Calculating key for Seed: %02X %02X %02X %02X %02X %02X %02X %02X",
+        gSeedBuffer[0], gSeedBuffer[1], gSeedBuffer[2], gSeedBuffer[3],
+        gSeedBuffer[4], gSeedBuffer[5], gSeedBuffer[6], gSeedBuffer[7]);
+  write("Security Level: 0x%02X, Variant: %s", securityLevel, gVariant);
+  
+  // Generate key from seed using CANoe Diagnostic Layer
+  genResult = DiagGenerateKeyFromSeed(gSeedBuffer, gSeedSize, securityLevel, gVariant, gOption, gKeyBuffer, 8, actualSize);
+  
+  write("DiagGenerateKeyFromSeed result: %d, actualSize: %d", genResult, actualSize);
+  
+  if (actualSize > 0)
+  {
+    write("Key calculated: %02X %02X %02X %02X %02X %02X %02X %02X", 
+          gKeyBuffer[0], gKeyBuffer[1], gKeyBuffer[2], gKeyBuffer[3],
+          gKeyBuffer[4], gKeyBuffer[5], gKeyBuffer[6], gKeyBuffer[7]);
+    return 1;
+  }
+  else
+  {
+    write("Key generation failed - check Seed&Key DLL configuration");
+    return 0;
+  }
+}
+
+/*
+ * Send SecurityAccess Send Key (0x27 0x12 <KEY>)
+ * Returns: -1 = Positive Response (unlocked)
+ *          >=0 = NRC value
+ */
+long SendKey()
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  int reqSize;
+  char reqMsg[200];
+  char respMsg[200];
+  char temp[10];
+  
+  // Create Send Key request: [27] [12] [KEY...]
+  reqSize = 2 + gSeedSize;  // SID + SubFunc + Key
+  DiagResize(gReq, reqSize);
+  DiagSetPrimitiveByte(gReq, 0, SA_SERVICE_ID);
+  DiagSetPrimitiveByte(gReq, 1, SA_SEND_KEY_OEUK);
+  
+  for (i = 0; i < gSeedSize; i++)
+  {
+    DiagSetPrimitiveByte(gReq, 2 + i, gKeyBuffer[i]);
+  }
+  
+  // Format request message
+  snprintf(reqMsg, elCount(reqMsg), "[795] 27 %02X ", SA_SEND_KEY_OEUK);
+  for (i = 0; i < gSeedSize; i++)
+  {
+    snprintf(temp, elCount(temp), "%02X ", gKeyBuffer[i]);
+    strncat(reqMsg, temp, elCount(reqMsg) - strlen(reqMsg) - 1);
+  }
+  write(">> Tx: %s", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Security Access Unlocked!");
+      return -1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 27 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Send Key rejected with NRC: 0x%02X", respCode);
+      return respCode;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Send Key response");
+    return 0xFF;
+  }
+}
+
+/*
+ * Read Debug Mode (0x22 A2 10)
+ * Returns: 1 = Positive Response, 0 = Negative Response, -1 = Timeout/Error
+ */
+long ReadDebugMode()
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  
+  // Create ReadDataByIdentifier request: [22] [A2] [10]
+  DiagResize(gReq, 3);
+  DiagSetPrimitiveByte(gReq, 0, SERVICE_READ_DATA_BY_ID);
+  DiagSetPrimitiveByte(gReq, 1, (DID_DEBUG_MODE >> 8) & 0xFF);  // 0xA2
+  DiagSetPrimitiveByte(gReq, 2, DID_DEBUG_MODE & 0xFF);         // 0x10
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 22 %02X %02X", 
+           (DID_DEBUG_MODE >> 8) & 0xFF, DID_DEBUG_MODE & 0xFF);
+  write(">> Tx: %s (Read Debug Mode)", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      
+      // Extract Debug Mode value (SID + DID_High + DID_Low + Data)
+      // Response: 62 A2 10 <value>
+      if (respSize >= 4)
+      {
+        gCurrentDebugMode = DiagGetPrimitiveByte(gResp, 3);
+        write("Debug Mode current value: 0x%02X", gCurrentDebugMode);
+      }
+      
+      return 1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 22 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Read Debug Mode rejected with NRC: 0x%02X", respCode);
+      return 0;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Read Debug Mode response");
+    return -1;
+  }
+}
+
+/*
+ * Write Debug Mode (0x2E A2 10 <value>)
+ * Returns: 1 = Positive Response, 0 = Negative Response, -1 = Timeout/Error
+ */
+long WriteDebugMode(byte value)
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  
+  // Create WriteDataByIdentifier request: [2E] [A2] [10] [value]
+  DiagResize(gReq, 4);
+  DiagSetPrimitiveByte(gReq, 0, SERVICE_WRITE_DATA_BY_ID);
+  DiagSetPrimitiveByte(gReq, 1, (DID_DEBUG_MODE >> 8) & 0xFF);  // 0xA2
+  DiagSetPrimitiveByte(gReq, 2, DID_DEBUG_MODE & 0xFF);         // 0x10
+  DiagSetPrimitiveByte(gReq, 3, value);                          // Data
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 2E %02X %02X %02X", 
+           (DID_DEBUG_MODE >> 8) & 0xFF, DID_DEBUG_MODE & 0xFF, value);
+  write(">> Tx: %s (Write Debug Mode)", reqMsg);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message (Expected: 6E A2 10)
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Debug Mode written successfully to 0x%02X", value);
+      
+      return 1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 2E %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Write Debug Mode rejected with NRC: 0x%02X", respCode);
+      GetNRCDescription(respCode);
+      return 0;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for Write Debug Mode response");
+    return -1;
+  }
+}
+
+/*
+ * Get NRC description and print it
+ */
+void GetNRCDescription(long nrc)
+{
+  char desc[100];
+  
+  switch(nrc)
+  {
+    case 0x10:
+      snprintf(desc, elCount(desc), "generalReject");
+      break;
+    case 0x11:
+      snprintf(desc, elCount(desc), "serviceNotSupported");
+      break;
+    case 0x12:
+      snprintf(desc, elCount(desc), "subFunctionNotSupported");
+      break;
+    case 0x13:
+      snprintf(desc, elCount(desc), "incorrectMessageLengthOrInvalidFormat");
+      break;
+    case 0x14:
+      snprintf(desc, elCount(desc), "responseTooLong");
+      break;
+    case 0x22:
+      snprintf(desc, elCount(desc), "conditionsNotCorrect");
+      break;
+    case 0x31:
+      snprintf(desc, elCount(desc), "requestOutOfRange");
+      break;
+    case 0x33:
+      snprintf(desc, elCount(desc), "securityAccessDenied");
+      break;
+    case 0x72:
+      snprintf(desc, elCount(desc), "generalProgrammingFailure");
+      break;
+    case 0x7E:
+      snprintf(desc, elCount(desc), "subFunctionNotSupportedInActiveSession");
+      break;
+    case 0x7F:
+      snprintf(desc, elCount(desc), "serviceNotSupportedInActiveSession");
+      break;
+    default:
+      snprintf(desc, elCount(desc), "Unknown NRC");
+  }
+  
+  write("NRC Description: %s", desc);
+}

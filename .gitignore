@@ -3,11 +3,21 @@
 *.log
 *.tmp
 *.bak
+*.vtestreport
+*.vtestreport-*
+*.tiend.settings
+*.pcap
+*.asc
+*.ase
 
 # CANoe specific
 Logging/
 CAN/Logging/
 CANFD/Logging/
+CANoeLogging/
 TestReports/
 CANFD/TestReports/
 CAN/TestReports/
+Auto/**/LOGASC/
+CANFD/Auto/**/LOGASC/
+CANFD/Auto/OTA/**/RomData*.bin

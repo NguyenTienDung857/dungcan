@@ -1,0 +1,120 @@
+/* * Module: DIA_023_DVRS_Test.can
+ * Target ECU: DVRS (Drive Video Record System / Built-in Cam)
+ * Protocol: UDS (ISO 14229)
+ * Sử dụng CANoe Diagnostic Layer
+ */
+
+variables
+{
+  char gEcuName[20] = "DVRS";
+  diagRequest DVRS.* gReq;
+}
+
+void MainTest()
+{
+  TC_DIA_023();
+}
+
+testcase TC_DIA_023()
+{
+  testCaseTitle("DIA_023", "DVRS Sensor Calibration & Config Check");
+  testCaseDescription("Sequentially reads 9 DIDs from DVRS ECU using Service 0x22");
+
+  // Step 1: Driving Mode Sensitivity (0xA101)
+  SendAndVerifyDID(0xA101, "Step 1: DVRS Driving Mode Sensitivity");
+
+  // Step 2: Parking Mode Sensitivity (0xA102)
+  SendAndVerifyDID(0xA102, "Step 2: DVRS Parking Mode Sensitivity");
+
+  // Step 3: Developer Mode (0xA210)
+  SendAndVerifyDID(0xA210, "Step 3: DVRS Developer Mode");
+
+  // Step 4: Car Info - Type/Project (0xA260)
+  SendAndVerifyDID(0xA260, "Step 4: DVRS Car Info");
+
+  // Step 5: Calibration Offset YAW (0xA240)
+  SendAndVerifyDID(0xA240, "Step 5: DVRS Calib Offset YAW");
+
+  // Step 6: Calibration Offset ROLL (0xA241)
+  SendAndVerifyDID(0xA241, "Step 6: DVRS Calib Offset ROLL");
+
+  // Step 7: Calibration Offset PITCH (0xA242)
+  SendAndVerifyDID(0xA242, "Step 7: DVRS Calib Offset PITCH");
+
+  // Step 8: Calibration Result Status (0xA243)
+  SendAndVerifyDID(0xA243, "Step 8: DVRS Calib Status");
+
+  // Step 9: Local RXSWIN Data (0xF1EF)
+  SendAndVerifyDID(0xF1EF, "Step 9: DVRS Local RXSWIN");
+}
+
+/*
+ * Gửi UDS ReadDataByIdentifier (0x22) sử dụng Diagnostic Layer
+ * Hiển thị response data trong báo cáo
+ */
+void SendAndVerifyDID(dword did, char stepName[])
+{
+  long result;
+  long respCode;
+  long respSize;
+  long i;
+  byte respByte;
+  char dataStr[500];
+  char tempStr[10];
+  diagResponse DVRS.* gResp;
+  
+  // Tạo request với raw bytes: [SID=0x22] [DID_High] [DID_Low]
+  DiagSetTarget(gEcuName);
+  DiagResize(gReq, 3);
+  DiagSetPrimitiveByte(gReq, 0, 0x22);
+  DiagSetPrimitiveByte(gReq, 1, (did >> 8) & 0xFF);
+  DiagSetPrimitiveByte(gReq, 2, did & 0xFF);
+  
+  // Gửi request
+  DiagSendRequest(gReq);
+  
+  // Chờ response trong 2000ms
+  result = TestWaitForDiagResponse(gReq, 2000);
+  
+  if (result == 1)
+  {
+    // Lấy response code: -1 = Positive, khác = NRC
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)
+    {
+      // Lấy response object
+      DiagGetLastResponse(gReq, gResp);
+      
+      // Lấy kích thước response
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Tạo chuỗi hex từ response data
+      snprintf(dataStr, elCount(dataStr), "Data[%d bytes]: ", respSize);
+      
+      // Lấy từng byte và format thành hex string
+      for (i = 0; i < respSize && i < 50; i++)  // Giới hạn 50 bytes
+      {
+        respByte = DiagGetPrimitiveByte(gResp, i);
+        snprintf(tempStr, elCount(tempStr), "%02X ", respByte);
+        strncat(dataStr, tempStr, elCount(dataStr) - strlen(dataStr) - 1);
+      }
+      
+      if (respSize > 50)
+      {
+        strncat(dataStr, "...", elCount(dataStr) - strlen(dataStr) - 1);
+      }
+      
+      // Báo cáo PASS với response data
+      testStepPass(stepName, "PASS DID 0x%04X | %s", did, dataStr);
+    }
+    else
+    {
+      testStepFail(stepName, "FAIL: NRC 0x%02X for DID 0x%04X", respCode, did);
+    }
+  }
+  else
+  {
+    testStepFail(stepName, "TIMEOUT: No response for DID 0x%04X", did);
+  }
+}

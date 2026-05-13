@@ -1,0 +1,198 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: INF_006_008_009 - 2.5 generation
+  Title: [Driving Info - EnableDrvInfo] - Recording with Driving Info enabled (OWP/PEV)
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test flow (Bước 1):
+    1.  KEY OFF
+    2.  KEY ON (Set_SMK_IGN)
+    3.  Click_USM_Reset
+    4.  Click_Rec_Reset
+    5.  Turn_ON_OWP
+    6.  Turn_ON_PEV
+    7.  Send_All_Stm_NvalueSet(0x2) -- tất cả stamp = ON
+    8.  KEY OFF
+    9.  WaitFor_RecSta_OWP_Recording (đợi OWP bắt đầu ghi)
+    9.1 testWindowOpen / testWindowMaximize panel BLTN_CAM_Gen2_DrvInfo
+    10. Enable_DrivingInfo (bật panel EnableDrvInfo = 1)
+    11. Đợi 10s
+    12. WaitFor_RecSta_PEV_Recording (đợi PEV bắt đầu ghi)
+    12.1 Click_Evt_Switch
+    13. Đợi 10s
+    14. KEY ON
+    15. Đóng panel BLTN_CAM_Gen2_DrvInfo
+*/
+
+variables
+{
+  long wait_owp_timeout_ms  = 60000;
+  int  wait_pev_timeout_s   = 60;
+
+  int setup_passed  = 0;
+  int step1_passed  = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms  _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms   _HU_CLOCK_01_1000ms;
+}
+
+
+// ============================================================================
+// Bước 1: KEY OFF -> KEY ON -> Setup -> Turn OWP/PEV -> All Stamps ON ->
+//          KEY OFF -> Wait OWP -> Open Panel -> Enable DrvInfo -> Wait 10s ->
+//          Wait PEV -> Click Evt Switch -> Wait 10s -> KEY ON -> Close Panel
+// ============================================================================
+testcase INF_006_008_009_1()
+{
+  SetTestStep("Bước 1 - INF_006_008_009");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 1: Setup + Turn OWP/PEV + Enable DrvInfo + Wait OWP + Wait PEV ===");
+  write("=================================================================");
+  testStep("Step1", "KEY OFF, KEY ON, Setup, Turn_ON_OWP, Turn_ON_PEV, All stamps ON, KEY OFF, Wait OWP recording, open panel, Enable DrvInfo, wait 10s, Wait PEV, Click Evt Switch, wait 10s, KEY ON");
+
+  // --- 1.1: KEY OFF ----------------------------------------------------------
+  write("Step 1.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  // --- 1.2: KEY ON (full init with CGW NM) -----------------------------------
+  write("Step 1.2: KEY ON (Set_SMK_IGN)...");
+  Set_SMK_IGN();
+
+  // --- 1.3: USM Reset --------------------------------------------------------
+  write("Step 1.3: Click_USM_Reset...");
+  Click_USM_Reset();
+
+  // --- 1.4: Rec Reset --------------------------------------------------------
+  write("Step 1.4: Click_Rec_Reset...");
+  Click_Rec_Reset();
+
+  // --- 1.5: Turn ON OWP ------------------------------------------------------
+  write("Step 1.5: Turn_ON_OWP...");
+  Turn_ON_OWP();
+
+  // --- 1.6: Turn ON PEV ------------------------------------------------------
+  write("Step 1.6: Turn_ON_PEV...");
+  Turn_ON_PEV();
+
+  // --- 1.7: Send_All_Stm_NvalueSet = 0x2 (ON) --------------------------------
+  write("Step 1.7: Send_All_Stm_NvalueSet(0x2) -- all stamps = ON...");
+  setup_passed = Send_All_Stm_NvalueSet(0x2);
+
+  if (setup_passed == 1)
+  {
+    testStepPass("Setup", "All stamps set to ON (0x2) successfully - PASS");
+  }
+  else
+  {
+    testStepFail("Setup", "Failed to set all stamps to ON - FAIL");
+    Log_Error_Details();
+  }
+
+  // --- 1.8: KEY OFF ----------------------------------------------------------
+  write("Step 1.8: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  // --- 1.9: Wait for OWP Recording -------------------------------------------
+  write("Step 1.9: WaitFor_RecSta_OWP_Recording...");
+  if (WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms) == 1)
+  {
+    // --- 1.9.1: Open and Maximize Panel --------------------------------------
+    write("Step 1.9.1: Opening Panel BLTN_CAM_Gen2_DrvInfo...");
+    openPanel("BLTN_CAM_Gen2_DrvInfo");
+    testWaitForTimeout(1000);
+
+    // --- 1.10: Enable DrivingInfo (set EnableDrvInfo = 1) --------------------
+    write("Step 1.10: Enable_DrivingInfo (EnableDrvInfo = 1)...");
+    Enable_DrivingInfo();
+    testStepPass("Step1.10", "EnableDrvInfo = ON - PASS");
+
+    // --- 1.11: Wait 10s -------------------------------------------------------
+    write("Step 1.11: Waiting 10 seconds...");
+    testWaitForTimeout(10000);
+
+    // --- 1.12: Wait for PEV Recording ----------------------------------------
+    write("Step 1.12: WaitFor_RecSta_PEV_Recording...");
+    if (WaitFor_RecSta_PEV_Recording(wait_pev_timeout_s) == 1)
+    {
+      testStepPass("Step1.12", "PEV Recording started successfully - PASS");
+
+      // --- 1.12.1: Click Evt Switch ------------------------------------------
+      write("Step 1.12.1: Click_Evt_Switch...");
+      Click_Evt_Switch();
+
+      // --- 1.13: Wait 10s -----------------------------------------------------
+      write("Step 1.13: Waiting 10 seconds...");
+      testWaitForTimeout(10000);
+
+      step1_passed = 1;
+    }
+    else
+    {
+      step1_passed = 0;
+      testStepFail("Step1.12", "Timeout waiting for PEV Recording - FAIL");
+      Log_Error_Details();
+    }
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1.9", "Timeout waiting for OWP Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  // --- 1.14: KEY ON ----------------------------------------------------------
+  write("Step 1.14: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // --- 1.15: Close Panel -----------------------------------------------------
+  write("Step 1.15: Closing Panel BLTN_CAM_Gen2_DrvInfo...");
+  closePanel("BLTN_CAM_Gen2_DrvInfo");
+  testWaitForTimeout(1000);
+
+  // Step overall result
+  if (step1_passed == 1)
+    testStepPass("Step1", "INF_006_008_009 Step 1 completed successfully - PASS");
+  else
+    testStepFail("Step1", "INF_006_008_009 Step 1 - FAIL");
+
+  StopTestTimer();
+}
+
+
+// ============================================================================
+// Summary
+// ============================================================================
+void MainTest()
+{
+  testReportFileName("TestReports\\INF_006_008_009 - 2.5 generation_report");
+
+  INF_006_008_009_1();
+
+  write("");
+  write("========================================");
+  write("=== INF_006_008_009 TEST SUMMARY ===");
+  write("========================================");
+
+  if (setup_passed == 1) write("  Setup : PASS");
+  else                   write("  Setup : FAIL");
+
+  if (step1_passed == 1) write("  Step 1: PASS");
+  else                   write("  Step 1: FAIL");
+
+  write("========================================");
+}

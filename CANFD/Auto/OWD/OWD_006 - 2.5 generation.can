@@ -1,0 +1,608 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Case: OWD_006
+  Title: [OWD Recording Test - ACC/IGN Mode with Build-in Cam Entry/Exit]
+  Verification items: Check OWD recording behavior in ACC and IGN modes with BLTN_CAM UI operations
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Step 1: Set SMK to IGN, click USM Reset, check BLTN_CAM_RecSta_OWD = 0x1 (Recording)
+  Step 2: Log - Cannot enter build-in cam in ACC mode
+  Step 3: Log - Cannot enter build-in cam in ACC mode
+  Step 4: Set SMK to ACC, TML Start, wait for DEV=0x1 (max 60s), Evt Switch, check all 4 signals = 0x1
+  Step 5: Log - Cannot enter build-in cam in ACC mode
+  Step 6: Log - Check video in real device
+  Step 7: Set SMK to IGN, check BLTN_CAM_RecSet_OWD = 0x2 (ON)
+  Step 8: Enter/Exit Build-in Cam 3 times, end at AVN HU UI mode
+  Step 9: Log - Check video images
+  Step 10: Set SMK to IGN, TML Start, wait for DEV=0x1 (max 60s), Evt Switch, check all 4 signals = 0x1
+  Step 11: Enter/Exit Build-in Cam 3 times, end at AVN HU UI mode
+  Step 12: Log - Check video in real device
+
+  NOTE: Uses BLTN_CAM_HU_UI_Mode for screenshots (response signal with delay consideration).
+        Added 2s delay for state transitions.
+*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  long max_wait_time = 60;  // 60 seconds max wait for DEV recording (updated for header)
+
+  // Result tracking variables for TEST SUMMARY
+  int step1_passed = 0;
+  int step4_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step10_passed = 0;
+  int step11_passed = 0;
+
+  // Message declarations
+  // CAN FD Message Declaration
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms  _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms   _HU_CLOCK_01_1000ms;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+
+testcase OWD_006_Init()
+{
+  Send_Value_To_COM(10600);
+  write("========================================");
+  write("=== START TEST OWD_006 ===");
+  write("========================================");
+
+  // 1.1 Set SMK to IGN via Profile Settings panel
+  write("[1.1] Setting SMK_Signal to IGN via Profile Settings panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(3000);
+
+  // 1.2b Click Rec Reset button
+  write("[1.2b] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+  // Enable CGW NM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK to IGN, click USM Reset, check BLTN_CAM_RecSta_OWD = 0x1
+  //============================================================================
+  Send_Value_To_COM(10601);
+  SetTestStep("Bước 1 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: Set SMK_Signal to IGN, USM Reset, Check RecSta_OWD ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + RecSta_OWD = 0x1 verification");
+
+
+  // 1.3 Check BLTN_CAM_RecSta_OWD = 0x1 (Recording)
+  write("[1.3] Checking BLTN_CAM_RecSta_OWD...");
+  result = Check_RecSta_OWD_Recording();
+
+  // Capture screenshot with all related signals including SMK status
+  write("[1.4] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSta_OWD = 0x1 (Recording) - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1", "BLTN_CAM_RecSta_OWD is NOT Recording - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_2_3()
+{
+  //============================================================================
+  // STEP 2 & 3: Log - Cannot enter build-in cam in ACC mode
+  //============================================================================
+  KEY_OFF();
+  testWaitForTimeout(3000);
+  Send_Value_To_COM(10602);
+ KEY_ON();
+  testWaitForTimeout(3000);
+  WaitFor_RecSta_OWD_Recording(60000); // Wait for OWD recording to start after key ON
+  testWaitForTimeout(3000);
+  KEY_OFF();
+
+  testStepPass("Step2_3", "ACC mode build-in cam restriction logged");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: Set SMK to ACC, TML Start, wait DEV=0x1 (60s), Evt Switch, check 4 signals
+  //============================================================================
+  Send_Value_To_COM(10604);
+  KEY_ON();
+  testWaitForTimeout(3000);
+  SetTestStep("Bước 4 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: ACC Mode - TML Start, Wait DEV, Evt Switch ===");
+  write("=================================================================");
+  testStep("Step4", "ACC + TML Start + DEV wait + Evt Switch + 4 signals check");
+
+  // 4.1 Set SMK to ACC via Profile Settings panel
+  write("[4.1] Setting SMK_Signal to ACC via Profile Settings panel...");
+  Set_SMK_ACC();
+  testWaitForTimeout(2000);
+
+  // 4.2 Click TML Start button via BLTN_CAM_Setting panel
+  write("[4.2] Clicking TML Start button via BLTN_CAM_Setting panel...");
+  Click_TML_Start();
+  testWaitForTimeout(2000);
+
+  // 4.3 Wait for BLTN_CAM_RecSta_DEV = 0x1 (max 60 seconds)
+  write("[4.3] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (max 60 seconds)...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time);
+
+  if(result == 1)
+  {
+    write(">>> DEV Recording detected, proceeding to Evt Switch <<<");
+  }
+  else
+  {
+    write(">>> WARNING: DEV Recording not detected within 60s, proceeding anyway <<<");
+  }
+
+  // 4.4 Click Evt Switch button via BLTN_CAM_Setting panel
+  write("[4.4] Clicking Evt Switch button via BLTN_CAM_Setting panel...");
+  Click_Evt_Switch();
+  // 4.6 Check all 4 recording signals = 0x1
+  write("[4.6] Checking all 4 recording signals...");
+  result = Check_All_Recording_Signals(); 
+
+  // 4.5 Set SMK to IGN via Profile Settings panel before checking signals
+  write("[4.5] Setting SMK_Signal to IGN via Profile Settings panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+
+  testWaitForTimeout(10000);
+  // Capture screenshot with all related signals including SMK status
+  write("[4.7] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // 4.8 Click TML Stop button to stop TML recording
+  write("[4.8] Clicking TML Stop button to stop TML recording...");
+  Click_TML_Stop();
+  testWaitForTimeout(2000);
+
+  if(result == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "All 4 signals = 0x1 (Recording) in ACC mode - PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    testStepFail("Step4", "Not all signals are Recording in ACC mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_5()
+{
+  //============================================================================
+  // STEP 5: Log - Cannot enter build-in cam in ACC mode
+  //============================================================================
+  Send_Value_To_COM(10605);
+  SetTestStep("Bước 5 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: ACC Mode - Cannot Enter Build-in Cam ===");
+  write("=================================================================");
+  testStep("Step5", "ACC mode build-in cam restriction log");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 5: LOG INFORMATION ***");
+  write("*** Cannot enter Build-in Cam screen while in ACC mode ***");
+  write("*** This is expected behavior ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step5", "ACC mode build-in cam restriction logged");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_6()
+{
+  KEY_OFF();
+  testWaitForTimeout(3000);
+  //============================================================================
+  // STEP 6: Log - Check video in real device
+  //============================================================================
+  Send_Value_To_COM(10606);
+  SetTestStep("Bước 6 - OWD_006");
+  StartTestTimer();
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+  WaitFor_RecSta_OWD_Recording(60000); // Wait for OWD recording to start after key ON
+
+
+
+
+  testStepPass("Step6", "Video verification logged - Manual check required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_7()
+{
+  int result = 0;
+  //============================================================================
+  // STEP 7: Set SMK to IGN, check BLTN_CAM_RecSet_OWD = 0x2 (ON)
+  //============================================================================
+  Send_Value_To_COM(10607);
+  SetTestStep("Bước 7 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: Set SMK to IGN, Check RecSet_OWD = ON ===");
+  write("=================================================================");
+  testStep("Step7", "SMK IGN + RecSet_OWD = 0x2 verification");
+
+  // 7.1 Set SMK to IGN via Profile Settings panel
+  write("[7.1] Setting SMK_Signal to IGN via Profile Settings panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 7.2 Check BLTN_CAM_RecSet_OWD = 0x2 (ON)
+  write("[7.2] Checking BLTN_CAM_RecSet_OWD...");
+  result = Check_RecSet_OWD_ON();
+
+  // Capture screenshot with all related signals including SMK status
+  write("[7.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step7_passed = 1;
+    testStepPass("Step7", "BLTN_CAM_RecSet_OWD = 0x2 (ON) in IGN mode - PASS");
+  }
+  else
+  {
+    step7_passed = 0;
+    testStepFail("Step7", "BLTN_CAM_RecSet_OWD is NOT ON in IGN mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_8()
+{
+  int i = 0;
+  int result = 0;
+
+  //============================================================================
+  // STEP 8: Enter/Exit Build-in Cam 3 times, end at AVN HU UI mode
+  //============================================================================
+  Send_Value_To_COM(10608);
+  SetTestStep("Bước 8 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 8: Enter/Exit Build-in Cam 3 Times (IGN Mode) ===");
+  write("=================================================================");
+  testStep("Step8", "Mode cycling 3 times in IGN mode");
+
+  for(i = 1; i <= 3; i++)
+  {
+    write("");
+    write("--- Cycle %d of 3 ---", i);
+
+    // Enter Built-in Cam mode
+    write("[8.%d.1] Entering Build-in Cam mode...", i);
+    Enter_BLTN_CAM();
+    testWaitForTimeout(2000);  // Wait 2s for signal delay
+
+    // Log current mode (using BLTN_CAM_HU_UI_Mode for response)
+    write("  After Enter: BLTN_CAM_HU_UI_Mode = 0x%X | SMK = 0x%X",
+          $BLTN_CAM_HU_UI_Mode, $SMK_TrmnlCtrlGrpStaBDC);
+
+    // Exit to AVN mode
+    write("[8.%d.2] Exiting to AVN HU UI mode...", i);
+    Exit_BLTN_CAM();
+    testWaitForTimeout(2000);  // Wait 2s for signal delay
+
+    // Log current mode
+    write("  After Exit: BLTN_CAM_HU_UI_Mode = 0x%X | SMK = 0x%X",
+          $BLTN_CAM_HU_UI_Mode, $SMK_TrmnlCtrlGrpStaBDC);
+  }
+
+  // Verify final state is AVN HU UI mode (0x0)
+  write("");
+  write("[8.4] Verifying final state is AVN HU UI mode...");
+  result = Check_BLTN_CAM_UI_Mode(0x0);
+
+  // Capture screenshot with SMK status
+  write("[8.5] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;HU_BLTN_CAM_UI_Mode;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step8_passed = 1;
+    testStepPass("Step8", "Mode cycling 3 times completed, final state AVN HU UI mode - PASS");
+  }
+  else
+  {
+    step8_passed = 0;
+    testStepFail("Step8", "Mode cycling failed - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_9()
+{
+  //============================================================================
+  // STEP 9: Log - Check video images
+  //============================================================================
+  Send_Value_To_COM(10609);
+  SetTestStep("Bước 9 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: Video Images Verification Log ===");
+  write("=================================================================");
+  testStep("Step9", "Video images verification log");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 9: LOG INFORMATION ***");
+  write("*** Please check the captured video images ***");
+  write("*** Verify video quality and timestamps ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step9", "Video images verification logged - Manual check required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_10()
+{
+  int result = 0;
+  //============================================================================
+  // STEP 10: Set SMK to IGN, TML Start, wait DEV=0x1 (60s), Evt Switch, check 4 signals
+  //============================================================================
+  Send_Value_To_COM(10610);
+  SetTestStep("Bước 10 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 10: IGN Mode - TML Start, Wait DEV, Evt Switch ===");
+  write("=================================================================");
+  testStep("Step10", "IGN + TML Start + DEV wait + Evt Switch + 4 signals check");
+
+  // 10.1 Set SMK to IGN via Profile Settings panel
+  write("[10.1] Setting SMK_Signal to IGN via Profile Settings panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  // 10.2 Click TML Start button via BLTN_CAM_Setting panel
+  write("[10.2] Clicking TML Start button via BLTN_CAM_Setting panel...");
+  Click_TML_Start();
+  testWaitForTimeout(2000);
+
+  // 10.3 Wait for BLTN_CAM_RecSta_DEV = 0x1 (max 60 seconds)
+  write("[10.3] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (max 60 seconds)...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time);
+
+  if(result == 1)
+  {
+    write(">>> DEV Recording detected, proceeding to Evt Switch <<<");
+  }
+  else
+  {
+    write(">>> WARNING: DEV Recording not detected within 60s, proceeding anyway <<<");
+  }
+
+  // 10.4 Click Evt Switch button via BLTN_CAM_Setting panel
+  write("[10.4] Clicking Evt Switch button via BLTN_CAM_Setting panel...");
+  Click_Evt_Switch();
+
+
+  // 10.5 Check all 4 recording signals = 0x1
+  write("[10.5] Checking all 4 recording signals...");
+  result = Check_All_Recording_Signals();
+
+  testWaitForTimeout(10000);
+  // Capture screenshot with all related signals including SMK status
+  write("[10.6] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // 10.7 Click TML Stop button to stop TML recording
+  write("[10.7] Clicking TML Stop button to stop TML recording...");
+  Click_TML_Stop();
+  testWaitForTimeout(2000);
+
+  if(result == 1)
+  {
+    step10_passed = 1;
+    testStepPass("Step10", "All 4 signals = 0x1 (Recording) in IGN mode - PASS");
+  }
+  else
+  {
+    step10_passed = 0;
+    testStepFail("Step10", "Not all signals are Recording in IGN mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_11()
+{
+  int i = 0;
+  int result = 0;
+
+  //============================================================================
+  // STEP 11: Enter/Exit Build-in Cam 3 times, end at AVN HU UI mode
+  //============================================================================
+  Send_Value_To_COM(10611);
+  SetTestStep("Bước 11 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 11: Enter/Exit Build-in Cam 3 Times (IGN Mode) ===");
+  write("=================================================================");
+  testStep("Step11", "Mode cycling 3 times in IGN mode after recording");
+
+  for(i = 1; i <= 3; i++)
+  {
+    write("");
+    write("--- Cycle %d of 3 ---", i);
+
+    // Enter Built-in Cam mode
+    write("[11.%d.1] Entering Build-in Cam mode...", i);
+    Enter_BLTN_CAM();
+    testWaitForTimeout(2000);  // Wait 2s for signal delay
+
+    // Log current mode (using BLTN_CAM_HU_UI_Mode for response)
+    write("  After Enter: BLTN_CAM_HU_UI_Mode = 0x%X | SMK = 0x%X",
+          $BLTN_CAM_HU_UI_Mode, $SMK_TrmnlCtrlGrpStaBDC);
+
+    // Exit to AVN mode
+    write("[11.%d.2] Exiting to AVN HU UI mode...", i);
+    Exit_BLTN_CAM();
+    testWaitForTimeout(2000);  // Wait 2s for signal delay
+
+    // Log current mode
+    write("  After Exit: BLTN_CAM_HU_UI_Mode = 0x%X | SMK = 0x%X",
+          $BLTN_CAM_HU_UI_Mode, $SMK_TrmnlCtrlGrpStaBDC);
+  }
+
+  // Verify final state is AVN HU UI mode (0x0)
+  write("");
+  write("[11.4] Verifying final state is AVN HU UI mode...");
+  result = Check_BLTN_CAM_UI_Mode(0x0);
+
+  // Capture screenshot with SMK status
+  write("[11.5] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;HU_BLTN_CAM_UI_Mode;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step11_passed = 1;
+    testStepPass("Step11", "Mode cycling 3 times completed, final state AVN HU UI mode - PASS");
+  }
+  else
+  {
+    step11_passed = 0;
+    testStepFail("Step11", "Mode cycling failed - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_006_12()
+{
+  //============================================================================
+  // STEP 12: Log - Check video in real device
+  //============================================================================
+  Send_Value_To_COM(10612);
+  SetTestStep("Bước 12 - OWD_006");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 12: Final Video Verification Log ===");
+  write("=================================================================");
+  testStep("Step12", "Final video verification log");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 12: LOG INFORMATION ***");
+  write("*** Please check video recording on real device ***");
+  write("*** Verify all recording modes (OWD/TML/DEV/MAR) ***");
+  write("*** Check video quality after mode cycling ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step12", "Final video verification logged - Manual check required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_006 - 2.5 generation_report");
+  /*
+  OWD_006_Init();
+  OWD_006_1();
+  OWD_006_2_3();
+  OWD_006_4();
+  OWD_006_5();
+  OWD_006_6();
+  OWD_006_7();
+  OWD_006_8();
+  OWD_006_9();
+  OWD_006_10();
+  OWD_006_11();
+  OWD_006_12();
+  */
+}

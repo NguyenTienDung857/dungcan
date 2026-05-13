@@ -1,0 +1,182 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: INF_004 - 2.5 generation
+  Title: [Driving Info - EnableDrvInfo] - Recording with Driving Info enabled
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test flow (Bước 1):
+    1.  KEY OFF
+    2.  KEY ON (Set_SMK_IGN)
+    3.  Click_USM_Reset
+    4.  Click_Rec_Reset
+    5.  Turn_ON_OWD
+    6.  Turn_ON_DEV
+    7.  Send_All_Stm_NvalueSet(0x2) -- tất cả stamp = ON
+    8.  WaitFor_RecSta_OWD_Recording (đợi OWD bắt đầu ghi)
+    8.1 testWindowOpen / testWindowMaximize panel BLTN_CAM_Gen2_DrvInfo
+    9.  Enable_DrivingInfo (bật panel EnableDrvInfo = 1)
+    10. Đợi 10s
+    11. WaitFor_RecSta_PEV_Recording (đợi PEV bắt đầu ghi)
+    12. Đợi 5s
+    13. KEY OFF
+    14. Đóng panel BLTN_CAM_Gen2_DrvInfo
+*/
+
+variables
+{
+  long wait_owd_timeout_ms  = 60000;
+  long wait_pev_timeout_ms  = 60000;
+
+  int setup_passed  = 0;
+  int step1_passed  = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms  _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms   _HU_CLOCK_01_1000ms;
+}
+
+
+// ============================================================================
+// Bước 1: KEY OFF -> KEY ON -> Setup -> Enable DrvInfo -> Wait OWD -> Wait PEV -> KEY OFF
+// ============================================================================
+testcase INF_004_1()
+{
+  SetTestStep("Bước 1 - INF_004");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 1: Setup + Enable DrvInfo + Wait OWD + Wait PEV === ");
+  write("=================================================================");
+  testStep("Step1", "KEY OFF, KEY ON, Setup, Turn_ON_OWD, Turn_ON_DEV, All stamps ON, Enable DrvInfo, Wait OWD recording, wait 10s, Wait PEV recording, wait 5s, KEY OFF");
+
+  // --- 1.1: KEY OFF ----------------------------------------------------------
+  write("Step 1.1: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  // --- 1.2: KEY ON (full init with CGW NM) -----------------------------------
+  write("Step 1.2: KEY ON (Set_SMK_IGN)...");
+  Set_SMK_IGN();
+
+  // --- 1.3: USM Reset --------------------------------------------------------
+  write("Step 1.3: Click_USM_Reset...");
+  Click_USM_Reset();
+
+  // --- 1.4: Rec Reset --------------------------------------------------------
+  write("Step 1.4: Click_Rec_Reset...");
+  Click_Rec_Reset();
+
+  // --- 1.5: Turn ON OWD ------------------------------------------------------
+  write("Step 1.5: Turn_ON_OWD...");
+  Turn_ON_OWD();
+
+  // --- 1.6: Turn ON DEV ------------------------------------------------------
+  write("Step 1.6: Turn_ON_DEV...");
+  Turn_ON_DEV();
+
+  // --- 1.7: Send_All_Stm_NvalueSet = 0x2 (ON) --------------------------------
+  write("Step 1.7: Send_All_Stm_NvalueSet(0x2) -- all stamps = ON...");
+  setup_passed = Send_All_Stm_NvalueSet(0x2);
+
+  if (setup_passed == 1)
+  {
+    testStepPass("Setup", "All stamps set to ON (0x2) successfully - PASS");
+  }
+  else
+  {
+    testStepFail("Setup", "Failed to set all stamps to ON - FAIL");
+    Log_Error_Details();
+  }
+
+  // --- 1.8: Wait for OWD Recording -------------------------------------------
+  write("Step 1.8: WaitFor_RecSta_OWD_Recording...");
+  if (WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms) == 1)
+  {
+    // --- 1.8.1: Open and Maximize Panel --------------------------------------
+    write("Step 1.8.1: Opening Panel BLTN_CAM_Gen2_DrvInfo...");
+    openPanel("BLTN_CAM_Gen2_DrvInfo");
+    testWaitForTimeout(1000);
+
+    // --- 1.9: Enable DrivingInfo (open panel EnableDrvInfo button) -----------
+    write("Step 1.9: Enable_DrivingInfo (EnableDrvInfo = 1)...");
+    Enable_DrivingInfo();
+    testStepPass("Step1.9", "EnableDrvInfo = ON - PASS");
+
+    // --- 1.10: Wait 10s -------------------------------------------------------
+    write("Step 1.10: Waiting 10 seconds...");
+    testWaitForTimeout(10000);
+    Click_Evt_Switch();
+    // --- 1.11: Wait for PEV Recording ----------------------------------------
+    write("Step 1.11: WaitFor_RecSta_PEV_Recording...");
+    if (WaitFor_RecSta_DEV_Recording(60) == 1)
+    {
+      testStepPass("Step1.11", "PEV Recording started successfully - PASS");
+
+      // --- 1.12: Wait 10s -------------------------------------------------------
+      write("Step 1.12: Waiting 10 seconds...");
+      testWaitForTimeout(10000);
+
+      step1_passed = 1;
+    }
+    else
+    {
+      step1_passed = 0;
+      testStepFail("Step1.11", "Timeout waiting for PEV Recording - FAIL");
+      Log_Error_Details();
+    }
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1.8", "Timeout waiting for OWD Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  // --- 1.13: KEY OFF ---------------------------------------------------------
+  write("Step 1.13: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  // --- 1.14: Close Panel -----------------------------------------------------
+  write("Step 1.14: Closing Panel BLTN_CAM_Gen2_DrvInfo...");
+  closePanel("BLTN_CAM_Gen2_DrvInfo");
+  testWaitForTimeout(1000);
+
+  // Step overall result
+  if (step1_passed == 1)
+    testStepPass("Step1", "INF_004 Step 1 completed successfully - PASS");
+  else
+    testStepFail("Step1", "INF_004 Step 1 - FAIL");
+
+  StopTestTimer();
+}
+
+
+// ============================================================================
+// Summary
+// ============================================================================
+void MainTest()
+{
+  testReportFileName("TestReports\\INF_004 - 2.5 generation_report");
+
+  INF_004_1();
+
+  write("");
+  write("========================================");
+  write("=== INF_004 TEST SUMMARY ===");
+  write("========================================");
+
+  if (step1_passed == 1)  write("  Step 1: PASS");
+  else                    write("  Step 1: FAIL");
+
+  write("========================================");
+}

@@ -1,0 +1,410 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_012
+  Title: OWD and DEV recording continuity while entering/exiting Built-in Cam
+         mode, key cycling, and B+ cycling.
+
+  Verification items:
+    - Step 1: KEY OFF/ON setup, SMK IGN, USM/Rec reset, wait OWD and DEV,
+              then enter Built-in Cam mode.
+    - Step 2: Exit Built-in Cam, wait OWD and DEV, wait 5s, wait DEV again,
+              then enter Built-in Cam mode.
+    - Step 3: Exit Built-in Cam, wait OWD and DEV, wait 5s, then enter
+              Built-in Cam mode.
+    - Step 4: Exit Built-in Cam, wait OWD and DEV, wait 5s, then KEY OFF.
+    - Step 5: KEY ON, wait OWD and DEV, wait 5s, B+ OFF, wait 2s, B+ ON.
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode.
+    - Helper functions from DeclarationFunction_Gen2.5.h are used first.
+*/
+
+variables
+{
+  long wait_owd_timeout_ms = 60000;
+  int wait_dev_timeout_s = 60;
+
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms  _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms   _HU_CLOCK_01_1000ms;
+}
+
+void Log_OWD_012_Signals()
+{
+  write("  BLTN_CAM_State      = 0x%X", $BLTN_CAM_State);
+  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
+  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+int Wait_OWD_012_OWD(int step_no, int action_no)
+{
+  int result = 0;
+
+  write("[%d.%d] Waiting for BLTN_CAM_RecSta_OWD = 0x1, timeout %d s...",
+        step_no, action_no, wait_owd_timeout_ms / 1000);
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step %d.%d did not detect OWD recording <<<",
+          step_no, action_no);
+    Log_OWD_012_Signals();
+  }
+  return result;
+}
+
+int Wait_OWD_012_DEV(int step_no, int action_no)
+{
+  int result = 0;
+
+  write("[%d.%d] Waiting for BLTN_CAM_RecSta_DEV = 0x1, timeout %d s...",
+        step_no, action_no, wait_dev_timeout_s);
+  result = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step %d.%d did not detect DEV recording <<<",
+          step_no, action_no);
+    Log_OWD_012_Signals();
+  }
+  return result;
+}
+
+int Enter_OWD_012_BLTN_CAM(int step_no, int action_no)
+{
+  int result = 0;
+
+  write("[%d.%d] Enter Built-in Cam mode...", step_no, action_no);
+  Enter_BLTN_CAM();
+  result = Check_BLTN_CAM_UI_Mode(0x1);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step %d.%d did not enter Built-in Cam mode <<<",
+          step_no, action_no);
+    Log_OWD_012_Signals();
+  }
+  return result;
+}
+
+int Exit_OWD_012_BLTN_CAM(int step_no, int action_no)
+{
+  int result = 0;
+
+  write("[%d.%d] Exit Built-in Cam mode to AVN...", step_no, action_no);
+  Exit_BLTN_CAM();
+  result = Check_BLTN_CAM_UI_Mode(0x0);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step %d.%d did not exit to AVN mode <<<",
+          step_no, action_no);
+    Log_OWD_012_Signals();
+  }
+  return result;
+}
+
+void Capture_OWD_012_Evidence(char step_name[])
+{
+  write("[%s] Capturing signal evidence...", step_name);
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+}
+
+testcase OWD_012_Init()
+{
+  Send_Value_To_COM(11200);
+  write("========================================");
+  write("=== START TEST OWD_012 ===");
+  write("=== OWD/DEV mode, key, and B+ cycle flow ===");
+  write("========================================");
+  testStep("Notification", "Start test OWD_012");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_012_1()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+  int result_enter = 0;
+
+  //============================================================================
+  // STEP 1: KEY OFF/ON, SMK IGN, USM/Rec reset, wait OWD/DEV, enter BLTN_CAM
+  //============================================================================
+  Send_Value_To_COM(11201);
+  SetTestStep("Buoc 1 - OWD_012");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: Setup + OWD/DEV recording + enter BLTN_CAM      ===");
+  write("=================================================================");
+  testStep("Step1", "KEY OFF/ON, SMK IGN, USM reset, Rec reset, wait OWD/DEV, enter BLTN_CAM");
+
+  write("[1.1] KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[1.2] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[1.3] Set SMK to IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  write("[1.4] Click USM Reset...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.5] Click Rec Reset...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  result_owd = Wait_OWD_012_OWD(1, 6);
+  result_dev = Wait_OWD_012_DEV(1, 7);
+  result_enter = Enter_OWD_012_BLTN_CAM(1, 8);
+
+  Log_OWD_012_Signals();
+  Capture_OWD_012_Evidence("Step1");
+
+  if(result_owd == 1 && result_dev == 1 && result_enter == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "Step 1 PASS - OWD/DEV detected and BLTN_CAM mode entered");
+  }
+  else
+  {
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "Step 1 FAIL - OWD/DEV recording or BLTN_CAM entry failed");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_012_2()
+{
+  int result_exit = 0;
+  int result_owd = 0;
+  int result_dev_1 = 0;
+  int result_dev_2 = 0;
+  int result_enter = 0;
+
+  //============================================================================
+  // STEP 2: Exit BLTN_CAM, wait OWD/DEV, wait 5s, wait DEV again, enter BLTN_CAM
+  //============================================================================
+  Send_Value_To_COM(11202);
+  SetTestStep("Buoc 2 - OWD_012");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Exit BLTN_CAM + OWD/DEV + wait DEV again        ===");
+  write("=================================================================");
+  testStep("Step2", "Exit BLTN_CAM, wait OWD/DEV, wait 5s, wait DEV again, enter BLTN_CAM");
+
+  result_exit = Exit_OWD_012_BLTN_CAM(2, 1);
+  result_owd = Wait_OWD_012_OWD(2, 2);
+  result_dev_1 = Wait_OWD_012_DEV(2, 3);
+
+  write("[2.4] Waiting 5 seconds before checking DEV again...");
+  testWaitForTimeout(5000);
+
+  result_dev_2 = Wait_OWD_012_DEV(2, 5);
+  result_enter = Enter_OWD_012_BLTN_CAM(2, 6);
+
+  Log_OWD_012_Signals();
+  Capture_OWD_012_Evidence("Step2");
+
+  if(result_exit == 1 && result_owd == 1 && result_dev_1 == 1 &&
+     result_dev_2 == 1 && result_enter == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "Step 2 PASS - AVN exit, OWD/DEV checks, and BLTN_CAM entry passed");
+  }
+  else
+  {
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "Step 2 FAIL - mode or OWD/DEV check failed");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_012_3()
+{
+  int result_exit = 0;
+  int result_owd = 0;
+  int result_dev = 0;
+  int result_enter = 0;
+
+  //============================================================================
+  // STEP 3: Exit BLTN_CAM, wait OWD/DEV, wait 5s, enter BLTN_CAM
+  //============================================================================
+  Send_Value_To_COM(11203);
+  SetTestStep("Buoc 3 - OWD_012");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: Exit BLTN_CAM + OWD/DEV + re-enter BLTN_CAM     ===");
+  write("=================================================================");
+  testStep("Step3", "Exit BLTN_CAM, wait OWD/DEV, wait 5s, enter BLTN_CAM");
+
+  result_exit = Exit_OWD_012_BLTN_CAM(3, 1);
+  result_owd = Wait_OWD_012_OWD(3, 2);
+  result_dev = Wait_OWD_012_DEV(3, 3);
+
+  write("[3.4] Waiting 5 seconds before entering BLTN_CAM again...");
+  testWaitForTimeout(5000);
+
+  result_enter = Enter_OWD_012_BLTN_CAM(3, 5);
+
+  Log_OWD_012_Signals();
+  Capture_OWD_012_Evidence("Step3");
+
+  if(result_exit == 1 && result_owd == 1 && result_dev == 1 &&
+     result_enter == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "Step 3 PASS - AVN exit, OWD/DEV checks, and BLTN_CAM entry passed");
+  }
+  else
+  {
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "Step 3 FAIL - mode or OWD/DEV check failed");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_012_4()
+{
+  int result_exit = 0;
+  int result_owd = 0;
+  int result_dev = 0;
+
+  //============================================================================
+  // STEP 4: Exit BLTN_CAM, wait OWD/DEV, wait 5s, KEY OFF
+  //============================================================================
+  Send_Value_To_COM(11204);
+  SetTestStep("Buoc 4 - OWD_012");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Exit BLTN_CAM + OWD/DEV + KEY OFF              ===");
+  write("=================================================================");
+  testStep("Step4", "Exit BLTN_CAM, wait OWD/DEV, wait 5s, KEY OFF");
+
+  result_exit = Exit_OWD_012_BLTN_CAM(4, 1);
+  result_owd = Wait_OWD_012_OWD(4, 2);
+  result_dev = Wait_OWD_012_DEV(4, 3);
+
+  write("[4.4] Waiting 5 seconds before KEY OFF...");
+  testWaitForTimeout(5000);
+
+  write("[4.5] KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  Log_OWD_012_Signals();
+  Capture_OWD_012_Evidence("Step4");
+
+  if(result_exit == 1 && result_owd == 1 && result_dev == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "Step 4 PASS - AVN exit and OWD/DEV detected before KEY OFF");
+  }
+  else
+  {
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "Step 4 FAIL - mode or OWD/DEV check failed before KEY OFF");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_012_5()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  //============================================================================
+  // STEP 5: KEY ON, wait OWD/DEV, wait 5s, B+ OFF, wait 2s, B+ ON
+  //============================================================================
+  Send_Value_To_COM(11205);
+  SetTestStep("Buoc 5 - OWD_012");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: KEY ON + OWD/DEV + B+ OFF/ON                  ===");
+  write("=================================================================");
+  testStep("Step5", "KEY ON, wait OWD/DEV, wait 5s, B+ OFF, wait 2s, B+ ON");
+
+  write("[5.1] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  result_owd = Wait_OWD_012_OWD(5, 2);
+  result_dev = Wait_OWD_012_DEV(5, 3);
+
+  write("[5.4] Waiting 5 seconds before B+ OFF...");
+  testWaitForTimeout(5000);
+
+  write("[5.5] Set B+ OFF...");
+  Set_BPlus_Off();
+
+  write("[5.6] Waiting 2 seconds before B+ ON...");
+  testWaitForTimeout(2000);
+
+  write("[5.7] Set B+ ON...");
+  Set_BPlus_On();
+
+  Log_OWD_012_Signals();
+  Capture_OWD_012_Evidence("Step5");
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "Step 5 PASS - OWD/DEV detected before B+ OFF/ON cycle");
+  }
+  else
+  {
+    step5_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5", "Step 5 FAIL - OWD/DEV check failed before B+ OFF/ON cycle");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_012 - 2.5 generation_report");
+  OWD_012_Init();
+  OWD_012_1();
+  OWD_012_2();
+  OWD_012_3();
+  OWD_012_4();
+  OWD_012_5();
+}

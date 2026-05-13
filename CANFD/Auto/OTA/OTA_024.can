@@ -1,0 +1,211 @@
+﻿/*@!Encoding:65001*/
+/*
+ * FILE OVERVIEW: OTA_024.can
+ *
+ * Muc tieu test:
+ * - Setup dieu kien OTA voi OWD ON.
+ * - Kiem tra SW version co phai ban 0 khong.
+ * - Neu khong phai ban 0: chay update_to_00.py de dua ve ban 0.
+ * - Luong chinh: chay update_to_03_ERT.py.
+ * - Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4.
+ * - Case nay danh gia ket qua dua tren version=0 va OWD Recording:
+ *   + AppState = 3 hoac 4, neu version=0 va OWD Recording OK -> PASS.
+ *   + Nguoc lai -> FAIL.
+ *
+ * Luu y setup:
+ * - O buoc setup dua version ve 0, du AppState la 3/4/timeout van tiep tuc
+ *   check lai version de quyet dinh co vao luong chinh hay khong.
+ */
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
+  char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
+  char gUpdateTo03ERTCmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_03_ERT.py\"";
+
+  int gAppStatePrev = -1;
+}
+
+on sysvar_update PythonCom::AppState
+{
+  write("[OTA_024][EVENT] AppState cu=%d, moi=%d", gAppStatePrev, @PythonCom::AppState);
+
+  OTA_Update_AppStateTrigger_FromValue(gAppStatePrev, @PythonCom::AppState);
+
+  if (@PythonCom::AppState == 3 && gAppStatePrev != 3)
+  {
+    write("[OTA_024][EVENT] Bat duoc AppState = 3");
+  }
+  else if (@PythonCom::AppState == 4 && gAppStatePrev != 4)
+  {
+    write("[OTA_024][EVENT] Bat duoc AppState = 4");
+  }
+
+  gAppStatePrev = @PythonCom::AppState;
+}
+
+int Run_Python_Update(char cmd[], char reason[])
+{
+  long result;
+
+  write("[OTA_024][PY] %s", reason);
+  write("[OTA_024][PY] WorkingDir = %s", gWorkingDir);
+  write("[OTA_024][PY] Command    = %s", cmd);
+  write("[OTA_024][PY] Reset AppState ve 0 truoc khi goi python");
+  @PythonCom::AppState = 0;
+
+  testStep("Python", "%s", reason);
+  testWaitForTimeout(10000);
+  result = TestWaitForSyscall(gWorkingDir, cmd, 0, 30000);
+  write("[OTA_024][PY] Syscall ret = %d", result);
+  // LUU Y: Khong dung ret de ket luan luong OTA. Ket qua OTA duoc xac nhan bang AppState (3/4).
+
+  if (result != 1)
+  {
+    write("[OTA_024][PY][WARN] ret=%d nhung van tiep tuc luong test", result);
+  }
+
+  testStepPass("Python", "Da goi python (%s), ret=%d", reason, result);
+  return 1;
+}
+testcase OTA_024()
+{
+  int swVerIsZero;
+  int swVerIsZeroAfterSetup;
+  int setupAppStateResult;
+  int mainAppStateResult;
+  int swVerIsZeroAfterMain;
+  int owdRecordingOk;
+
+  write("===========================================================");
+  write("[OTA_024] Start test case OTA_024");
+  write("===========================================================");
+
+  testStep("Step 1", "KEY OFF -> KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset -> Turn_ON_OWD");
+
+  write("[OTA_024] KEY_OFF");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[OTA_024] KEY_ON");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[OTA_024] Set_SMK_IGN");
+  Set_SMK_IGN();
+
+  write("[OTA_024] Click_USM_Reset");
+  Click_USM_Reset();
+
+  write("[OTA_024] Click_Rec_Reset");
+  Click_Rec_Reset();
+
+  write("[OTA_024] Turn_ON_OWD");
+  Turn_ON_OWD();
+
+  testStep("Step 2", "Kiem tra SW version co phai ban 0 khong");
+  swVerIsZero = Check_SWVerMinor3(0);
+
+  if (swVerIsZero != 1)
+  {
+    write("[OTA_024] Version khong phai ban 0 -> chay update_to_00.py de dua ve ban 0");
+
+    OTA_Reset_AppStateWaitContext();
+    gAppStatePrev = gOTA_AppStateWaitStart;
+    write("[OTA_024][SETUP] AppState truoc khi chay update_to_00.py = %d", gOTA_AppStateWaitStart);
+
+    Run_Python_Update(gUpdateTo00Cmd, "Dua version ve ban 0 - update_to_00.py");
+
+    // O setup: luon tiep tuc luong, chi dung AppState de ghi nhan ket qua.
+    setupAppStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+    if (setupAppStateResult == 3)
+    {
+      write("[OTA_024][SETUP] update_to_00.py bao AppState=3 (OK setup), tiep tuc");
+    }
+    else if (setupAppStateResult == 4)
+    {
+      write("[OTA_024][SETUP] update_to_00.py bao AppState=4 (NG setup), van tiep tuc check version");
+    }
+    else
+    {
+      write("[OTA_024][SETUP] Timeout 30 phut o buoc update_to_00.py, van tiep tuc check version");
+    }
+
+    testWaitForTimeout(3000);
+    swVerIsZeroAfterSetup = Check_SWVerMinor3(0);
+    if (swVerIsZeroAfterSetup != 1)
+    {
+      testStepFail("Version", "Sau update_to_00.py van chua ve ban 0");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      return;
+    }
+
+    testStepPass("Version", "Da dua SW version ve ban 0");
+  }
+  else
+  {
+    testStepPass("Version", "Da la ban 0 ngay tu dau");
+  }
+
+  testStep("Step 3", "Luong chinh: chay update_to_03_ERT.py");
+  OTA_Reset_AppStateWaitContext();
+  gAppStatePrev = gOTA_AppStateWaitStart;
+
+  write("[OTA_024] AppState truoc khi chay update_to_03_ERT.py = %d", gOTA_AppStateWaitStart);
+
+  Run_Python_Update(gUpdateTo03ERTCmd, "Luong chinh - chay update_to_03_ERT.py");
+
+  testStep("Step 4", "Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4");
+  mainAppStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+
+  if (mainAppStateResult == 3)
+  {
+    write("[OTA_024] AppState = 3 (update OK)");
+    swVerIsZeroAfterMain = Check_SWVerMinor3(0);
+    owdRecordingOk = Check_RecSta_OWD_Recording();
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+
+    if (swVerIsZeroAfterMain == 1 && owdRecordingOk == 1)
+    {
+      testStepPass("Result", "AppState=3, version=0, OWD Recording OK -> PASS");
+    }
+    else
+    {
+      testStepFail("Result", "AppState=3 nhung version khong phai ban 0 hoac OWD Recording khong OK -> FAIL");
+    }
+  }
+  else if (mainAppStateResult == 4)
+  {
+    write("[OTA_024] AppState = 4 (update NG)");
+    swVerIsZeroAfterMain = Check_SWVerMinor3(0);
+    owdRecordingOk = Check_RecSta_OWD_Recording();
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+
+    if (swVerIsZeroAfterMain == 1 && owdRecordingOk == 1)
+    {
+      testStepPass("Result", "AppState=4, version=0, OWD Recording OK -> PASS");
+    }
+    else
+    {
+      testStepFail("Result", "AppState=4 nhung version khong phai ban 0 hoac OWD Recording khong OK -> FAIL");
+    }
+  }
+  else
+  {
+    write("[OTA_024] Timeout 30 phut, khong thay AppState doi sang 3/4");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
+  }
+
+  write("[OTA_024] Ket thuc testcase");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OTA_024_report");
+  OTA_024();
+}

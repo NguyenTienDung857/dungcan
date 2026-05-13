@@ -1,0 +1,544 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSta_MAR, BLTN_CAM_RecSet_OWP,
+//                             BLTN_CAM_RecSet_PEV, BLTN_CAM_State
+
+/*
+  Test Case: OWP_014 - 2.5 (OWP_014)
+  Title: [MAR Manual Event Recording - RecSta_MAR Check, Multi-Event, OWP/PEV OFF Check]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, KEY OFF,
+           Check BLTN_CAM_RecSta_MAR = 0x0 (OFF), capture screenshot
+  Step 2_3: Log "check anh den LED"
+  Step 4:  Click_Evt_Switch, Check BLTN_CAM_RecSta_MAR = 0x1 (ON), capture screenshot
+  Step 5_6_7_8_9: Log "check anh den LED" (5 steps combined)
+  Step 10: Wait 10s, Click_Evt_Switch, wait 11s, Click_Evt_Switch, wait 11s, Click_Evt_Switch,
+           Log "check video man hinh truc tiep"
+  Step 11: Log "lay anh man hinh video truc tiep o buoc 10"
+  Step 12_13_14: Log "check video tren may tinh"
+  Step 15: KEY ON, Turn_OFF_OWP, Turn_OFF_PEV,
+           Check BLTN_CAM_RecSet_OWP = 0x1 (OFF), Check BLTN_CAM_RecSet_PEV = 0x1 (OFF),
+           capture screenshot
+  Step 16: KEY OFF, Check BLTN_CAM_RecSta_MAR = 0x0 (OFF), capture screenshot
+  Step 17_18: Log "check anh den LED"
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_3_passed = 0;
+  int step4_passed = 0;
+  int step5_6_7_8_9_passed = 0;
+  int step10_passed = 0;
+  int step11_passed = 0;
+  int step12_13_14_passed = 0;
+  int step15_passed = 0;
+  int step16_passed = 0;
+  int step17_18_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms  _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms   _HU_CLOCK_01_1000ms;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_014_Init()
+{
+  Send_Value_To_COM(21400);
+  write("========================================");
+  write("=== START TEST OWP_014 - 2.5 ===");
+  write("========================================");
+  testStep("Notification", "Start test OWP_014 - 2.5");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, KEY OFF,
+//         Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+// ============================================================================
+testcase OWP_014_1()
+{
+  Send_Value_To_COM(21401);
+  SetTestStep("Bước 1 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 1: Init + KEY OFF, Check RecSta_MAR = 0x0 (OFF) ===");
+  testStep("Step1", "Set_SMK_IGN, USM/Rec Reset, KEY OFF, Check RecSta_MAR = OFF");
+
+  // 1.1: Set_SMK_IGN
+  write("");
+  write("Step 1.1: Setting SMK_Signal to IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.2: Click USM Reset
+  write("");
+  write("Step 1.2: Clicking USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("");
+  write("Step 1.3: Clicking Rec Reset...");
+  Click_Rec_Reset();
+
+  // 1.4: KEY OFF
+  write("");
+  write("Step 1.4: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 1.5: Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  write("");
+  write("Step 1.5: Checking BLTN_CAM_RecSta_MAR...");
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  if ($BLTN_CAM_RecSta_MAR == 0x0)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x0 (OFF) <<<");
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSta_MAR = 0x0 (OFF) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X, expected 0x0 (OFF) <<<", $BLTN_CAM_RecSta_MAR);
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSta_MAR = 0x%X, expected 0x0 - FAIL", $BLTN_CAM_RecSta_MAR);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  write("=== FINISH STEP 1 ===");
+  testwaitForTimeout(2000);
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2 & 3: Log "check anh den LED"
+// ============================================================================
+testcase OWP_014_2_3()
+{
+  Send_Value_To_COM(21402);
+  SetTestStep("Bước 2 và 3 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 2 & 3: Check anh den LED ===");
+  testStep("Step2_3", "Check anh den LED");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** Hay CHECK ANH DEN LED tren thiet bi!                  ***");
+  write("*** Kiem tra den LED co nhap nhay dung khong.             ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_State");
+
+  step2_3_passed = 1;
+  testStepPass("Step2_3", "Log: check anh den LED - manual check required");
+  write("=== FINISH STEP 2 & 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 4: Click_Evt_Switch, Check BLTN_CAM_RecSta_MAR = 0x1 (ON)
+// ============================================================================
+testcase OWP_014_4()
+{
+  Send_Value_To_COM(21404);
+  SetTestStep("Bước 4 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 4: Click_Evt_Switch, Check RecSta_MAR = 0x1 (ON) ===");
+  testStep("Step4", "Click_Evt_Switch, Check RecSta_MAR = ON");
+
+  // 4.1: Click Event Switch
+  write("");
+  write("Step 4.1: Clicking Event Switch (MAR trigger)...");
+  Click_Evt_Switch();
+  testWaitForTimeout(5000);
+
+  // 4.2: Check BLTN_CAM_RecSta_MAR = 0x1 (ON)
+  write("");
+  write("Step 4.2: Checking BLTN_CAM_RecSta_MAR...");
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  if ($BLTN_CAM_RecSta_MAR == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x1 (ON) <<<");
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_RecSta_MAR = 0x1 (ON) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X, expected 0x1 (ON) <<<", $BLTN_CAM_RecSta_MAR);
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_RecSta_MAR = 0x%X, expected 0x1 - FAIL", $BLTN_CAM_RecSta_MAR);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5, 6, 7, 8, 9: Log "check anh den LED"
+// ============================================================================
+testcase OWP_014_5_6_7_8_9()
+{
+  Send_Value_To_COM(21405);
+  SetTestStep("Bước 5 và 6 và 7 và 8 và 9 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 5, 6, 7, 8, 9: Check anh den LED ===");
+  testStep("Step5_6_7_8_9", "Check anh den LED (steps 5-9)");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** Hay CHECK ANH DEN LED tren thiet bi!                  ***");
+  write("*** Kiem tra den LED co nhap nhay dung khong.             ***");
+  write("*** (Step 5, 6, 7, 8, 9)                                  ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_State");
+
+  step5_6_7_8_9_passed = 1;
+  testStepPass("Step5_6_7_8_9", "Log: check anh den LED - manual check required");
+  write("=== FINISH STEP 5, 6, 7, 8, 9 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 10: Wait 10s, Click_Evt_Switch, wait 11s, Click_Evt_Switch,
+//          wait 11s, Click_Evt_Switch, log check video man hinh truc tiep
+// ============================================================================
+testcase OWP_014_10()
+{
+  Send_Value_To_COM(21410);
+  SetTestStep("Bước 10 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 10: 3x MAR events (10s+11s+11s), Check video ===");
+  testStep("Step10", "3x Click_Evt_Switch with delays, check live video");
+
+  // 10.1: Wait 10 seconds
+  write("");
+  write("Step 10.1: Waiting 10 seconds before first event...");
+  testWaitForTimeout(10000);
+
+  // 10.2: First Click_Evt_Switch
+  write("");
+  write("Step 10.2: MAR event 1/3 - Click_Evt_Switch...");
+  Click_Evt_Switch();
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  // 10.3: Wait 11 seconds
+  write("");
+  write("Step 10.3: Waiting 11 seconds before second event...");
+  testWaitForTimeout(11000);
+
+  // 10.4: Second Click_Evt_Switch
+  write("");
+  write("Step 10.4: MAR event 2/3 - Click_Evt_Switch...");
+  Click_Evt_Switch();
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  // 10.5: Wait 11 seconds
+  write("");
+  write("Step 10.5: Waiting 11 seconds before third event...");
+  testWaitForTimeout(11000);
+
+  // 10.6: Third Click_Evt_Switch
+  write("");
+  write("Step 10.6: MAR event 3/3 - Click_Evt_Switch...");
+  Click_Evt_Switch();
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  // 10.7: Log check video man hinh truc tiep
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED]                                     ***");
+  write("*** Hay CHECK VIDEO MAN HINH TRUC TIEP tren thiet bi!     ***");
+  write("*** Kiem tra video co ghi nhan 3 su kien MAR.              ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  step10_passed = 1;
+  testStepPass("Step10", "3x MAR events triggered, live video check notified - PASS");
+  write("=== FINISH STEP 10 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 11: Log "lay anh man hinh video truc tiep o buoc 10"
+// ============================================================================
+testcase OWP_014_11()
+{
+  Send_Value_To_COM(21411);
+  SetTestStep("Bước 11 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 11: Lay anh man hinh video truc tiep o buoc 10 ===");
+  testStep("Step11", "Lay anh man hinh video truc tiep o buoc 10");
+
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] LAY ANH MAN HINH VIDEO TRUC TIEP O BUOC 10!   ***");
+  write("*** Hay su dung anh man hinh da chup o buoc 10             ***");
+  write("*** de lam bang chung cho buoc nay.                         ***");
+  write("*************************************************************");
+  write("");
+
+  step11_passed = 1;
+  testStepPass("Step11", "Log: lay anh man hinh video truc tiep o buoc 10 - PASS");
+  write("=== FINISH STEP 11 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 12, 13, 14: Log "check video tren may tinh"
+// ============================================================================
+testcase OWP_014_12_13_14()
+{
+  Send_Value_To_COM(21412);
+  SetTestStep("Bước 12 và 13 và 14 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 12, 13, 14: Check video tren may tinh ===");
+  testStep("Step12_13_14", "Check video tren may tinh");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** CHECK VIDEO TREN MAY TINH!                            ***");
+  write("***                                                       ***");
+  write("*** Step 12: Kiem tra video MAR da ghi tren may tinh      ***");
+  write("*** Step 13: Kiem tra chat luong video MAR                ***");
+  write("*** Step 14: Kiem tra thoi gian ghi video MAR             ***");
+  write("*************************************************************");
+  write("");
+
+  step12_13_14_passed = 1;
+  testStepPass("Step12_13_14", "Log: check video tren may tinh - manual check required");
+  write("=== FINISH STEP 12, 13, 14 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 15: KEY ON, Turn_OFF_OWP, Turn_OFF_PEV,
+//          Check BLTN_CAM_RecSet_OWP = 0x1 (OFF),
+//          Check BLTN_CAM_RecSet_PEV = 0x1 (OFF)
+// ============================================================================
+testcase OWP_014_15()
+{
+  int owp_ok;
+  int pev_ok;
+  Send_Value_To_COM(21415);
+  SetTestStep("Bước 15 - OWP_014");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 15: KEY ON, Turn OFF OWP & PEV, Check RecSet = OFF ===");
+  testStep("Step15", "KEY ON, Turn OFF OWP, Turn OFF PEV, Check RecSet OFF");
+
+  // 15.1: KEY ON
+  write("");
+  write("Step 15.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  // 15.2: Turn OFF OWP
+  write("");
+  write("Step 15.2: Turn OFF OWP...");
+  Turn_OFF_OWP();
+  testWaitForTimeout(3000);
+
+  // 15.3: Turn OFF PEV
+  write("");
+  write("Step 15.3: Turn OFF PEV...");
+  Turn_OFF_PEV();
+  testWaitForTimeout(3000);
+
+  // 15.4: Check BLTN_CAM_RecSet_OWP = 0x1 (OFF)
+  write("");
+  write("Step 15.4: Checking BLTN_CAM_RecSet_OWP...");
+  write("  BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+  owp_ok = 0;
+  if ($BLTN_CAM_RecSet_OWP == 0x1)
+  {
+    write(">>> [OK] BLTN_CAM_RecSet_OWP = 0x1 (OFF) <<<");
+    owp_ok = 1;
+  }
+  else
+  {
+    write(">>> [NG] BLTN_CAM_RecSet_OWP = 0x%X, expected 0x1 (OFF) <<<", $BLTN_CAM_RecSet_OWP);
+  }
+
+  // 15.5: Check BLTN_CAM_RecSet_PEV = 0x1 (OFF)
+  write("");
+  write("Step 15.5: Checking BLTN_CAM_RecSet_PEV...");
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+  pev_ok = 0;
+  if ($BLTN_CAM_RecSet_PEV == 0x1)
+  {
+    write(">>> [OK] BLTN_CAM_RecSet_PEV = 0x1 (OFF) <<<");
+    pev_ok = 1;
+  }
+  else
+  {
+    write(">>> [NG] BLTN_CAM_RecSet_PEV = 0x%X, expected 0x1 (OFF) <<<", $BLTN_CAM_RecSet_PEV);
+  }
+
+  if (owp_ok == 1 && pev_ok == 1)
+  {
+    write(">>> [PASS] Both OWP and PEV = OFF <<<");
+    step15_passed = 1;
+    testStepPass("Step15", "RecSet_OWP=0x1, RecSet_PEV=0x1 (both OFF) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] OWP or PEV not OFF <<<");
+    step15_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step15", "RecSet_OWP=0x%X, RecSet_PEV=0x%X - FAIL", $BLTN_CAM_RecSet_OWP, $BLTN_CAM_RecSet_PEV);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_MAR;BLTN_CAM_State");
+
+  write("=== FINISH STEP 15 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 16: KEY OFF, Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+// ============================================================================
+testcase OWP_014_16()
+{
+  Send_Value_To_COM(21416);
+  SetTestStep("Bước 16 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 16: KEY OFF, Check RecSta_MAR = 0x0 (OFF) ===");
+  testStep("Step16", "KEY OFF, Check RecSta_MAR = OFF");
+
+  // 16.1: KEY OFF
+  write("");
+  write("Step 16.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 16.2: Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  write("");
+  write("Step 16.2: Checking BLTN_CAM_RecSta_MAR...");
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+
+  if ($BLTN_CAM_RecSta_MAR == 0x0)
+  {
+    write(">>> [PASS] BLTN_CAM_RecSta_MAR = 0x0 (OFF) <<<");
+    step16_passed = 1;
+    testStepPass("Step16", "BLTN_CAM_RecSta_MAR = 0x0 (OFF) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RecSta_MAR = 0x%X, expected 0x0 (OFF) <<<", $BLTN_CAM_RecSta_MAR);
+    step16_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step16", "BLTN_CAM_RecSta_MAR = 0x%X, expected 0x0 - FAIL", $BLTN_CAM_RecSta_MAR);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  write("=== FINISH STEP 16 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 17 & 18: Log "check anh den LED"
+// ============================================================================
+testcase OWP_014_17_18()
+{
+  Send_Value_To_COM(21417);
+  SetTestStep("Bước 17 và 18 - OWP_014");
+  StartTestTimer();
+  write("");
+  write("=== STEP 17 & 18: Check anh den LED ===");
+  testStep("Step17_18", "Check anh den LED");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** Hay CHECK ANH DEN LED tren thiet bi!                  ***");
+  write("*** Kiem tra den LED co nhap nhay dung khong.             ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_MAR;BLTN_CAM_State");
+
+  step17_18_passed = 1;
+  testStepPass("Step17_18", "Log: check anh den LED - manual check required");
+  write("=== FINISH STEP 17 & 18 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_014 - 2.5 generation_report");
+
+  OWP_014_Init();
+
+  OWP_014_1();
+  OWP_014_2_3();
+  OWP_014_4();
+  OWP_014_5_6_7_8_9();
+  OWP_014_10();
+  OWP_014_11();
+  OWP_014_12_13_14();
+  OWP_014_15();
+  OWP_014_16();
+  OWP_014_17_18();
+
+}

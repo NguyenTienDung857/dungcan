@@ -1,0 +1,185 @@
+/*@!Encoding:65001*/
+includes { #include "../DeclarationFunction_Gen2.5.h" }
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//Add signal to graphic 2: BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR
+variables {
+  // Global Variable Declaration
+  int step1_passed = 0;
+  byte value_Bfr = 0;
+  byte value_Aft = 0;
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+void BLTN_CAM_Settings(int Choose_Option){
+  switch (Choose_Option){
+    case(1):
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break; 
+    case(2):
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Bft: +15"); @panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break; 
+    case(3):
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Bft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;      
+  }
+  testWaitForTimeout(500);
+    
+  if($BLTN_CAM_Set_EV_BfrTime != value_Bfr){
+      
+    write("Bfr_time is not match");
+    
+    write("Stop test"); //stop();
+    
+  }
+  else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
+    
+    write("Aft_time is not match");
+    
+    write("Stop test"); //stop();
+    
+  }
+}
+
+testcase OWD_021_Init(){
+  Send_Value_To_COM(12100);
+  write("Start test OWD_021 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_021_1(){
+  Send_Value_To_COM(12101);
+  SetTestStep("Bước 1 - OWD_021");
+  StartTestTimer();
+
+  testStep("Notification","Start test OWD_021_1");
+  testStep("Step1", "MAR recording time check: BfrTime=-10s, AftTime=+10s -> MAR starts after Evt Switch, check duration 9~11s");
+  write("Start test OWD_021_1");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  @panel::Switch_CGWNM = 1;
+
+  KEY_ON();
+  testWaitForTimeout(3000);
+  
+  @panel::Switch_CGWNM = 0;
+  
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  BLTN_CAM_Settings(1);
+  testWaitForTimeout(2000);
+  
+  @panel::Switch_Clock = 1;
+  
+  Exit_BLTN_CAM();
+
+  testWaitForTimeout(11000);
+  
+  @panel::Button_SwitchEvt = 0;
+  
+  testWaitForTimeout(500);
+  
+  @panel::Button_SwitchEvt = 1;  
+  
+  if (testWaitForSignalChange(BLTN_CAM_RecSta_MAR,10000) == 1){
+    write("MAR recording is started");
+    testStepPass("Pass", "Test-case is OK");
+    step1_passed = 1;
+  }
+  else{
+    write("Error: MAR recording hasn't started");
+    write(">>> FAIL REASON: MAR recording has not started within timeout <<<");
+    Log_Error_Details();
+    testStepFail("Fail","Test-case is NG");
+    step1_passed = 0;
+  }  
+  
+  testWaitForTimeout(10000);
+  
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR"); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  KEY_OFF(); write("Run KEY_OFF()");
+
+  @panel::Switch_CGWNM = 0;
+
+  testStep("TEST SUMMARY","--- OWD_021_1 ---");
+  testStep("","Step 1: Start test OWD_021_1 ... PASS");
+  if (step1_passed) { testStep("","Step 2: Check MAR recording ... PASS"); } else { testStep("","Step 2: Check MAR recording ... FAIL"); }
+  testStep("","Step 3: Screenshot ... PASS");
+  write("Finish OWD_021_1");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_021_2(){
+  Send_Value_To_COM(12102);
+  SetTestStep("Bước 2 - OWD_021");
+  StartTestTimer();
+
+  testStep("Notification","Start test OWD_021_2");
+  testStep("Step2", "MAR NOT triggered in BLTN_CAM mode: Evt Switch in Build-in Cam -> expect RecSta_MAR stays 0x0 (OFF)");
+  write("Start test OWD_021_2");
+  
+  @panel::Switch_CGWNM = 1;
+  
+  KEY_ON();
+  testWaitForTimeout(3000);
+  
+  @panel::Switch_CGWNM = 0;
+  
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  BLTN_CAM_Settings(1);
+  testWaitForTimeout(2000);
+  
+  @panel::Button_SwitchEvt = 0;
+  
+  testWaitForTimeout(500);
+  
+  @panel::Button_SwitchEvt = 1;  
+  
+  if (testWaitForSignalChange(BLTN_CAM_RecSta_MAR,10000) == 1){
+    write("MAR recording is started");
+    write(">>> FAIL REASON: MAR recording started unexpectedly without Clock ON <<<");
+    Log_Error_Details();
+    testStepFail("Fail", "Test-case is NG");
+    step1_passed = 0;
+  }
+  else{
+    write(" MAR recording hasn't started");
+    testStepPass("Pass","Test-case is OK");
+    step1_passed = 1;
+  }  
+
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR"); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  KEY_OFF(); write("Run KEY_OFF()");
+
+  @panel::Switch_CGWNM = 0;
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWD_021 - 2.5 generation_report");
+  
+  OWD_021_Init();
+  OWD_021_1();
+  OWD_021_2();
+}

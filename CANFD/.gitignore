@@ -11,14 +11,9 @@
 *.asc
 *.ase
 
-# CANoe specific
+# CANoe generated output
 Logging/
-CAN/Logging/
-CANFD/Logging/
-CANoeLogging/
 TestReports/
-CANFD/TestReports/
-CAN/TestReports/
 Auto/**/LOGASC/
-CANFD/Auto/**/LOGASC/
-CANFD/Auto/OTA/**/RomData*.bin
+Auto/OTA/**/RomData*.bin
+rpt*.vtestreport*

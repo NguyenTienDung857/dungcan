@@ -1,0 +1,785 @@
+/*@!Encoding:65001*/
+
+includes { #include "../DeclarationFunction_Gen2.5.h" }
+
+/*
+  Test Case: OWD_028
+  Title: [TML + MAR + DEV Combined Recording Test with OWD ON/OFF]
+  Verification items:
+    - Step 1:  SMK IGN + USM Reset + Rec Reset + AVN + TML Start -> RecSta_TML = 0x1 (ON), wait 5s, Screenshot
+    - Step 2:  Evt Switch -> RecSta_MAR = 0x1 (Recording), wait 12s, Screenshot
+    - Step 3:  Evt Switch -> RecSta_MAR = 0x1 (Recording), wait 10s, Screenshot
+    - Step 4:  Manual event trigger -> RecSta_DEV = 0x1 (ON) within 10s, wait 10s, Screenshot
+    - Step 5:  Manual event trigger -> RecSta_DEV = 0x1 (ON) within 10s, wait 10s, Screenshot
+    - Step 6:  TML Stop + BLTN_CAM + OWD OFF + AVN + TML Start + Manual driving event
+               -> RecSta_DEV = 0x1 within 20s -> immediately TML Stop, Screenshot
+    - Step 7:  TML Stop + BLTN_CAM + OWD OFF + AVN + TML Start + Evt Switch
+               -> RecSta_MAR = 0x1 -> immediately TML Stop, wait 10s, Screenshot
+    - Step 8:  Enter BLTN_CAM + OWD ON + AVN -> check AIN > 4 within 10s, Screenshot
+    - Step 9:  TML Start -> RecSta_TML = 0x1 (ON), Screenshot
+    - Step 10: Manual event trigger -> RecSta_DEV = 0x1 within 20s, wait 10s, Screenshot
+    - Step 11: Manual event trigger -> RecSta_DEV = 0x1 within 20s
+               -> immediately Evt Switch, wait 10s, TML Stop, Screenshot
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_10s = 60000;   // 10 seconds timeout
+  long max_wait_time_20s = 60000;   // 20 seconds timeout
+
+  // Message declarations for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+  int step10_passed = 0;
+  int step11_passed = 0;
+
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_028_Init()
+{
+  Send_Value_To_COM(12800);
+  write("========================================");
+  write("=== START TEST OWD_028 ===");
+  write("=== TML + MAR + DEV Combined Test   ===");
+  write("=== with OWD ON/OFF                 ===");
+  write("========================================");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK IGN, USM Reset, Rec Reset, AVN mode,
+  //         Click TML Start, Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  //         Wait 5s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12801);
+  SetTestStep("Bước 1 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Rec Reset + AVN mode      ===");
+  write("===         TML Start + Check RecSta_TML = 0x1 (ON)         ===");
+  write("===         Wait 5s + Screenshot (AIN)                      ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Rec Reset + AVN + TML Start + TML ON");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Ensure AVN mode
+  write("[1.4] Ensuring AVN mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 1.5 Click TML Start
+  write("[1.5] Clicking TML Start on panel...");
+  Click_TML_Start();
+
+  // 1.6 Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  write("[1.6] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  // 1.7 Wait 5 seconds
+  write("[1.7] Waiting 5 seconds...");
+  testWaitForTimeout(5000);
+
+  // 1.8 Capture screenshot
+  write("[1.8] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSta_TML = 0x1 (ON) after TML Start - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL REASON: TML did NOT turn ON");
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSta_TML did NOT turn ON after TML Start - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_2()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 2: Click Evt Switch
+  //         Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  //         Wait 12s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12802);
+  SetTestStep("Bước 2 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Evt Switch + Check RecSta_MAR = 0x1 (Recording) ===");
+  write("===         Wait 12s + Screenshot (AIN)                     ===");
+  write("=================================================================");
+  testStep("Step2", "Evt Switch + MAR Recording + Wait 12s");
+
+  // 2.1 Click Evt Switch button
+  write("[2.1] Clicking Evt Switch button...");
+  Click_Evt_Switch();
+
+  // 2.2 Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  write("[2.2] Checking BLTN_CAM_RecSta_MAR = 0x1 (Recording)...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  // 2.3 Wait 12 seconds
+  write("[2.3] Waiting 12 seconds...");
+  testWaitForTimeout(12000);
+
+  // 2.4 Capture screenshot
+  write("[2.4] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "BLTN_CAM_RecSta_MAR = 0x1 (Recording) after Evt Switch - PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    write(">>> FAIL REASON: MAR Recording NOT detected after Evt Switch");
+    Log_Error_Details();
+    testStepFail("Step2", "BLTN_CAM_RecSta_MAR Recording NOT detected after Evt Switch - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_3()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 3: Click Evt Switch
+  //         Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  //         Wait 10s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12803);
+  SetTestStep("Bước 3 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: Evt Switch + Check RecSta_MAR = 0x1 (Recording) ===");
+  write("===         Wait 10s + Screenshot (AIN)                     ===");
+  write("=================================================================");
+  testStep("Step3", "Evt Switch + MAR Recording + Wait 10s");
+
+  // 3.1 Click Evt Switch button
+  write("[3.1] Clicking Evt Switch button...");
+  Click_Evt_Switch();
+
+  // 3.2 Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  write("[3.2] Checking BLTN_CAM_RecSta_MAR = 0x1 (Recording)...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  // 3.3 Wait 10 seconds
+  write("[3.3] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 3.4 Capture screenshot
+  write("[3.4] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "BLTN_CAM_RecSta_MAR = 0x1 (Recording) after 2nd Evt Switch - PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    write(">>> FAIL REASON: MAR Recording NOT detected after 2nd Evt Switch");
+    Log_Error_Details();
+    testStepFail("Step3", "BLTN_CAM_RecSta_MAR Recording NOT detected after 2nd Evt Switch - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: Log - Ask user to trigger event
+  //         Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10s
+  //         Wait 10s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12804);
+  SetTestStep("Bước 4 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Manual Event Trigger                            ===");
+  write("===         Check RecSta_DEV = 0x1 (ON) within 10s          ===");
+  write("===         Wait 10s + Screenshot (AIN)                     ===");
+  write("=================================================================");
+  testStep("Step4", "Manual event trigger + DEV ON + Wait 10s");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 4: PLEASE TRIGGER AN EVENT NOW! ***");
+  write("*** (e.g. apply impact/shock to the camera) ***");
+  write("*** Waiting up to 10 seconds for DEV recording to start ***");
+  write("*************************************************************");
+  write("");
+
+  // 4.1 Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10s
+  write("[4.1] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time_10s / 1000);
+
+  // 4.2 Wait 10 seconds
+  write("[4.2] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 4.3 Capture screenshot
+  write("[4.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_RecSta_DEV = 0x1 (ON) after manual event trigger - PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    write(">>> FAIL REASON: DEV Recording did NOT turn ON within 10s");
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_RecSta_DEV did NOT turn ON within 10s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_5()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 5: Log - Ask user to trigger event
+  //         Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10s
+  //         Wait 10s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12805);
+  SetTestStep("Bước 5 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Manual Event Trigger (2nd time)                 ===");
+  write("===         Check RecSta_DEV = 0x1 (ON) within 10s          ===");
+  write("===         Wait 10s + Screenshot (AIN)                     ===");
+  write("=================================================================");
+  testStep("Step5", "Manual event trigger 2 + DEV ON + Wait 10s");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 5: PLEASE TRIGGER AN EVENT NOW! ***");
+  write("*** (e.g. apply impact/shock to the camera) ***");
+  write("*** Waiting up to 10 seconds for DEV recording to start ***");
+  write("*************************************************************");
+  write("");
+
+  // 5.1 Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10s
+  write("[5.1] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 10 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time_10s / 1000);
+
+  // 5.2 Wait 10 seconds
+  write("[5.2] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 5.3 Capture screenshot
+  write("[5.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "BLTN_CAM_RecSta_DEV = 0x1 (ON) after 2nd manual event trigger - PASS");
+  }
+  else
+  {
+    step5_passed = 0;
+    write(">>> FAIL REASON: DEV Recording did NOT turn ON within 10s (2nd attempt)");
+    Log_Error_Details();
+    testStepFail("Step5", "BLTN_CAM_RecSta_DEV did NOT turn ON within 10s (2nd attempt) - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_6()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 6: TML Stop + Enter BLTN_CAM + Turn OFF OWD
+  //         If RecSet_OWD = 0x1 (OFF) -> Return to AVN + TML Start
+  //         Log - Ask user to trigger driving event
+  //         If RecSta_DEV = 0x1 (ON) within 20s -> Immediately TML Stop
+  //         Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12806);
+  SetTestStep("Bước 6 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: TML Stop + BLTN_CAM + OWD OFF + AVN             ===");
+  write("===         TML Start + Manual driving event trigger         ===");
+  write("===         DEV ON within 20s -> Immediately TML Stop        ===");
+  write("=================================================================");
+  testStep("Step6", "TML Stop + OWD OFF + TML Start + Driving event + DEV ON + TML Stop");
+
+  // 6.1 Click TML Stop
+  write("[6.1] Clicking TML Stop...");
+  Click_TML_Stop();
+  testWaitForTimeout(2000);
+
+  // 6.2 Enter BLTN_CAM and turn OFF OWD
+  write("[6.2] Entering BLTN_CAM to turn OFF OWD...");
+  Turn_OFF_OWD();
+
+  // 6.3 Click TML Start (now in AVN mode after Turn_OFF_OWD returned)
+  write("[6.3] Clicking TML Start...");
+  Click_TML_Start();
+  testWaitForTimeout(2000);
+
+  // 6.4 Log - Ask user to trigger driving event
+  write("");
+  write("*************************************************************");
+  write("*** STEP 6: PLEASE TRIGGER A DRIVING EVENT NOW! ***");
+  write("*** (e.g. drive the vehicle / apply impact to camera) ***");
+  write("*** Waiting up to 20 seconds for DEV recording to start ***");
+  write("*** When DEV = ON detected, TML will be stopped immediately ***");
+  write("*************************************************************");
+  write("");
+
+  // 6.5 Wait for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20s
+  write("[6.5] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time_20s / 1000);
+
+  if(result == 1)
+  {
+    // 6.6 Immediately click TML Stop
+    write("[6.6] DEV ON detected! Immediately clicking TML Stop...");
+    Click_TML_Stop();
+  }
+  else
+  {
+    write("[6.6] DEV Recording NOT detected within 20s. Clicking TML Stop anyway...");
+    Click_TML_Stop();
+  }
+
+  // 6.7 Capture screenshot
+  write("[6.7] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSet_OWD;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "DEV ON detected -> TML Stop immediately - PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    write(">>> FAIL REASON: DEV Recording NOT detected within 20s (OWD OFF)");
+    Log_Error_Details();
+    testStepFail("Step6", "DEV Recording NOT detected within 20s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_7()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 7: TML Stop + Enter BLTN_CAM + Turn OFF OWD
+  //         If RecSet_OWD = 0x1 (OFF) -> Return to AVN + TML Start
+  //         Click Evt Switch, if RecSta_MAR = 0x1 (Recording)
+  //         -> Immediately TML Stop, Wait 10s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12807);
+  SetTestStep("Bước 7 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: TML Stop + BLTN_CAM + OWD OFF + AVN             ===");
+  write("===         TML Start + Evt Switch + MAR Recording           ===");
+  write("===         -> Immediately TML Stop + Wait 10s + Screenshot  ===");
+  write("=================================================================");
+  testStep("Step7", "TML Stop + OWD OFF + TML Start + Evt Switch + MAR ON + TML Stop");
+
+  // 7.1 Click TML Stop (safety - in case still running)
+  write("[7.1] Clicking TML Stop...");
+  Click_TML_Stop();
+  testWaitForTimeout(2000);
+
+  // 7.2 Enter BLTN_CAM and turn OFF OWD
+  write("[7.2] Entering BLTN_CAM to turn OFF OWD...");
+  Turn_OFF_OWD();
+  result = Check_RecSet_OWD_OFF();
+
+  if(result == 1)
+  {
+    write("[7.2] OWD turned OFF confirmed (RecSet_OWD = 0x1)");
+  }
+  else
+  {
+    write("[7.2] WARNING: OWD OFF not confirmed, continuing anyway...");
+  }
+
+  // 7.3 Click TML Start (now in AVN mode)
+  write("[7.3] Clicking TML Start...");
+  Click_TML_Start();
+  testWaitForTimeout(2000);
+
+  // 7.4 Click Evt Switch
+  write("[7.4] Clicking Evt Switch...");
+  Click_Evt_Switch();
+
+  // 7.5 Check BLTN_CAM_RecSta_MAR = 0x1 (Recording) within 10s
+  write("[7.5] Waiting for BLTN_CAM_RecSta_MAR = 0x1 (Recording)...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    // 7.6 Immediately click TML Stop
+    write("[7.6] MAR Recording detected! Immediately clicking TML Stop...");
+    Click_TML_Stop();
+  }
+  else
+  {
+    write("[7.6] MAR Recording NOT detected. Clicking TML Stop anyway...");
+    Click_TML_Stop();
+  }
+
+  // 7.7 Wait 10 seconds
+  write("[7.7] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 7.8 Capture screenshot
+  write("[7.8] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSet_OWD;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step7_passed = 1;
+    testStepPass("Step7", "MAR Recording detected -> TML Stop immediately - PASS");
+  }
+  else
+  {
+    step7_passed = 0;
+    write(">>> FAIL REASON: MAR Recording NOT detected after Evt Switch (OWD OFF)");
+    Log_Error_Details();
+    testStepFail("Step7", "MAR Recording NOT detected after Evt Switch - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_8()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 8: Enter BLTN_CAM + Turn ON OWD
+  //         If RecSet_OWD = 0x2 (ON) -> Return to AVN
+  //         Within 10s check AIN > 4, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12808);
+  SetTestStep("Bước 8 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 8: Enter BLTN_CAM + OWD ON + AVN                   ===");
+  write("===         Check AIN > 4 within 10s + Screenshot (AIN)     ===");
+  write("=================================================================");
+  testStep("Step8", "BLTN_CAM + OWD ON + AVN + Check AIN > 4");
+
+  // 8.1 Enter BLTN_CAM and turn ON OWD
+  write("[8.1] Entering BLTN_CAM to turn ON OWD...");
+  Turn_ON_OWD();
+ 
+
+  // 8.2 Wait and check AIN > 4 within 10s
+  write("[8.2] Checking AIN > 4 within 10 seconds...");
+  result = Check_AIN_Above_Threshold(4.0, max_wait_time_10s);
+
+  // 8.3 Capture screenshot
+  write("[8.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step8_passed = 1;
+    testStepPass("Step8", "AIN > 4 detected after OWD ON - PASS");
+  }
+  else
+  {
+    step8_passed = 0;
+    write(">>> FAIL REASON: AIN NOT > 4 within 10s after OWD ON");
+    Log_Error_Details();
+    testStepFail("Step8", "AIN NOT > 4 within 10s after OWD ON - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_9()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 9: Click TML Start
+  //         Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  //         Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12809);
+  SetTestStep("Bước 9 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: TML Start + Check RecSta_TML = 0x1 (ON)         ===");
+  write("===         Screenshot (AIN)                                 ===");
+  write("=================================================================");
+  testStep("Step9", "TML Start + TML ON + Screenshot");
+
+  // 9.1 Click TML Start
+  write("[9.1] Clicking TML Start...");
+  Click_TML_Start();
+
+  // 9.2 Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  write("[9.2] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  // 9.3 Capture screenshot
+  write("[9.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step9_passed = 1;
+    testStepPass("Step9", "BLTN_CAM_RecSta_TML = 0x1 (ON) after TML Start - PASS");
+  }
+  else
+  {
+    step9_passed = 0;
+    write(">>> FAIL REASON: TML did NOT turn ON after TML Start");
+    Log_Error_Details();
+    testStepFail("Step9", "BLTN_CAM_RecSta_TML did NOT turn ON after TML Start - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_10()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 10: Log - Ask user to trigger event
+  //          Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20s
+  //          Wait 10s, Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12810);
+  SetTestStep("Bước 10 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 10: Manual Event Trigger                           ===");
+  write("===          Check RecSta_DEV = 0x1 (ON) within 20s         ===");
+  write("===          Wait 10s + Screenshot (AIN)                    ===");
+  write("=================================================================");
+  testStep("Step10", "Manual event trigger + DEV ON within 20s + Wait 10s");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 10: PLEASE TRIGGER AN EVENT NOW! ***");
+  write("*** (e.g. apply impact/shock to the camera) ***");
+  write("*** Waiting up to 20 seconds for DEV recording to start ***");
+  write("*************************************************************");
+  write("");
+
+  // 10.1 Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20s
+  write("[10.1] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time_20s / 1000);
+
+  // 10.2 Wait 10 seconds
+  write("[10.2] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 10.3 Capture screenshot
+  write("[10.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step10_passed = 1;
+    testStepPass("Step10", "BLTN_CAM_RecSta_DEV = 0x1 (ON) after manual event trigger - PASS");
+  }
+  else
+  {
+    step10_passed = 0;
+    write(">>> FAIL REASON: DEV Recording did NOT turn ON within 20s");
+    Log_Error_Details();
+    testStepFail("Step10", "BLTN_CAM_RecSta_DEV did NOT turn ON within 20s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_028_11()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 11: Log - Ask user to trigger event
+  //          Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20s
+  //          -> Immediately Click Evt Switch
+  //          Wait 10s -> Click TML Stop
+  //          Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(12811);
+  SetTestStep("Bước 11 - OWD_028");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 11: Manual Event Trigger                           ===");
+  write("===          DEV ON within 20s -> Immediately Evt Switch     ===");
+  write("===          Wait 10s -> TML Stop + Screenshot (AIN)        ===");
+  write("=================================================================");
+  testStep("Step11", "Manual event trigger + DEV ON + Evt Switch + TML Stop");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 11: PLEASE TRIGGER AN EVENT NOW! ***");
+  write("*** (e.g. apply impact/shock to the camera) ***");
+  write("*** Waiting up to 20 seconds for DEV recording to start ***");
+  write("*** When DEV = ON detected, Evt Switch will be triggered ***");
+  write("*** Then wait 10s and TML Stop will be clicked ***");
+  write("*************************************************************");
+  write("");
+
+  // 11.1 Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20s
+  write("[11.1] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (ON) within 20 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(max_wait_time_20s / 1000);
+
+  if(result == 1)
+  {
+    // 11.2 Immediately click Evt Switch
+    write("[11.2] DEV ON detected! Immediately clicking Evt Switch...");
+    Click_Evt_Switch();
+  }
+  else
+  {
+    write("[11.2] DEV Recording NOT detected within 20s. Clicking Evt Switch anyway...");
+    Click_Evt_Switch();
+  }
+
+  // 11.3 Wait 10 seconds
+  write("[11.3] Waiting 10 seconds...");
+  testWaitForTimeout(10000);
+
+  // 11.4 Click TML Stop
+  write("[11.4] Clicking TML Stop...");
+  Click_TML_Stop();
+
+  // 11.5 Capture screenshot
+  write("[11.5] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode");
+
+  if(result == 1)
+  {
+    step11_passed = 1;
+    testStepPass("Step11", "DEV ON -> Evt Switch -> Wait 10s -> TML Stop - PASS");
+  }
+  else
+  {
+    step11_passed = 0;
+    write(">>> FAIL REASON: DEV Recording NOT detected within 20s");
+    Log_Error_Details();
+    testStepFail("Step11", "DEV Recording NOT detected within 20s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_028 - 2.5 generation_report");
+
+  //write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_028_Init();
+  OWD_028_1();
+  OWD_028_2();
+  OWD_028_3();
+  OWD_028_4();
+  OWD_028_5();
+  OWD_028_6();
+  OWD_028_7();
+  OWD_028_8();
+  OWD_028_9();
+  OWD_028_10();
+  OWD_028_11();
+}

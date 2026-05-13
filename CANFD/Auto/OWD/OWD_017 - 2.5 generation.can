@@ -1,0 +1,336 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_017
+  Title: [MAR Recording Test - Event Switch in BLTN_CAM and AVN Mode]
+  Verification items:
+    - Check MAR recording does NOT start when Evt Switch clicked in BLTN_CAM mode
+    - Verify BLTN_CAM_RecSta_MAR = 0x0 (OFF) after returning to AVN mode
+    - Verify MAR recording starts when Evt Switch clicked in AVN mode
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test Steps:
+    Step 1: Set SMK to IGN, USM Reset, Rec Reset, Enter BLTN_CAM,
+            click Evt Switch, check BLTN_CAM_RecSta_MAR = 0x0 (OFF) - Screenshot
+    Step 2-3: Log - LED photo capture (manual)
+    Step 4: Return to AVN HU UI mode, check BLTN_CAM_RecSta_MAR = 0x0 (OFF) - Screenshot
+    Step 5-6: Log - LED photo capture (manual)
+    Step 7: Click Evt Switch, within 10s check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+            - Screenshot with AIN
+    Step 8-11: Log - LED photo capture (manual)
+
+  NOTE: Uses 2s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_10s = 10000;   // 10 seconds for MAR recording detection
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step4_passed = 0;
+  int step7_passed = 0;
+
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_017_Init()
+{
+  Send_Value_To_COM(11700);
+  write("========================================");
+  write("=== START TEST OWD_017 ===");
+  write("=== MAR Recording Test - Evt Switch ===");
+  write("========================================");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK to IGN, USM Reset, Rec Reset, Enter BLTN_CAM,
+  //         Click Evt Switch, Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  //============================================================================
+  Send_Value_To_COM(11701);
+  SetTestStep("Bước 1 - OWD_017");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Rec Reset + BLTN_CAM ===");
+  write("===         Click Evt Switch + Check RecSta_MAR = 0x0 (OFF) ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Rec Reset + Enter BLTN_CAM + Evt Switch + MAR OFF");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Enter Built-in Cam mode
+  write("[1.4] Entering Built-in Cam mode...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(2000);
+
+  // 1.5 Click Evt Switch button
+  write("[1.5] Clicking Evt Switch button...");
+  Click_Evt_Switch();
+  testWaitForTimeout(2000);
+
+  // 1.6 Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  write("[1.6] Checking BLTN_CAM_RecSta_MAR = 0x0 (OFF)...");
+  result = Check_RecSta_MAR_OFF();
+
+  // 1.7 Capture screenshot
+  write("[1.7] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSta_MAR = 0x0 (OFF) in BLTN_CAM mode after Evt Switch - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_MAR expected 0x0 (OFF) but got 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSta_MAR is NOT OFF in BLTN_CAM mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_2_3()
+{
+  //============================================================================
+  // STEP 2 & 3: Log - LED Photo Capture (Manual)
+  //============================================================================
+  Send_Value_To_COM(11702);
+  write("");
+  write("=================================================================");
+  write("=== STEP 2 & 3: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step2_3", "LED photo capture - check signal light");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 2 & 3: LOG INFORMATION ***");
+  write("*** Please capture LED photo directly ***");
+  write("*** Check signal light status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step2_3", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: Return to AVN HU UI mode, Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  //============================================================================
+  Send_Value_To_COM(11704);
+  SetTestStep("Bước 4 - OWD_017");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Return to AVN + Check RecSta_MAR = 0x0 (OFF) ===");
+  write("=================================================================");
+  testStep("Step4", "Exit BLTN_CAM to AVN + RecSta_MAR OFF verification");
+
+  // 4.1 Exit to AVN HU UI mode
+  write("[4.1] Exiting to AVN HU UI mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+
+  // 4.2 Check BLTN_CAM_RecSta_MAR = 0x0 (OFF)
+  write("[4.2] Checking BLTN_CAM_RecSta_MAR = 0x0 (OFF)...");
+  result = Check_RecSta_MAR_OFF();
+
+  // 4.3 Capture screenshot
+  write("[4.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_RecSta_MAR = 0x0 (OFF) in AVN mode - PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_MAR expected 0x0 (OFF) but got 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_RecSta_MAR is NOT OFF in AVN mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_5_6()
+{
+  //============================================================================
+  // STEP 5 & 6: Log - LED Photo Capture (Manual)
+  //============================================================================
+  Send_Value_To_COM(11705);
+  write("");
+  write("=================================================================");
+  write("=== STEP 5 & 6: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step5_6", "LED photo capture - check signal light");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 5 & 6: LOG INFORMATION ***");
+  write("*** Please capture LED photo directly ***");
+  write("*** Check signal light status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step5_6", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_7()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 7: Click Evt Switch, within 10s check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
+  //============================================================================
+  Send_Value_To_COM(11707);
+  SetTestStep("Bước 7 - OWD_017");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: Click Evt Switch + Wait for MAR Recording (10s) ===");
+  write("=================================================================");
+  testStep("Step7", "Evt Switch + RecSta_MAR = 0x1 (Recording) within 10s");
+//testWaitForTimeout(30000);
+  // 7.1 Click Evt Switch button
+  write("[7.1] Clicking Evt Switch button...");
+  Click_Evt_Switch();
+
+  // 7.2 Wait for BLTN_CAM_RecSta_MAR = 0x1 (Recording) within 10s
+  write("[7.2] Waiting for BLTN_CAM_RecSta_MAR = 0x1 (Recording) within 10 seconds...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  // 7.3 Capture screenshot with MAR signal and AIN
+  write("[7.3] Capturing screenshot with MAR and AIN signals...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step7_passed = 1;
+    testStepPass("Step7", "BLTN_CAM_RecSta_MAR = 0x1 (Recording) detected within 10s - PASS");
+  }
+  else
+  {
+    step7_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_MAR expected 0x1 (Recording) but got 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+    Log_Error_Details();
+    testStepFail("Step7", "BLTN_CAM_RecSta_MAR Recording NOT detected within 10s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_8_9()
+{
+  //============================================================================
+  // STEP 8 & 9: Log - LED Photo Capture (Manual)
+  //============================================================================
+  Send_Value_To_COM(11708);
+  write("");
+  write("=================================================================");
+  write("=== STEP 8 & 9: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step8_9", "LED photo capture - check signal light");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 8 & 9: LOG INFORMATION ***");
+  write("*** Please capture LED photo directly ***");
+  write("*** Check signal light status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step8_9", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_017_10_11()
+{
+  //============================================================================
+  // STEP 10 & 11: Log - LED Photo Capture (Manual)
+  //============================================================================
+  Send_Value_To_COM(11710);
+  write("");
+  write("=================================================================");
+  write("=== STEP 10 & 11: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step10_11", "LED photo capture - check signal light");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 10 & 11: LOG INFORMATION ***");
+  write("*** Please capture LED photo directly ***");
+  write("*** Check signal light status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step10_11", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_017 - 2.5 generation_report");
+
+ // write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_017_Init();
+  OWD_017_1();
+  OWD_017_2_3();
+  OWD_017_4();
+  OWD_017_5_6();
+  OWD_017_7();
+  OWD_017_8_9();
+  OWD_017_10_11();
+}

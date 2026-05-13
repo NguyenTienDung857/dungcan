@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="TestMonitor" comment="Variables for Test Monitoring Panel" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="TestStepName" comment="Name of the current test step" bitcount="32" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="TimerRunning" comment="Status of the elapsed timer (1=Running, 0=Stopped)" bitcount="32" isSigned="true" encoding="65001" type="int" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="s" name="ElapsedSeconds" comment="Total elapsed seconds" bitcount="32" isSigned="true" encoding="65001" type="int" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="CheckTimeBootRunning" comment="Status of the boot timer (1=Running, 0=Stopped)" bitcount="32" isSigned="true" encoding="65001" type="int" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="s" name="CheckTimeBootSeconds" comment="Total boot seconds" bitcount="32" isSigned="true" encoding="65001" type="int" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="LogMessage" comment="Message to display on the panel" bitcount="32" isSigned="true" encoding="65001" type="string" />
+    </namespace>
+  </namespace>
+</systemvariables>

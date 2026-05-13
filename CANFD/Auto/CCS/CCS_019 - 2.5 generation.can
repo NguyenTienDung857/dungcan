@@ -1,0 +1,165 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_019 - 2.5 generation
+  Title: [PEV Notification Setting Test 7]
+
+  Step 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_OWP,
+          Set_PEV_AppNoti ON, KEY_OFF,
+          WaitFor_RecSta_OWP_Recording, WaitForNetworkSleep,
+          WaitFor_RecSta_PEV_Recording,
+          log request to check PEV video.
+
+  Step 2: wait 1 minute,
+          WaitFor_RecSta_PEV_Recording,
+          WaitFor_PEV_Recorded_Value for BLTN_CAM_PEV_Recorded = 0x2,
+          WaitFor_RecSta_PEV_Recording, wait 15s,
+          WaitFor_RecSta_PEV_Recording, wait 15s,
+          WaitFor_RecSta_PEV_Recording, wait 15s,
+          WaitFor_RecSta_PEV_Recording, wait 15s,
+          log request to check real videos.
+*/
+
+includes {
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[2048] = "";
+}
+
+// ============================================================================
+// CCS_019_1: Step 1
+// ============================================================================
+testcase CCS_019_1()
+{
+  int is_ok;
+  long sleep_ok;
+
+  Send_Value_To_COM(31901);
+  SetTestStep("Buoc 1 - CCS_019");
+  StartTestTimer();
+  testStep("Step 1", "Set_SMK_IGN -> USM Reset -> Rec Reset -> OWP ON -> PEV AppNoti ON -> KEY_OFF -> Wait OWP -> Wait Network Sleep -> Wait PEV and request manual video check");
+
+  write("=== START CCS_019_1 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  Turn_ON_OWP();
+  Set_PEV_AppNoti(0x2);
+  KEY_OFF();
+
+  is_ok = WaitFor_RecSta_OWP_Recording(60000);
+  if (is_ok == 1) {
+    testStepPass("CCS_019_1_A", "OWP recording started within 60s");
+  } else {
+    testStepFail("CCS_019_1_A", "Fail reason: Timeout waiting OWP recording start within 60s. Cause: expected condition was not satisfied.");
+  }
+
+  sleep_ok = WaitForNetworkSleep(480);
+  if (sleep_ok == 1) {
+    testStepPass("CCS_019_1_B", "Network sleep detected within 6 mins");
+  } else {
+    testStepFail("CCS_019_1_B", "Fail reason: WaitForNetworkSleep timeout after 8 mins. Cause: expected condition was not satisfied.");
+  }
+
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_019_1_C", "PEV recording detected within 60s");
+  } else {
+    testStepFail("CCS_019_1_C", "Fail reason: Timeout waiting BLTN_CAM_RecSta_PEV = 0x1 within 60s. Cause: expected condition was not satisfied.");
+  }
+
+  write("*************************************************************");
+  write("*** PLEASE CHECK PEV VIDEO CREATED IN STEP 1 ***");
+  write("*************************************************************");
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti");
+
+  write("=== FINISH CCS_019_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_019_2: Step 2
+// ============================================================================
+testcase CCS_019_2()
+{
+  int is_ok;
+  int round;
+
+  Send_Value_To_COM(31902);
+  SetTestStep("Buoc 2 - CCS_019");
+  StartTestTimer();
+  testStep("Step 2", "Wait 1 minute -> wait PEV recording -> wait PEV_Recorded=0x2 -> repeat 4 rounds of wait PEV recording + 15s delay, then request manual video check");
+
+  write("=== START CCS_019_2 ===");
+
+  testWaitForTimeout(60000);
+
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_019_2_A", "PEV recording detected after 1-minute wait");
+  } else {
+    testStepFail("CCS_019_2_A", "Fail reason: Timeout waiting BLTN_CAM_RecSta_PEV = 0x1 after 1-minute wait. Cause: expected condition was not satisfied.");
+  }
+
+  if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+    testStepPass("CCS_019_2_B", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_PEV_Recorded);
+    testStepFail("CCS_019_2_B", failReason);
+  }
+
+  for (round = 1; round <= 4; round++) {
+    is_ok = WaitFor_RecSta_PEV_Recording(60);
+    if (is_ok == 1) {
+      testStepPass("CCS_019_2_WAIT", "Round PEV recording wait passed");
+    } else {
+      snprintf(failReason,
+               elcount(failReason),
+               "Fail reason: Round %d timeout waiting BLTN_CAM_RecSta_PEV = 0x1 within 60s. Cause: expected condition was not satisfied.",
+               round);
+      testStepFail("CCS_019_2_WAIT", failReason);
+    }
+
+    testWaitForTimeout(15000);
+  }
+
+  write("*************************************************************");
+  write("*** PLEASE CHECK REAL VIDEOS CREATED IN STEP 2 ***");
+  write("*************************************************************");
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti");
+
+  write("=== FINISH CCS_019_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// MAIN TEST FUNCTION - Run all test cases sequentially
+// ============================================================================
+void MainTest()
+{
+  write("\n");
+  write("===============================================================");
+  write("  CCS_019 - PEV Notification Setting Test 7 (2.5 generation)");
+  write("===============================================================");
+  write("\n");
+
+  CCS_019_1();
+  testWaitForTimeout(2000);
+  CCS_019_2();
+}

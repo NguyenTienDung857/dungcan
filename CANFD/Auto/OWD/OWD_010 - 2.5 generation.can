@@ -1,0 +1,652 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_010
+  Title: [DEV Recording Test - IGN/ACC Mode with Driving Event]
+  Verification items:
+    - Check DEV recording setting and status in IGN and ACC modes
+    - Verify DEV recording behavior with driving events
+    - Monitor BLTN_CAM_RecSta_DEV changes during driving
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test Steps:
+    Step 1: Set SMK to IGN, USM Reset, check BLTN_CAM_RecSet_DEV = 0x2 (ON)
+            Enter Build-in Cam, trigger driving recording, monitor RecSta_DEV = 0x0 for 15s
+    Step 2-3: Log - LED OFF photo capture (manual)
+    Step 4: Return to AVN HU UI mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+    Step 5-6: Log - LED ON photo capture (manual)
+    Step 7: Trigger driving event, within 50s check BLTN_CAM_RecSta_DEV = 0x1 (Recording)
+    Step 8, 10: Log - LED ON photo capture (manual)
+    Step 9: Wait 15s, capture AIN and BLTN_CAM_RecSta_DEV
+    Step 11: Capture AIN and BLTN_CAM_RecSta_DEV
+    Step 12: Switch to ACC mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+    Step 13-14: Log - LED photo capture (manual)
+    Step 15: In ACC mode, trigger driving event, within 50s check BLTN_CAM_RecSta_DEV = 0x1 (Recording)
+    Step 16, 18: Log - LED photo capture (manual)
+    Step 17, 19: Wait 15s, capture AIN and BLTN_CAM_RecSta_DEV
+
+  NOTE: Uses 3-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_15s = 15000;   // 15 seconds for monitoring
+  long max_wait_time_50s = 50000;   // 50 seconds for DEV recording detection
+
+  // Result tracking variables for steps with pass/fail logic
+  int step1_passed = 0;
+  int step4_passed = 0;
+  int step7_passed = 0;
+  int step12_passed = 0;
+  int step15_passed = 0;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_010_Init()
+{
+  Send_Value_To_COM(11000);
+  write("========================================");
+  write("=== START TEST OWD_010 ===");
+  write("=== DEV Recording Test - IGN/ACC Mode ===");
+  write("========================================");
+
+  // Enable CGW NM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK to IGN, USM Reset, check RecSet_DEV = ON (0x2)
+  //         Enter Build-in Cam, monitor RecSta_DEV = OFF for 15s
+  //============================================================================
+  Send_Value_To_COM(11001);
+  SetTestStep("Bước 1 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Check RecSet_DEV = 0x2 (ON) ===");
+  write("===         Enter Build-in Cam + Monitor RecSta_DEV for 15s  ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + RecSet_DEV ON + BLTN_CAM + Monitor 15s");
+
+  // 1.1 Set SMK to IGN via panel
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 1.2b Click Rec Reset button
+  write("[1.2b] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Check BLTN_CAM_RecSet_DEV = 0x2 (ON)
+  write("[1.3] Checking BLTN_CAM_RecSet_DEV = 0x2 (ON)...");
+  result = Check_RecSet_DEV_ON();
+
+  if(result != 1)
+  {
+    write(">>> WARNING: RecSet_DEV is not ON, test may not be accurate <<<");
+  }
+
+  // 1.4 Enter Build-in Cam mode
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED ***");
+  write("*** Please enter Build-in Cam screen now! ***");
+  write("*** Script will automatically set UI mode to Build-in Cam ***");
+  write("*************************************************************");
+  write("");
+
+  write("[1.4] Entering Build-in Cam mode...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(5000);  // 5s delay
+
+  // 1.5 Log - Ask user to trigger driving recording
+  write("");
+  write("*************************************************************");
+  write("*** ACTION REQUIRED ***");
+  write("*** Please trigger driving recording now! ***");
+  write("*** (Turn on driving event trigger on real device) ***");
+  write("*************************************************************");
+  write("");
+
+  // 1.6 Monitor BLTN_CAM_RecSta_DEV = 0x0 (OFF) for 15s
+  write("[1.6] Monitoring BLTN_CAM_RecSta_DEV = 0x0 (OFF) for 15 seconds...");
+  result = Monitor_RecSta_DEV_AlwaysOFF(max_wait_time_15s);
+
+  // 1.7 Capture screenshot
+  write("[1.7] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSta_DEV = 0x0 (OFF) for 15s in Build-in Cam - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV was not always 0x0 (OFF) during 15s monitoring in Build-in Cam mode <<<");
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSta_DEV was NOT always OFF - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_2_3()
+{
+  //============================================================================
+  // STEP 2 & 3: Log - LED OFF photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11002);
+  write("");
+  write("=================================================================");
+  write("=== STEP 2 & 3: LED OFF Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step2_3", "LED OFF photo capture");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 2 & 3: LOG INFORMATION ***");
+  write("*** Please capture LED OFF photo directly ***");
+  write("*** Check that LED is OFF on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step2_3", "LED OFF photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: Return to AVN HU UI mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  //============================================================================
+  Send_Value_To_COM(11004);
+  SetTestStep("Bước 4 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Return to AVN HU UI Mode + Check RecSta_DEV = OFF ===");
+  write("=================================================================");
+  testStep("Step4", "Exit BLTN_CAM + RecSta_DEV = 0x0 (OFF) verification");
+
+  // 4.1 Exit to AVN HU UI mode
+  write("[4.1] Exiting to AVN HU UI mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 4.2 Check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  write("[4.2] Checking BLTN_CAM_RecSta_DEV = 0x0 (OFF)...");
+  result = Check_RecSta_DEV_OFF();
+
+  // 4.3 Capture screenshot
+  write("[4.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_RecSta_DEV = 0x0 (OFF) in AVN HU UI mode - PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x0 (OFF) in AVN mode but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_RecSta_DEV is NOT OFF in AVN mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_5_6()
+{
+  //============================================================================
+  // STEP 5 & 6: Log - LED ON photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11005);
+  write("");
+  write("=================================================================");
+  write("=== STEP 5 & 6: LED ON Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step5_6", "LED ON photo capture");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 5 & 6: LOG INFORMATION ***");
+  write("*** Please capture LED ON photo directly ***");
+  write("*** Check that LED is ON on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step5_6", "LED ON photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_7()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 7: Trigger driving event, within 50s check RecSta_DEV = 0x1 (Recording)
+  //============================================================================
+  Send_Value_To_COM(11007);
+  SetTestStep("Bước 7 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: Trigger Driving Event + Wait for DEV Recording ===");
+  write("=================================================================");
+  testStep("Step7", "Driving event + RecSta_DEV = 0x1 (Recording) within 50s");
+
+  // 7.3 Wait for BLTN_CAM_RecSta_DEV = 0x1 (Recording) within 50s
+  write("[7.3] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording) within 50 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(50);
+
+  // 7.4 Capture screenshot
+  write("[7.4] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step7_passed = 1;
+    testStepPass("Step7", "BLTN_CAM_RecSta_DEV = 0x1 (Recording) detected - PASS");
+  }
+  else
+  {
+    step7_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x1 (Recording) within 50s but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step7", "BLTN_CAM_RecSta_DEV Recording NOT detected within 50s - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_8()
+{
+  //============================================================================
+  // STEP 8: Log - LED ON photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11008);
+  SetTestStep("Bước 8 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 8: LED ON Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step8", "LED ON photo capture during recording");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 8: LOG INFORMATION ***");
+  write("*** Please capture LED ON photo during recording ***");
+  write("*** Check that LED is ON (recording indicator) ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step8", "LED ON photo capture logged - Manual photo required");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_9()
+{
+  //============================================================================
+  // STEP 9: Wait 15s, capture AIN and BLTN_CAM_RecSta_DEV
+  //============================================================================
+  Send_Value_To_COM(11009);
+  SetTestStep("Bước 9 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: Wait 15s + Capture AIN and RecSta_DEV ===");
+  write("=================================================================");
+  testStep("Step9", "Wait 15s + AIN and RecSta_DEV capture");
+
+  // 9.1 Wait 15 seconds
+  write("[9.1] Waiting 15 seconds...");
+  testWaitForTimeout(15000);
+
+  // 9.2 Capture screenshot with AIN and BLTN_CAM_RecSta_DEV
+  write("[9.2] Capturing screenshot with AIN and BLTN_CAM_RecSta_DEV...");
+  // Note: AIN may refer to analog input or specific signal - using common signals
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  testStepPass("Step9", "Wait 15s + AIN and RecSta_DEV captured - PASS");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_10()
+{
+  //============================================================================
+  // STEP 10: Log - LED ON photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11010);
+  SetTestStep("Bước 10 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 10: LED ON Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step10", "LED ON photo capture");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 10: LOG INFORMATION ***");
+  write("*** Please capture LED ON photo ***");
+  write("*** Check that LED is still ON ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step10", "LED ON photo capture logged - Manual photo required");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_11()
+{
+  //============================================================================
+  // STEP 11: Capture AIN and BLTN_CAM_RecSta_DEV
+  //============================================================================
+  Send_Value_To_COM(11011);
+  SetTestStep("Bước 11 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 11: Capture AIN and RecSta_DEV ===");
+  write("=================================================================");
+  testStep("Step11", "AIN and RecSta_DEV capture");
+
+  // 11.1 Capture screenshot with AIN and BLTN_CAM_RecSta_DEV
+  write("[11.1] Capturing screenshot with AIN and BLTN_CAM_RecSta_DEV...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  testStepPass("Step11", "AIN and RecSta_DEV captured - PASS");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_12()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 12: Switch to ACC mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  //============================================================================
+  Send_Value_To_COM(11012);
+  SetTestStep("Bước 12 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 12: Switch to ACC Mode + Check RecSta_DEV = OFF ===");
+  write("=================================================================");
+  testStep("Step12", "SMK ACC + RecSta_DEV = 0x0 (OFF) verification");
+
+  // 12.1 Set SMK to ACC via panel
+  write("[12.1] Setting SMK_Signal to ACC via panel...");
+  Set_SMK_ACC();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 12.2 Check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  write("[12.2] Checking BLTN_CAM_RecSta_DEV = 0x0 (OFF)...");
+  result = Check_RecSta_DEV_OFF();
+
+  // 12.3 Capture screenshot
+  write("[12.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step12_passed = 1;
+    testStepPass("Step12", "BLTN_CAM_RecSta_DEV = 0x0 (OFF) in ACC mode - PASS");
+  }
+  else
+  {
+    step12_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x0 (OFF) in ACC mode but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step12", "BLTN_CAM_RecSta_DEV is NOT OFF in ACC mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_13_14()
+{
+  //============================================================================
+  // STEP 13 & 14: Log - LED photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11013);
+  write("");
+  write("=================================================================");
+  write("=== STEP 13 & 14: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step13_14", "LED photo capture in ACC mode");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 13 & 14: LOG INFORMATION ***");
+  write("*** Please capture LED photo in ACC mode ***");
+  write("*** Check LED status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step13_14", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_15()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 15: In ACC mode, trigger driving event, within 50s check RecSta_DEV = 0x1
+  //============================================================================
+  Send_Value_To_COM(11015);
+  SetTestStep("Bước 15 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 15: ACC Mode + Driving Event + DEV Recording ===");
+  write("=================================================================");
+  testStep("Step15", "ACC mode + Driving event + RecSta_DEV = 0x1 within 50s");
+
+  // 15.2 Wait for BLTN_CAM_RecSta_DEV = 0x1 (Recording) within 50s
+  write("[15.2] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording) within 50 seconds...");
+  result = WaitFor_RecSta_DEV_Recording(50);
+
+  // 15.3 Capture screenshot
+  write("[15.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step15_passed = 1;
+    testStepPass("Step15", "BLTN_CAM_RecSta_DEV = 0x1 (Recording) in ACC mode - PASS");
+  }
+  else
+  {
+    step15_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x1 (Recording) in ACC mode within 50s but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step15", "BLTN_CAM_RecSta_DEV Recording NOT detected in ACC mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_16()
+{
+  //============================================================================
+  // STEP 16: Log - LED photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11016);
+  SetTestStep("Bước 16 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 16: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step16", "LED photo capture during ACC mode recording");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 16: LOG INFORMATION ***");
+  write("*** Please capture LED photo during ACC mode recording ***");
+  write("*** Check that LED indicates recording ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step16", "LED photo capture logged - Manual photo required");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_17()
+{
+  //============================================================================
+  // STEP 17: Wait 15s, capture AIN and BLTN_CAM_RecSta_DEV
+  //============================================================================
+  Send_Value_To_COM(11017);
+  SetTestStep("Bước 17 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 17: Wait 15s + Capture AIN and RecSta_DEV ===");
+  write("=================================================================");
+  testStep("Step17", "Wait 15s + AIN and RecSta_DEV capture in ACC mode");
+
+  // 17.1 Wait 15 seconds
+  write("[17.1] Waiting 15 seconds...");
+  testWaitForTimeout(15000);
+
+  // 17.2 Capture screenshot with AIN and BLTN_CAM_RecSta_DEV
+  write("[17.2] Capturing screenshot with AIN and BLTN_CAM_RecSta_DEV...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  testStepPass("Step17", "Wait 15s + AIN and RecSta_DEV captured in ACC mode - PASS");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_18()
+{
+  //============================================================================
+  // STEP 18: Log - LED photo capture (manual)
+  //============================================================================
+  Send_Value_To_COM(11018);
+  SetTestStep("Bước 18 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 18: LED Photo Capture (Manual) ===");
+  write("=================================================================");
+  testStep("Step18", "LED photo capture");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 18: LOG INFORMATION ***");
+  write("*** Please capture LED photo ***");
+  write("*** Check LED status ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step18", "LED photo capture logged - Manual photo required");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_010_19()
+{
+  //============================================================================
+  // STEP 19: Wait 15s, capture AIN and BLTN_CAM_RecSta_DEV
+  //============================================================================
+  Send_Value_To_COM(11019);
+  SetTestStep("Bước 19 - OWD_010");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 19: Wait 15s + Capture AIN and RecSta_DEV ===");
+  write("=================================================================");
+  testStep("Step19", "Wait 15s + Final AIN and RecSta_DEV capture");
+
+  // 19.1 Wait 15 seconds
+  write("[19.1] Waiting 15 seconds...");
+  testWaitForTimeout(15000);
+
+  // 19.2 Capture screenshot with AIN and BLTN_CAM_RecSta_DEV
+  write("[19.2] Capturing screenshot with AIN and BLTN_CAM_RecSta_DEV...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  testStepPass("Step19", "Wait 15s + Final AIN and RecSta_DEV captured - PASS");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_010 - 2.5 generation_report");
+  OWD_010_Init();
+  OWD_010_1();
+  OWD_010_2_3();
+  OWD_010_4();
+  OWD_010_5_6();
+  OWD_010_7();
+  OWD_010_8();
+  OWD_010_9();
+  OWD_010_10();
+  OWD_010_11();
+  OWD_010_12();
+  OWD_010_13_14();
+  OWD_010_15();
+  OWD_010_16();
+  OWD_010_17();
+  OWD_010_18();
+  OWD_010_19();
+}

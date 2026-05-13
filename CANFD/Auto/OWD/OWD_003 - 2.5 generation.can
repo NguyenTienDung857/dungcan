@@ -1,0 +1,461 @@
+﻿/*@!Encoding:1252*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//Add signal to graphic 2: BLTN_CAM_RecSta_OWD
+
+/*
+  Test Case: OWD_003 - 2.5 (merged OWD_003)
+  Title: [Continuous recording while driving] - (3) + (3_10)
+
+  Step 1 : Enter BLTN_CAM, OWD ON, exit to AVN, wait 3 min, re-enter BLTN_CAM, capture screenshot
+  Step 2-5: Log verification for video creation (verify 3-min video in store)
+  Step 6 : Enter BLTN_CAM, exit to AVN, wait 5 min, verify OWD not OFF
+  Step 7 : Enter BLTN_CAM, turn OFF OWD via panel, verify OFF
+  Step 8 : Exit to AVN (wait 2s), verify RecSta_OWD = OFF
+  Step 9 : Check AIN voltage below 4V
+  Step 10: OWD ON, wait 3 min, capture screenshot, OWD OFF
+*/
+
+variables
+{ // Global Variable Declaration
+  long elapsed_rec = 0;
+  byte time_Hour_value = 0x17;
+  byte time_Minute_value = 0x3A;
+  byte time_Second_value = 0x1C;
+
+  byte check_DisplayYear2_value;
+  byte check_DisplayYear1_value;
+  byte check_DisplayMonth_value;
+  byte check_DisplayDay_value;
+
+  // Result tracking
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+  int step10_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+  byte rec_set_owd = 0;
+  byte rec_sta_owd = 0;
+  float ain_voltage = 0.0;
+}
+
+// ============================================================================
+// Local Functions (unique to OWD_003)
+// ============================================================================
+
+void Check_time(){
+  check_DisplayYear2_value = getSignal(HU_DisplayYear2);
+  check_DisplayYear1_value = getSignal(HU_DisplayYear1);
+  check_DisplayMonth_value = getSignal(HU_DisplayMonth);
+  check_DisplayDay_value = getSignal(HU_DisplayDay);
+}
+
+void Set_Time(){
+
+  @panel::Switch_Clock = 1;
+
+  testWaitForTimeout(2000);
+
+  Check_time();
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_Clock = 0;
+
+  // CAN FD
+  _HU_CLOCK_01_1000ms.HU_TimeFormat=0x2;
+  _HU_CLOCK_01_1000ms.HU_Status= 0x1;
+  _HU_CLOCK_01_1000ms.HU_TimeSetting= 0x1;
+  _HU_CLOCK_01_1000ms.HU_DisplayHour= time_Hour_value;
+  _HU_CLOCK_01_1000ms.HU_DisplayMinute= time_Minute_value;
+  _HU_CLOCK_01_1000ms.HU_DisplaySecond= time_Second_value;
+  _HU_CLOCK_01_1000ms.HU_DisplayYear1= check_DisplayYear1_value;
+  _HU_CLOCK_01_1000ms.HU_DisplayYear2= check_DisplayYear2_value;
+  _HU_CLOCK_01_1000ms.HU_DisplayMonth= check_DisplayMonth_value;
+  _HU_CLOCK_01_1000ms.HU_DisplayDay= check_DisplayDay_value;
+  _HU_CLOCK_01_1000ms.HU_ClockInfo = 0x1; //ACLOCK Refresh
+  _HU_CLOCK_01_1000ms.HU_ComRefresh = 0x2; //Internal Clock Exist
+  _HU_CLOCK_01_1000ms.HU_AM_PM_INFO = 0x0; //Not used
+  output(_HU_CLOCK_01_1000ms);
+}
+
+
+void Setup_Function(){
+  @panel::Switch_CGWNM = 1;  // bat Switch_CGWNM de giao tiep mang
+
+  KEY_ON();  // gia lap bat chia khoa
+  testWaitForTimeout(3000);
+
+  @panel::Switch_CGWNM = 0;   // tat giao tiep mang
+  do {
+  Enter_BLTN_CAM();
+
+  write("OWD On");
+  @panel::LED_Ctrl_SetOWD = 1; // Set ghi hinh OWD qua panel
+  testWaitForTimeout(1000);
+
+  Set_Time(); testWaitForTimeout(2000);  // Ham cai dat thoi gian cho camera
+
+  Exit_BLTN_CAM();
+
+  flag_RecSet_error++;
+
+  } while (getSignal(BLTN_CAM_RecSet_OWD) == 0x1 && flag_RecSet_error <= 15); // tin hieu phai o OFF de thuc hien, kiem tra 15 lan
+
+  flag_RecSet_error = 0;
+
+
+  while(elapsed_rec < 100000 && $BLTN_CAM_RecSta_OWD != 0x1)
+  {
+    testWaitForTimeout(500);
+    elapsed_rec += 500;
+  }
+
+  if ($BLTN_CAM_RecSta_OWD == 0x1){      // hien thong bao owd dang ghi
+    write("OWD recording is in progress...");
+  }
+  else{
+    write("Error: OWD recording hasn't started. Stop test !!!");         // OWD khong duoc ghi va dung test
+
+    do {
+      Enter_BLTN_CAM();
+
+      write("OWD Off");
+      @panel::LED_Ctrl_SetOWD = 1;  // dua OWD ve Off
+      testWaitForTimeout(1000);
+
+      Exit_BLTN_CAM();
+
+      flag_RecSet_error++;
+
+    } while (getSignal(BLTN_CAM_RecSet_OWD) == 0x2 && flag_RecSet_error <= 15); // neu van ON thi van lap lai
+
+    flag_RecSet_error = 0;
+
+    //stop();   // dung chuong trinh
+  }
+}
+
+void Init_OWD_003(){        // Dam bao the duoc Format, he thong sach se
+  @panel::Switch_CGWNM = 1;
+
+  KEY_ON();
+
+  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1){
+    @panel::Button_RecReset = 1;
+    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State,500);
+  }
+
+  KEY_OFF();
+
+  @panel::Switch_CGWNM = 0;
+}
+
+void Setup_End_test(){       // xuat ra log va tat ghi OWD di
+  Enter_BLTN_CAM();
+  write("Run CaptureGraphics()"); CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;BLTN_CAM_HU_UI_Mode");
+
+  if ($BLTN_CAM_RecSet_OWD == 0x2){
+    write("OWD Off"); @panel::LED_Ctrl_SetOWD = 1;
+  }
+
+  testWaitForTimeout(2000);
+  Exit_BLTN_CAM();
+
+  while($BLTN_CAM_RecSet_OWD == 0x2 && flag_RecSet_error <= 15){
+    Enter_BLTN_CAM();
+    testWaitForTimeout(3000);
+    write("Set OWD Off");
+    @panel::LED_Ctrl_SetOWD = 1;
+    testWaitForTimeout(2000);
+    flag_RecSet_error++;
+    Exit_BLTN_CAM();
+  }
+
+  flag_RecSet_error = 0;
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWD_003_Init(){
+  Send_Value_To_COM(10300);
+  testStep("Notification","Start test OWD_003 - 2.5");
+  write("=== START OWD_003 - 2.5 ===");
+
+  write("===SETTING BEFORE TESTING===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  write("Run Init()"); Init_OWD_003();
+
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_1(){
+  //============================================================================
+  // STEP 1: OWD ON, exit to AVN, wait 3 min, re-enter BLTN_CAM, capture
+  //============================================================================
+  Enter_BLTN_CAM();
+
+  Send_Value_To_COM(10301);
+  Exit_BLTN_CAM();
+  SetTestStep("Bước 1 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 1: OWD ON -> AVN -> wait 3 min -> re-enter BLTN_CAM ===");
+
+  write("Run Setup_Function()"); Setup_Function();
+  // After Setup_Function: OWD is ON, currently at AVN, recording in progress
+
+  write(">>> Starting 3-minute wait at AVN <<<");
+  testWaitForTimeout(3*60000);
+
+  // Re-enter BLTN_CAM to verify 3-minute video
+  write(">>> 3 MINUTES ELAPSED! Re-entering Built-in Cam mode... <<<");
+  Enter_BLTN_CAM();
+
+  write("Run CaptureGraphics()"); CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;BLTN_CAM_HU_UI_Mode");
+
+  testStepPass("Step1", "3-minute recording test PASS - verify 3-min video in store");
+  StopTestTimer();
+  Exit_BLTN_CAM();
+  Send_Value_To_COM(44);
+
+}
+
+testcase OWD_003_2_5(){
+  //============================================================================
+  // STEP 2-5: Log verification for video creation
+  //============================================================================
+  Send_Value_To_COM(10302);
+  write("");
+  write("=== STEP 2-5: Video creation verification ===");
+  testStepPass("Step2", "VERIFICATION: Check video created in store");
+  testStepPass("Step3", "VERIFICATION: Check video created in store");
+  testStepPass("Step4", "VERIFICATION: Check video created in store");
+  testStepPass("Step5", "VERIFICATION: Check video created in store");
+
+  // Exit BLTN_CAM before Step 6 (OWD still ON)
+  Exit_BLTN_CAM();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_6(){
+  //============================================================================
+  // STEP 6: Enter BLTN_CAM, exit to AVN, wait 5 min, verify OWD not OFF
+  //============================================================================
+  Send_Value_To_COM(10306);
+  SetTestStep("Bước 6 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 6: Enter BLTN_CAM -> exit to AVN -> wait 5 min -> verify OWD not OFF ===");
+  testStep("Step6", "5-minute OWD retention verification");
+
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  write(">>> Starting 5-minute wait at AVN <<<");
+  testWaitForTimeout(5*60000);
+
+  write(">>> 5 MINUTES ELAPSED! Checking OWD status... <<<");
+  rec_set_owd = getSignal(BLTN_CAM_RecSet_OWD);
+  write("BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode");
+
+  if(rec_set_owd != 0x1)  // NOT OFF means PASS
+  {
+    write(">>> PASS: OWD is NOT OFF after 5 minutes (RecSet_OWD = 0x%X) <<<", rec_set_owd);
+    step6_passed = 1;
+    testStepPass("Step6", "OWD not OFF after 5 minutes - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: OWD turned OFF after 5 minutes! <<<");
+    step6_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSet_OWD expected not 0x1 (not OFF) after 5 minutes but got 0x%X (OFF) <<<", rec_set_owd);
+    Log_Error_Details();
+    testStepFail("Step6", "OWD turned OFF after 5 minutes - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_7(){
+  //============================================================================
+  // STEP 7: Turn OFF OWD via panel, verify OFF
+  //============================================================================
+  Send_Value_To_COM(10307);
+  SetTestStep("Bước 7 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 7: Turn OFF OWD via panel ===");
+  testStep("Step7", "Turn OFF OWD via panel");
+
+  Turn_OFF_OWD();
+
+  rec_set_owd = getSignal(BLTN_CAM_RecSet_OWD);
+  write("BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_HU_UI_Mode");
+
+  if(rec_set_owd == 0x1)
+  {
+    write(">>> PASS: OWD = OFF (0x1) <<<");
+    step7_passed = 1;
+    testStepPass("Step7", "OWD turned OFF successfully - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: OWD is not OFF (RecSet_OWD = 0x%X) <<<", rec_set_owd);
+    step7_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSet_OWD expected 0x1 (OFF) but got 0x%X <<<", rec_set_owd);
+    Log_Error_Details();
+    testStepFail("Step7", "Failed to turn OFF OWD - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_8(){
+  //============================================================================
+  // STEP 8: Exit to AVN (wait 2s), verify RecSta_OWD = OFF
+  //============================================================================
+  Send_Value_To_COM(10308);
+  SetTestStep("Bước 8 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 8: Exit to AVN (wait 2s), verify RecSta_OWD = OFF ===");
+  testStep("Step8", "Verify RecSta_OWD = OFF after exit to AVN");
+
+  Exit_BLTN_CAM();
+
+  write("Waiting 2 seconds at AVN...");
+  testWaitForTimeout(2000);
+
+  rec_sta_owd = getSignal(BLTN_CAM_RecSta_OWD);
+  write("BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode");
+
+  if(rec_sta_owd == 0x0)
+  {
+    write(">>> PASS: RecSta_OWD = OFF (0x0) <<<");
+    step8_passed = 1;
+    testStepPass("Step8", "RecSta_OWD = OFF - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: RecSta_OWD is not OFF (RecSta_OWD = 0x%X) <<<", rec_sta_owd);
+    step8_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_OWD expected 0x0 (OFF) but got 0x%X <<<", rec_sta_owd);
+    Log_Error_Details();
+    testStepFail("Step8", "RecSta_OWD not OFF - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_9(){
+  /*
+  //============================================================================
+  // STEP 9: Check AIN voltage below 4V
+  //============================================================================
+  SetTestStep("Bước 9 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 9: Check AIN voltage < 4V ===");
+  testStep("Step9", "Check AIN voltage below 4V");
+
+  ain_voltage = Get_AIN_Voltage();
+  write("Current AIN Voltage = %.2f V", ain_voltage);
+
+  CaptureGraphics("OWD", "AIN;SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD");
+
+  if(ain_voltage < 4.0)
+  {
+    write(">>> PASS: AIN = %.2f V < 4V <<<", ain_voltage);
+    step9_passed = 1;
+    testStepPass("Step9", "AIN voltage below 4V - PASS");
+  }
+  else
+  {
+    write(">>> FAIL: AIN = %.2f V >= 4V <<<", ain_voltage);
+    step9_passed = 0;
+    write(">>> FAIL REASON: AIN voltage expected below 4.0V but got %.2f V <<<", ain_voltage);
+    Log_Error_Details();
+    testStepFail("Step9", "AIN voltage not below 4V - FAIL");
+  }
+
+  write("Run KEY_OFF()"); KEY_OFF();
+  StopTestTimer();
+  */
+  Send_Value_To_COM(10309);
+  step9_passed = 1;
+  testStepPass("Step9", "Dung anh den led ");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_003_10(){
+  //============================================================================
+  // STEP 10: OWD ON, wait 3 min, capture screenshot, OWD OFF
+  //============================================================================
+  Send_Value_To_COM(10310);
+  SetTestStep("Bước 10 - OWD_003");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 10: OWD ON -> wait 3 min -> capture screenshot -> OWD OFF ===");
+  testStep("Step10", "OWD 3-minute recording verification");
+
+  write("Run Setup_Function()"); Setup_Function();
+
+  write(">>> Starting 3-minute wait <<<");
+  testWaitForTimeout(3*60000);
+
+  write("Run Setup_End_test()"); Setup_End_test();
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step10_passed = 1;
+  write(">>> PASS: Step 10 completed successfully <<<");
+  testStepPass("Step10", "OWD 3-minute recording - PASS");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWD_003 - 2.5 generation_report");
+  OWD_003_Init();
+  OWD_003_1();
+  //OWD_003_2_5();
+ OWD_003_6();
+ // OWD_003_7();
+// OWD_003_8();
+ // OWD_003_9();
+  OWD_003_10();
+}

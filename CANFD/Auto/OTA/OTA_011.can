@@ -1,0 +1,292 @@
+/*@!Encoding:65001*/
+/*
+ * FILE OVERVIEW: OTA_11.can
+ *
+ * Muc tieu test:
+ * - Setup: KEY OFF -> KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset.
+ * - Dam bao SW version ve ban 0 (neu chua la ban 0 thi chay update_to_00.py).
+ * - Chay case_11.py de kich hoat OTA flow.
+ * - Neu bat duoc AppState = 11 thi KEY ON/OFF 5 lan nhanh trong 3 giay.
+ * - Doi toi da 30 phut de nhan AppState ket qua:
+ *   + AppState = 3 -> PASS neu SW version = 1.
+ *   + AppState = 4 -> FAIL.
+ *   + Timeout 30 phut -> FAIL.
+ *
+ * Luu y:
+ * - Khong dung ret cua TestWaitForSyscall de gate pass/fail OTA.
+ * - Dung Wait_AppState_3_Or_4_Changed(1800000) de ket luan AppState.
+ */
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
+  char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
+  char gCase11Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_11.py\"";
+  char gCaptureWindow[16] = "OTA";
+  char gCaptureSignals[128] = "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3";
+
+  int gAppStatePrev = -1;
+  int gTriggerAppState11 = 0;
+}
+
+on sysvar_update PythonCom::AppState
+{
+  write("[OTA_011][EVENT] AppState cu=%d, moi=%d", gAppStatePrev, @PythonCom::AppState);
+
+  OTA_Update_AppStateTrigger_FromValue(gAppStatePrev, @PythonCom::AppState);
+
+  if (@PythonCom::AppState == 11 && gAppStatePrev != 11)
+  {
+    write("[OTA_011][EVENT] Bat duoc AppState=11 -> set trigger KEY ON/OFF 5 lan nhanh");
+    gTriggerAppState11 = 1;
+  }
+  else if (@PythonCom::AppState == 3 && gAppStatePrev != 3)
+  {
+    write("[OTA_011][EVENT] Bat duoc AppState=3");
+  }
+  else if (@PythonCom::AppState == 4 && gAppStatePrev != 4)
+  {
+    write("[OTA_011][EVENT] Bat duoc AppState=4");
+  }
+
+  gAppStatePrev = @PythonCom::AppState;
+}
+
+int Run_Python_Update(char cmd[], char reason[])
+{
+  long result;
+
+  write("[OTA_011][PY] %s", reason);
+  write("[OTA_011][PY] WorkingDir = %s", gWorkingDir);
+  write("[OTA_011][PY] Command    = %s", cmd);
+  write("[OTA_011][PY] Reset AppState ve 0 truoc khi goi python");
+  @PythonCom::AppState = 0;
+
+  testStep("Python", "%s", reason);
+  testWaitForTimeout(10000);
+  result = TestWaitForSyscall(gWorkingDir, cmd, 0, 30000);
+
+  write("[OTA_011][PY] Syscall ret=%d (chi de log, khong dung de gate testcase)", result);
+  if (result != 1)
+  {
+    write("[OTA_011][PY][WARN] ret=%d nhung van tiep tuc luong test", result);
+  }
+
+  testStepPass("Python", "Da goi python (%s), ret=%d", reason, result);
+  return 1;
+}
+void Run_Key_On_Off_5x_Fast()
+{
+  int cycle;
+
+  write("[OTA_011][ACTION] Bat dau KEY ON/OFF 5 lan nhanh");
+
+  for (cycle = 1; cycle <= 5; cycle++)
+  {
+    write("[OTA_011][ACTION][CYCLE %d] KEY_ON", cycle);
+    KEY_ON();
+    write("[OTA_011][ACTION][CYCLE %d] Sau KEY_ON: SMK=0x%X, AppState=%d",
+          cycle,
+          $SMK_TrmnlCtrlGrpStaBDC,
+          @PythonCom::AppState);
+    testWaitForTimeout(300);
+
+    write("[OTA_011][ACTION][CYCLE %d] KEY_OFF", cycle);
+    KEY_OFF();
+    write("[OTA_011][ACTION][CYCLE %d] Sau KEY_OFF: SMK=0x%X, AppState=%d",
+          cycle,
+          $SMK_TrmnlCtrlGrpStaBDC,
+          @PythonCom::AppState);
+    testWaitForTimeout(300);
+  }
+
+  write("[OTA_011][ACTION] Hoan tat KEY ON/OFF 5 lan nhanh trong 3 giay");
+}
+
+testcase OTA_011()
+{
+  int swVerIsZero;
+  int swVerIsZeroAfterSetup;
+  int swVerIsOne;
+  int setupAppStateResult;
+  int appStateResult;
+  int waitApp11Tick;
+  int waitApp11ElapsedMs;
+  int remainingWaitMs;
+  int keyOnOffDone;
+
+  write("===========================================================");
+  write("[OTA_011] Start test case OTA_011");
+  write("===========================================================");
+
+  testStep("Step 1", "Setup: KEY OFF -> KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset");
+  write("[OTA_011][STEP1] KEY_OFF");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[OTA_011][STEP1] KEY_ON");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[OTA_011][STEP1] Set_SMK_IGN");
+  Set_SMK_IGN();
+
+  write("[OTA_011][STEP1] Click_USM_Reset");
+  Click_USM_Reset();
+
+  write("[OTA_011][STEP1] Click_Rec_Reset");
+  Click_Rec_Reset();
+  testStepPass("Step 1", "Hoan tat setup theo yeu cau testcase");
+
+  testStep("Step 2", "Kiem tra SW version ban 0; neu chua la ban 0 thi chay update_to_00.py");
+  swVerIsZero = Check_SWVerMinor3(0);
+
+  if (swVerIsZero != 1)
+  {
+    write("[OTA_011][STEP2] Version khong phai ban 0 -> chay update_to_00.py de dua ve ban 0");
+
+    OTA_Reset_AppStateWaitContext();
+    gAppStatePrev = gOTA_AppStateWaitStart;
+    gTriggerAppState11 = 0;
+    write("[OTA_011][STEP2] AppState truoc khi chay update_to_00.py = %d", gOTA_AppStateWaitStart);
+
+    Run_Python_Update(gUpdateTo00Cmd, "Dua version ve ban 0 - update_to_00.py");
+
+    setupAppStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+    if (setupAppStateResult == 3)
+    {
+      write("[OTA_011][STEP2] update_to_00.py bao AppState=3 (OK setup), tiep tuc");
+    }
+    else if (setupAppStateResult == 4)
+    {
+      write("[OTA_011][STEP2] update_to_00.py bao AppState=4 (NG setup), van tiep tuc check version");
+    }
+    else
+    {
+      write("[OTA_011][STEP2] Timeout 30 phut o setup update_to_00.py, van tiep tuc check version");
+    }
+
+    testWaitForTimeout(3000);
+    swVerIsZeroAfterSetup = Check_SWVerMinor3(0);
+    if (swVerIsZeroAfterSetup != 1)
+    {
+      write("[OTA_011][STEP2] Sau update_to_00.py version van khong phai ban 0 -> FAIL");
+      write("[OTA_011][SNAPSHOT] Setup fail: sau update_to_00.py version van khong phai ban 0");
+      CaptureGraphics(gCaptureWindow, gCaptureSignals);
+      testStepFail("Step 2", "Sau update_to_00.py version van khong phai ban 0");
+      return;
+    }
+
+    testStepPass("Step 2", "Da dua SW version ve ban 0");
+  }
+  else
+  {
+    testStepPass("Step 2", "Da la ban 0 ngay tu dau");
+  }
+
+  testStep("Step 3", "Luong chinh: chay case_11.py, bat AppState=11, roi doi AppState=3/4 toi da 30 phut");
+  OTA_Reset_AppStateWaitContext();
+  gAppStatePrev = gOTA_AppStateWaitStart;
+  gTriggerAppState11 = 0;
+
+  write("[OTA_011][STEP3] AppState truoc khi chay case_11.py = %d", gOTA_AppStateWaitStart);
+  Run_Python_Update(gCase11Cmd, "Luong chinh - case_11.py");
+
+  appStateResult = 0;
+  keyOnOffDone = 0;
+  waitApp11Tick = 0;
+  waitApp11ElapsedMs = 0;
+
+  while (waitApp11Tick < 18000)
+  {
+    if (keyOnOffDone == 0 && (@PythonCom::AppState == 11 || gTriggerAppState11 == 1))
+    {
+      write("[OTA_011][STEP3] Nhan AppState=11 sau %d ms -> KEY ON/OFF 5 lan nhanh", waitApp11Tick * 100);
+      Run_Key_On_Off_5x_Fast();
+      keyOnOffDone = 1;
+      break;
+    }
+
+    if (@PythonCom::AppState == 3 || @PythonCom::AppState == 4)
+    {
+      appStateResult = @PythonCom::AppState;
+      write("[OTA_011][STEP3] Nhan AppState=%d trong luc cho trigger 11 (elapsed=%d ms)", appStateResult, waitApp11Tick * 100);
+      break;
+    }
+
+    if ((waitApp11Tick % 20) == 0)
+    {
+      waitApp11ElapsedMs = waitApp11Tick * 100;
+      write("[OTA_011][WAIT11][DBG] elapsed=%d ms, AppState=%d, SMK=0x%X, RecSta_OWD=0x%X, SWVerMinor3=%02d",
+            waitApp11ElapsedMs,
+            @PythonCom::AppState,
+            $SMK_TrmnlCtrlGrpStaBDC,
+            $BLTN_CAM_RecSta_OWD,
+            $BLTN_CAM_SWVerMinor3);
+    }
+
+    testWaitForTimeout(100);
+    waitApp11Tick++;
+  }
+
+  remainingWaitMs = 1800000 - (waitApp11Tick * 100);
+  if (remainingWaitMs < 0)
+  {
+    remainingWaitMs = 0;
+  }
+
+  if (appStateResult != 3 && appStateResult != 4)
+  {
+    write("[OTA_011][STEP3] Tiep tuc Wait_AppState_3_Or_4_Changed(%d)", remainingWaitMs);
+    appStateResult = Wait_AppState_3_Or_4_Changed(remainingWaitMs);
+  }
+
+  write("[OTA_011][STEP3] Ket qua wait AppState=%d", appStateResult);
+
+  testStep("Step 4", "Ket luan ket qua OTA theo AppState va SW version");
+
+  if (appStateResult == 3)
+  {
+    swVerIsOne = Check_SWVerMinor3(1);
+    write("[OTA_011][RESULT] AppState=3, Check_SWVerMinor3(1)=%d", swVerIsOne);
+    write("[OTA_011][SNAPSHOT] Final AppState=3");
+    CaptureGraphics(gCaptureWindow, gCaptureSignals);
+
+    if (swVerIsOne == 1)
+    {
+      testStepPass("Result", "AppState=3 va version=1 -> PASS");
+    }
+    else
+    {
+      testStepFail("Result", "AppState=3 nhung version khong phai 1 -> FAIL");
+    }
+  }
+  else if (appStateResult == 4)
+  {
+    swVerIsOne = Check_SWVerMinor3(1);
+    write("[OTA_011][RESULT] AppState=4, Check_SWVerMinor3(1)=%d -> FAIL", swVerIsOne);
+    write("[OTA_011][SNAPSHOT] Final AppState=4");
+    CaptureGraphics(gCaptureWindow, gCaptureSignals);
+    testStepFail("Result", "AppState=4 -> FAIL");
+  }
+  else
+  {
+    write("[OTA_011][RESULT] Timeout 30 phut, khong nhan duoc AppState=3/4");
+    write("[OTA_011][SNAPSHOT] Final Timeout AppState=3/4");
+    CaptureGraphics(gCaptureWindow, gCaptureSignals);
+    testStepFail("Result", "Timeout 30 phut, khong nhan duoc AppState=3/4");
+  }
+
+  write("[OTA_011] Ket thuc testcase");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OTA_011_report");
+  OTA_011();
+}
+

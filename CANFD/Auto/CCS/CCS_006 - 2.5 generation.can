@@ -1,0 +1,1318 @@
+/*@!Encoding:65001*/
+// Preconditions: - ACC and IGN and ccNC/ccIC switch OFF state, AVN mode
+includes {
+
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  // Global Variable Declaration
+  int i;
+  int get_PEVRecorded_change = 0;
+  byte get_PEVRecorded_value = 0x0;
+  int last_pev_count = 0;
+  int evt_count = 0;
+  byte prev_pev = 0x0;
+  char failed_test_names[2048] = "";
+  // Test Summary variables
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  int condition1 = 0;
+}
+
+testcase CCS_006_4() {
+  Send_Value_To_COM(30604);
+  SetTestStep("Buoc 4 - CCS_006");
+  StartTestTimer();
+  testStep("Step 4", "Start test-case CCS_006_4 - Network sleep first event");
+  write("=== START CCS_006_4 ===");
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+
+    write("Stopping CGW NM...");
+    @panel::Switch_CGWNM = 0;
+    testWaitForTimeout(3000);
+
+    write("Waiting for network sleep (~13s)...");
+    testWaitForTimeout(13000);
+
+    write("Network should be in sleep mode");
+    write("*** TRIGGER IMPACT EVENT NOW (Event #1) ***");
+    if (WaitFor_RecSta_PEV_Recording(60) != 1) {
+      write("Warning: RecSta_PEV did not become 0x1 after trigger request");
+    }
+
+    get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 40000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+      // Proceed normally since PEV was recorded correctly within 40s
+      write("PEV_Recorded: 0x%X - Event #1 OK", get_PEVRecorded_value);
+      // Still wait 140s to mimic original logic
+      testWaitForTimeout(14000);
+
+
+      last_pev_count = $BLTN_CAM_PEV_Count;
+      write("PEV_Count: %d", last_pev_count);
+
+      testStepPass("Pass", "Event #1 - PEV_Recorded = 0x2 OK");
+      passed_tests++;
+
+    } else {
+
+      write(
+          "PEV_Recorded: 0x%X (Event #1 TIMEOUT after 40s) << Expected 0x2 >>",
+          get_PEVRecorded_value);
+
+      testStepFail("Fail", "Fail reason: Event #1 - PEV_Recorded timed out after 40s. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_4 (PEV check timeout), ",
+              elcount(failed_test_names));
+
+      // Update global flag to skip CCS_006_5 and CCS_006_6
+      condition1 = 1;
+      write("Run CaptureGraphics()");
+      CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                      "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_4 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_4 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+
+testcase CCS_006_5() {
+  Send_Value_To_COM(30605);
+  SetTestStep("Buoc 5 - CCS_006");
+  StartTestTimer();
+  testStep("Step 5", "Start test-case CCS_006_5 - Repeat event 4 more times");
+  write("=== START CCS_006_5 ===");
+
+  if (condition1 == 1) {
+    write("Previous test (CCS_006_4) failed due to timeout. Skipping CCS_006_5 "
+          "and marking as Failed.");
+    testStepFail("Fail", "Fail reason: Skipped due to CCS_006_4 failure. Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_5 (Skipped), ",
+            elcount(failed_test_names));
+    total_tests++;
+
+    write("Run CaptureGraphics()");
+    CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                    "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+    write("=== FINISH CCS_006_5 ===");
+    return;
+  }
+
+  write("=== TESTING ===");
+
+  for (i = 2; i <= 5; i++) {
+
+    write("Waiting for network to re-enter sleep (7 min)...");
+    testWaitForTimeout(320000);
+
+    write("*** TRIGGER IMPACT EVENT NOW (Event #%d) ***", i);
+    if (WaitFor_RecSta_PEV_Recording(60) != 1) {
+      write("Warning: Event #%d trigger did not move RecSta_PEV to 0x1", i);
+    }
+
+    get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 180000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+      write("Event #%d: PEV_Recorded = 0x2 (OK)", i);
+
+      last_pev_count = $BLTN_CAM_PEV_Count;
+      write("PEV_Count: %d", last_pev_count);
+
+    } else {
+
+      write("Event #%d: PEV_Recorded = 0x%X (NG)", i, get_PEVRecorded_value);
+
+      testStepFail("Fail", "Fail reason: Event did not record properly. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_5 (PEV check), ",
+              elcount(failed_test_names));
+      total_tests++;
+
+      write("Run CaptureGraphics()");
+      CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                      "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+      write("=== FINISH CCS_006_5 ===");
+      return; // Early return on failure
+    }
+  }
+
+  write("Total PEV_Count: %d", last_pev_count);
+
+  testStepPass("Pass", "Events #2-6 completed");
+  passed_tests++;
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_5 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_6() {
+  Send_Value_To_COM(30606);
+  SetTestStep("Buoc 6 - CCS_006");
+  StartTestTimer();
+  testStep("Step 6", "Start test-case CCS_006_6 - PEV count limit (6th event)");
+  write("=== START CCS_006_6 ===");
+
+  if (condition1 == 1) {
+    write("Previous test (CCS_006_4) failed due to timeout. Skipping CCS_006_6 "
+          "and marking as Failed.");
+    testStepFail("Fail", "Fail reason: Skipped due to CCS_006_4 failure. Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_6 (Skipped), ",
+            elcount(failed_test_names));
+    total_tests++;
+
+    write("Run CaptureGraphics()");
+    CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                    "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+
+    Standard_Init();
+
+    @panel::Switch_CGWNM = 0;
+
+    write("=== FINISH CCS_006_6 ===");
+    return;
+  }
+
+  write("=== TESTING ===");
+
+  write("PEV_Count before 6th event: %d", last_pev_count);
+
+  write("*** TRIGGER IMPACT EVENT NOW (Event #6 - should NOT record) ***");
+  WaitFor_RecSta_PEV_Recording(60);
+  testWaitForTimeout(320000);
+
+  write("BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("last_pev_count = %d (expected >= 5)", last_pev_count);
+
+  if (last_pev_count >= 6) {
+
+    write("PEV limit reached - 6th event blocked as expected");
+
+    testStepPass("Pass", "PEV count limit reached");
+    passed_tests++;
+
+  } else {
+
+    write("PEV_Count < 5 - unexpected");
+
+    testStepFail("Fail", "Fail reason: PEV count not at limit. Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_6, ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_6 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_7() {
+  Send_Value_To_COM(30607);
+  SetTestStep("Buoc 7 - CCS_006");
+  StartTestTimer();
+  KEY_ON();
+  testWaitForTimeout(3000);
+  @panel::Switch_CGWNM = 1;
+
+  testStep("Step 7", "Start test-case CCS_006_7 - PEV OFF verification");
+  write("=== START CCS_006_7 ===");
+  Apply_CCS_RecSettings(0x1, 0);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    write("*** TRIGGER IMPACT EVENT NOW (PEV is OFF) ***");
+    WaitFor_RecSta_PEV_Recording(60);
+    testWaitForTimeout(10000);
+
+    write("BLTN_CAM_RecSta_PEV = 0x%X (expected 0x0)", $BLTN_CAM_RecSta_PEV);
+
+    if ($BLTN_CAM_RecSta_PEV == 0x0) {
+
+      write("PEV not recording - correct (PEV is OFF)");
+
+      testStepPass("Pass", "PEV OFF - no recording on event");
+      passed_tests++;
+
+    } else {
+
+      write("PEV recording unexpectedly!");
+
+      testStepFail("Fail", "Fail reason: PEV should not record when OFF. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_7 (PEV check), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_7 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_RecSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_7 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_8() {
+  Send_Value_To_COM(30608);
+  SetTestStep("Buoc 8 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 8", "Start test-case CCS_006_8 - PEV ON + CCS noti OFF + 6 events");
+  write("=== START CCS_006_8 ===");
+
+  write("=== SETTING ===");
+
+  Set_BglrAlrm(0x2);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x1, 0);
+
+  write("Settings: RecSet_PEV=0x%X, AppNoti=0x%X, Sen=0x%X",
+        $BLTN_CAM_RecSet_PEV, $BLTN_CAM_Set_PEV_AppNoti, $BLTN_CAM_SenSet_PEV);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(5000);
+
+    write("*** TRIGGER 6 EVENTS - waiting for PEV_Count = 6 ***");
+
+    last_pev_count = $BLTN_CAM_PEV_Count;
+    while (last_pev_count < 6) {
+      WaitFor_RecSta_PEV_Recording(60);
+      testWaitForTimeout(10000);
+      if (testWaitForSignalMatch(BLTN_CAM_PEV_Count, $BLTN_CAM_PEV_Count + 1, 900000) == 1) {
+        last_pev_count = $BLTN_CAM_PEV_Count;
+        write("Event occurred: PEV_Count = %d", last_pev_count);
+      } else {
+        break;
+      }
+    }
+
+    if (last_pev_count >= 6) {
+
+      write("PEV_Count = %d (OK)", last_pev_count);
+
+      testStepPass("Pass", "6 events completed - CCS noti OFF");
+      passed_tests++;
+
+    } else {
+
+      write("PEV_Count = %d (timeout - expected 6)", last_pev_count);
+
+      testStepFail("Fail", "Fail reason: PEV_Count did not reach 6. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_8 (PEV Count check), ",
+              elcount(failed_test_names));
+    }
+
+    write("Final PEV_Count: %d", last_pev_count);
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_8 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_8 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_9() {
+  Send_Value_To_COM(30609);
+  SetTestStep("Buoc 9 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 9", "Start test-case CCS_006_9 - PEV ON + CCS noti ON + 6 events");
+  write("=== START CCS_006_9 ===");
+
+  write("=== SETTING ===");
+
+  Set_BglrAlrm(0x2);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  write("Settings: RecSet_PEV=0x%X, AppNoti=0x%X, Sen=0x%X",
+        $BLTN_CAM_RecSet_PEV, $BLTN_CAM_Set_PEV_AppNoti, $BLTN_CAM_SenSet_PEV);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(5000);
+
+    write("*** TRIGGER 6 EVENTS - waiting for PEV_Count = 6 ***");
+
+    last_pev_count = $BLTN_CAM_PEV_Count;
+    while (last_pev_count < 6) {
+      WaitFor_RecSta_PEV_Recording(60);
+      testWaitForTimeout(10000);
+      if (testWaitForSignalMatch(BLTN_CAM_PEV_Count, $BLTN_CAM_PEV_Count + 1, 900000) == 1) {
+        last_pev_count = $BLTN_CAM_PEV_Count;
+        write("Event occurred: PEV_Count = %d", last_pev_count);
+      } else {
+        break;
+      }
+    }
+
+    if (last_pev_count >= 6) {
+
+      write("PEV_Count = %d (OK)", last_pev_count);
+
+      testStepPass("Pass", "6 events completed - CCS noti ON");
+      passed_tests++;
+
+    } else {
+
+      write("PEV_Count = %d (timeout - expected 6)", last_pev_count);
+
+      testStepFail("Fail", "Fail reason: PEV_Count did not reach 6. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_9 (PEV count check), ",
+              elcount(failed_test_names));
+    }
+
+    write("Final PEV_Count: %d", last_pev_count);
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_9 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_9 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_10() {
+  Send_Value_To_COM(30610);
+  SetTestStep("Buoc 10 - CCS_006");
+  StartTestTimer();
+  testStep("Step 10", "Start test-case CCS_006_10");
+  @panel::Switch_CGWNM = 1;
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 1);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(10000);
+
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("PEV recording is started");
+
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 10000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+        write("PEV_Recorded: 0x%X << Test-case is OK >>",
+              get_PEVRecorded_value);
+
+        testWaitForTimeout(300000);
+
+        testStepPass("Pass", "Test-case is OK");
+        passed_tests++;
+
+      } else {
+
+        write("PEV_Recorded: 0x%X << Test-case is NG >>",
+              get_PEVRecorded_value);
+
+        snprintf(failReason, elcount(failReason), "Fail reason: Test-case is NG (PEV_Recorded=0x%X). Cause: expected condition was not satisfied.", get_PEVRecorded_value);
+        testStepFail("Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_006_10 (PEV check), ",
+                elcount(failed_test_names));
+      }
+    } else {
+      write("PEV recording hasn't started");
+      snprintf(failReason, elcount(failReason), "Fail reason: PEV recording hasn\'t started (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_10 (PEV timeout), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_10 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_10 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_11() {
+  Send_Value_To_COM(30611);
+  SetTestStep("Buoc 11 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 11", "Start test-case CCS_006_11");
+  write("=== START CCS_006_11 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 2);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(10000);
+
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("PEV recording is started");
+
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 10000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+        write("PEV_Recorded: 0x%X << Test-case is OK >>",
+              get_PEVRecorded_value);
+
+        testStepPass("Pass", "Test-case is OK");
+        passed_tests++;
+
+      } else {
+
+        write("PEV_Recorded: 0x%X << Test-case is NG >>",
+              get_PEVRecorded_value);
+
+        snprintf(failReason, elcount(failReason), "Fail reason: Test-case is NG (PEV_Recorded=0x%X). Cause: expected condition was not satisfied.", get_PEVRecorded_value);
+        testStepFail("Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_006_11 (PEV check), ",
+                elcount(failed_test_names));
+      }
+    } else {
+      write("PEV recording hasn't started");
+      snprintf(failReason, elcount(failReason), "Fail reason: PEV recording hasn\'t started (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_11 (PEV timeout), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_11 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_11 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_12() {
+  Send_Value_To_COM(30612);
+  SetTestStep("Buoc 12 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 12", "Start test-case CCS_006_12");
+  write("=== START CCS_006_12 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 3);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(10000);
+
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("PEV recording is started");
+
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 10000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+        write("PEV_Recorded: 0x%X << Test-case is OK >>",
+              get_PEVRecorded_value);
+
+        testStepPass("Pass", "Test-case is OK");
+        passed_tests++;
+
+      } else {
+
+        write("PEV_Recorded: 0x%X << Test-case is NG >>",
+              get_PEVRecorded_value);
+
+        snprintf(failReason, elcount(failReason), "Fail reason: Test-case is NG (PEV_Recorded=0x%X). Cause: expected condition was not satisfied.", get_PEVRecorded_value);
+        testStepFail("Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_006_12 (PEV check), ",
+                elcount(failed_test_names));
+      }
+    } else {
+      write("PEV recording hasn't started");
+      snprintf(failReason, elcount(failReason), "Fail reason: PEV recording hasn\'t started (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_12 (PEV timeout), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_12 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_12 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_13() {
+  Send_Value_To_COM(30613);
+  SetTestStep("Buoc 13 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 13", "Start test-case CCS_006_13");
+  write("=== START CCS_006_13 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 4);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+    @panel::Switch_CGWNM = 1;
+
+    testWaitForTimeout(10000);
+
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("PEV recording is started");
+
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 10000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+        write("PEV_Recorded: 0x%X << Test-case is OK >>",
+              get_PEVRecorded_value);
+
+        testStepPass("Pass", "Test-case is OK");
+        passed_tests++;
+
+      } else {
+
+        write("PEV_Recorded: 0x%X << Test-case is NG >>",
+              get_PEVRecorded_value);
+
+        snprintf(failReason, elcount(failReason), "Fail reason: Test-case is NG (PEV_Recorded=0x%X). Cause: expected condition was not satisfied.", get_PEVRecorded_value);
+        testStepFail("Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_006_13 (PEV check), ",
+                elcount(failed_test_names));
+      }
+    } else {
+      write("PEV recording hasn't started");
+      snprintf(failReason, elcount(failReason), "Fail reason: PEV recording hasn\'t started (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_13 (PEV timeout), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_13 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_13 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_14() {
+  Send_Value_To_COM(30614);
+  SetTestStep("Buoc 14 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 14", "Start test-case CCS_006_14");
+  write("=== START CCS_006_14 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 5);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+
+    testWaitForTimeout(10000);
+
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("PEV recording is started");
+
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 10000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+    if (get_PEVRecorded_value == 0x2) {
+
+        write("PEV_Recorded: 0x%X << Test-case is OK >>",
+              get_PEVRecorded_value);
+
+        testStepPass("Pass", "Test-case is OK");
+        passed_tests++;
+
+      } else {
+
+        write("PEV_Recorded: 0x%X << Test-case is NG >>",
+              get_PEVRecorded_value);
+
+        snprintf(failReason, elcount(failReason), "Fail reason: Test-case is NG (PEV_Recorded=0x%X). Cause: expected condition was not satisfied.", get_PEVRecorded_value);
+        testStepFail("Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_006_14 (PEV check), ",
+                elcount(failed_test_names));
+      }
+    } else {
+      write("PEV recording hasn't started");
+      snprintf(failReason, elcount(failReason), "Fail reason: PEV recording hasn\'t started (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_14 (PEV timeout), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_14 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_006_14 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_15() {
+  Send_Value_To_COM(30615);
+  SetTestStep("Buoc 15 - CCS_006");
+  StartTestTimer();
+  testStep("Step 15", "Start test-case CCS_006_15 - Sleep + 2 rapid events");
+  write("=== START CCS_006_15 ===");
+
+  write("=== SETTING ===");
+
+  Set_BglrAlrm(0x2);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording started");
+
+    write("Stopping CGW NM...");
+    @panel::Switch_CGWNM = 0;
+    testWaitForTimeout(3000);
+
+    write("Waiting for network sleep (~13s)...");
+    testWaitForTimeout(13000);
+
+    write("Network should be in sleep mode");
+    write("*** TRIGGER 2 RAPID IMPACT EVENTS NOW ***");
+    WaitFor_RecSta_PEV_Recording(60);
+     testWaitForTimeout(1000);
+    WaitFor_RecSta_PEV_Recording(60);
+   
+
+    last_pev_count = $BLTN_CAM_PEV_Count;
+    write("PEV_Count after rapid events: %d (expected >= 1)", last_pev_count);
+
+    if (last_pev_count >= 1) {
+
+      testStepPass("Pass", "Rapid events - PEV_Count >= 1");
+      passed_tests++;
+
+    } else {
+
+      testStepFail("Fail", "Fail reason: PEV_Count < 1. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_15 (PEV count check), ",
+              elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_15 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_PEV_Count;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_15 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_16() {
+  long start_tick;
+  int trigger_call_count;
+  int set_before_ok;
+  int set_after_ok;
+
+  Send_Value_To_COM(30616);
+  SetTestStep("Buoc 16 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 16", "Set event recording time -10s/+10s and trigger continuously for 60s");
+  write("=== START CCS_006_16 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  set_before_ok = Set_EV_BeforeTime(3);
+  set_after_ok = Set_EV_AfterTime(10);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  write("Running WaitFor_RecSta_PEV_Recording continuously for 60s...");
+  start_tick = timeNow();
+  trigger_call_count = 0;
+  while ((timeNow() - start_tick) < 6000000) {
+    WaitFor_RecSta_PEV_Recording(1);
+    trigger_call_count++;
+  }
+  write("Continuous trigger finished. Total calls: %d", trigger_call_count);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  if (set_before_ok == 1 && set_after_ok == 1) {
+    testStepPass("Pass", "Step 16 completed: -10s/+10s and continuous trigger 60s");
+    passed_tests++;
+  } else {
+    testStepFail("Fail", "Fail reason: Cannot set event recording time to -10s/+10s. Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_16 (Set EV time), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_16 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_17() {
+  long start_tick;
+  int set_before_ok;
+  int set_after_ok;
+
+  Send_Value_To_COM(30617);
+  SetTestStep("Buoc 17 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 17", "Set event recording time -10s/+10s, KEY OFF, wait OWP then PEV trigger 60s");
+  write("=== START CCS_006_17 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  set_before_ok = Set_EV_BeforeTime(3);
+  set_after_ok = Set_EV_AfterTime(10);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+
+    write("Running WaitFor_RecSta_PEV_Recording in loop for 60s (3s between calls)...");
+    start_tick = timeNow();
+    while ((timeNow() - start_tick) < 6000000) {
+      Send_Value_To_COM(8);
+      testWaitForTimeout(5000);
+    }
+    write("PEV trigger loop finished after 60s.");
+
+    if (set_before_ok == 1 && set_after_ok == 1) {
+      testStepPass("Pass", "Step 17 completed: -10s/+10s, OWP started, PEV triggered for 60s");
+      passed_tests++;
+    } else {
+      testStepFail("Fail", "Fail reason: Cannot set event recording time to -10s/+10s. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_17 (Set EV time), ",
+              elcount(failed_test_names));
+    }
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_17 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_17 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_18() {
+  long start_tick;
+  int set_before_ok;
+  int set_after_ok;
+
+  Send_Value_To_COM(30618);
+  SetTestStep("Buoc 18 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 18", "Set event recording time -15s/+15s, KEY OFF, wait OWP then PEV trigger 60s");
+  write("=== START CCS_006_18 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  set_before_ok = Set_EV_BeforeTime(2);
+  set_after_ok = Set_EV_AfterTime(15);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+
+    write("Running WaitFor_RecSta_PEV_Recording in loop for 60s (3s between calls)...");
+    start_tick = timeNow();
+    while ((timeNow() - start_tick) < 6000000) {
+      Send_Value_To_COM(8);
+      testWaitForTimeout(5000);
+    }
+    write("PEV trigger loop finished after 60s.");
+
+    if (set_before_ok == 1 && set_after_ok == 1) {
+      testStepPass("Pass", "Step 18 completed: -15s/+15s, OWP started, PEV triggered for 60s");
+      passed_tests++;
+    } else {
+      testStepFail("Fail", "Fail reason: Cannot set event recording time to -15s/+15s. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_18 (Set EV time), ",
+              elcount(failed_test_names));
+    }
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_18 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_006_18 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_006_19() {
+  long start_tick;
+  int set_before_ok;
+  int set_after_ok;
+
+  Send_Value_To_COM(30619);
+  SetTestStep("Buoc 19 - CCS_006");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 19", "Set event recording time -20s/+20s, KEY OFF, wait OWP then PEV trigger 60s");
+  write("=== START CCS_006_19 ===");
+
+  write("=== SETTING ===");
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  Apply_CCS_RecSettings(0x2, 0);
+
+  set_before_ok = Set_EV_BeforeTime(1);
+  set_after_ok = Set_EV_AfterTime(20);
+
+  write("=== TESTING ===");
+
+  write("KEY OFF");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started");
+
+    write("Running WaitFor_RecSta_PEV_Recording in loop for 60s (3s between calls)...");
+    start_tick = timeNow();
+    while ((timeNow() - start_tick) < 6000000) {
+      Send_Value_To_COM(8);
+      testWaitForTimeout(5000);
+    }
+    write("PEV trigger loop finished after 60s.");
+
+    if (set_before_ok == 1 && set_after_ok == 1) {
+      testStepPass("Pass", "Step 19 completed: -20s/+20s, OWP started, PEV triggered for 60s");
+      passed_tests++;
+    } else {
+      testStepFail("Fail", "Fail reason: Cannot set event recording time to -20s/+20s. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_006_19 (Set EV time), ",
+              elcount(failed_test_names));
+    }
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_006_19 (OWP timeout), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_"
+                  "Recorded;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+
+  write("=== FINISH CCS_006_19 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest() {
+
+  testReportFileName("TestReports\\CCS_006 - 2.5 generation_report");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+/*
+  CCS_006_4();
+ //CS_006_5();
+  CCS_006_6();
+  CCS_006_7();
+  CCS_006_8();
+  CCS_006_9();
+  CCS_006_10();
+  CCS_006_11();
+  CCS_006_12();
+  CCS_006_13();
+  CCS_006_14();
+  CCS_006_15();
+  CCS_006_16();
+*/
+  CCS_006_17();
+  CCS_006_18();
+  CCS_006_19();
+
+}
+
+
+
+
+
+
+

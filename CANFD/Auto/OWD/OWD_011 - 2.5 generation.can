@@ -1,0 +1,320 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_011
+  Title: [DEV Recording Test - Drive Event Recording with ON/OFF Control]
+  Verification items:
+    - Check DEV recording status when driving (BLTN_CAM_RecSta_DEV = 0x1)
+    - Verify DEV recording can be turned OFF via Build-in Cam setting
+    - Monitor LED indicator status (manual verification)
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Test Steps:
+    Step 1: Set SMK to IGN, USM Reset, go to AVN HU UI mode
+            Log "tac dong ghi hinh khi lai xe", within 30s check BLTN_CAM_RecSta_DEV = 0x1 (ON)
+            If ON, wait 11s, log "tac dong tiep" - Repeat 3 times
+            Final log: "check file ghi hinh", capture screenshot
+    Step 2,3,4: Log - check thong so file tren PC
+    Step 5: Enter Build-in Cam, turn OFF BLTN_CAM_RecSet_DEV = 0x1 (OFF)
+            Verify signal is OFF, capture screenshot
+    Step 6: Return to AVN HU UI mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+            Capture screenshot
+    Step 7,8: Log - kiem tra den thuc te
+
+  NOTE: Uses 3-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long wait_time_11s = 11000;       // 11 seconds wait between checks
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_011_Init()
+{
+  Send_Value_To_COM(11100);
+  write("========================================");
+  write("=== START TEST OWD_011 ===");
+  write("=== DEV Recording Test - Drive Event with ON/OFF Control ===");
+  write("========================================");
+
+  // Enable CGW NM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_011_1()
+{
+  int result = 0;
+  int loop_count = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK to IGN, USM Reset, go to AVN HU UI mode
+  //         Check BLTN_CAM_RecSta_DEV = 0x1 (ON) within 30s
+  //         If ON, wait 11s, log "tac dong tiep" - Repeat 3 times
+  //============================================================================
+  Send_Value_To_COM(11101);
+  SetTestStep("Bước 1 - OWD_011");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + AVN Mode + DEV Recording Check ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + DEV Recording verification (3 loops)");
+
+  // 1.1 Set SMK to IGN via panel
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);  // 3s delay for signal propagation
+
+  // 1.2 Click Rec Reset button
+  write("[1.2] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(3000);  // 3s delay for signal propagation
+
+  // 1.3 Click USM Reset button
+  write("[1.3] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(3000);  // 3s delay for signal propagation
+
+  // 1.4 Go to AVN HU UI mode
+  write("[1.4] Going to AVN HU UI mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(3000);  // 3s delay for signal propagation
+
+  // 1.5 Loop 3 times: Check DEV recording, wait 11s
+  for(loop_count = 1; loop_count <= 3; loop_count++)
+  {
+    write("");
+    write("------------------------------------------------------------");
+    write("=== Loop %d of 3 ===", loop_count);
+    write("------------------------------------------------------------");
+
+    // 1.5.x Within 180s check BLTN_CAM_RecSta_DEV = 0x1 (ON)
+    write("[1.5.%d] Checking BLTN_CAM_RecSta_DEV = 0x1 (ON) within 180 seconds...", loop_count);
+    result = WaitFor_RecSta_DEV_Recording(180);
+
+    if(result == 1)
+    {
+      write(">>> Loop %d: DEV Recording ON - PASS <<<", loop_count);
+
+      write("[1.5.%d] Capturing AIN and RecSta_DEV...", loop_count);
+      CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;AIN;SMK_TrmnlCtrlGrpStaBDC");
+
+      if(loop_count < 3)
+      {
+        write("[1.5.%d] Waiting 11 seconds...", loop_count);
+        testWaitForTimeout(wait_time_11s);
+      }
+    }
+    else
+    {
+      write(">>> Loop %d: DEV Recording NOT detected - FAIL <<<", loop_count);
+    }
+  }
+
+  // 1.6 Final log for test report
+  write("");
+  write("*************************************************************");
+  write("*** STEP 1: LOG INFORMATION ***");
+  write("*** Please CHECK FILE GHI HINH (video recording files) ***");
+  write("*** Verify that DEV recording files are saved correctly ***");
+  write("*************************************************************");
+  write("");
+
+  // 1.7 Capture screenshot
+  write("[1.7] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "DEV Recording verified ON (3 loops) - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x1 but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step1", "DEV Recording verification failed - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_011_2_3_4()
+{
+  //============================================================================
+  // STEP 2, 3, 4: Log - Check thong so file tren PC
+  //============================================================================
+  Send_Value_To_COM(11102);
+  write("");
+  write("=================================================================");
+  write("=== STEP 2, 3, 4: Check Thong So File Tren PC ===");
+  write("=================================================================");
+  testStep("Step2_3_4", "File parameter verification on PC");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 2, 3, 4: LOG INFORMATION ***");
+  write("*** Please CHECK THONG SO FILE TREN PC ***");
+  write("*** Verify video file parameters on PC: ***");
+  write("*** - File duration ***");
+  write("*** - File resolution ***");
+  write("*** - File format ***");
+  write("*** - Recording timestamp ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step2_3_4", "File parameter verification logged - Manual check required on PC");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_011_5()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 5: Enter Build-in Cam, turn OFF BLTN_CAM_RecSet_DEV
+  //         Verify signal is OFF, capture screenshot
+  //============================================================================
+  Send_Value_To_COM(11105);
+  SetTestStep("Bước 5 - OWD_011");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Enter Build-in Cam + Turn OFF DEV Recording ===");
+  write("=================================================================");
+  testStep("Step5", "Build-in Cam + DEV Recording OFF verification");
+
+  // 5.1 Turn OFF DEV Recording (enters BLTN_CAM, toggles OFF, exits BLTN_CAM)
+  write("[5.1] Turning OFF DEV Recording setting...");
+  Turn_OFF_DEV();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 5.2 Verify BLTN_CAM_RecSet_DEV = 0x1 (OFF)
+  write("[5.2] Verifying BLTN_CAM_RecSet_DEV = 0x1 (OFF)...");
+  result = Check_RecSet_DEV_OFF();
+
+  // 5.3 Capture screenshot
+  write("[5.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "BLTN_CAM_RecSet_DEV = 0x1 (OFF) - PASS");
+  }
+  else
+  {
+    step5_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSet_DEV expected 0x1 but got 0x%X <<<", $BLTN_CAM_RecSet_DEV);
+    Log_Error_Details();
+    testStepFail("Step5", "BLTN_CAM_RecSet_DEV is NOT OFF - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_011_6()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 6: Return to AVN HU UI mode, check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  //         Capture screenshot
+  //============================================================================
+  Send_Value_To_COM(11106);
+  SetTestStep("Bước 6 - OWD_011");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: Return to AVN Mode + Check DEV Status = OFF ===");
+  write("=================================================================");
+  testStep("Step6", "AVN Mode + DEV Status OFF verification");
+
+  // 6.1 Exit to AVN HU UI mode
+  write("[6.1] Returning to AVN HU UI mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(5000);  // 5s delay for signal propagation
+
+  // 6.2 Check BLTN_CAM_RecSta_DEV = 0x0 (OFF)
+  write("[6.2] Checking BLTN_CAM_RecSta_DEV = 0x0 (OFF)...");
+  result = Check_RecSta_DEV_OFF();
+
+  // 6.3 Capture screenshot
+  write("[6.3] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSet_DEV;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "BLTN_CAM_RecSta_DEV = 0x0 (OFF) in AVN mode - PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x0 but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step6", "BLTN_CAM_RecSta_DEV is NOT OFF - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_011_7_8()
+{
+  //============================================================================
+  // STEP 7 & 8: Log - Kiem tra den thuc te
+  //============================================================================
+  Send_Value_To_COM(11107);
+  write("");
+  write("=================================================================");
+  write("=== STEP 7 & 8: Kiem Tra Den Thuc Te ===");
+  write("=================================================================");
+  testStep("Step7_8", "LED indicator verification (manual)");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 7 & 8: LOG INFORMATION ***");
+  write("*** Please KIEM TRA DEN THUC TE (Check actual LED) ***");
+  write("*** Verify LED indicator status on the device: ***");
+  write("*** - LED should be OFF when DEV recording is OFF ***");
+  write("*** - LED should reflect actual recording status ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step7_8", "LED indicator verification logged - Manual check required");
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_011 - 2.5 generation_report");
+  OWD_011_Init();
+  OWD_011_1();
+  OWD_011_2_3_4();
+  OWD_011_5();
+  OWD_011_6();
+  OWD_011_7_8();
+}

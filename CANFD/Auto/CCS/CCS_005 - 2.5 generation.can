@@ -1,0 +1,475 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_005
+  Title: [Park Event Recording - Impact while parked & Shock during network sleep]
+
+  Preconditions: - Block CCU, ACC and IGN and ccNC/ccIC switch OFF state, AVN mode
+
+  Step 1: Impact event while parked (NM active)
+    1.0 KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset
+    1.1 Enter Built-in Cam Main Screen
+    1.2 [Settings] - [Recording] - [Recording While Parked]
+        - Turn on Parking Event and Event Notification Settings
+    1.3 Set Parking Event Sensitivity to 3 (Medium)
+    1.4 Enter Parking Recording (KEY OFF)
+    1.5 BAlarm_BglrAlrmCurrentSta = 0x2 (Arm)
+    1.6 Enable Impact Event (BAlarm = 0x9)
+        -> Wait 10s, check BLTN_CAM_PEV_Recorded = 0x02 -> Capture screenshot
+
+  Step 2: Shock event during network sleep (continues from Step 1)
+    2.1 Wait 4 min
+    2.2 WaitForNetworkSleep (6 min)
+    2.3 WaitFor_RecSta_PEV_Recording
+    2.4 Wait 10s, check BLTN_CAM_PEV_Recorded = 0x02
+    2.5 Wait 4 min
+    2.6 WaitForNetworkSleep (6 min)
+
+  Step 4: Impact event while parked in Parking Motion Recording mode
+    4.0 KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset
+    4.1 Enter Built-in Cam Main Screen
+    4.2 [Settings] - [Recording] - [Recording While Parked]
+        - Turn ON Parking Motion, Parking Event, and Event Notification Settings
+    4.3 Set Parking Event Sensitivity to 3 (Medium)
+    4.4 KEY OFF -> Enter Parking Motion Recording
+    4.5 BAlarm_BglrAlrmCurrentSta = 0x2 (Arm)
+    4.6 Enable Impact Event (BAlarm = 0x9)
+        -> Wait 10s, check BLTN_CAM_PEV_Recorded = 0x02 -> Capture screenshot
+
+  Step 5: Shock event during network sleep (continues from Step 4)
+    5.1 Wait 4 min
+    5.2 WaitForNetworkSleep (6 min)
+    5.3 WaitFor_RecSta_PEV_Recording
+    5.4 Wait 10s, check BLTN_CAM_PEV_Recorded = 0x02
+    5.5 Wait 4 min
+    5.6 WaitForNetworkSleep (6 min)
+*/
+includes {
+
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  // Global Variable Declaration
+  int i;
+  int get_PEVRecorded_change = 0;
+  byte get_PEVRecorded_value = 0x0;
+
+  // Test Summary variables
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[256] = "";
+}
+
+// ============================================================================
+// CCS_005_1: Step 1 - Impact event while parked (NM active)
+// ============================================================================
+testcase CCS_005_1() {
+  Send_Value_To_COM(30501);
+  SetTestStep("Buoc 1 - CCS_005");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 1", "Impact event while parked (NM active): KEY ON -> Set_SMK_IGN -> USM Reset -> Rec Reset -> Built-in Cam Main Screen -> Turn on PEV + AppNoti -> Sensitivity 3 -> KEY OFF -> Arm (0x2) -> Enable Impact (0x9) -> Wait 10s -> Check PEV_Recorded = 0x02 -> Capture");
+
+  // ============================================================
+  // 1.0 Preparation
+  // ============================================================
+  write("=== STEP 1 - PREPARATION ===");
+
+  Set_BglrAlrm(0x0);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("Set_SMK_IGN");
+  Set_SMK_IGN();
+
+  write("Click USM Reset");
+  Click_USM_Reset();
+
+  write("Click Rec Reset");
+  Click_Rec_Reset();
+
+  // ============================================================
+  // 1.1 - 1.3 Built-in Cam Main Screen - PEV settings only
+  // ============================================================
+  write("=== STEP 1 - SETTING ===");
+  write("1.1 Built-in Cam Main Screen");
+  write("1.2 Turn on Parking Event and Event Notification Settings");
+  Turn_ON_PEV();
+
+  if (Set_PEV_AppNoti(0x2) == 0) {
+    write("WARNING: Set_PEV_AppNoti(0x2) failed");
+  }
+
+  write("1.3 Set Parking Event Sensitivity to 3 (Medium)");
+  if (Set_PEV_Sensitivity(3) == 0) {
+    write("WARNING: Set_PEV_Sensitivity(3) failed");
+  }
+  testWaitForTimeout(1000);
+
+  write("Settings applied:");
+  write("  BLTN_CAM_RecSet_PEV        = 0x%X (expected 0x2 = ON)", $BLTN_CAM_RecSet_PEV);
+  write("  BLTN_CAM_Set_PEV_AppNoti   = 0x%X (expected 0x2 = ON)", $BLTN_CAM_Set_PEV_AppNoti);
+  write("  BLTN_CAM_SenSet_PEV        = 0x%X (expected 0x3 = Medium)", $BLTN_CAM_SenSet_PEV);
+
+  // ============================================================
+  // 1.4 Enter Parking Recording (KEY OFF)
+  // 1.5 Arm the alarm
+  // 1.6 Enable Impact Event
+  // ============================================================
+  write("=== STEP 1 - TESTING ===");
+
+  write("1.4 KEY OFF - Enter Parking Recording");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("1.5 BAlarm_BglrAlrmCurrentSta = 0x2 (Arm)");
+  Set_BglrAlrm(0x2);
+  testWaitForTimeout(2000);
+
+  write("1.6 Enable Impact Event ");
+ WaitFor_RecSta_PEV_Recording(60000);
+
+  write("Waiting 10s after Impact Event...");
+  testWaitForTimeout(10000);
+
+  write("Check BLTN_CAM_PEV_Recorded = 0x02");
+  get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 15000);
+  get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+
+  if (get_PEVRecorded_value == 0x2) {
+    write("PEV_Recorded: 0x%X << Step 1 PASS >>", get_PEVRecorded_value);
+    testStepPass("CCS_005_1_Pass", "Step 1 - Impact event: BLTN_CAM_PEV_Recorded = 0x02 - OK");
+    passed_tests++;
+  } else {
+    write("PEV_Recorded: 0x%X << Step 1 FAIL >> (expected 0x02)", get_PEVRecorded_value);
+    snprintf(failReason, elcount(failReason),
+             "Fail reason: Step 1 - BLTN_CAM_PEV_Recorded=0x%X (expected 0x02). Cause: expected condition was not satisfied.",
+             get_PEVRecorded_value);
+    testStepFail("CCS_005_1_Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_005_1 (PEV_Recorded!=0x02), ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics() Step 1");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== END STEP 1 | CCS_005_1 ===");
+  // NOTE: Do NOT call Standard_Init() here - Step 2 continues from parking mode
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_005_2: Step 2 - Shock event during network sleep (continues from Step 1)
+// ============================================================================
+testcase CCS_005_2() {
+  Send_Value_To_COM(30502);
+  SetTestStep("Buoc 2 - CCS_005");
+  StartTestTimer();
+  testStep("Step 2", "Shock during network sleep: Wait 4min -> WaitForNetworkSleep(6min) -> WaitFor_RecSta_PEV_Recording -> Wait 10s -> Check PEV_Recorded=0x02 -> Wait 4min -> WaitForNetworkSleep(6min)");
+
+  write("=== STEP 2 - TESTING ===");
+
+  // 2.1 Wait 4 minutes
+  write("2.1 Waiting 4 minutes...");
+  testWaitForTimeout(240000);
+
+  // 2.2 WaitForNetworkSleep (6 minutes = 360 seconds)
+  write("2.2 WaitForNetworkSleep (max 6 min)...");
+  if (WaitForNetworkSleep(360) == 1) {
+    write("Network sleep detected");
+
+    // 2.3 Wait for PEV recording (manual impact trigger required)
+    write("2.3 WaitFor_RecSta_PEV_Recording...");
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+      write("PEV recording started");
+
+      // 2.4 Wait 10s then check PEV_Recorded
+      write("2.4 Waiting 10s...");
+      testWaitForTimeout(10000);
+
+      write("Check BLTN_CAM_PEV_Recorded = 0x02");
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 15000);
+      get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+
+      if (get_PEVRecorded_value == 0x2) {
+        write("PEV_Recorded: 0x%X << Step 2 PASS >>", get_PEVRecorded_value);
+        testStepPass("CCS_005_2_Pass", "Step 2 - Shock during sleep: BLTN_CAM_PEV_Recorded = 0x02 - OK");
+        passed_tests++;
+      } else {
+        write("PEV_Recorded: 0x%X << Step 2 FAIL >> (expected 0x02)", get_PEVRecorded_value);
+        snprintf(failReason, elcount(failReason),
+                 "Fail reason: Step 2 - BLTN_CAM_PEV_Recorded=0x%X (expected 0x02). Cause: expected condition was not satisfied.",
+                 get_PEVRecorded_value);
+        testStepFail("CCS_005_2_Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_005_2 (PEV_Recorded!=0x02), ", elcount(failed_test_names));
+      }
+
+    } else {
+      write("PEV recording did not start within timeout");
+      testStepFail("CCS_005_2_Fail", "Fail reason: Step 2 - WaitFor_RecSta_PEV_Recording timeout. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_005_2 (PEV recording timeout), ", elcount(failed_test_names));
+    }
+
+  } else {
+    write("WaitForNetworkSleep timeout (first sleep, 6 min)");
+    testStepFail("CCS_005_2_Fail", "Fail reason: Step 2 - WaitForNetworkSleep(360) timeout (first). Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_005_2 (sleep1 timeout), ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  // 2.5 Wait 4 minutes
+  write("2.5 Waiting 4 minutes...");
+  testWaitForTimeout(240000);
+
+  // 2.6 WaitForNetworkSleep (6 minutes = 360 seconds)
+  write("2.6 WaitForNetworkSleep (max 6 min)...");
+  if (WaitForNetworkSleep(360) == 1) {
+    write("Network sleep detected (second)");
+  } else {
+    write("WaitForNetworkSleep timeout (second sleep, 6 min)");
+  }
+
+  write("Run CaptureGraphics() Step 2");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+  @panel::Switch_CGWNM = 0;
+
+  write("=== END STEP 2 | CCS_005_2 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_005_4: Step 4 - Impact event in Parking Motion Recording mode
+// ============================================================================
+testcase CCS_005_4() {
+  Send_Value_To_COM(30504);
+  SetTestStep("Buoc 4 - CCS_005");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 4", "Impact in Parking Motion Recording: KEY ON -> Set_SMK_IGN -> USM Reset -> Rec Reset -> Built-in Cam Main Screen -> Turn ON OWP + PEV + AppNoti -> Sensitivity 3 -> KEY OFF -> Enter Parking Motion Recording -> Arm (0x2) -> Enable Impact (0x9) -> Wait 10s -> Check PEV_Recorded = 0x02 -> Capture");
+
+  // ============================================================
+  // 4.0 Preparation
+  // ============================================================
+  write("=== STEP 4 - PREPARATION ===");
+
+  Set_BglrAlrm(0x0);
+
+  write("KEY ON");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("Set_SMK_IGN");
+  Set_SMK_IGN();
+
+  write("Click USM Reset");
+  Click_USM_Reset();
+
+  write("Click Rec Reset");
+  Click_Rec_Reset();
+
+  // ============================================================
+  // 4.1 - 4.3 Built-in Cam Main Screen - OWP + PEV + AppNoti settings
+  // ============================================================
+  write("=== STEP 4 - SETTING ===");
+  write("4.1 Built-in Cam Main Screen");
+  write("4.2 Turn ON Parking Motion (OWP), Parking Event, and Event Notification Settings");
+  Turn_ON_OWP();
+  Turn_ON_PEV();
+
+  if (Set_PEV_AppNoti(0x2) == 0) {
+    write("WARNING: Set_PEV_AppNoti(0x2) failed");
+  }
+
+  write("4.3 Set Parking Event Sensitivity to 3 (Medium)");
+  if (Set_PEV_Sensitivity(3) == 0) {
+    write("WARNING: Set_PEV_Sensitivity(3) failed");
+  }
+  testWaitForTimeout(1000);
+
+  write("Settings applied:");
+  write("  BLTN_CAM_RecSet_OWP        = 0x%X (expected 0x2 = ON)", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSet_PEV        = 0x%X (expected 0x2 = ON)", $BLTN_CAM_RecSet_PEV);
+  write("  BLTN_CAM_Set_PEV_AppNoti   = 0x%X (expected 0x2 = ON)", $BLTN_CAM_Set_PEV_AppNoti);
+  write("  BLTN_CAM_SenSet_PEV        = 0x%X (expected 0x3 = Medium)", $BLTN_CAM_SenSet_PEV);
+
+  // ============================================================
+  // 4.4 KEY OFF -> Enter Parking Motion Recording
+  // 4.5 Arm the alarm
+  // 4.6 Enable Impact Event
+  // ============================================================
+  write("=== STEP 4 - TESTING ===");
+
+  write("4.4 KEY OFF - Enter Parking Motion Recording");
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+    write("OWP recording is started - Parking Motion Recording active");
+    @panel::Switch_CGWNM = 1;
+    testWaitForTimeout(3000);
+
+    write("4.5 BAlarm_BglrAlrmCurrentSta = 0x2 (Arm)");
+    Set_BglrAlrm(0x2);
+    testWaitForTimeout(2000);
+
+    write("4.6 Enable Impact Event");
+   WaitFor_RecSta_PEV_Recording(60000);
+
+    write("Waiting 10s after Impact Event...");
+    testWaitForTimeout(10000);
+
+    write("Check BLTN_CAM_PEV_Recorded = 0x02");
+    get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 15000);
+    get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+
+    if (get_PEVRecorded_value == 0x2) {
+      write("PEV_Recorded: 0x%X << Step 4 PASS >>", get_PEVRecorded_value);
+      testStepPass("CCS_005_4_Pass", "Step 4 - Impact in Parking Motion: BLTN_CAM_PEV_Recorded = 0x02 - OK");
+      passed_tests++;
+    } else {
+      write("PEV_Recorded: 0x%X << Step 4 FAIL >> (expected 0x02)", get_PEVRecorded_value);
+      snprintf(failReason, elcount(failReason),
+               "Fail reason: Step 4 - BLTN_CAM_PEV_Recorded=0x%X (expected 0x02). Cause: expected condition was not satisfied.",
+               get_PEVRecorded_value);
+      testStepFail("CCS_005_4_Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_005_4 (PEV_Recorded!=0x02), ", elcount(failed_test_names));
+    }
+
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason),
+             "Fail reason: Step 4 - OWP recording hasn't started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_OWP);
+    testStepFail("CCS_005_4_Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_005_4 (OWP timeout), ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  write("Run CaptureGraphics() Step 4");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== END STEP 4 | CCS_005_4 ===");
+  // NOTE: Do NOT call Standard_Init() here - Step 5 continues from parking mode
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_005_5: Step 5 - Shock event during network sleep (continues from Step 4)
+// ============================================================================
+testcase CCS_005_5() {
+  Send_Value_To_COM(30505);
+  SetTestStep("Buoc 5 - CCS_005");
+  StartTestTimer();
+  testStep("Step 5", "Shock during network sleep (from Step 4): Wait 4min -> WaitForNetworkSleep(6min) -> WaitFor_RecSta_PEV_Recording -> Wait 10s -> Check PEV_Recorded=0x02 -> Wait 4min -> WaitForNetworkSleep(6min)");
+
+  write("=== STEP 5 - TESTING ===");
+
+  // 5.1 Wait 4 minutes
+  write("5.1 Waiting 4 minutes...");
+  testWaitForTimeout(240000);
+
+  // 5.2 WaitForNetworkSleep (6 minutes = 360 seconds)
+  write("5.2 WaitForNetworkSleep (max 6 min)...");
+  if (WaitForNetworkSleep(360) == 1) {
+    write("Network sleep detected");
+
+    // 5.3 Wait for PEV recording (manual impact trigger required)
+    write("5.3 WaitFor_RecSta_PEV_Recording...");
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+      write("PEV recording started");
+
+      // 5.4 Wait 10s then check PEV_Recorded
+      write("5.4 Waiting 10s...");
+      testWaitForTimeout(10000);
+
+      write("Check BLTN_CAM_PEV_Recorded = 0x02");
+      get_PEVRecorded_change = WaitFor_PEV_Recorded_Value(0x2, 15000);
+      get_PEVRecorded_value = $BLTN_CAM_PEV_Recorded;
+
+      if (get_PEVRecorded_value == 0x2) {
+        write("PEV_Recorded: 0x%X << Step 5 PASS >>", get_PEVRecorded_value);
+        testStepPass("CCS_005_5_Pass", "Step 5 - Shock during sleep (from Step 4): BLTN_CAM_PEV_Recorded = 0x02 - OK");
+        passed_tests++;
+      } else {
+        write("PEV_Recorded: 0x%X << Step 5 FAIL >> (expected 0x02)", get_PEVRecorded_value);
+        snprintf(failReason, elcount(failReason),
+                 "Fail reason: Step 5 - BLTN_CAM_PEV_Recorded=0x%X (expected 0x02). Cause: expected condition was not satisfied.",
+                 get_PEVRecorded_value);
+        testStepFail("CCS_005_5_Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_005_5 (PEV_Recorded!=0x02), ", elcount(failed_test_names));
+      }
+
+    } else {
+      write("PEV recording did not start within timeout");
+      testStepFail("CCS_005_5_Fail", "Fail reason: Step 5 - WaitFor_RecSta_PEV_Recording timeout. Cause: expected condition was not satisfied.");
+      failed_tests++;
+      strncat(failed_test_names, "CCS_005_5 (PEV recording timeout), ", elcount(failed_test_names));
+    }
+
+  } else {
+    write("WaitForNetworkSleep timeout (first sleep, 6 min)");
+    testStepFail("CCS_005_5_Fail", "Fail reason: Step 5 - WaitForNetworkSleep(360) timeout (first). Cause: expected condition was not satisfied.");
+    failed_tests++;
+    strncat(failed_test_names, "CCS_005_5 (sleep1 timeout), ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  // 5.5 Wait 4 minutes
+  write("5.5 Waiting 4 minutes...");
+  testWaitForTimeout(240000);
+
+  // 5.6 WaitForNetworkSleep (6 minutes = 360 seconds)
+  write("5.6 WaitForNetworkSleep (max 6 min)...");
+  if (WaitForNetworkSleep(360) == 1) {
+    write("Network sleep detected (second)");
+  } else {
+    write("WaitForNetworkSleep timeout (second sleep, 6 min)");
+  }
+
+  write("Run CaptureGraphics() Step 5");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+  Standard_Init();
+  @panel::Switch_CGWNM = 0;
+
+  write("=== END STEP 5 | CCS_005_5 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest() {
+  testReportFileName("TestReports\\CCS_005 - 2.5 generation_report");
+
+  write(">>> RUN STEP 1 (CCS_005_1) <<<");
+  CCS_005_1();
+  write(">>> RUN STEP 2 (CCS_005_2) <<<");
+  CCS_005_2();
+  write(">>> RUN STEP 4 (CCS_005_4) <<<");
+  CCS_005_4();
+  write(">>> RUN STEP 5 (CCS_005_5) <<<");
+  CCS_005_5();
+}

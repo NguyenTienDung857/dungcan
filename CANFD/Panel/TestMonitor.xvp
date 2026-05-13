@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Test Monitor - Advanced">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Execution Status">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="LabelStep">
+        <Property Name="Name">StaticTextControl1</Property>
+        <Property Name="Size">638, 72</Property>
+        <Property Name="Location">44, 72</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 35pt, style=Bold</Property>
+        <Property Name="TextAlign">MiddleLeft</Property>
+        <Property Name="Text">CURRENT TEST STEP</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxStep" Children="Controls" ControlName="StepName">
+        <Property Name="Name">TextBoxStep</Property>
+        <Property Name="Size">1764, 132</Property>
+        <Property Name="Location">44, 160</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="BoxTextAlign">Center</Property>
+        <Property Name="TextBackColor">235, 248, 255</Property>
+        <Property Name="ValueDisplay">Text</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">TestStepName:</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;TestStepName;4;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">1</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">1852, 400</Property>
+      <Property Name="Location">29, 29</Property>
+      <Property Name="BackColor">White</Property>
+      <Property Name="Font">Segoe UI, 23pt, style=Bold</Property>
+      <Property Name="Text">Execution Status</Property>
+      <Property Name="TabIndex">0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="Elapsed Timer">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="LabelElapsed">
+        <Property Name="Name">StaticTextControl2</Property>
+        <Property Name="Size">478, 64</Property>
+        <Property Name="Location">44, 73</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 35pt, style=Bold</Property>
+        <Property Name="Text">TEST ELAPSED</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="LED1" ControlName="LED Running">
+        <Property Name="Name">LED1</Property>
+        <Property Name="Size">85, 85</Property>
+        <Property Name="Location">800, 60</Property>
+        <Property Name="UsedLEDColorOn">Lime</Property>
+        <Property Name="UsedLEDColorOff">Silver</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Silver&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Lime&lt;/Color&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;TimerRunning;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">1</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxElapsed" Children="Controls" ControlName="ElapsedSeconds">
+        <Property Name="Name">TextBoxElapsed</Property>
+        <Property Name="Size">630, 220</Property>
+        <Property Name="Location">44, 180</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="BoxTextAlign">Right</Property>
+        <Property Name="TextBackColor">247, 250, 252</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Segoe UI, 120pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Segoe UI, 120pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Segoe UI, 120pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;ElapsedSeconds;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">2</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControlUnit1" Children="Controls" ControlName="Unit1">
+        <Property Name="Name">StaticTextControlUnit1</Property>
+        <Property Name="Size">210, 140</Property>
+        <Property Name="Location">720, 260</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 65pt, style=Bold</Property>
+        <Property Name="Text">sec</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">911, 533</Property>
+      <Property Name="Location">29, 458</Property>
+      <Property Name="BackColor">White</Property>
+      <Property Name="Font">Segoe UI, 23pt, style=Bold</Property>
+      <Property Name="Text">Test Elapsed Time</Property>
+      <Property Name="TabIndex">1</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" Children="Controls" ControlName="Boot Timer">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" Children="Controls" ControlName="LabelBoot">
+        <Property Name="Name">StaticTextControl3</Property>
+        <Property Name="Size">400, 50</Property>
+        <Property Name="Location">44, 45</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 25pt, style=Bold</Property>
+        <Property Name="Text">SYSTEM BOOT</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="LED2" ControlName="LED Boot Running">
+        <Property Name="Name">LED2</Property>
+        <Property Name="Size">60, 60</Property>
+        <Property Name="Location">800, 40</Property>
+        <Property Name="UsedLEDColorOn">DodgerBlue</Property>
+        <Property Name="UsedLEDColorOff">Silver</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Silver&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;DodgerBlue&lt;/Color&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;CheckTimeBootRunning;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">1</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxBoot" Children="Controls" ControlName="BootSeconds">
+        <Property Name="Name">TextBoxBoot</Property>
+        <Property Name="Size">400, 132</Property>
+        <Property Name="Location">44, 105</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="BoxTextAlign">Right</Property>
+        <Property Name="TextBackColor">247, 250, 252</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Segoe UI, 70pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;CheckTimeBootSeconds;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">2</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControlUnit2" Children="Controls" ControlName="Unit2">
+        <Property Name="Name">StaticTextControlUnit2</Property>
+        <Property Name="Size">150, 80</Property>
+        <Property Name="Location">450, 130</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 40pt, style=Bold</Property>
+        <Property Name="Text">sec</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControlLog" Children="Controls" ControlName="LabelLog">
+        <Property Name="Name">StaticTextControlLog</Property>
+        <Property Name="Size">400, 50</Property>
+        <Property Name="Location">44, 250</Property>
+        <Property Name="BackColor">White</Property>
+        <Property Name="Font">Segoe UI, 25pt, style=Bold</Property>
+        <Property Name="Text">LOG MESSAGE</Property>
+        <Property Name="ForeColor">74, 85, 104</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.6.5.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxLog" Children="Controls" ControlName="LogMessage">
+        <Property Name="Name">TextBoxLog</Property>
+        <Property Name="Size">823, 114</Property>
+        <Property Name="Location">44, 310</Property>
+        <Property Name="AlarmUpperTextColor">Red</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="TextBackColor">247, 250, 252</Property>
+        <Property Name="ValueDisplay">Text</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">Red</Property>
+        <Property Name="BoxFont">Segoe UI, 60pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Segoe UI, 60pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Segoe UI, 60pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">LogMessage:</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;TestMonitor;;;LogMessage;4;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">3</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+        <Property Name="ForeColor">Red</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl3</Property>
+      <Property Name="Size">911, 533</Property>
+      <Property Name="Location">969, 458</Property>
+      <Property Name="BackColor">White</Property>
+      <Property Name="Font">Segoe UI, 23pt, style=Bold</Property>
+      <Property Name="Text">System Boot Time</Property>
+      <Property Name="TabIndex">2</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">1910, 1020</Property>
+    <Property Name="BackColor">247, 250, 252</Property>
+  </Object>
+</Panel>

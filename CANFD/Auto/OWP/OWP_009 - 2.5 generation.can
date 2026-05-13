@@ -1,0 +1,573 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+variables {
+  // Global Variable Declaration
+  float count_PEVRec_time = 0.0;
+  byte value_Bfr = 0x0;
+  byte value_Aft = 0x0;
+  char PLBM_Battery[4] = {'P','L','B','M'};
+  char eAGM_Battery[4] = {'E','A','G','M'};
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+void BLTN_CAM_Settings(int Choose_Option){
+  switch (Choose_Option){
+    case(1):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break;    
+    case(2):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0x5; write("Bft: -15"); @panel::TrackBar_EV_Time_Bfr = 2;/*Before Time Setting: -15s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break;        
+    case(3):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break;        
+    case(4):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Aft: +15"); @panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break;       
+    case(5):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0x5; write("Bft: -15"); @panel::TrackBar_EV_Time_Bfr = 2;/*Before Time Setting: -15s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Aft: +15"); @panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break;       
+    case(6):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Aft: +15"); @panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break;       
+    case(7):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }   
+      testWaitForTimeout(500);
+      value_Bfr = 0x0; write("Bft: -10"); @panel::TrackBar_EV_Time_Bfr = 3;/*Before Time Setting: -10s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Aft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;    
+    case(8):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0x5; write("Bft: -15"); @panel::TrackBar_EV_Time_Bfr = 2;/*Before Time Setting: -15s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Aft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;         
+    case(9):
+      if ($BLTN_CAM_RecSet_PEV == 0x1){
+        @panel::LED_Ctrl_SetPEV = 1; 
+        
+        testWaitForTimeout(500);
+        
+        if ($BLTN_CAM_RecSet_PEV == 0x2){
+          
+          write("PEV: 0x%X (ON)",$BLTN_CAM_RecSet_PEV);
+        } 
+        else if ($BLTN_CAM_RecSet_PEV == 0x1){
+          
+          write("PEV: 0x%X (OFF)",$BLTN_CAM_RecSet_PEV);
+          
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Aft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;    
+  }
+  
+  testWaitForTimeout(500);
+    
+  if($BLTN_CAM_Set_EV_BfrTime != value_Bfr){
+      
+    write("Bfr_time is not match");
+    
+    write("Stop test"); //stop();
+    
+  }
+  else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
+    
+    write("Aft_time is not match");
+    
+    write("Stop test"); //stop();
+    
+  }  
+}
+
+void Setup_Function(int Option, long Wait_Time){
+  float start_sec, end_sec;
+  
+    @panel::Switch_CGWNM = 1;
+  
+    KEY_ON();
+    testWaitForTimeout(3000);
+  
+    Enter_BLTN_CAM();
+    testWaitForTimeout(3000);
+
+    BLTN_CAM_Settings(Option);
+    testWaitForTimeout(2000);
+    
+    @panel::Switch_Clock = 1;
+  
+    Exit_BLTN_CAM();
+    testWaitForTimeout(3000);
+    
+    // Đợi 20s để camera có dữ liệu ghi hình trước đó
+    write("Wait 20s for pre-recorded data");
+    testWaitForTimeout(20000);
+  
+    KEY_OFF();
+
+    testWaitForTimeout(Wait_Time);
+    WaitFor_RecSta_OWP_Recording(30);
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1){
+      write("PEV recording is started");
+      start_sec = timeNow()/100000.0;
+    }
+    else {
+      write("Error: PEV recording hasn't started. Stop test !!!");
+      Log_Error_Details();
+      testStepFail("Fail","PEV recording hasn't started");
+    }
+  
+    if (WaitFor_RecSta_PEV_OFF(30) == 1){
+      write("PEV recording is stopped");
+      end_sec = timeNow()/100000.0; 
+    }
+  
+    count_PEVRec_time = end_sec - start_sec;
+    
+}
+
+void Setup_End_test(){
+  
+  KEY_ON();
+  testWaitForTimeout(3000);
+  
+
+  while(getSignal(BLTN_CAM_RecSet_PEV) == 0x2 && flag_RecSet_error < 15){
+    
+    Enter_BLTN_CAM();
+    testWaitForTimeout(3000);
+    write("PEV Off"); @panel::LED_Ctrl_SetPEV = 1;
+    testWaitForTimeout(1000);
+    Exit_BLTN_CAM();
+    testWaitForTimeout(1000);      
+    flag_RecSet_error++;
+    
+  }
+  
+  flag_RecSet_error = 0;
+}
+
+testcase OWP_009_1(){
+  Send_Value_To_COM(20901);
+  KEY_ON(); write("Run KEY_ON()");
+  testWaitForTimeout(6000);
+  Click_USM_Reset(); write("Run Click_USM_Reset()");
+  SetTestStep("Bước 1 - OWP_009");
+  StartTestTimer();
+  testStep("Step1", "PEV recording time check: BfrTime=-10s (0x0), AftTime=+10s (0x0) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_1");
+
+  Setup_Function(1, 15000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+  
+  count_PEVRec_time = 0.0;
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_1");
+  write("Finish OWP_009_1");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_2(){
+  Send_Value_To_COM(20902);
+  SetTestStep("Bước 2 - OWP_009");
+  StartTestTimer();
+  testStep("Step2", "PEV recording time check: BfrTime=-15s (0x5), AftTime=+10s (0x0) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_2");
+  
+  Setup_Function(2, 20000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");  write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+  
+  count_PEVRec_time = 0.0;
+  
+  KEY_OFF(); write("Run KEY_OFF()");  
+  
+  testStep("Notifications","Finish OWP_009_2");
+  write("Finish OWP_009_2");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_3(){
+  Send_Value_To_COM(20903);
+  SetTestStep("Bước 3 - OWP_009");
+  StartTestTimer();
+  testStep("Step3", "PEV recording time check: BfrTime=-20s (0xA), AftTime=+10s (0x0) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_3");
+
+  Setup_Function(3, 25000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_3");
+  write("Finish OWP_009_3");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_4(){
+  Send_Value_To_COM(20904);
+  SetTestStep("Bước 4 - OWP_009");
+  StartTestTimer();
+  testStep("Step4", "PEV recording time check: BfrTime=-10s (0x0), AftTime=+15s (0x5) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_4");
+
+  Setup_Function(4, 15000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_4");
+  write("Finish OWP_009_4");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_5(){
+  Send_Value_To_COM(20905);
+  SetTestStep("Bước 5 - OWP_009");
+  StartTestTimer();
+  testStep("Step5", "PEV recording time check: BfrTime=-15s (0x5), AftTime=+15s (0x5) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_5");
+  
+  Setup_Function(5, 20000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_5");
+  write("Finish OWP_009_5");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_6(){
+  Send_Value_To_COM(20906);
+  SetTestStep("Bước 6 - OWP_009");
+  StartTestTimer();
+  testStep("Step6", "PEV recording time check: BfrTime=-20s (0xA), AftTime=+15s (0x5) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_6");
+  
+  Setup_Function(6, 25000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_6");
+  write("Finish OWP_009_6");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_7(){
+  Send_Value_To_COM(20907);
+  SetTestStep("Bước 7 - OWP_009");
+  StartTestTimer();
+  testStep("Step7", "PEV recording time check: BfrTime=-10s (0x0), AftTime=+20s (0xA) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_7");
+
+  Setup_Function(7, 15000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+ 
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_7");
+  write("Finish OWP_009_7");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_8(){
+  Send_Value_To_COM(20908);
+  SetTestStep("Bước 8 - OWP_009");
+  StartTestTimer();
+  testStep("Step8", "PEV recording time check: BfrTime=-15s (0x5), AftTime=+20s (0xA) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_8");
+
+  Setup_Function(8, 20000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_8");
+  write("Finish OWP_009_8");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_009_9(){
+  Send_Value_To_COM(20909);
+  SetTestStep("Bước 9 - OWP_009");
+  StartTestTimer();
+  testStep("Step9", "PEV recording time check: BfrTime=-20s (0xA), AftTime=+20s (0xA) -> trigger PEV, measure recording duration");
+  write("Start test OWP_009_9");
+
+  Setup_Function(9, 25000); write("Run Setup_Function()");
+ 
+  write("count_PEVRec_time = %.2f",count_PEVRec_time);
+  
+  CaptureGraphics("OWP", "BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_State"); write("Run CaptureGraphics()");
+  
+  Setup_End_test(); write("Run Setup_End_test()"); 
+  
+  @panel::Switch_Clock = 0;
+  
+  @panel::Switch_CGWNM = 0;
+
+  count_PEVRec_time = 0.0;  
+  
+  KEY_OFF(); write("Run KEY_OFF()"); 
+  
+  testStep("Notifications","Finish OWP_009_9");
+  write("Finish OWP_009_9");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest(){
+  testReportFileName("TestReports\\OWP_009 - 2.5 generation_report");
+  OWP_009_1();
+
+  OWP_009_2();
+
+  OWP_009_3();
+
+  OWP_009_4();
+
+  OWP_009_5();
+
+  OWP_009_6();
+
+  OWP_009_7();
+
+  OWP_009_8();
+
+  OWP_009_9();
+}
+

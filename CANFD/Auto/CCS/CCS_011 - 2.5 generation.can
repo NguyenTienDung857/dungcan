@@ -1,0 +1,218 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_011
+  Title: [Continuous Parking Recording - Parking Impact Detection]
+
+  Preconditions: - Block CCU, ACC and IGN and ccNC/ccIC switch OFF state, AVN mode
+
+  Step 1: Parking impact detection during continuous parking recording
+    1.0 Set SMK to IGN, click USM Reset, click Rec Reset
+    1.1 Enter Built-in Cam main screen
+    1.2 [Settings] - [Recording] - Enable OWP and PEV recording
+    1.3 KEY OFF - Enter parking recording
+    1.4 Wait for continuous parking recording (OWP) to start
+    1.5 Wait 1 minute of continuous parking recording
+    1.6 Parking impact detected
+    -> Check BLTN_CAM_RecSta_PEV = On (0x1) -> OK
+    -> Wait ~10s, check BLTN_CAM_RecSta_PEV = Off (0x0) -> OK
+    -> Capture screenshot
+
+  Step 2: Log check video
+*/
+includes {
+
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  // Global Variable Declaration
+  int i;
+  int get_PEVRecorded_change = 0;
+  byte get_PEVRecorded_value = 0x0;
+
+  // Test Summary variables
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[512] = "";
+}
+
+// ============================================================================
+// CCS_011_1: Step 1 - Parking impact detection during continuous parking recording
+// ============================================================================
+testcase CCS_011_1() {
+  Send_Value_To_COM(31101);
+  SetTestStep("Buoc 1 - CCS_011");
+  StartTestTimer();
+  @panel::Switch_CGWNM = 1;
+  testStep("Step 1", "Parking impact detection during continuous parking recording 1.0 Set SMK to IGN, click USM Reset, click Rec Reset 1.1 Enter Built-in Cam main screen 1.2 [Settings] - [Recording] - Enable OWP and PEV recording 1.3 KEY OFF - Enter parking recording 1.4 Wait for continuous parking recording (OWP) to start 1.5 Wait 1 minute of continuous parking recording 1.6 Parking impact detected -> Check BLTN_CAM_RecSta_PEV = On (0x1) -> OK -> Wait ~10s, check BLTN_CAM_RecSta_PEV = Off (0x0) -> OK -> Capture screenshot");
+  write("=== START CCS_011_1 ===");
+
+  // ============================================================
+  // PREPARATION
+  // ============================================================
+  write("=== PREPARATION ===");
+
+  Set_BglrAlrm(0x2); // Arm
+
+  // 1.0 Set SMK to IGN via panel combo box
+  write("Set SMK_Signal to IGN (0x2)");
+  KEY_ON(); // IGN
+  testWaitForTimeout(3000);
+
+  // Click USM Reset on panel
+  write("Click USM Reset");
+  @panel::Button_USMReset = 1;
+  testWaitForTimeout(3000);
+
+  // Click Rec Reset on panel
+  write("Click Rec Reset");
+  @panel::Button_RecReset = 1;
+  testWaitForTimeout(3000);
+
+  // ============================================================
+  // 1.1-1.2 Enter Built-in Cam, enable OWP and PEV
+  // ============================================================
+  write("=== SETTING ===");
+  Apply_CCS_RecSettings(0x2, 0);
+
+  // Log current settings
+  write("Settings applied:");
+  write("  BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+  write("  BLTN_CAM_Set_PEV_AppNoti = 0x%X", $BLTN_CAM_Set_PEV_AppNoti);
+
+  // Capture screenshot of settings
+  write("Run CaptureGraphics() - Settings");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_SenSet_PEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  // ============================================================
+  // 1.3 KEY OFF - Enter parking recording
+  // ============================================================
+  write("=== TESTING ===");
+
+  write("KEY OFF - Enter parking recording");
+  KEY_OFF();
+
+  // 1.4 Wait for continuous parking recording (OWP) to start
+  if (WaitFor_RecSta_OWP_Recording(60000) == 1) {
+
+    write("OWP recording is started - Parking mode entered");
+    @panel::Switch_CGWNM = 1;
+
+    // Capture screenshot of OWP recording started
+    write("Run CaptureGraphics() - OWP started");
+    CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+    // 1.5 Wait 1 minute of continuous parking recording
+    write("Waiting 1 minute for continuous parking recording...");
+    testWaitForTimeout(60000);
+
+    // 1.6 Parking impact detected
+    write("*************************************************************");
+    write("*** PARKING IMPACT DETECTED ***");
+    write("*************************************************************");
+
+    if (WaitFor_RecSta_PEV_Recording(60) == 1) {
+
+      write("Parking impact detected - PEV recording started");
+
+      // Check RecSta PEV is On (0x1)
+      if ($BLTN_CAM_RecSta_PEV == 0x1) {
+        write("BLTN_CAM_RecSta_PEV = 0x1 (On) << CHECK OK >>");
+        testStepPass("Step1_RecSta_On", "RecSta PEV is On after impact - OK");
+      } else {
+        write("BLTN_CAM_RecSta_PEV = 0x%X << CHECK NG - Expected 0x1 >>", $BLTN_CAM_RecSta_PEV);
+        snprintf(failReason, elcount(failReason), "Fail reason: RecSta PEV is not On after impact (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+        testStepFail("Step1_RecSta_On_Fail", failReason);
+        failed_tests++;
+        strncat(failed_test_names, "CCS_011_1 (RecSta On check), ", elcount(failed_test_names));
+      }
+
+      // Capture screenshot after PEV recording started
+      write("Run CaptureGraphics() - PEV RecSta On");
+      CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+      // Wait ~10 seconds, then check RecSta turns Off
+      write("Waiting ~10 seconds for PEV recording to finish...");
+      testWaitForTimeout(10000);
+
+      // Check RecSta PEV is Off (0x0) after ~10s
+      if ($BLTN_CAM_RecSta_PEV == 0x0) {
+        write("BLTN_CAM_RecSta_PEV = 0x0 (Off) after ~10s << CHECK OK >>");
+        testStepPass("Step1_RecSta_Off", "RecSta PEV turned Off after ~10s - OK");
+        passed_tests++;
+      } else {
+        // Wait a bit more (up to 20s extra) for PEV to turn off
+        write("RecSta PEV still on, waiting more...");
+        if (testWaitForSignalInRange(BLTN_CAM_RecSta_PEV, 0x0, 0x0, 20000) == 1) {
+          write("BLTN_CAM_RecSta_PEV = 0x0 (Off) << CHECK OK (delayed) >>");
+          testStepPass("Step1_RecSta_Off", "RecSta PEV turned Off - OK (delayed)");
+          passed_tests++;
+        } else {
+          write("BLTN_CAM_RecSta_PEV = 0x%X << CHECK NG - Expected 0x0 >>", $BLTN_CAM_RecSta_PEV);
+          snprintf(failReason, elcount(failReason), "Fail reason: RecSta PEV did not turn Off (RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+          testStepFail("Step1_RecSta_Off_Fail", failReason);
+          failed_tests++;
+          strncat(failed_test_names, "CCS_011_1 (RecSta Off check), ", elcount(failed_test_names));
+        }
+      }
+
+      // Capture screenshot after PEV recording finished
+      write("Run CaptureGraphics() - PEV RecSta Off");
+      CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+    } else {
+      write("PEV recording did not start within timeout");
+          snprintf(failReason, elcount(failReason), "Fail reason: Step 1 - PEV recording timeout after impact (BLTN_CAM_RecSta_PEV=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+          testStepFail("Step1_Fail", failReason);
+      failed_tests++;
+      strncat(failed_test_names, "CCS_011_1 (PEV start timeout), ", elcount(failed_test_names));
+    }
+  } else {
+    write("OWP recording hasn't started");
+    snprintf(failReason, elcount(failReason), "Fail reason: OWP recording hasn\'t started (BLTN_CAM_RecSta_OWP=0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_OWP);
+    testStepFail("Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names, "CCS_011_1 (OWP timeout), ", elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  // Final screenshot
+  write("Run CaptureGraphics() - Final");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta;SMK_TrmnlCtrlGrpStaBDC");
+
+  // Step 2: Log check video
+  write("*************************************************************");
+  write("*** PLEASE CHECK VIDEO ***");
+  write("*************************************************************");
+
+  Standard_Init();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("=== FINISH CCS_011_1 ===");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest() {
+
+  testReportFileName("TestReports\\CCS_011 - 2.5 generation_report");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  CCS_011_1();
+
+}
+
+
+
+
+

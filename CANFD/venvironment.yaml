@@ -1,0 +1,12 @@
+# Thử version 3.0.0 (Thường máy nào cũng có, v4.0.0 mới quá máy bạn chưa có)
+version: 3.0.0
+
+# Cấu trúc dạng List (có dấu gạch đầu dòng -) giống mẫu bạn thích
+imports:
+  - namespace: CAN2
+    network: CAN2
+    location: "./DB_CAN/20251114_STD_DB_CAR_R2.0_2024_FD_B2_v25.11.01_add_dummy_diag.dbc"
+
+  - namespace: LIN1
+    network: LIN1
+    location: "./DB_LIN/GN7_P-LBM_LIN_DB_A_01.ldf"

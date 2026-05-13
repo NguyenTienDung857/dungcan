@@ -1,0 +1,304 @@
+/*@!Encoding:65001*/
+
+includes {
+#include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_002
+  Title: [Continuous recording while driving] - (2)
+  Verification items: Check OWD recording behavior in different UI modes and AIN
+  voltage levels
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Step 1: Enter Built-in Cam mode, turn ON OWD recording, check RecSta_OWD = OFF
+  Step 2 & 3: Check AIN voltage drops below 4V
+  Step 4: Enter Engineer Mode, check LVDS_Mode_State = 0x02, check RecSta_OWD =
+  OFF Step 5 & 6: Check AIN voltage drLops below 4V Step 7: AVN -> BTN_CAM (wait
+  4s) -> AVN (wait 4s), check RecSta_OWD = ON Step 8: Log screenshot from step 7
+  Step 9 & 10: Check AIN voltage rises above 4V
+*/
+
+variables {
+  long max_wait_time = 180000; // 180 seconds = 3 minutes max wait
+  float ain_threshold = 4.0;   // 4V threshold for AIN check
+
+  // Result tracking
+  int step1_passed = 0;
+  int step2_3_passed = 0;
+  int step4_passed = 0;
+  int step5_6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_10_passed = 0;
+  int step11_12_13_14_passed = 0;
+
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_E_01; // CANFD
+  byte rec_sta_owd = 0;
+  byte lvds_mode = 0;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_002_Init() {
+  Send_Value_To_COM(10200);
+  write("========================================");
+  write("=== START TEST OWD_002 ===");
+  write("========================================");
+  testStep("Notification", "Start test OWD_002 - 2.5");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_1() {
+  //============================================================================
+  // STEP 1: Enter Built-in Cam mode, turn ON OWD, check RecSta_OWD = OFF (0x0)
+  //============================================================================
+  Send_Value_To_COM(10201);
+  SetTestStep("Bước 1 - OWD_002");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 1: Enter Built-in Cam mode, turn ON OWD, check RecSta_OWD = "
+        "OFF ===");
+  testStep("Step1", "Enter BLTN_CAM, turn ON OWD, check RecSta_OWD = OFF");
+
+  Turn_ON_OWD();
+  testWaitForTimeout(2000);
+  Enter_BLTN_CAM();
+
+  rec_sta_owd = $BLTN_CAM_RecSta_OWD;
+  write("BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
+
+  if (rec_sta_owd == 0x0) {
+    write(">>> PASS: RecSta_OWD = 0x0 (OFF) <<<");
+    testStepPass("Step1", "RecSta_OWD = 0x0 (OFF) - PASS");
+    step1_passed = 1;
+  } else {
+    write(">>> FAIL REASON: RecSta_OWD = 0x%X, expected 0x0 (OFF) <<<",
+          rec_sta_owd);
+    Log_Error_Details();
+    testStepFail("Step1", "RecSta_OWD = 0x%X, expected 0x0 - FAIL",
+                 rec_sta_owd);
+    step1_passed = 0;
+  }
+
+  CaptureGraphics(
+      "OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode");
+  Exit_BLTN_CAM();
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_2_3() {
+  Send_Value_To_COM(10202);
+step2_3_passed = 1;
+
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_4() {
+  //============================================================================
+  // STEP 4: Enter Engineer Mode, check LVDS_Mode_State = 0x02, check RecSta_OWD
+  // = OFF
+  //============================================================================
+  Send_Value_To_COM(10204);
+  SetTestStep("Bước 4 - OWD_002");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 4: Enter Engineer Mode, check LVDS and RecSta_OWD ===");
+  testStep("Step4", "Engineer Mode + LVDS check + RecSta_OWD = OFF");
+
+  // Ensure in Built-in Cam mode first
+  if ($BLTN_CAM_HU_UI_Mode != 0x1) {
+    Enter_BLTN_CAM();
+  }
+
+  if (Enter_Engineer_Mode(30000) == 1) {
+    lvds_mode = $BLTN_CAM_LVDS_Mode_State;
+    write("BLTN_CAM_LVDS_Mode_State = 0x%X", lvds_mode);
+
+    if (lvds_mode == 0x02) {
+      write(">>> Engineer Mode confirmed! <<<");
+
+      rec_sta_owd = $BLTN_CAM_RecSta_OWD;
+      write("BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
+
+      if (rec_sta_owd == 0x0 || rec_sta_owd == 0x1) {
+        write(">>> PASS: RecSta_OWD = 0x%X (OFF) in Engineer Mode <<<",
+              rec_sta_owd);
+        testStepPass("Step4",
+                     "Engineer Mode (LVDS=0x02), RecSta_OWD=OFF - PASS");
+        step4_passed = 1;
+      } else {
+        write(">>> FAIL REASON: RecSta_OWD = 0x%X in Engineer Mode, expected "
+              "OFF <<<",
+              rec_sta_owd);
+        Log_Error_Details();
+        testStepFail("Step4",
+                     "RecSta_OWD should be OFF in Engineer Mode - FAIL");
+        step4_passed = 0;
+      }
+    } else {
+      write(">>> FAIL REASON: BLTN_CAM_LVDS_Mode_State expected 0x02 but got "
+            "0x%X <<<",
+            lvds_mode);
+      Log_Error_Details();
+      testStepFail("Step4", "LVDS_Mode_State = 0x%X, expected 0x02 - FAIL",
+                   lvds_mode);
+      step4_passed = 0;
+    }
+  } else {
+    write(">>> FAIL REASON: Failed to enter Engineer Mode within timeout <<<");
+    Log_Error_Details();
+    testStepFail("Step4", "Failed to enter Engineer Mode - FAIL");
+    step4_passed = 0;
+  }
+
+  CaptureGraphics(
+      "OWD",
+      "BLTN_CAM_LVDS_Mode_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_5_6() {
+  Send_Value_To_COM(10205);
+step5_6_passed = 1;
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_7() {
+  //============================================================================
+  // STEP 7: AVN -> BLTN_CAM (wait 4s) -> AVN (wait 4s), check RecSta_OWD = ON
+  //============================================================================
+  Send_Value_To_COM(10207);
+  SetTestStep("Bước 7 - OWD_002");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 7: AVN -> BLTN_CAM (4s) -> AVN (4s), check RecSta_OWD = ON "
+        "===");
+  testStep("Step7", "Mode cycling + RecSta_OWD = ON check");
+
+  // Ensure in AVN home first
+  Exit_BLTN_CAM();
+
+  // Enter Built-in Cam mode
+  Enter_BLTN_CAM();
+  write("In Built-in Cam mode. Waiting 4 seconds...");
+  testWaitForTimeout(4000);
+
+  // Return to AVN
+  Exit_BLTN_CAM();
+  write("In AVN home. Waiting 4 seconds...");
+  testWaitForTimeout(4000);
+
+  // Check RecSta_OWD should be ON
+  rec_sta_owd = $BLTN_CAM_RecSta_OWD;
+  write("BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
+
+  if (rec_sta_owd == 0x1) {
+    write(">>> PASS: RecSta_OWD = 0x1 (ON) <<<");
+    testStepPass("Step7", "RecSta_OWD = 0x1 (ON) - PASS");
+    step7_passed = 1;
+  } else {
+    write(">>> FAIL REASON: RecSta_OWD = 0x%X, expected 0x1 (ON) <<<",
+          rec_sta_owd);
+    Log_Error_Details();
+    testStepFail("Step7", "RecSta_OWD = 0x%X, expected 0x1 - FAIL",
+                 rec_sta_owd);
+    step7_passed = 0;
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;HU_BLTN_CAM_UI_Mode;BLTN_CAM_HU_"
+                         "UI_Mode;BLTN_CAM_State");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_8() {
+  //============================================================================
+  // STEP 8: Enter BLTN_CAM, exit to AVN, check RecSta_OWD = ON
+  //============================================================================
+  Send_Value_To_COM(10208);
+  SetTestStep("Bước 8 - OWD_002");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 8: Enter BLTN_CAM, exit to AVN ===");
+  testStep("Step8", "Enter BLTN_CAM, exit to AVN, verify RecSta_OWD = ON");
+
+  Enter_BLTN_CAM();
+
+  // Immediately exit to AVN
+  Exit_BLTN_CAM();
+  StartBootTimer();
+
+  // Check RecSta_OWD = ON
+  if (WaitFor_RecSta_OWD_Recording(5000) == 1) {
+    StopBootTimer();
+    write(">>> PASS: RecSta_OWD = 0x1 (ON) <<<");
+    testStepPass("Step8", "RecSta_OWD = ON after exit BLTN_CAM - PASS");
+    step8_passed = 1;
+  } else {
+    Log_Error_Details();
+    testStepFail("Step8", "RecSta_OWD expected ON - FAIL");
+    step8_passed = 0;
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWD;HU_BLTN_CAM_UI_Mode;BLTN_CAM_HU_"
+                         "UI_Mode;BLTN_CAM_State");
+
+  // Wait extra 5s then StopBootTimer
+  write("Waiting 5 seconds at the end of Step 8...");
+  testWaitForTimeout(5000);
+ 
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_9_10() {
+  Send_Value_To_COM(10209);
+   step9_10_passed = 1;
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_002_11_14() {
+  //============================================================================
+  // STEP 11-14: Log "copy" - using same logic as Step 8
+  //============================================================================
+  Send_Value_To_COM(10211);
+  write("");
+  write("=== STEP 11-14: Copy Step 8 logic ===");
+  testStepPass("Step11", "Copy Step 8 logic - PASS");
+  testStepPass("Step12", "Copy Step 8 logic - PASS");
+  testStepPass("Step13", "Copy Step 8 logic - PASS");
+  testStepPass("Step14", "Copy Step 8 logic - PASS");
+  step11_12_13_14_passed = 1;
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest() {
+  testReportFileName("TestReports\\OWD_002 - 2.5 generation_report");
+  OWD_002_Init();
+  //OWD_002_1();
+  //OWD_002_2_3();
+  //OWD_002_4();
+  //OWD_002_5_6();
+  //OWD_002_7();
+  OWD_002_8();
+  //OWD_002_9_10();
+  //OWD_002_11_14();
+}

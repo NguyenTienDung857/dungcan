@@ -1,0 +1,299 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//Add signal to graphic 2: BLTN_CAM_RecSta_MAR
+variables {
+  // Global Variable Declaration
+  float count_DEVRec_time = 0.0;
+  byte value_Bfr = 0x0;
+  byte value_Aft = 0x0;
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+}
+
+void BLTN_CAM_Settings(int Choose_Option){
+  switch (Choose_Option){
+    case(1):
+      if ($BLTN_CAM_RecSet_DEV == 0x1){
+        @panel::LED_Ctrl_SetDEV = 1;
+
+        testWaitForTimeout(500);
+
+        if ($BLTN_CAM_RecSet_DEV == 0x2){
+
+          write("DEV: 0x%X (ON)",$BLTN_CAM_RecSet_DEV);
+        }
+        else if ($BLTN_CAM_RecSet_DEV == 0x1){
+
+          write("DEV: 0x%X (OFF)",$BLTN_CAM_RecSet_DEV);
+
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x0; write("Aft: +10"); @panel::TrackBar_EV_Time_Aft = 10;/*After Time Setting: +10s*/break;
+    case(2):
+      if ($BLTN_CAM_RecSet_DEV == 0x1){
+        @panel::LED_Ctrl_SetDEV = 1;
+
+        testWaitForTimeout(500);
+
+        if ($BLTN_CAM_RecSet_DEV == 0x2){
+
+          write("DEV: 0x%X (ON)",$BLTN_CAM_RecSet_DEV);
+        }
+        else if ($BLTN_CAM_RecSet_DEV == 0x1){
+
+          write("DEV: 0x%X (OFF)",$BLTN_CAM_RecSet_DEV);
+
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0x5; write("Aft: +15");@panel::TrackBar_EV_Time_Aft = 15;/*After Time Setting: +15s*/break;
+    case(3):
+      if ($BLTN_CAM_RecSet_DEV == 0x1){
+        @panel::LED_Ctrl_SetDEV = 1;
+
+        testWaitForTimeout(500);
+
+        if ($BLTN_CAM_RecSet_DEV == 0x2){
+
+          write("DEV: 0x%X (ON)",$BLTN_CAM_RecSet_DEV);
+        }
+        else if ($BLTN_CAM_RecSet_DEV == 0x1){
+
+          write("DEV: 0x%X (OFF)",$BLTN_CAM_RecSet_DEV);
+
+        }
+      }
+      testWaitForTimeout(500);
+      value_Bfr = 0xA; write("Bft: -20"); @panel::TrackBar_EV_Time_Bfr = 1;/*Before Time Setting: -20s*/
+      testWaitForTimeout(500);
+      value_Aft = 0xA; write("Bft: +20"); @panel::TrackBar_EV_Time_Aft = 20;/*After Time Setting: +20s*/break;
+  }
+  testWaitForTimeout(2000);
+
+  if($BLTN_CAM_Set_EV_BfrTime != value_Bfr){
+
+    write("Bfr_time is not match");
+
+    write("Stop test"); //stop();
+
+  }
+  else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
+
+    write("Aft_time is not match");
+
+    write("Stop test"); //stop();
+
+  }
+}
+
+void Setup_Function(int Option){
+  float start_sec, end_sec;
+
+  @panel::Switch_CGWNM = 1;
+
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2); // Power ON (IGN)
+  testWaitForTimeout(3000);
+
+
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  BLTN_CAM_Settings(Option);
+  testWaitForTimeout(2000);
+
+  @panel::Switch_Clock = 1;
+
+  Exit_BLTN_CAM();
+
+  testWaitForTimeout(21000);
+
+  if (WaitFor_RecSta_DEV_Recording(100) == 1){
+    start_sec = timeNow()/100000.00;
+  }
+  else{
+    write("Error: DEV recording hasn't started. Stop test !!!");
+    //stop();
+  }
+
+  if (WaitFor_RecSta_DEV_OFF(100) == 1){
+    end_sec = timeNow()/100000.00;
+  }
+
+  count_DEVRec_time = end_sec - start_sec;
+
+}
+
+testcase OWD_015_1(){
+  Send_Value_To_COM(11501);
+  SetTestStep("Bước 1 - OWD_015");
+  StartTestTimer();
+
+  testStep("Notification","Start test OWD_015_1");
+  testStep("Step1", "DEV recording time check: BfrTime=-20s, AftTime=+10s -> expected duration 5~15s (MAR)");
+  write("=== START OWD_015_1 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  Setup_Function(1); write("Run Setup_Function()");
+
+  if( count_DEVRec_time >= 5 && count_DEVRec_time <= 15){
+    step1_passed = 1;
+    testStepPass("Pass","Test-case is OK");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+  else{
+    step1_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
+    testStepFail("Fail","Test-case is NG");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_DEVRec_time = 0.0;
+
+  //KEY_OFF(); write("Run KEY_OFF()");
+
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step1_passed == 1)
+    write("OWD_015_1: PASS");
+  else
+    write("OWD_015_1: FAIL");
+
+  testStep("Notifications","Finish OWD_015_1");
+  write("=== FINISH OWD_015_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_015_2(){
+  Send_Value_To_COM(11502);
+  SetTestStep("Bước 2 - OWD_015");
+  StartTestTimer();
+
+  testStep("Notification","Start test OWD_015_2");
+  testStep("Step2", "DEV recording time check: BfrTime=-20s, AftTime=+15s -> expected duration 14~16s");
+  write("=== START OWD_015_2 ===");
+
+  Setup_Function(2); write("Run Setup_Function()");
+
+  if( count_DEVRec_time >= 14 && count_DEVRec_time <= 16){
+    step2_passed = 1;
+    testStepPass("Pass","Test-case is OK");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+  else{
+    step2_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
+    testStepFail("Fail","Test-case is NG");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_DEVRec_time = 0.0;
+
+  //KEY_OFF(); write("Run KEY_OFF()");
+
+  write("");
+  write("=== TEST SUMMARY ===");
+  if(step2_passed == 1)
+    write("OWD_015_2: PASS");
+  else
+    write("OWD_015_2: FAIL");
+
+  testStep("Notifications","Finish OWD_015_2");
+  write("=== FINISH OWD_015_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_015_3(){
+  Send_Value_To_COM(11503);
+  SetTestStep("Bước 3 - OWD_015");
+  StartTestTimer();
+
+  testStep("Notification","Start test OWD_015_3");
+  testStep("Step3", "DEV recording time check: BfrTime=-20s, AftTime=+20s -> expected duration 19~21s");
+  write("=== START OWD_015_3 ===");
+
+  Setup_Function(3); write("Run Setup_Function()");
+
+  if( count_DEVRec_time >= 19 && count_DEVRec_time <= 21){
+    step3_passed = 1;
+    testStepPass("Pass","Test-case is OK");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+  else{
+    step3_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
+    testStepFail("Fail","Test-case is NG");
+    write("count_DEVRec_time = %.2f",count_DEVRec_time);
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
+
+  testWaitForTimeout(1000);
+
+  @panel::Switch_CGWNM = 0;
+
+  @panel::Switch_Clock = 0;
+
+  count_DEVRec_time = 0.0;
+
+  //KEY_OFF(); write("Run KEY_OFF()");
+
+  testStep("Notifications","Finish OWD_015_3");
+  write("=== FINISH OWD_015_3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_015_Init(){
+  Send_Value_To_COM(11500);
+  testStep("Notification","Start OWD_015 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWD_015 - 2.5 generation_report");
+
+  OWD_015_Init();
+  OWD_015_1();
+  OWD_015_2();
+  OWD_015_3();
+}

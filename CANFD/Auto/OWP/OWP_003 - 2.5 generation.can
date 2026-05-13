@@ -1,0 +1,456 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSta_OWP
+//               - Remind setting to get log
+
+/*
+  Test Case: OWP_003 - 2.5 (OWP_003)
+  Title: [OWP Recording Time Setting]
+
+  Step 1_2: OWP ON, set 20h, wait 20h, capture screenshot, OWP OFF
+  Step 3  : OWP ON, set 12h, wait 12h, capture screenshot, OWP OFF
+  Step 4  : OWP ON, set 6h, wait 6h, capture screenshot, OWP OFF
+  Step 5  : OWP ON, set 2h, wait 2h, capture screenshot, OWP OFF
+  Step 6  : OWP ON, set 20h with custom time (23:40), wait 1h, capture screenshot, OWP OFF
+  Step 7  : [Manual] Check recorded videos on PC
+
+  NOTE: Uses countdown clock for time simulation.
+*/
+
+variables
+{ // Global Variable Declaration
+  byte time_Hour_value = 0x17;
+  byte time_Minute_value = 0x28;
+  byte time_Second_value = 0x0;
+  byte check_DisplayYear2_value;
+  byte check_DisplayYear1_value;
+  byte check_DisplayMonth_value;
+  byte check_DisplayDay_value;
+  char PLBM_Battery[4] = {'P','L','B','M'};
+  char eAGM_Battery[4] = {'E','A','G','M'};
+
+  // Result tracking
+  int step1_2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+void Check_time(){
+  check_DisplayYear2_value = getSignal(HU_DisplayYear2);
+  check_DisplayYear1_value = getSignal(HU_DisplayYear1);
+  check_DisplayMonth_value = getSignal(HU_DisplayMonth);
+  check_DisplayDay_value = getSignal(HU_DisplayDay);
+}
+
+void BLTN_CAM_Settings(int Choose_Option){
+  switch (Choose_Option){
+    case(1):
+      if ($BLTN_CAM_RecSet_OWP == 0x1){
+        write("OWP On"); @panel::LED_Ctrl_SetOWP = 1;
+
+        testWaitForTimeout(500);
+
+        write("Set 20h"); @panel::TrackBar_OWP_TIME = 0x14;
+      }
+      break;
+    case(2):
+      if ($BLTN_CAM_RecSet_OWP == 0x1){
+        write("OWP On"); @panel::LED_Ctrl_SetOWP = 1;
+
+        testWaitForTimeout(500);
+
+        write("Set 12h"); @panel::TrackBar_OWP_TIME = 0xC;
+      }
+      break;
+    case(3):
+      if ($BLTN_CAM_RecSet_OWP == 0x1){
+        write("OWP On"); @panel::LED_Ctrl_SetOWP = 1;
+
+        testWaitForTimeout(500);
+
+        write("Set 6h"); @panel::TrackBar_OWP_TIME = 0x6;
+      }
+      break;
+    case(4):
+      if ($BLTN_CAM_RecSet_OWP == 0x1){
+        write("OWP On"); @panel::LED_Ctrl_SetOWP = 1;
+
+        testWaitForTimeout(500);
+
+        write("Set 2h"); @panel::TrackBar_OWP_TIME = 0x2;
+      }
+      break;
+  }
+}
+
+void Setup_Function(int Choose_Option){
+  write(">>> [Setup] Starting Setup_Function: Choose_Option = %d", Choose_Option);
+  write(">>> [Setup] Current: BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+
+  @panel::Switch_CGWNM = 1;
+
+  write(">>> [Setup] KEY_ON (SMK = 0x1)"); KEY_ON();
+  testWaitForTimeout(3000);
+
+  do {
+    Enter_BLTN_CAM();
+    testWaitForTimeout(3000);
+
+    write(">>> [Setup] In BLTN_CAM: BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+    BLTN_CAM_Settings(Choose_Option);
+    testWaitForTimeout(1000);
+    write(">>> [Setup] After settings: BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+
+    @panel::Switch_Clock = 1;
+
+    Exit_BLTN_CAM();
+    testWaitForTimeout(3000);
+  } while ($BLTN_CAM_RecSet_OWP == 0x1);
+
+  write(">>> [Setup] OWP is ON (0x2) confirmed. KEY_OFF (SMK = 0x0)"); KEY_OFF();
+  write(">>> [Setup] Waiting for BLTN_CAM_RecSta_OWP to change (OWP auto-start in parking mode, max 100s)...");
+
+  if (WaitFor_RecSta_OWP_Recording(100000) == 1){
+    write(">>> [OK] BLTN_CAM_RecSta_OWP = 0x%X - OWP recording is in progress!", $BLTN_CAM_RecSta_OWP);
+  }
+  else{
+    write(">>> [FAIL] OWP recording has NOT started within 100s.");
+    write(">>> [FAIL] BLTN_CAM_RecSta_OWP = 0x%X (expected 0x1)", $BLTN_CAM_RecSta_OWP);
+
+    Setup_End_test();
+
+    KEY_OFF();
+
+    //stop();
+  }
+}
+
+void Setup_End_test(){
+  write(">>> [EndTest] KEY_ON to access HU while OWP is recording...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write(">>> [EndTest] Current: BLTN_CAM_RecSet_OWP = 0x%X, RecSta_OWP = 0x%X",
+        $BLTN_CAM_RecSet_OWP, $BLTN_CAM_RecSta_OWP);
+
+  Enter_BLTN_CAM();
+  write("Run CaptureGraphics(BLTN_CAM_Set_PrkTime;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_HU_UI_Mode;BLTN_CAM_State)"); CaptureGraphics("OWP", "BLTN_CAM_Set_PrkTime;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_HU_UI_Mode;BLTN_CAM_State");
+
+  if ($BLTN_CAM_RecSet_OWP == 0x2){
+    write("OWP Off"); @panel::LED_Ctrl_SetOWP = 1;
+  }
+
+  testWaitForTimeout(2000);
+  Exit_BLTN_CAM();
+
+  while($BLTN_CAM_RecSet_OWP == 0x2 && flag_RecSet_error <= 15){
+    Enter_BLTN_CAM();
+    testWaitForTimeout(3000);
+    write("Set OWP Off (attempt %d/15)", flag_RecSet_error+1);
+    @panel::LED_Ctrl_SetOWP = 1;
+    testWaitForTimeout(2000);
+    flag_RecSet_error++;
+    Exit_BLTN_CAM();
+  }
+
+  write(">>> [EndTest] Final: BLTN_CAM_RecSet_OWP = 0x%X", $BLTN_CAM_RecSet_OWP);
+  flag_RecSet_error = 0;
+}
+
+void Clock_Down(long CD_time){
+  write("=== START COUNTDOWN CLOCK ===");
+  while (CD_time > 0){
+    write("Remaining time: %02d:%02d", CD_time/60, CD_time%60);
+    testWaitForTimeout(60000);
+    CD_time--;
+  }
+}
+
+void Set_Time(byte hour, byte min, byte sec, byte day, byte month, byte year1, byte year2){
+  _HU_CLOCK_01_1000ms.HU_TimeFormat = 0x2;
+  _HU_CLOCK_01_1000ms.HU_Status = 0x2;
+  _HU_CLOCK_01_1000ms.HU_TimeSetting = 0x1;
+  _HU_CLOCK_01_1000ms.HU_DisplayHour = hour;
+  _HU_CLOCK_01_1000ms.HU_DisplayMinute = min;
+  _HU_CLOCK_01_1000ms.HU_DisplaySecond = sec;
+  _HU_CLOCK_01_1000ms.HU_DisplayYear1 = year1;
+  _HU_CLOCK_01_1000ms.HU_DisplayYear2 = year2;
+  _HU_CLOCK_01_1000ms.HU_DisplayMonth = month;
+  _HU_CLOCK_01_1000ms.HU_DisplayDay = day;
+  _HU_CLOCK_01_1000ms.HU_ClockInfo = 0x1;
+  _HU_CLOCK_01_1000ms.HU_ComRefresh = 0x2;
+  _HU_CLOCK_01_1000ms.HU_AM_PM_INFO = 0x0;
+  output(_HU_CLOCK_01_1000ms);
+}
+
+testcase OWP_003_Init(){
+  Send_Value_To_COM(20300);
+  testStep("Notification","Start test OWP_003 - 2.5");
+  write("=== START OWP_003 - 2.5 ===");
+
+  write("===SETTING BEFORE TESTING===");
+
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_1_2(){
+  Send_Value_To_COM(20301);
+  SetTestStep("Bước 1_2 - OWP_003");
+  StartTestTimer();
+  //============================================================================
+  // STEP 1_2: OWP ON, set 20h, wait 20h, capture screenshot, OWP OFF
+  //============================================================================
+  write("");
+  write("=== STEP 1_2: OWP ON -> set 20h -> wait 20h -> capture screenshot ===");
+  testStep("Step1_2","OWP ON, set PrkTime = 20h (0x14), wait 20h -> verify BLTN_CAM_RecSta_OWP = 0x1 (recording), capture screenshot");
+
+  write("Run Setup_Function()"); Setup_Function(1);
+
+  Clock_Down(1200); //20h
+
+  write("Run Setup_End_test()"); Setup_End_test();
+
+  @panel::Switch_Clock = 0;
+
+  @panel::Switch_CGWNM = 0;
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step1_2_passed = 1;
+  testStepPass("Step1_2","OWP 20h recording test - PASS");
+  write("=== FINISH OWP_003_1_2 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_3(){
+  Send_Value_To_COM(20303);
+  SetTestStep("Bước 3 - OWP_003");
+  StartTestTimer();
+  //============================================================================
+  // STEP 3: OWP ON, set 12h, wait 12h, capture screenshot, OWP OFF
+  //============================================================================
+  write("");
+  write("=== STEP 3: OWP ON -> set 12h -> wait 12h -> capture screenshot ===");
+  testStep("Step3","OWP ON, set PrkTime = 12h (0xC), wait 12h -> verify BLTN_CAM_RecSta_OWP = 0x1 (recording), capture screenshot");
+
+  write("Run Setup_Function()"); Setup_Function(2);
+
+  Clock_Down(720); //12h
+
+  write("Run Setup_End_test()"); Setup_End_test();
+
+  @panel::Switch_Clock = 0;
+
+  @panel::Switch_CGWNM = 0;
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step3_passed = 1;
+  testStepPass("Step3","OWP 12h recording test - PASS");
+  write("=== FINISH OWP_003_3 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_4(){
+  Send_Value_To_COM(20304);
+  SetTestStep("Bước 4 - OWP_003");
+  StartTestTimer();
+  //============================================================================
+  // STEP 4: OWP ON, set 6h, wait 6h, capture screenshot, OWP OFF
+  //============================================================================
+  write("");
+  write("=== STEP 4: OWP ON -> set 6h -> wait 6h -> capture screenshot ===");
+  testStep("Step4","OWP ON, set PrkTime = 6h (0x6), wait 6h -> verify BLTN_CAM_RecSta_OWP = 0x1 (recording), capture screenshot");
+
+  write("Run Setup_Function()"); Setup_Function(3);
+
+  Clock_Down(360); //6h
+
+  write("Run Setup_End_test()"); Setup_End_test();
+
+  @panel::Switch_Clock = 0;
+
+  @panel::Switch_CGWNM = 0;
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step4_passed = 1;
+  testStepPass("Step4","OWP 6h recording test - PASS");
+  write("=== FINISH OWP_003_4 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_5(){
+  Send_Value_To_COM(20305);
+  SetTestStep("Bước 5 - OWP_003");
+  StartTestTimer();
+  //============================================================================
+  // STEP 5: OWP ON, set 2h, wait 2h, capture screenshot, OWP OFF
+  //============================================================================
+  write("");
+  write("=== STEP 5: OWP ON -> set 2h -> wait 2h -> capture screenshot ===");
+  testStep("Step5","OWP ON, set PrkTime = 2h (0x2), wait 2h -> verify BLTN_CAM_RecSta_OWP = 0x1 (recording), capture screenshot");
+
+  write("Run Setup_Function()"); Setup_Function(4);
+
+  Clock_Down(120); //2h
+
+  write("Run Setup_End_test()"); Setup_End_test();
+
+  @panel::Switch_Clock = 0;
+
+  @panel::Switch_CGWNM = 0;
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step5_passed = 1;
+  testStepPass("Step5","OWP 2h recording test - PASS");
+  write("=== FINISH OWP_003_5 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_6(){
+  Send_Value_To_COM(20306);
+  SetTestStep("Bước 6 - OWP_003");
+  StartTestTimer();
+  //============================================================================
+  // STEP 6: OWP ON, set 20h with custom time (23:40), wait 1h, capture screenshot, OWP OFF
+  //============================================================================
+  write("");
+  write("=== STEP 6: OWP ON -> set 20h with custom time -> wait 1h -> capture screenshot ===");
+  testStep("Step6","OWP ON, set PrkTime = 20h with custom start time 23:40, wait 1h -> verify OWP recording active, capture screenshot");
+
+  @panel::Switch_CGWNM = 1;
+
+  write("Run KEY_ON()"); KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("Run Enter_BLTN_CAM()"); Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  BLTN_CAM_Settings(1); write("Run BLTN_CAM_Settings(1)");
+  testWaitForTimeout(1000);
+
+  @panel::Switch_Clock = 1;
+  testWaitForTimeout(1000);
+  write("Run Check_time()"); Check_time();
+  @panel::Switch_Clock = 0;
+
+  write("Run Set_Time()"); Set_Time(time_Hour_value, time_Minute_value, time_Second_value, check_DisplayDay_value, check_DisplayMonth_value, check_DisplayYear1_value, check_DisplayYear2_value);
+
+  write("Run Exit_BLTN_CAM()"); Exit_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  write(">>> [Step6] KEY_OFF done. Time manually set to %02X:%02X:00",
+        time_Hour_value, time_Minute_value);
+  write(">>> [Step6] Waiting for BLTN_CAM_RecSta_OWP to change (OWP auto-start, max 100s)...");
+  write(">>> [Step6] No action required - OWP should start automatically.");
+
+  if (WaitFor_RecSta_OWP_Recording(100000) == 1){
+    write(">>> [OK] BLTN_CAM_RecSta_OWP = 0x%X - OWP recording is in progress!", $BLTN_CAM_RecSta_OWP);
+    write(">>> [Step6] Starting 1h countdown...");
+
+    Clock_Down(60); //1h
+  }
+  else {
+    write(">>> [FAIL] OWP recording has NOT started within 100s.");
+    write(">>> [FAIL] BLTN_CAM_RecSta_OWP = 0x%X (expected 0x1)", $BLTN_CAM_RecSta_OWP);
+    write("Error: OWP recording hasn't started. Stop test !!!");
+
+    write("Run Setup_End_test()"); Setup_End_test();
+
+    write("Run KEY_OFF()"); KEY_OFF();
+
+    step6_passed = 0;
+    Log_Error_Details();
+
+    testStepFail("Step6","OWP recording hasn't started - FAIL");
+    write("=== FINISH OWP_003_6 ===");
+    //stop();
+  }
+
+  write("Run Setup_End_test()"); Setup_End_test();
+
+  @panel::Switch_CGWNM = 0;
+
+  write("Run KEY_OFF()"); KEY_OFF();
+
+  step6_passed = 1;
+  testStepPass("Step6","OWP custom time recording test - PASS");
+  write("=== FINISH OWP_003_6 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSta_OWP;SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_State");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_003_7_8_9(){
+  Send_Value_To_COM(20307);
+  SetTestStep("Bước 7_8_9 - OWP_003");
+  StartTestTimer();
+  write("");
+  write("=== STEP 7: [Manual] Please check the recorded videos on your PC ===");
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWP_003 - 2.5 generation_report");
+  OWP_003_Init();
+
+  //OWP_003_1_2();
+
+  //OWP_003_3();
+
+  OWP_003_4();
+
+  OWP_003_5();
+
+  OWP_003_6();
+
+ // OWP_003_7_8_9();
+
+}

@@ -1,0 +1,294 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_NEW_TEST
+  Title: [OWD Recording Test with SMK Control]
+  Verification items: Check OWD recording behavior with SMK switching and AIN voltage
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  Step 1: Set SMK to IGN, USM Reset, set SMK to OFF, wait 14s, check parking recording ON,
+          set SMK to IGN, wait 14s, check driving recording ON (Repeat 5 times)
+  Step 2: Log video verification
+  Step 3: Toggle SMK IGN<->OFF 20 times (1s each), set IGN ON, wait 3s, check BLTN_CAM_RecSet_OWD = ON
+  Step 4 & 5: Check AIN voltage > 4V
+
+  NOTE: Script uses panel controls for SMK and USM Reset operations.
+*/
+
+variables
+{
+  long max_wait_time = 180000;  // 180 seconds = 3 minutes max wait
+  float ain_threshold = 4.0;    // 4V threshold for AIN check
+
+  int i = 0;
+  int j = 0;
+  int parking_result = 0;
+  int driving_result = 0;
+  int recset_result = 0;
+  int ain_result = 0;
+
+  // Result tracking for TEST SUMMARY
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_004_Init()
+{
+  Send_Value_To_COM(10400);
+  write("========================================");
+  write("=== START TEST OWD_004 ===");
+  write("========================================");
+
+  // Enable CGW NM
+  @panel::Switch_CGWNM = 1;
+  testWaitForTimeout(3000);
+    // 1.1 Set SMK to IGN (ONE TIME ONLY)
+  write("");
+  write("[1.1] Setting SMK to IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  // 1.2 Click USM Reset button on panel (ONE TIME ONLY)
+  write("");
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.2b Click Rec Reset button on panel (ONE TIME ONLY)
+  write("");
+  write("[1.2b] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_004_1()
+{
+  //============================================================================
+  // STEP 1: SMK IGN -> USM Reset -> (SMK OFF -> Wait 14s -> Check Parking Rec
+  //         -> SMK IGN -> Wait 14s -> Check Driving Rec) x 5 loops
+  //============================================================================
+  Enter_BLTN_CAM(); // Enter BLTN_CAM once at the beginning to initialize signals
+  Exit_BLTN_CAM(); // Exit BLTN_CAM to ensure clean state for test steps
+
+  Send_Value_To_COM(10401);
+  SetTestStep("Bước 1 - OWD_004");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK/USM Reset Test with Recording Check (5 loops) ===");
+  write("=================================================================");
+  testStep("Step1", "SMK/USM Reset and Recording verification - 5 loops");
+
+
+
+  // 1.3 Loop 5 times: SMK OFF -> Parking check -> SMK IGN -> Driving check
+  for(i = 1; i <= 5; i++)
+  {
+    write("");
+    write("------------------------------------------------------------");
+    write("=== Loop %d of 5 ===", i);
+    write("------------------------------------------------------------");
+
+    // 1.3.1 Set SMK to OFF
+    write("");
+    write("[1.3.%d] Setting SMK to OFF...", i);
+    KEY_OFF();
+    WaitFor_RecSta_OWP_Recording(20000);
+    parking_result = Check_RecSta_OWP_Recording();
+    // 1.3.2 Wait 14 seconds
+    write("");
+    write("[1.3.%d] Waiting 10 seconds...", i);
+    testWaitForTimeout(10000);
+
+    // 1.3.4 Set SMK to IGN
+    write("");
+    write("[1.3.%d] Setting SMK to IGN...", i);
+    KEY_ON();
+    WaitFor_RecSta_OWD_Recording(20000);
+
+    // 1.3.5 Wait 14 seconds
+    write("");
+    write("[1.3.%d] Waiting 10 seconds...", i);
+    testWaitForTimeout(10000);
+
+    // 1.3.6 Check Driving Recording ON
+    write("");
+    write("[1.3.%d] Checking Driving Recording status...", i);
+    driving_result = Check_RecSta_OWD_Recording();
+
+    if(driving_result == 1)
+    {
+      write(">>> Loop %d: Driving Recording Check PASS <<<", i);
+    }
+    else
+    {
+      write(">>> Loop %d: Driving Recording Check FAIL <<<", i);
+    }
+  }
+
+  // Capture screenshot for Step 1
+  write("");
+  write(">>> Capturing screenshot for Step 1 <<<");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_OWD;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(parking_result == 1 && driving_result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "SMK/USM Reset and Recording verification PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> FAIL REASON: Parking recording result=%d, Driving recording result=%d (both expected 1) <<<", parking_result, driving_result);
+    Log_Error_Details();
+    testStepFail("Step1", "SMK/USM Reset and Recording verification FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Enter_BLTN_CAM(); // Re-enter BLTN_CAM to refresh signal status for next steps
+}
+
+
+
+testcase OWD_004_3()
+{
+  //============================================================================
+  // STEP 3: Toggle SMK IGN<->OFF 20 times, then check RecSet_OWD
+  //============================================================================
+  Send_Value_To_COM(10403);
+  SetTestStep("Bước 3 - OWD_004");
+  StartTestTimer();
+
+  write("");
+  write("====================================================================");
+  write("=== STEP 3: Toggle SMK IGN<->OFF 20 times and check RecSet_OWD ===");
+  write("====================================================================");
+  testStep("Step3", "SMK toggle 20 times and RecSet_OWD verification");
+
+  // 3.1 Toggle SMK between IGN and OFF 20 times, 1 second apart
+  write("");
+  write("[3.1] Toggling SMK IGN <-> OFF 20 times (1 second each)...");
+
+  for(j = 1; j <= 20; j++)
+  {
+    // Set SMK to IGN
+    setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);
+    testWaitForTimeout(500);
+
+    // Set SMK to OFF
+    setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);
+    testWaitForTimeout(500);
+
+    if(j % 5 == 0)
+    {
+      write("  Toggle %d/20 complete", j);
+    }
+  }
+
+  write(">>> 20 SMK toggles complete <<<");
+
+  // 3.2 Set SMK to IGN ON
+  write("");
+  write("[3.2] Setting SMK to IGN ON...");
+  Set_SMK_IGN();
+
+  // 3.3 Wait 3 seconds
+  write("");
+  write("[3.3] Waiting 3 seconds...");
+  testWaitForTimeout(3000);
+
+  // 3.4 Check BLTN_CAM_RecSet_OWD = ON
+  write("");
+  write("[3.4] Checking BLTN_CAM_RecSet_OWD status...");
+  recset_result = Check_RecSet_OWD_ON();
+
+  // Capture screenshot for Step 3
+  write("");
+  write(">>> Capturing screenshot for Step 3 <<<");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(recset_result == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "BLTN_CAM_RecSet_OWD = ON - PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSet_OWD expected 0x2 (ON) but got 0x%X <<<", $BLTN_CAM_RecSet_OWD);
+    Log_Error_Details();
+    testStepFail("Step3", "BLTN_CAM_RecSet_OWD is NOT ON - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+
+testcase OWD_004_5()
+{
+  //============================================================================
+  // STEP 5: Additional AIN voltage verification
+  //============================================================================
+  Send_Value_To_COM(10405);
+  SetTestStep("Bước 5 - OWD_004");
+  StartTestTimer();
+
+  write("");
+  write("==============================================");
+  write("=== STEP 5: Additional AIN Voltage Check ===");
+  write("==============================================");
+  testStep("Step5", "Additional AIN voltage verification > 4V");
+
+  write("");
+  write("[5.1] Re-checking AIN voltage for confirmation...");
+  testWaitForTimeout(2000);
+  ain_result = Check_AIN_Above_Threshold(ain_threshold, 180000);
+
+  // Capture screenshot for Step 5
+  write("");
+  write(">>> Capturing screenshot for Step 5 <<<");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(ain_result == 1)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "AIN Voltage > 4V confirmed - PASS");
+  }
+  else
+  {
+    step5_passed = 0;
+    write(">>> FAIL REASON: AIN voltage expected above %.1f V but confirmation check failed <<<", ain_threshold);
+    Log_Error_Details();
+    testStepFail("Step5", "AIN Voltage <= 4V - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_004 - 2.5 generation_report");
+  OWD_004_Init();
+  OWD_004_1();
+
+  //OWD_004_3();
+
+ // OWD_004_5();
+}

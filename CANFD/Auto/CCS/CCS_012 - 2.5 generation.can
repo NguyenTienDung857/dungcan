@@ -1,0 +1,491 @@
+/*@!Encoding:65001*/
+
+/*
+  Test Case: CCS_012 - 2.5 generation
+  Title: [Park operation terminate info after SD card and network sleep actions]
+
+  Preconditions:
+    - Built-in Cam is available on CAN FD.
+    - Test bench COM command value 7 controls the SD card state through Set_SDcard().
+
+  Step 1:
+    KEY OFF -> KEY ON -> Set_SMK_IGN -> USM Reset -> Rec Reset ->
+    Turn_ON_OWP -> Set_SDcard -> KEY OFF -> WaitForNetworkSleep(6 min) ->
+    capture evidence including BLTN_CAM_SD_Card_State -> wait 10s.
+
+  Step 2:
+    Repeat up to 3 attempts:
+      Set_SDcard -> WaitFor_RecSta_OWP_Recording(30s) ->
+      check BLTN_CAM_PrkOp_Termiate_Info = 0x5 within 30s.
+    If 0x5 is detected with OWP recording, the step is OK.
+    Then WaitForNetworkSleep(6 min) and capture evidence.
+
+  Step 3:
+    Set_SDcard -> check BLTN_CAM_PrkOp_Termiate_Info = 0x4 within 40s ->
+    WaitForNetworkSleep(6 min) -> capture evidence.
+
+  Step 4:
+    Call Set_SDcard 9 times, then check within 2 minutes that
+    BLTN_CAM_PrkOp_Termiate_Info has been 0x5 at least once.
+    Then WaitForNetworkSleep(6 min).
+
+  NOTE:
+    - Recording and network waits use shared helpers from DeclarationFunction_Gen2.5.h.
+    - BLTN_CAM_PrkOp_Termiate_Info has no shared header wait helper, so this file
+      polls that signal locally with testWaitForTimeout().
+    - This file intentionally avoids raw CAPL signal-range wait calls.
+*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  char failReason[512];
+
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[2048] = "";
+
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+
+  long wait_network_sleep_s = 360;
+  long wait_owp_30s_ms = 30000;
+  long wait_prkop_30s_ms = 30000;
+  long wait_prkop_40s_ms = 40000;
+  long wait_prkop_120s_ms = 120000;
+
+  int i;
+}
+
+void CCS_012_LogSignals()
+{
+  write("Signal snapshot:");
+  write("  SMK_TrmnlCtrlGrpStaBDC        = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("  BLTN_CAM_State                = 0x%X", $BLTN_CAM_State);
+  write("  BLTN_CAM_RecSet_OWP           = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP           = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_PrkOp_Termiate_Info  = 0x%X", $BLTN_CAM_PrkOp_Termiate_Info);
+  write("  BLTN_CAM_SD_Card_State        = 0x%X", $BLTN_CAM_SD_Card_State);
+}
+
+void CCS_012_CaptureEvidence(char stepName[])
+{
+  write("[%s] CaptureGraphics with OWP, PrkOp and SD card state signals", stepName);
+  CaptureGraphics("CSS", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_State;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_PrkOp_Termiate_Info;BLTN_CAM_SD_Card_State");
+}
+
+int CCS_012_WaitPrkOp(byte expectedValue, long timeoutMs)
+{
+  long elapsed;
+  long intervalMs;
+
+  elapsed = 0;
+  intervalMs = 1000;
+
+  write("Waiting for BLTN_CAM_PrkOp_Termiate_Info = 0x%X within %d ms...", expectedValue, timeoutMs);
+
+  while (elapsed < timeoutMs)
+  {
+    if ($BLTN_CAM_PrkOp_Termiate_Info == expectedValue)
+    {
+      write(">>> OK: BLTN_CAM_PrkOp_Termiate_Info = 0x%X detected after %d ms <<<",
+            expectedValue,
+            elapsed);
+      return 1;
+    }
+
+    if (elapsed == 0 || (elapsed % 5000) == 0)
+    {
+      write("  [%d ms/%d ms] BLTN_CAM_PrkOp_Termiate_Info = 0x%X",
+            elapsed,
+            timeoutMs,
+            $BLTN_CAM_PrkOp_Termiate_Info);
+    }
+
+    testWaitForTimeout(intervalMs);
+    elapsed += intervalMs;
+  }
+
+  if ($BLTN_CAM_PrkOp_Termiate_Info == expectedValue)
+  {
+    write(">>> OK: BLTN_CAM_PrkOp_Termiate_Info = 0x%X detected after %d ms <<<",
+          expectedValue,
+          elapsed);
+    return 1;
+  }
+
+  write(">>> NG: BLTN_CAM_PrkOp_Termiate_Info current=0x%X, expected=0x%X <<<",
+        $BLTN_CAM_PrkOp_Termiate_Info,
+        expectedValue);
+  return 0;
+}
+
+int CCS_012_WaitNetworkSleep(int stepNo)
+{
+  long sleep_ok;
+
+  write("[Step %d] WaitForNetworkSleep max %d seconds...", stepNo, wait_network_sleep_s);
+  sleep_ok = WaitForNetworkSleep(wait_network_sleep_s);
+
+  if (sleep_ok == 1)
+  {
+    write(">>> Step %d: Network sleep detected <<<", stepNo);
+    testStepPass("NetworkSleep", "Network sleep detected within 6 minutes");
+    return 1;
+  }
+
+  write(">>> Step %d: Network sleep timeout <<<", stepNo);
+  testStepFail("NetworkSleep", "Fail reason: WaitForNetworkSleep(360) timeout. Cause: expected condition was not satisfied.");
+  return 0;
+}
+
+int CCS_012_TryStartParkOperationBySD()
+{
+  int attempt;
+  int owp_ok;
+  int prkop_ok;
+
+  for (attempt = 1; attempt <= 3; attempt++)
+  {
+    write("Step 2 attempt %d/3: Set_SDcard -> wait OWP 30s -> check PrkOp 0x5 30s", attempt);
+
+    Set_SDcard();
+    CCS_012_LogSignals();
+
+    owp_ok = WaitFor_RecSta_OWP_Recording(wait_owp_30s_ms);
+    if (owp_ok == 1)
+      write("Attempt %d: OWP recording detected", attempt);
+    else
+      write("Attempt %d: OWP recording not detected in 30s", attempt);
+
+    prkop_ok = CCS_012_WaitPrkOp(0x5, wait_prkop_30s_ms);
+
+    if (owp_ok == 1 && prkop_ok == 1)
+    {
+      write(">>> Step 2 attempt %d PASS: OWP recording and PrkOp 0x5 detected <<<", attempt);
+      return 1;
+    }
+
+    write("Attempt %d not OK. Current RecSta_OWP=0x%X, PrkOp=0x%X",
+          attempt,
+          $BLTN_CAM_RecSta_OWP,
+          $BLTN_CAM_PrkOp_Termiate_Info);
+  }
+
+  return 0;
+}
+
+void CCS_012_RecordResult(int stepNo, int passed, char failName[])
+{
+  total_tests++;
+
+  if (passed == 1)
+  {
+    passed_tests++;
+    write(">>> CCS_012 Step %d PASS <<<", stepNo);
+  }
+  else
+  {
+    failed_tests++;
+    strncat(failed_test_names, failName, elcount(failed_test_names));
+    write(">>> CCS_012 Step %d FAIL <<<", stepNo);
+    Log_Error_Details();
+  }
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase CCS_012_Init()
+{
+  Send_Value_To_COM(31200);
+  write("========================================");
+  write("=== START TEST CCS_012 - 2.5 ===");
+  write("========================================");
+  testStep("Notification", "Start test CCS_012 - 2.5");
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_012_1()
+{
+  int owp_set_ok;
+  int sleep_ok;
+
+  Send_Value_To_COM(31201);
+  SetTestStep("Buoc 1 - CCS_012");
+  StartTestTimer();
+  testStep("Step 1", "KEY OFF -> KEY ON -> Set_SMK_IGN -> USM Reset -> Rec Reset -> Turn_ON_OWP -> Set_SDcard -> KEY OFF -> WaitForNetworkSleep(6 min) -> screenshot -> wait 10s");
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: setup OWP, SD card, key off, network sleep        ===");
+  write("=================================================================");
+
+  write("[1.1] KEY_OFF");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[1.2] KEY_ON");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[1.3] Set_SMK_IGN");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  write("[1.4] Click_USM_Reset");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.5] Click_Rec_Reset");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.6] Turn_ON_OWP");
+  Turn_ON_OWP();
+  owp_set_ok = Check_RecSet_OWP_ON();
+
+  write("[1.7] Set_SDcard");
+  Set_SDcard();
+  CCS_012_LogSignals();
+
+  write("[1.8] KEY_OFF");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[1.9] WaitForNetworkSleep max 6 minutes");
+  sleep_ok = CCS_012_WaitNetworkSleep(1);
+
+  write("[1.10] Capture evidence including BLTN_CAM_SD_Card_State");
+  CCS_012_CaptureEvidence("Step1");
+
+  write("[1.11] Wait 10 seconds");
+  testWaitForTimeout(10000);
+
+  if (owp_set_ok == 1 && sleep_ok == 1)
+  {
+    step1_passed = 1;
+    testStepPass("CCS_012_1", "Step 1 PASS: OWP ON and network sleep detected");
+  }
+  else
+  {
+    step1_passed = 0;
+    snprintf(failReason,
+             elcount(failReason),
+             "Step 1 FAIL: OWP_ON=%d, sleep_ok=%d, RecSet_OWP=0x%X, SD_Card_State=0x%X.",
+             owp_set_ok,
+             sleep_ok,
+             $BLTN_CAM_RecSet_OWP,
+             $BLTN_CAM_SD_Card_State);
+    testStepFail("CCS_012_1", failReason);
+  }
+
+  CCS_012_RecordResult(1, step1_passed, "CCS_012_1, ");
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_012_2()
+{
+  int start_ok;
+  int sleep_ok;
+
+  Send_Value_To_COM(31202);
+  SetTestStep("Buoc 2 - CCS_012");
+  StartTestTimer();
+  testStep("Step 2", "Set_SDcard + WaitFor_RecSta_OWP_Recording(30s) + check PrkOp 0x5 within 30s, repeat up to 3 times, then WaitForNetworkSleep(6 min) and screenshot");
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: SD card restore, OWP recording, PrkOp 0x5          ===");
+  write("=================================================================");
+
+  start_ok = CCS_012_TryStartParkOperationBySD();
+
+  write("[2.4] WaitForNetworkSleep max 6 minutes");
+  sleep_ok = CCS_012_WaitNetworkSleep(2);
+
+  write("[2.5] Capture evidence");
+  CCS_012_CaptureEvidence("Step2");
+
+  if (start_ok == 1 && sleep_ok == 1)
+  {
+    step2_passed = 1;
+    testStepPass("CCS_012_2", "Step 2 PASS: BLTN_CAM_PrkOp_Termiate_Info = 0x5 detected and network sleep detected");
+  }
+  else
+  {
+    step2_passed = 0;
+    snprintf(failReason,
+             elcount(failReason),
+             "Step 2 FAIL: start_ok=%d, sleep_ok=%d, RecSta_OWP=0x%X, PrkOp=0x%X, SD_Card_State=0x%X.",
+             start_ok,
+             sleep_ok,
+             $BLTN_CAM_RecSta_OWP,
+             $BLTN_CAM_PrkOp_Termiate_Info,
+             $BLTN_CAM_SD_Card_State);
+    testStepFail("CCS_012_2", failReason);
+  }
+
+  CCS_012_RecordResult(2, step2_passed, "CCS_012_2, ");
+
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_012_3()
+{
+  int terminate_ok;
+  int sleep_ok;
+
+  Send_Value_To_COM(31203);
+  SetTestStep("Buoc 3 - CCS_012");
+  StartTestTimer();
+  testStep("Step 3", "Set_SDcard -> within 40s check BLTN_CAM_PrkOp_Termiate_Info = 0x4 -> WaitForNetworkSleep(6 min) -> screenshot");
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: SD card action and PrkOp 0x4                       ===");
+  write("=================================================================");
+
+  write("[3.1] Set_SDcard");
+  Set_SDcard();
+  CCS_012_LogSignals();
+
+  write("[3.2] Check BLTN_CAM_PrkOp_Termiate_Info = 0x4 within 40s");
+  terminate_ok = CCS_012_WaitPrkOp(0x4, wait_prkop_40s_ms);
+
+  write("[3.3] WaitForNetworkSleep max 6 minutes");
+  sleep_ok = CCS_012_WaitNetworkSleep(3);
+
+  write("[3.4] Capture evidence");
+  CCS_012_CaptureEvidence("Step3");
+
+  if (terminate_ok == 1 && sleep_ok == 1)
+  {
+    step3_passed = 1;
+    testStepPass("CCS_012_3", "Step 3 PASS: BLTN_CAM_PrkOp_Termiate_Info = 0x4 detected and network sleep detected");
+  }
+  else
+  {
+    step3_passed = 0;
+    snprintf(failReason,
+             elcount(failReason),
+             "Step 3 FAIL: terminate_ok=%d, sleep_ok=%d, PrkOp=0x%X, SD_Card_State=0x%X.",
+             terminate_ok,
+             sleep_ok,
+             $BLTN_CAM_PrkOp_Termiate_Info,
+             $BLTN_CAM_SD_Card_State);
+    testStepFail("CCS_012_3", failReason);
+  }
+
+  CCS_012_RecordResult(3, step3_passed, "CCS_012_3, ");
+
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase CCS_012_4()
+{
+  int saw_prkop_5;
+  int sleep_ok;
+
+  Send_Value_To_COM(31204);
+  SetTestStep("Buoc 4 - CCS_012");
+  StartTestTimer();
+  testStep("Step 4", "Call Set_SDcard 9 times, then check within 2 minutes if BLTN_CAM_PrkOp_Termiate_Info has ever been 0x5, then WaitForNetworkSleep(6 min)");
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: repeated SD card action and PrkOp 0x5              ===");
+  write("=================================================================");
+
+  saw_prkop_5 = 0;
+
+  for (i = 1; i <= 9; i++)
+  {
+    write("[4.%d] Set_SDcard cycle %d/9", i, i);
+    Set_SDcard();
+    CCS_012_LogSignals();
+
+    if ($BLTN_CAM_PrkOp_Termiate_Info == 0x5)
+    {
+      saw_prkop_5 = 1;
+      write("BLTN_CAM_PrkOp_Termiate_Info already equals 0x5 after SD cycle %d", i);
+    }
+  }
+
+  if (saw_prkop_5 == 0)
+  {
+    write("[4.10] Check within 2 minutes if BLTN_CAM_PrkOp_Termiate_Info becomes 0x5");
+    saw_prkop_5 = CCS_012_WaitPrkOp(0x5, wait_prkop_120s_ms);
+  }
+  else
+  {
+    testStepPass("CCS_012_4_PrkOp", "BLTN_CAM_PrkOp_Termiate_Info = 0x5 was seen during SD card cycles");
+  }
+
+  write("[4.11] WaitForNetworkSleep max 6 minutes");
+  sleep_ok = CCS_012_WaitNetworkSleep(4);
+
+  write("[4.12] Capture evidence");
+  CCS_012_CaptureEvidence("Step4");
+
+  if (saw_prkop_5 == 1 && sleep_ok == 1)
+  {
+    step4_passed = 1;
+    testStepPass("CCS_012_4", "Step 4 PASS: BLTN_CAM_PrkOp_Termiate_Info = 0x5 was seen and network sleep detected");
+  }
+  else
+  {
+    step4_passed = 0;
+    snprintf(failReason,
+             elcount(failReason),
+             "Step 4 FAIL: saw_prkop_5=%d, sleep_ok=%d, PrkOp=0x%X, SD_Card_State=0x%X.",
+             saw_prkop_5,
+             sleep_ok,
+             $BLTN_CAM_PrkOp_Termiate_Info,
+             $BLTN_CAM_SD_Card_State);
+    testStepFail("CCS_012_4", failReason);
+  }
+
+  CCS_012_RecordResult(4, step4_passed, "CCS_012_4, ");
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\CCS_012 - 2.5 generation_report");
+
+  CCS_012_Init();
+  CCS_012_1();
+  CCS_012_2();
+  CCS_012_3();
+  CCS_012_4();
+
+  write("========================================");
+  write("=== CCS_012 SUMMARY ===");
+  write("Total steps = %d", total_tests);
+  write("Passed      = %d", passed_tests);
+  write("Failed      = %d", failed_tests);
+
+  if (failed_tests > 0)
+    write("Failed list = %s", failed_test_names);
+
+  write("=== END TEST CCS_012 - 2.5 ===");
+}

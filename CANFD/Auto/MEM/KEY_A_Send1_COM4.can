@@ -1,0 +1,110 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  // Bắt buộc phải có block này dù để trống
+}
+
+variables
+{
+  long gLoopSleepMs = 500;
+  int gComPort = 4;    // COM4
+  long gComBaud = 9600;
+  int gComReady = 0;
+}
+
+int Init_COM4_RS232()
+{
+  if (gComReady == 1)
+    return 1;
+
+  if (RS232Open(gComPort))
+  {
+    if (rs232Configure(gComPort, gComBaud, 8, 1, 0))
+    {
+      gComReady = 1;
+      write("[COM4 Listener] COM%d ready (%d-8-N-1)", gComPort, gComBaud);
+      return 1;
+    }
+
+    write("[COM4 Listener] Configure COM%d failed", gComPort);
+    return 0;
+  }
+
+  write("[COM4 Listener] Open COM%d failed", gComPort);
+  return 0;
+}
+
+void Close_COM4_RS232()
+{
+  if (gComReady == 1)
+  {
+    RS232Close(gComPort);
+    gComReady = 0;
+    write("[COM4 Listener] COM%d closed", gComPort);
+  }
+}
+
+int Send_Value_To_COM(int value)
+{
+  char txStr[16];
+  byte sendBuf[16];
+  int i;
+  long len;
+
+  // Send decimal value followed by LF for line-based Arduino parsing.
+  snprintf(txStr, elcount(txStr), "%d\n", value);
+  len = strlen(txStr);
+
+  if (gComReady == 0)
+  {
+    if (Init_COM4_RS232() == 0)
+    {
+      write("[COM4 Listener] Cannot send, COM%d not ready", gComPort);
+      return 0;
+    }
+  }
+
+  for (i = 0; i < len; i++)
+    sendBuf[i] = txStr[i];
+
+  if (RS232Send(gComPort, sendBuf, len) == 1)
+  {
+    write("[COM4 Listener] Sent '%s' to COM%d", txStr, gComPort);
+    return 1;
+  }
+  else
+  {
+    write("[COM4 Listener] Send failed on COM%d", gComPort);
+    return 0;
+  }
+}
+
+testcase MEM_COM4_Listener_RunForever()
+{
+  // Dùng testStep (chữ t thường) để tránh lỗi không tìm thấy hàm
+  testStep("1", "COM4 Listener started.");
+  
+  write("=== START MEM_COM4_Listener_RunForever ===");
+  write("[COM4 Listener] Running forever. Stop Measurement manually when needed.");
+  if (Init_COM4_RS232() == 0)
+    write("[COM4 Listener] COM4 init failed, se thu lai khi co trigger.");
+
+  while (1)
+  {
+    // Luồng test sẽ bị chặn ở đây, chờ biến hệ thống chuyển sang giá trị 1
+    if (testWaitForSysVar(sysvar::UserInputs::SendCOM4, gLoopSleepMs) == 1)
+    {
+      Send_Value_To_COM(1);
+      
+      // Reset lại biến về 0 để chờ lần bấm tiếp theo
+      @sysvar::UserInputs::SendCOM4 = 0; 
+    }
+  }
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\MEM_COM4_Listener_report");
+  write("[COM4 Listener] Measurement started."); 
+  MEM_COM4_Listener_RunForever();
+}

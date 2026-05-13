@@ -1,0 +1,5 @@
+version: 1.0.0
+
+test-unit-implementation:
+  - source-file-path: test_bltn_cam_dvrs.py
+    # Test cases cho BLTN Camera DVRS với CAN FD

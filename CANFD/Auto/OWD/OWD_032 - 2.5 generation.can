@@ -1,0 +1,474 @@
+/*@!Encoding:65001*/
+includes { #include "../DeclarationFunction_Gen2.5.h" }
+
+/*
+  Test Case: OWD_032
+  Title: [TML Recording Test - TML_Rec_Req Start/End Request + Panel TML Start/Stop + BLTN_CAM Mode]
+  Verification items:
+    - Step 1: SMK IGN + USM Reset + Rec Reset + AVN mode
+              Send TML_Rec_Req = 0x1 (Start Request) via HU_BLTN_CAM_01_00ms
+              Check BLTN_CAM_RecSta_TML = 0x1 (ON) within 10s - Screenshot (include AIN)
+    - Step 2: Wait 5s, Send TML_Rec_Req = 0x2 (End Request)
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s - Screenshot (include AIN)
+    - Step 3: Send TML_Rec_Req = 0x1 (Start Request)
+              Check TML ON, Wait 12s, Click TML Stop on panel
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s
+              Wait 5s - Screenshot (include AIN)
+    - Step 4: Click TML Start on panel
+              Check TML ON, Wait 12s, Send TML_Rec_Req = 0x2 (End Request)
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s - Screenshot (include AIN)
+    - Step 5: Enter BLTN_CAM mode (Build-in Cam)
+              Send TML_Rec_Req = 0x1 (Start Request)
+              Check BLTN_CAM_RecSta_TML still = 0x0 (OFF) within 5s - Screenshot (include AIN)
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  long max_wait_time_10s = 10000;   // 10 seconds timeout
+  long max_wait_time_5s  = 5000;    // 5 seconds timeout
+
+  // Message declarations for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+
+  // Result tracking variables
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_032_Init()
+{
+  Send_Value_To_COM(13200);
+  write("========================================");
+  write("=== START TEST OWD_032 ===");
+  write("=== TML Recording Test              ===");
+  write("=== TML_Rec_Req Start/End Request   ===");
+  write("=== Panel TML Start/Stop            ===");
+  write("=== BLTN_CAM Mode Check             ===");
+  write("========================================");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_032_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK IGN, USM Reset, Rec Reset, AVN mode,
+  //         Send TML_Rec_Req = 0x1 (Start Request) via HU_BLTN_CAM_01_00ms,
+  //         Check BLTN_CAM_RecSta_TML = 0x1 (ON) within 10s - Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(13201);
+  SetTestStep("Bước 1 - OWD_032");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Rec Reset + AVN mode      ===");
+  write("===         Send TML_Rec_Req = 0x1 (Start Request)          ===");
+  write("===         Check RecSta_TML = 0x1 (ON) + Screenshot        ===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Rec Reset + AVN + TML_Rec_Req Start + TML ON + Screenshot");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Ensure AVN mode (Exit BLTN_CAM if needed)
+  write("[1.4] Ensuring AVN mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 1.5 Send TML_Rec_Req = 0x1 (Start Request) via HU_BLTN_CAM_01_00ms
+  write("[1.5] Sending TML_Rec_Req = 0x1 (Start Request)...");
+  Click_TML_Start();
+
+  // 1.6 Check BLTN_CAM_RecSta_TML = 0x1 (ON) within 10s
+  write("[1.6] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    write(">>> Step 1: PASS - BLTN_CAM_RecSta_TML = 0x1 (ON) <<<");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> Step 1: FAIL - BLTN_CAM_RecSta_TML did NOT turn ON <<<");
+  }
+
+  // 1.7 Read AIN voltage
+  write("[1.7] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 1.8 Capture screenshot (include AIN)
+  write("[1.8] Capturing screenshot...");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step1_passed == 1)
+  {
+    testStepPass("Step1", "BLTN_CAM_RecSta_TML = 0x1 (ON) after TML_Rec_Req Start - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_TML did NOT turn ON after TML_Rec_Req Start <<<");
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSta_TML did NOT turn ON after TML_Rec_Req Start - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_032_2()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 2: Wait 5s, Send TML_Rec_Req = 0x2 (End Request),
+  //         Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s - Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(13202);
+  SetTestStep("Bước 2 - OWD_032");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Wait 5s + Send TML_Rec_Req = 0x2 (End Request)  ===");
+  write("===         Check RecSta_TML = 0x0 (OFF) + Screenshot       ===");
+  write("=================================================================");
+  testStep("Step2", "Wait 5s + TML_Rec_Req End + TML OFF + Screenshot");
+
+  // 2.1 Wait 5 seconds
+  write("[2.1] Waiting 5 seconds...");
+  testWaitForTimeout(5000);
+  write("  5 seconds elapsed.");
+
+  // 2.2 Send TML_Rec_Req = 0x2 (End Request)
+  write("[2.2] Sending TML_Rec_Req = 0x2 (End Request)...");
+  Click_TML_Stop();
+
+  // 2.3 Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s
+  write("[2.3] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF)...");
+  result = WaitFor_RecSta_TML_OFF(max_wait_time_10s / 1000);
+
+  if(result == 1)
+  {
+    step2_passed = 1;
+    write(">>> Step 2: PASS - BLTN_CAM_RecSta_TML = 0x0 (OFF) <<<");
+  }
+  else
+  {
+    step2_passed = 0;
+    write(">>> Step 2: FAIL - BLTN_CAM_RecSta_TML did NOT turn OFF <<<");
+  }
+
+  // 2.4 Read AIN voltage
+  write("[2.4] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 2.5 Capture screenshot (include AIN)
+  write("[2.5] Capturing screenshot...");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step2_passed == 1)
+  {
+    testStepPass("Step2", "BLTN_CAM_RecSta_TML = 0x0 (OFF) after TML_Rec_Req End - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_TML did NOT turn OFF after TML_Rec_Req End <<<");
+    Log_Error_Details();
+    testStepFail("Step2", "BLTN_CAM_RecSta_TML did NOT turn OFF after TML_Rec_Req End - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_032_3()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 3: Send TML_Rec_Req = 0x1 (Start Request),
+  //         Check TML ON, Wait 12s, Click TML Stop on panel,
+  //         Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s,
+  //         Wait 5s - Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(13203);
+  SetTestStep("Bước 3 - OWD_032");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: TML_Rec_Req Start + TML ON + Wait 12s           ===");
+  write("===         Panel TML Stop + Check TML OFF + Screenshot     ===");
+  write("=================================================================");
+  testStep("Step3", "TML_Rec_Req Start + TML ON + Wait 12s + Panel TML Stop + TML OFF + Screenshot");
+
+  // 3.1 Send TML_Rec_Req = 0x1 (Start Request)
+  write("[3.1] Sending TML_Rec_Req = 0x1 (Start Request)...");
+  Click_TML_Start();
+
+  // 3.2 Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  write("[3.2] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    write(">>> TML Recording ON confirmed, waiting 12 seconds... <<<");
+
+    // 3.3 Wait 12 seconds
+    write("[3.3] Waiting 12 seconds...");
+    testWaitForTimeout(12000);
+    write("  12 seconds elapsed.");
+
+    // 3.4 Click TML Stop on panel
+    write("[3.4] Clicking TML Stop on panel...");
+    Click_TML_Stop();
+
+    // 3.5 Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s
+    write("[3.5] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF)...");
+    result = WaitFor_RecSta_TML_OFF(max_wait_time_10s / 1000);
+
+    if(result == 1)
+    {
+      step3_passed = 1;
+      write(">>> Step 3: PASS - TML OFF after Panel TML Stop <<<");
+    }
+    else
+    {
+      step3_passed = 0;
+      write(">>> Step 3: FAIL - TML did NOT turn OFF after Panel TML Stop <<<");
+    }
+  }
+  else
+  {
+    step3_passed = 0;
+    write(">>> Step 3: FAIL - TML did NOT turn ON after TML_Rec_Req Start <<<");
+  }
+
+  // 3.6 Wait 5 seconds
+  write("[3.6] Waiting 5 seconds...");
+  testWaitForTimeout(5000);
+  write("  5 seconds elapsed.");
+
+  // 3.7 Read AIN voltage
+  write("[3.7] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 3.8 Capture screenshot (include AIN)
+  write("[3.8] Capturing screenshot...");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step3_passed == 1)
+  {
+    testStepPass("Step3", "TML_Rec_Req Start -> TML ON -> Wait 12s -> Panel TML Stop -> TML OFF - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: TML_Rec_Req Start + TML ON + Panel Stop sequence failed <<<");
+    Log_Error_Details();
+    testStepFail("Step3", "Step 3 verification failed - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_032_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: Click TML Start on panel,
+  //         Check TML ON, Wait 12s, Send TML_Rec_Req = 0x2 (End Request),
+  //         Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s - Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(13204);
+  SetTestStep("Bước 4 - OWD_032");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Panel TML Start + TML ON + Wait 12s             ===");
+  write("===         TML_Rec_Req End + Check TML OFF + Screenshot    ===");
+  write("=================================================================");
+  testStep("Step4", "Panel TML Start + TML ON + Wait 12s + TML_Rec_Req End + TML OFF + Screenshot");
+
+  // 4.1 Click TML Start on panel
+  write("[4.1] Clicking TML Start on panel...");
+  Click_TML_Start();
+
+  // 4.2 Check BLTN_CAM_RecSta_TML = 0x1 (ON)
+  write("[4.2] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    write(">>> TML Recording ON confirmed, waiting 12 seconds... <<<");
+
+    // 4.3 Wait 12 seconds
+    write("[4.3] Waiting 12 seconds...");
+    testWaitForTimeout(12000);
+    write("  12 seconds elapsed.");
+
+    // 4.4 Send TML_Rec_Req = 0x2 (End Request)
+    write("[4.4] Sending TML_Rec_Req = 0x2 (End Request)...");
+    Click_TML_Stop();
+
+    // 4.5 Check BLTN_CAM_RecSta_TML = 0x0 (OFF) within 10s
+    write("[4.5] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF)...");
+    result = WaitFor_RecSta_TML_OFF(max_wait_time_10s / 1000);
+
+    if(result == 1)
+    {
+      step4_passed = 1;
+      write(">>> Step 4: PASS - TML OFF after TML_Rec_Req End <<<");
+    }
+    else
+    {
+      step4_passed = 0;
+      write(">>> Step 4: FAIL - TML did NOT turn OFF after TML_Rec_Req End <<<");
+    }
+  }
+  else
+  {
+    step4_passed = 0;
+    write(">>> Step 4: FAIL - TML did NOT turn ON after Panel TML Start <<<");
+  }
+
+  // 4.6 Read AIN voltage
+  write("[4.6] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 4.7 Capture screenshot (include AIN)
+  write("[4.7] Capturing screenshot...");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step4_passed == 1)
+  {
+    testStepPass("Step4", "Panel TML Start -> TML ON -> Wait 12s -> TML_Rec_Req End -> TML OFF - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: Panel TML Start + TML_Rec_Req End sequence failed <<<");
+    Log_Error_Details();
+    testStepFail("Step4", "Step 4 verification failed - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_032_5()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 5: Enter BLTN_CAM mode (Build-in Cam),
+  //         Send TML_Rec_Req = 0x1 (Start Request),
+  //         Check BLTN_CAM_RecSta_TML stays = 0x0 (OFF) for 5s - Screenshot (include AIN)
+  //============================================================================
+  Send_Value_To_COM(13205);
+  SetTestStep("Bước 5 - OWD_032");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Enter BLTN_CAM mode + TML_Rec_Req Start         ===");
+  write("===         Verify RecSta_TML stays OFF for 5s + Screenshot ===");
+  write("=================================================================");
+  testStep("Step5", "Enter BLTN_CAM + TML_Rec_Req Start + TML stays OFF + Screenshot");
+
+  // 5.1 Enter BLTN_CAM mode (Build-in Cam)
+  write("[5.1] Entering BLTN_CAM mode (Build-in Cam)...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (BLTN_CAM mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 5.2 Send TML_Rec_Req = 0x1 (Start Request)
+  write("[5.2] Sending TML_Rec_Req = 0x1 (Start Request) in BLTN_CAM mode...");
+  Click_TML_Start();
+
+  // 5.3 Check BLTN_CAM_RecSta_TML stays OFF for 5s
+  write("[5.3] Verifying BLTN_CAM_RecSta_TML stays = 0x0 (OFF) for 5 seconds...");
+  result = Check_Monitor_RecSta_Signal_AlwaysOFF(6, max_wait_time_5s / 1000);
+
+  if(result == 1)
+  {
+    step5_passed = 1;
+    write(">>> Step 5: PASS - TML stayed OFF in BLTN_CAM mode <<<");
+  }
+  else
+  {
+    step5_passed = 0;
+    write(">>> Step 5: FAIL - TML turned ON unexpectedly in BLTN_CAM mode <<<");
+  }
+
+  // 5.4 Read AIN voltage
+  write("[5.4] Reading AIN voltage...");
+  Get_AIN_Voltage();
+
+  // 5.5 Capture screenshot (include AIN)
+  write("[5.5] Capturing screenshot...");
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step5_passed == 1)
+  {
+    testStepPass("Step5", "TML stayed OFF after TML_Rec_Req Start in BLTN_CAM mode - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_TML turned ON unexpectedly in BLTN_CAM mode <<<");
+    Log_Error_Details();
+    testStepFail("Step5", "TML turned ON unexpectedly in BLTN_CAM mode - FAIL");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_032 - 2.5 generation_report");
+
+  //write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_032_Init();
+  OWD_032_1();
+  OWD_032_2();
+  OWD_032_3();
+  OWD_032_4();
+  OWD_032_5();
+}

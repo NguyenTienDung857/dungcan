@@ -1,0 +1,474 @@
+/*@!Encoding:1252*/
+/* ============================================================================
+ * Module: DIA_A223_ParkingRecordingInfo_Test.can
+ * Target ECU: DVRS (Drive Video Record System / Built-in Cam)
+ * Protocol: UDS (ISO 14229) - Service 0x22 ReadDataByIdentifier
+ * CAN ID: Request 0x795, Response 0x79D
+ * 
+ * Test Case: DIA_A223 - Parking Recording Information
+ * Description: Verify ReadDataByIdentifier (DID 0xA223) behavior 
+ *              across different diagnostic sessions
+ * ============================================================================
+ */
+
+variables
+{
+  // ECU Configuration
+  char gEcuName[20] = "DVRS";
+  
+  // Diagnostic Request/Response
+  diagRequest DVRS.* gReq;
+  diagResponse DVRS.* gResp;
+  
+  // DID Configuration
+  const dword DID_PARKING_RECORDING_INFO = 0xA223;
+  const byte SERVICE_READ_DATA_BY_ID = 0x22;
+  
+  // Session Control Constants
+  const byte SESSION_DEFAULT = 0x01;
+  const byte SESSION_PROGRAMMING = 0x02;
+  const byte SESSION_EXTENDED = 0x03;
+  
+  // Timeout configuration
+  const int DIAG_TIMEOUT_MS = 2000;
+}
+
+/* ============================================================================
+ * Main Test Entry Point
+ * ============================================================================
+ */
+void MainTest()
+{
+  TC_DIA_A223();
+}
+
+/* ============================================================================
+ * Test Case: DIA_A223 - Parking Recording Information
+ * ============================================================================
+ */
+testcase TC_DIA_A223()
+{
+  testCaseTitle("DIA_A223", "Parking Recording Information ($22 A223) Test");
+  testCaseDescription("Verify ReadDataByIdentifier DID 0xA223 behavior in Default, Programming, and Extended diagnostic sessions");
+  
+  // Initialize
+  DiagSetTarget(gEcuName);
+  
+  write("============================================================");
+  write("Test Case: DIA_A223 - Parking Recording Information");
+  write("DID: 0xA223");
+  write("Service: 0x22 (ReadDataByIdentifier)");
+  write("CAN Request ID: 0x795");
+  write("CAN Response ID: 0x79D");
+  write("============================================================");
+  
+  // Step 1: Read DID A223 in Default Session - Expect Positive Response
+  TC_DIA_A223_Step1_DefaultSession();
+  
+  // Step 2: Read DID A223 in Programming Session - Expect Negative Response
+  TC_DIA_A223_Step2_ProgrammingSession();
+  
+  // Step 3: Read DID A223 in Extended Session - Expect Positive Response
+  TC_DIA_A223_Step3_ExtendedSession();
+  
+  // Cleanup - Return to Default Session
+  SwitchToSession(SESSION_DEFAULT);
+  
+  write("============================================================");
+  write("Test Case DIA_A223 Completed");
+  write("============================================================");
+}
+
+/* ============================================================================
+ * Step 1: Read DID A223 in Default Session
+ * Expected: Positive Response (62 A2 23 <DATA>)
+ * ============================================================================
+ */
+void TC_DIA_A223_Step1_DefaultSession()
+{
+  long result;
+  
+  testStep("Step 1", "Acquiring parking recording information [A223] - Default Session (01)");
+  write("------------------------------------------------------------");
+  write("Step 1: Read DID 0xA223 in Default Session");
+  write("Condition: Default Session (0x01)");
+  write("Request: 22 A2 23");
+  write("Expected: Positive Response");
+  write("------------------------------------------------------------");
+  
+  // Switch to Default Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 1", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  // Send ReadDataByIdentifier for DID A223
+  result = SendReadDID(DID_PARKING_RECORDING_INFO);
+  
+  if (result == 1)
+  {
+    testStepPass("Step 1", "PASS: Positive response received for DID 0xA223 in Default Session");
+  }
+  else if (result == 0)
+  {
+    testStepFail("Step 1", "FAIL: Negative response received in Default Session (Expected: Positive)");
+  }
+  else
+  {
+    testStepFail("Step 1", "FAIL: Timeout or communication error in Default Session");
+  }
+}
+
+/* ============================================================================
+ * Step 2: Read DID A223 in Programming Session
+ * Expected: Negative Response (7F 22 <NRC>)
+ * ============================================================================
+ */
+void TC_DIA_A223_Step2_ProgrammingSession()
+{
+  long result;
+  
+  testStep("Step 2", "Obtaining parking recording information [A223] - Programming Session (02)");
+  write("------------------------------------------------------------");
+  write("Step 2: Read DID 0xA223 in Programming Session");
+  write("Condition: Programming Session (0x02)");
+  write("Request: 22 A2 23");
+  write("Expected: Negative Response");
+  write("------------------------------------------------------------");
+  
+  // Switch to Default first, then Programming Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 2", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  if (!SwitchToSession(SESSION_PROGRAMMING))
+  {
+    testStepFail("Step 2", "FAIL: Cannot switch to Programming Session");
+    return;
+  }
+  
+  // Send ReadDataByIdentifier for DID A223
+  result = SendReadDID(DID_PARKING_RECORDING_INFO);
+  
+  if (result == 0)
+  {
+    testStepPass("Step 2", "PASS: Negative response received for DID 0xA223 in Programming Session (as expected)");
+  }
+  else if (result == 1)
+  {
+    testStepFail("Step 2", "FAIL: Positive response received in Programming Session (Expected: Negative)");
+  }
+  else
+  {
+    testStepFail("Step 2", "FAIL: Timeout or communication error in Programming Session");
+  }
+}
+
+/* ============================================================================
+ * Step 3: Read DID A223 in Extended Session
+ * Expected: Positive Response (62 A2 23 <DATA>)
+ * ============================================================================
+ */
+void TC_DIA_A223_Step3_ExtendedSession()
+{
+  long result;
+  
+  testStep("Step 3", "Acquiring parking recording information [A223] - Extended Session (03)");
+  write("------------------------------------------------------------");
+  write("Step 3: Read DID 0xA223 in Extended Session");
+  write("Condition: Extended Session (0x03)");
+  write("Request: 22 A2 23");
+  write("Expected: Positive Response");
+  write("------------------------------------------------------------");
+  
+  // Switch to Default first, then Extended Session
+  if (!SwitchToSession(SESSION_DEFAULT))
+  {
+    testStepFail("Step 3", "FAIL: Cannot switch to Default Session");
+    return;
+  }
+  
+  if (!SwitchToSession(SESSION_EXTENDED))
+  {
+    testStepFail("Step 3", "FAIL: Cannot switch to Extended Session");
+    return;
+  }
+  
+  // Send ReadDataByIdentifier for DID A223
+  result = SendReadDID(DID_PARKING_RECORDING_INFO);
+  
+  if (result == 1)
+  {
+    testStepPass("Step 3", "PASS: Positive response received for DID 0xA223 in Extended Session");
+  }
+  else if (result == 0)
+  {
+    testStepFail("Step 3", "FAIL: Negative response received in Extended Session (Expected: Positive)");
+  }
+  else
+  {
+    testStepFail("Step 3", "FAIL: Timeout or communication error in Extended Session");
+  }
+}
+
+/* ============================================================================
+ * Helper Functions
+ * ============================================================================
+ */
+
+/*
+ * Switch to specified diagnostic session
+ * Returns: 1 = Success, 0 = Failure
+ */
+int SwitchToSession(byte sessionType)
+{
+  long result;
+  long respCode;
+  long respSize;
+  char sessionName[30];
+  char reqMsg[100];
+  char respMsg[200];
+  char temp[10];
+  int i;
+  
+  // Get session name for logging
+  switch(sessionType)
+  {
+    case SESSION_DEFAULT:
+      snprintf(sessionName, elCount(sessionName), "Default");
+      break;
+    case SESSION_PROGRAMMING:
+      snprintf(sessionName, elCount(sessionName), "Programming");
+      break;
+    case SESSION_EXTENDED:
+      snprintf(sessionName, elCount(sessionName), "Extended");
+      break;
+    default:
+      snprintf(sessionName, elCount(sessionName), "Unknown");
+  }
+  
+  // Create DiagnosticSessionControl request: [10] [SessionType]
+  DiagResize(gReq, 2);
+  DiagSetPrimitiveByte(gReq, 0, 0x10);  // DiagnosticSessionControl SID
+  DiagSetPrimitiveByte(gReq, 1, sessionType);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 10 %02X", sessionType);
+  write(">> Tx: %s (Switch to %s Session)", reqMsg, sessionName);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      for (i = 0; i < respSize && i < 20; i++)
+      {
+        snprintf(temp, elCount(temp), "%02X ", DiagGetPrimitiveByte(gResp, i));
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      write("<< Rx: %s", respMsg);
+      write("Session switched to %s (0x%02X) - OK", sessionName, sessionType);
+      TestWaitForTimeout(100);  // Small delay for session transition
+      return 1;
+    }
+    else
+    {
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 10 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Failed to switch to %s Session, NRC: 0x%02X", sessionName, respCode);
+      return 0;
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout switching to %s Session", sessionName);
+    return 0;
+  }
+}
+
+/*
+ * Send ReadDataByIdentifier (0x22) for specified DID
+ * Returns: 1 = Positive Response, 0 = Negative Response, -1 = Timeout/Error
+ */
+long SendReadDID(dword did)
+{
+  long result;
+  long respCode;
+  long respSize;
+  int i;
+  byte respByte;
+  char reqMsg[100];
+  char respMsg[500];
+  char dataStr[400];
+  char temp[10];
+  
+  // Create ReadDataByIdentifier request: [22] [DID_High] [DID_Low]
+  DiagResize(gReq, 3);
+  DiagSetPrimitiveByte(gReq, 0, SERVICE_READ_DATA_BY_ID);
+  DiagSetPrimitiveByte(gReq, 1, (did >> 8) & 0xFF);
+  DiagSetPrimitiveByte(gReq, 2, did & 0xFF);
+  
+  // Log request
+  snprintf(reqMsg, elCount(reqMsg), "[795] 22 %02X %02X", (did >> 8) & 0xFF, did & 0xFF);
+  write(">> Tx: %s (ReadDataByIdentifier DID 0x%04X)", reqMsg, did);
+  
+  // Send request
+  DiagSendRequest(gReq);
+  
+  // Wait for response
+  result = TestWaitForDiagResponse(gReq, DIAG_TIMEOUT_MS);
+  
+  if (result == 1)
+  {
+    respCode = DiagGetLastResponseCode(gReq);
+    
+    if (respCode == -1)  // Positive response
+    {
+      // Get response data
+      DiagGetLastResponse(gReq, gResp);
+      respSize = DiagGetPrimitiveSize(gResp);
+      
+      // Format response message
+      snprintf(respMsg, elCount(respMsg), "[79D] ");
+      snprintf(dataStr, elCount(dataStr), "");
+      
+      for (i = 0; i < respSize && i < 50; i++)
+      {
+        respByte = DiagGetPrimitiveByte(gResp, i);
+        snprintf(temp, elCount(temp), "%02X ", respByte);
+        strncat(respMsg, temp, elCount(respMsg) - strlen(respMsg) - 1);
+        
+        // Store data portion (skip SID and DID = 3 bytes)
+        if (i >= 3)
+        {
+          strncat(dataStr, temp, elCount(dataStr) - strlen(dataStr) - 1);
+        }
+      }
+      
+      if (respSize > 50)
+      {
+        strncat(respMsg, "...", elCount(respMsg) - strlen(respMsg) - 1);
+      }
+      
+      write("<< Rx: %s", respMsg);
+      write("Positive Response for DID 0x%04X", did);
+      write("Response Size: %d bytes", respSize);
+      write("Data Content: %s", dataStr);
+      
+      return 1;  // Positive response
+    }
+    else
+    {
+      // Negative response
+      char nrcDesc[100];
+      GetNRCDescription(respCode, nrcDesc);
+      snprintf(respMsg, elCount(respMsg), "[79D] 7F 22 %02X", respCode);
+      write("<< Rx: %s (NRC)", respMsg);
+      write("Negative Response for DID 0x%04X, NRC: 0x%02X (%s)", did, respCode, nrcDesc);
+      
+      return 0;  // Negative response
+    }
+  }
+  else
+  {
+    write("<< Rx: TIMEOUT");
+    write("Timeout waiting for response (DID 0x%04X)", did);
+    return -1;  // Timeout/Error
+  }
+}
+
+/*
+ * Get NRC description string
+ * Output parameter: desc - buffer to store description
+ */
+void GetNRCDescription(long nrc, char desc[])
+{
+  switch(nrc)
+  {
+    case 0x10:
+      snprintf(desc, 100, "generalReject");
+      break;
+    case 0x11:
+      snprintf(desc, 100, "serviceNotSupported");
+      break;
+    case 0x12:
+      snprintf(desc, 100, "subFunctionNotSupported");
+      break;
+    case 0x13:
+      snprintf(desc, 100, "incorrectMessageLengthOrInvalidFormat");
+      break;
+    case 0x14:
+      snprintf(desc, 100, "responseTooLong");
+      break;
+    case 0x21:
+      snprintf(desc, 100, "busyRepeatRequest");
+      break;
+    case 0x22:
+      snprintf(desc, 100, "conditionsNotCorrect");
+      break;
+    case 0x24:
+      snprintf(desc, 100, "requestSequenceError");
+      break;
+    case 0x25:
+      snprintf(desc, 100, "noResponseFromSubnetComponent");
+      break;
+    case 0x26:
+      snprintf(desc, 100, "failurePreventsExecutionOfRequestedAction");
+      break;
+    case 0x31:
+      snprintf(desc, 100, "requestOutOfRange");
+      break;
+    case 0x33:
+      snprintf(desc, 100, "securityAccessDenied");
+      break;
+    case 0x35:
+      snprintf(desc, 100, "invalidKey");
+      break;
+    case 0x36:
+      snprintf(desc, 100, "exceededNumberOfAttempts");
+      break;
+    case 0x37:
+      snprintf(desc, 100, "requiredTimeDelayNotExpired");
+      break;
+    case 0x70:
+      snprintf(desc, 100, "uploadDownloadNotAccepted");
+      break;
+    case 0x71:
+      snprintf(desc, 100, "transferDataSuspended");
+      break;
+    case 0x72:
+      snprintf(desc, 100, "generalProgrammingFailure");
+      break;
+    case 0x73:
+      snprintf(desc, 100, "wrongBlockSequenceCounter");
+      break;
+    case 0x78:
+      snprintf(desc, 100, "requestCorrectlyReceivedResponsePending");
+      break;
+    case 0x7E:
+      snprintf(desc, 100, "subFunctionNotSupportedInActiveSession");
+      break;
+    case 0x7F:
+      snprintf(desc, 100, "serviceNotSupportedInActiveSession");
+      break;
+    default:
+      snprintf(desc, 100, "Unknown NRC");
+  }
+}

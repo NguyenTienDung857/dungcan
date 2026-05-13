@@ -1,0 +1,183 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSta_OWP, BLTN_CAM_RecSet_OWP, BLTN_CAM_RecSta_MAR, BLTN_CAM_RecSta_PEV
+
+/*
+  Test Case: OWP_004 - 2.5 (OWP_004)
+  Title: [OWP Recording - Switch Event Acknowledgement & MAR/PEV Recording Check]
+
+  Step 1: KEY ON (Power ON), USM Reset, Rec Reset, KEY OFF,
+          Wait for BLTN_CAM_RecSta_OWP = ON,
+          Switch event acknowledgement (Button_SwitchEvt) -> MAR auto,
+          Log: trigger PEV action required,
+          Check BLTN_CAM_RecSta_MAR = ON and BLTN_CAM_RecSta_PEV = ON,
+          Capture screenshot with BLTN_CAM_RecSet_OWP = 0x2 (ON)
+  Step 2: Log: check video directly (manual)
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int mar_result = 0;
+  int pev_result = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+// ============================================================================
+// File-specific Utility Functions
+// ============================================================================
+
+// Log all event notification signals
+void Log_Event_Notifications(){
+  write("");
+  write("=== Event Notification Signal Values ===");
+  write("  BLTN_CAM_RecSet_OWP    = 0x%X", $BLTN_CAM_RecSet_OWP);
+  write("  BLTN_CAM_RecSta_OWP    = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_RecSta_MAR    = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  BLTN_CAM_RecSta_PEV    = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV    = 0x%X", $BLTN_CAM_RecSet_PEV);
+  write("  BLTN_CAM_State         = 0x%X", $BLTN_CAM_State);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+  write("========================================");
+  write("");
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_004_Init(){
+  Send_Value_To_COM(20400);
+
+  // 1.2: KEY ON (Power ON)
+  KEY_OFF();
+  testWaitForTimeout(1000);
+  KEY_ON();
+  testWaitForTimeout(5000);
+  Click_USM_Reset();
+  testWaitForTimeout(5000);
+  Click_Rec_Reset();
+ 
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_004_1(){
+  Send_Value_To_COM(20402);
+  SetTestStep("Bước 1 - OWP_004");
+  StartTestTimer();
+  testStep("Step1", "KEY ON (Power ON) + USM Reset + Rec Reset + KEY OFF, wait BLTN_CAM_RecSta_OWP = ON, Evt Switch -> check MAR=ON & PEV=ON");
+  KEY_OFF();
+
+
+  if (WaitFor_RecSta_OWP_Recording(100000) == 1){
+    write(">>> [OK] BLTN_CAM_RecSta_OWP = 0x%X <<<", $BLTN_CAM_RecSta_OWP);
+  }
+  else {
+    write(">>> [FAIL] Timeout: BLTN_CAM_RecSta_OWP = 0x%X <<<", $BLTN_CAM_RecSta_OWP);
+    Log_Error_Details();
+
+    testStepFail("Step1.6", "BLTN_CAM_RecSta_OWP did not change to ON");
+    step1_passed = 0;
+    Log_Event_Notifications();
+    CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+    write("=== FINISH STEP 1 (FAILED - OWP not started) ===");
+    StopTestTimer();
+    return;
+  }
+
+  testWaitForTimeout(5000);
+  Click_Evt_Switch();
+
+
+  mar_result = WaitFor_RecSta_MAR_Recording(30000);
+
+  // 1.11: Notify user + wait for PEV recording (physical trigger, max 60s)
+  pev_result = WaitFor_RecSta_PEV_Recording(60);
+    testWaitForTimeout(60000);
+
+  if (mar_result == 1 && pev_result == 1){
+    Log_Event_Notifications();
+    write(">>> [PASS] Step 1: MAR = ON, PEV = ON, RecSet_OWP = 0x2 (ON) <<<");
+    step1_passed = 1;
+    testStepPass("Step1", "MAR=ON, PEV=ON, RecSet_OWP=ON - PASS");
+  }
+  else {
+    Log_Event_Notifications();
+    if (mar_result == 0) write("  -> MAR not ON within 30s");
+    if (pev_result == 0) write("  -> PEV not ON within 60s");
+    write(">>> [FAIL] Step 1: MAR or PEV not seen ON <<<");
+    step1_passed = 0;
+    Log_Error_Details();
+
+    testStepFail("Step1", "MAR or PEV not ON - FAIL");
+  }
+
+  // 1.12: Capture screenshot
+  write("");
+  write("Step 1.9: Capturing screenshot...");
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_004_2(){
+  Send_Value_To_COM(20402);
+  SetTestStep("Bước 2 - OWP_004");
+  StartTestTimer();
+  //============================================================================
+  // STEP 2: Log - check video directly (manual)
+  //============================================================================
+  write("");
+  write("=== STEP 2: Check Video Directly (Manual) ===");
+  testStep("Step2", "Log notification - manual check: verify OWP/MAR/PEV recorded video files on device");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL CHECK] Please check the recorded video        ***");
+  write("*** directly on the device.                               ***");
+  write("***                                                       ***");
+  write("*** Verify:                                               ***");
+  write("***   1. OWP recording video exists                       ***");
+  write("***   2. MAR (Manual Event) recording was captured        ***");
+  write("***   3. PEV (Parking Event) recording was captured       ***");
+  write("*************************************************************");
+  write("");
+
+  Log_Event_Notifications();
+
+  testStepPass("Step2", "Log: check video directly - manual check required");
+  step2_passed = 1;
+
+  write("=== FINISH STEP 2 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWP_004 - 2.5 generation_report");
+  OWP_004_Init();
+
+  OWP_004_1();
+
+ // OWP_004_2();
+
+}

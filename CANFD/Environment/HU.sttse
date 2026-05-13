@@ -1,0 +1,7 @@
+[NStatePersistence]
+Signature=VectorStatePersistence
+[VTestExecutable]
+TestNode0_LastReportTmpFile=Environment
+TestNode1_LastReportTmpFile=Environment
+TestNode2_LastReportTmpFile=Environment
+TestNode3_LastReportTmpFile=Environment

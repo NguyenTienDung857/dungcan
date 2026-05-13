@@ -1,0 +1,469 @@
+/*@!Encoding:65001*/
+
+includes { #include "../DeclarationFunction_Gen2.5.h" }
+
+/*
+  Test Case: OWD_027
+  Title: [MAR + TML Recording Test - Evt Switch in AVN + TML in BLTN_CAM/AVN + 20min auto-stop]
+  Verification items:
+    - Step 1: SMK IGN + USM Reset + Rec Reset + AVN mode + Evt Switch
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) and BLTN_CAM_RecSta_MAR = 0x1 (Recording, 10s) - Screenshot
+    - Step 2: Enter Built-in Cam + Click TML Start
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) - Screenshot
+    - Step 3, 4: Log - LED photo capture (manual)
+    - Step 5: Exit to AVN home + Click TML Start
+              Check BLTN_CAM_RecSta_TML = 0x1 (ON), wait 20 min
+              Check BLTN_CAM_RecSta_TML = 0x0 (OFF) auto-stop - Screenshot
+    - Step 6, 7, 8, 9: Log - LED and video check (manual)
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+        Step 5 includes a 20-minute wait for TML auto-stop verification.
+*/
+
+variables
+{
+  long max_wait_time_10s = 10000;   // 10 seconds timeout
+  long tml_auto_stop_20min = 1200000; // 20 minutes = 1,200,000 ms
+
+  // Message declarations for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+
+  // Result tracking variables
+  int step1_tml_passed = 0;
+  int step1_mar_passed = 0;
+  int step2_passed = 0;
+  int step5_on_passed = 0;
+  int step5_off_passed = 0;
+
+}
+
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_027_Init()
+{
+  Send_Value_To_COM(12700);
+  write("========================================");
+  write("=== START TEST OWD_027 ===");
+  write("=== MAR + TML Recording Test        ===");
+  write("=== Evt Switch AVN + TML BLTN_CAM   ===");
+  write("=== + TML AVN 20min auto-stop       ===");
+  write("========================================");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: Set SMK IGN, USM Reset, Rec Reset, AVN mode,
+  //         Click Evt Switch, Check TML = 0x0 (OFF) and MAR = 0x1 (Recording, 10s)
+  //         Screenshot
+  //============================================================================
+  Send_Value_To_COM(12701);
+  SetTestStep("Bước 1 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: SMK IGN + USM Reset + Rec Reset + AVN mode      ===");
+  write("===         Evt Switch + Check TML OFF + MAR Recording (10s)===");
+  write("=================================================================");
+  testStep("Step1", "SMK IGN + USM Reset + Rec Reset + AVN + Evt Switch + TML OFF + MAR ON");
+
+  // 1.1 Set SMK to IGN via panel combo box
+  write("[1.1] Setting SMK_Signal to IGN via panel...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 1.2 Click USM Reset button
+  write("[1.2] Clicking USM Reset button...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.3 Click Rec Reset button
+  write("[1.3] Clicking Rec Reset button...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4 Ensure AVN mode (Exit BLTN_CAM if needed)
+  write("[1.4] Ensuring AVN mode...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 1.5 Click Evt Switch button on panel
+  write("[1.5] Clicking Evt Switch button on panel...");
+  Click_Evt_Switch();
+  testWaitForTimeout(2000);
+
+  // 1.6 Check BLTN_CAM_RecSta_TML = 0x0 (OFF)
+  write("[1.6] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF)...");
+  result = Check_RecSta_TML_OFF();
+
+  if(result == 1)
+  {
+    step1_tml_passed = 1;
+    write(">>> Step 1 TML: PASS - BLTN_CAM_RecSta_TML = 0x0 (OFF) <<<");
+  }
+  else
+  {
+    step1_tml_passed = 0;
+    write(">>> Step 1 TML: FAIL - BLTN_CAM_RecSta_TML is NOT OFF <<<");
+  }
+
+  // 1.7 Check BLTN_CAM_RecSta_MAR = 0x1 (Recording) within 10 seconds
+  write("[1.7] Waiting for BLTN_CAM_RecSta_MAR = 0x1 (Recording) within 10 seconds...");
+  result = WaitFor_RecSta_MAR_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step1_mar_passed = 1;
+    write(">>> Step 1 MAR: PASS - BLTN_CAM_RecSta_MAR = 0x1 (Recording) <<<");
+  }
+  else
+  {
+    step1_mar_passed = 0;
+    write(">>> Step 1 MAR: FAIL - MAR Recording NOT detected <<<");
+  }
+
+  // 1.8 Capture screenshot
+  write("[1.8] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;AIN;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step1_tml_passed == 1 && step1_mar_passed == 1)
+  {
+    testStepPass("Step1", "TML = 0x0 (OFF) and MAR = 0x1 (Recording) after Evt Switch in AVN - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: TML OFF or MAR Recording check failed <<<");
+    Log_Error_Details();
+    testStepFail("Step1", "Step 1 verification failed - TML OFF or MAR Recording check failed");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_2()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 2: Enter Built-in Cam mode, Click TML Start,
+  //         Check BLTN_CAM_RecSta_TML = 0x0 (OFF) - Screenshot
+  //============================================================================
+  Send_Value_To_COM(12702);
+  SetTestStep("Bước 2 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Enter BLTN_CAM + TML Start                      ===");
+  write("===         Check BLTN_CAM_RecSta_TML = 0x0 (OFF)           ===");
+  write("=================================================================");
+  testStep("Step2", "Enter BLTN_CAM + TML Start + Check TML OFF");
+
+  // 2.1 Enter Built-in Cam mode
+  write("[2.1] Entering Built-in Cam (BLTN_CAM) mode...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (BLTN_CAM)", $BLTN_CAM_HU_UI_Mode);
+
+  // 2.2 Click TML Start button
+  write("[2.2] Clicking TML Start button...");
+  Click_TML_Start();
+  testWaitForTimeout(3000);
+
+  // 2.3 Check BLTN_CAM_RecSta_TML = 0x0 (OFF) - TML should NOT start in BLTN_CAM mode
+  write("[2.3] Checking BLTN_CAM_RecSta_TML = 0x0 (OFF) - TML should NOT start in BLTN_CAM mode...");
+  result = Check_RecSta_TML_OFF();
+
+  // 2.4 Capture screenshot
+  write("[2.4] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "BLTN_CAM_RecSta_TML = 0x0 (OFF) in BLTN_CAM mode after TML Start - PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_TML is NOT OFF in BLTN_CAM mode after TML Start <<<");
+    Log_Error_Details();
+    testStepFail("Step2", "BLTN_CAM_RecSta_TML is NOT OFF in BLTN_CAM mode after TML Start - FAIL");
+  }
+
+  Click_TML_Stop();
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_3_4()
+{
+  //============================================================================
+  // STEP 3 & 4: Log - LED Photo Capture (Manual)
+  //============================================================================
+  Send_Value_To_COM(12703);
+  write("");
+  write("=================================================================");
+  write("=== STEP 3 & 4: LED Photo Capture (Manual)                  ===");
+  write("=================================================================");
+  testStep("Step3_4", "LED photo capture - check signal light");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 3 & 4: LOG INFORMATION ***");
+  write("*** Please capture LED photo directly ***");
+  write("*** Check signal light status on the device ***");
+  write("*** Include this photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step3_4", "LED photo capture logged - Manual photo required");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_5()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 5: Exit to AVN home, Click TML Start,
+  //         Check BLTN_CAM_RecSta_TML = 0x1 (ON),
+  //         Wait 20 minutes, then check BLTN_CAM_RecSta_TML = 0x0 (OFF)
+  //         Screenshot
+  //============================================================================
+  Send_Value_To_COM(12705);
+  SetTestStep("Bước 5 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Exit to AVN + TML Start + Check TML ON          ===");
+  write("===         Wait 20 min + Check TML auto-stop (OFF)         ===");
+  write("=================================================================");
+  testStep("Step5", "AVN + TML Start + TML ON + 20min wait + TML auto-stop OFF");
+
+  // 5.1 Exit Built-in Cam mode, return to AVN home
+  write("[5.1] Exiting to AVN home screen...");
+  Exit_BLTN_CAM();
+  testWaitForTimeout(3000);
+  write("  HU_BLTN_CAM_UI_Mode = 0x%X (AVN mode)", $BLTN_CAM_HU_UI_Mode);
+
+  // 5.2 Click TML Start button
+  write("[5.2] Clicking TML Start button...");
+  Click_TML_Start();
+
+  // 5.3 Check BLTN_CAM_RecSta_TML = 0x1 (ON) within 10 seconds
+  write("[5.3] Checking BLTN_CAM_RecSta_TML = 0x1 (ON)...");
+  result = WaitFor_RecSta_TML_Recording(max_wait_time_10s);
+
+  if(result == 1)
+  {
+    step5_on_passed = 1;
+    write(">>> Step 5: TML ON confirmed - PASS <<<");
+  }
+  else
+  {
+    step5_on_passed = 0;
+    write(">>> Step 5: TML ON NOT detected - FAIL <<<");
+  }
+
+  // 5.4 Capture screenshot showing TML ON
+  write("[5.4] Capturing screenshot (TML ON)...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  // 5.5 Wait 20 minutes for TML auto-stop
+  write("[5.5] Waiting 20 minutes (%d ms) for TML auto-stop...", tml_auto_stop_20min);
+  write("  Start waiting at current time. TML should auto-stop after 20 minutes.");
+
+  result = WaitFor_RecSta_TML_OFF((tml_auto_stop_20min + 60000) / 1000);  // 20 min + 1 min buffer
+
+  if(result == 1)
+  {
+    step5_off_passed = 1;
+    write(">>> Step 5: TML auto-stop confirmed - BLTN_CAM_RecSta_TML = 0x0 (OFF) <<<");
+  }
+  else
+  {
+    step5_off_passed = 0;
+    write(">>> Step 5: TML auto-stop NOT detected after 20 min - FAIL <<<");
+  }
+
+  // 5.6 Capture screenshot after 20 min
+  write("[5.6] Capturing screenshot (after 20 min wait)...");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(step5_on_passed == 1 && step5_off_passed == 1)
+  {
+    testStepPass("Step5", "TML ON after Start + TML auto-stop OFF after 20 min - PASS");
+  }
+  else
+  {
+    write(">>> FAIL REASON: TML ON or auto-stop check failed <<<");
+    Log_Error_Details();
+    testStepFail("Step5", "Step 5 verification failed - TML ON or auto-stop check failed");
+  }
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_6()
+{
+  //============================================================================
+  // STEP 6: Log - LED Check (Manual)
+  //============================================================================
+  Send_Value_To_COM(12706);
+  SetTestStep("Bước 6 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: LED Check (Manual)                               ===");
+  write("=================================================================");
+  testStep("Step6", "LED check - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 6: LOG INFORMATION ***");
+  write("*** Please check LED status on the device ***");
+  write("*** Include LED photo in the test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step6", "LED check logged - Manual verification required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_7()
+{
+  //============================================================================
+  // STEP 7: Log - LED and Video Check (Manual)
+  //============================================================================
+  Send_Value_To_COM(12707);
+  SetTestStep("Bước 7 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: LED and Video Check (Manual)                     ===");
+  write("=================================================================");
+  testStep("Step7", "LED and video check - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 7: LOG INFORMATION ***");
+  write("*** Please check LED status and recorded video ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include LED photo and video info in test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step7", "LED and video check logged - Manual verification required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_8()
+{
+  //============================================================================
+  // STEP 8: Log - LED and Video Check (Manual)
+  //============================================================================
+  Send_Value_To_COM(12708);
+  SetTestStep("Bước 8 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 8: LED and Video Check (Manual)                     ===");
+  write("=================================================================");
+  testStep("Step8", "LED and video check - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 8: LOG INFORMATION ***");
+  write("*** Please check LED status and recorded video ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include LED photo and video info in test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step8", "LED and video check logged - Manual verification required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_027_9()
+{
+  //============================================================================
+  // STEP 9: Log - LED and Video Check (Manual)
+  //============================================================================
+  Send_Value_To_COM(12709);
+  SetTestStep("Bước 9 - OWD_027");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: LED and Video Check (Manual)                     ===");
+  write("=================================================================");
+  testStep("Step9", "LED and video check - manual verification");
+
+  write("");
+  write("*************************************************************");
+  write("*** STEP 9: LOG INFORMATION ***");
+  write("*** Please check LED status and recorded video ***");
+  write("*** Verify video content matches expected behavior ***");
+  write("*** Include LED photo and video info in test report ***");
+  write("*************************************************************");
+  write("");
+
+  testStepPass("Step9", "LED and video check logged - Manual verification required");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_027 - 2.5 generation_report");
+
+  //write("Run Rec_Reset()"); Rec_Reset();
+
+  OWD_027_Init();
+  OWD_027_1();
+  OWD_027_2();
+  OWD_027_3_4();
+  OWD_027_5();
+  OWD_027_6();
+  OWD_027_7();
+  //OWD_027_8();
+  //OWD_027_9();
+}

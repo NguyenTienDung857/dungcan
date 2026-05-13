@@ -1,0 +1,504 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_Set_PMD, BLTN_CAM_RecSet_OWP,
+//                             BLTN_CAM_State, SMK_TrmnlCtrlGrpStaBDC
+
+/*
+  Test Case: OWP_019 - 2.5 (OWP_019)
+  Title: [PMD/OWP Toggle + Pop-up Verification]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_PMD,
+           log "check pop-up tren man hinh HU"
+  Step 2:  Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot
+  Step 3:  Turn_ON_OWP, Turn_ON_PMD, log "thao tac pop-up truc tiep"
+  Step 4:  Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot
+  Step 5:  Turn_ON_PMD, Turn_ON_OWP, log "thao tac pop-up truc tiep"
+  Step 6:  Check Set_PMD_OFF, Check RecSet_OWP_ON, screenshot
+  Step 7:  Turn_ON_PMD, Turn_ON_OWP, log "thao tac pop-up truc tiep"
+  Step 8:  Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot,
+           log "nen thao tac truc tiep"
+  Step 9:  Turn_ON_PMD, Turn_OFF_OWP, Turn_ON_OWP, Turn_OFF_OWP,
+           Check Set_PMD_OFF, Check RecSet_OWP_OFF
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_019_Init()
+{
+  Send_Value_To_COM(21900);
+  write("========================================");
+  write("=== START TEST OWP_019 - 2.5 ===");
+  write("========================================");
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_PMD,
+//         log "check pop-up tren man hinh HU"
+// ============================================================================
+testcase OWP_019_1()
+{
+  Send_Value_To_COM(21901);
+  SetTestStep("Bước 1 - OWP_019");
+  StartTestTimer();
+  write("");
+  write("=== STEP 1: Init, Turn ON PMD, Check pop-up ===");
+  testStep("Step1", "Set_SMK_IGN, USM/Rec Reset, Turn ON PMD, Pop-up check");
+
+  // 1.1: Set_SMK_IGN
+  write("Step 1.1: Set_SMK_IGN (KEY ON with CGWNM)...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.2: Click USM Reset
+  write("Step 1.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("Step 1.3: Rec Reset...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4: Turn ON PMD
+  write("Step 1.4: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+
+  // 1.5: Log pop-up check
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** CHECK POP-UP TREN MAN HINH HU!                        ***");
+  write("*** Hay kiem tra man hinh HU xem co hien pop-up khong.     ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  step1_passed = 1;
+  testStepPass("Step1", "Init, PMD ON, pop-up check - PASS");
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2: Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot
+// ============================================================================
+testcase OWP_019_2()
+{
+  int pmd_on_result;
+  int owp_off_result;
+  Send_Value_To_COM(21902);
+  SetTestStep("Bước 2 - OWP_019");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 2: Check Set_PMD=ON, RecSet_OWP=OFF ===");
+  testStep("Step2", "Check Set_PMD ON, RecSet_OWP OFF");
+
+  // 2.1: Check Set_PMD_ON
+  write("Step 2.1: Check Set_PMD_ON...");
+  pmd_on_result = Check_Set_PMD_ON();
+
+  // 2.2: Check RecSet_OWP_OFF
+  write("Step 2.2: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_on_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=ON, RecSet_OWP=OFF <<<");
+    step2_passed = 1;
+    testStepPass("Step2", "Set_PMD ON, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_ON=%d, RecSet_OWP_OFF=%d <<<", pmd_on_result, owp_off_result);
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "Set_PMD_ON=%d, RecSet_OWP_OFF=%d - FAIL", pmd_on_result, owp_off_result);
+  }
+
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3: Turn_ON_OWP, Turn_ON_PMD, log "thao tac pop-up truc tiep"
+// ============================================================================
+testcase OWP_019_3()
+{
+  Send_Value_To_COM(21903);
+  SetTestStep("Bước 3 - OWP_019");
+  StartTestTimer();
+  write("");
+  write("=== STEP 3: Turn ON OWP, Turn ON PMD, Pop-up action ===");
+  testStep("Step3", "Turn ON OWP, Turn ON PMD, Pop-up truc tiep");
+
+  // 3.1: Turn ON OWP
+  write("Step 3.1: Turn ON OWP...");
+  Turn_ON_OWP();
+  testWaitForTimeout(2000);
+
+  // 3.2: Turn ON PMD
+  write("Step 3.2: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+
+  // 3.3: Log pop-up action
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL ACTION REQUIRED]                              ***");
+  write("*** THAO TAC POP-UP TRUC TIEP TREN MAN HINH HU!          ***");
+  write("*** Hay thao tac voi pop-up hien thi tren thiet bi.        ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  step3_passed = 1;
+  testStepPass("Step3", "OWP ON, PMD ON, popup action - PASS");
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 4: Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot
+// ============================================================================
+testcase OWP_019_4()
+{
+  int pmd_on_result;
+  int owp_off_result;
+  Send_Value_To_COM(21904);
+  SetTestStep("Bước 4 - OWP_019");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 4: Check Set_PMD=ON, RecSet_OWP=OFF ===");
+  testStep("Step4", "Check Set_PMD ON, RecSet_OWP OFF");
+
+  // 4.1: Check Set_PMD_ON
+  write("Step 4.1: Check Set_PMD_ON...");
+  pmd_on_result = Check_Set_PMD_ON();
+
+  // 4.2: Check RecSet_OWP_OFF
+  write("Step 4.2: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_on_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=ON, RecSet_OWP=OFF <<<");
+    step4_passed = 1;
+    testStepPass("Step4", "Set_PMD ON, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_ON=%d, RecSet_OWP_OFF=%d <<<", pmd_on_result, owp_off_result);
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "Set_PMD_ON=%d, RecSet_OWP_OFF=%d - FAIL", pmd_on_result, owp_off_result);
+  }
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5: Turn_ON_PMD, Turn_ON_OWP, log "thao tac pop-up truc tiep"
+// ============================================================================
+testcase OWP_019_5()
+{
+  Send_Value_To_COM(21905);
+  SetTestStep("Bước 5 - OWP_019");
+  StartTestTimer();
+  write("");
+  write("=== STEP 5: Turn ON PMD, Turn ON OWP, Pop-up action ===");
+  testStep("Step5", "Turn ON PMD, Turn ON OWP, Pop-up truc tiep");
+
+  // 5.1: Turn ON PMD
+  write("Step 5.1: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(2000);
+
+  // 5.2: Turn ON OWP
+  write("Step 5.2: Turn ON OWP...");
+  Turn_ON_OWP();
+  testWaitForTimeout(3000);
+
+  // 5.3: Log pop-up action
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL ACTION REQUIRED]                              ***");
+  write("*** THAO TAC POP-UP TRUC TIEP TREN MAN HINH HU!          ***");
+  write("*** Hay thao tac voi pop-up hien thi tren thiet bi.        ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  step5_passed = 1;
+  testStepPass("Step5", "PMD ON, OWP ON, popup action - PASS");
+  write("=== FINISH STEP 5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 6: Check Set_PMD_OFF, Check RecSet_OWP_ON, screenshot
+// ============================================================================
+testcase OWP_019_6()
+{
+  int pmd_off_result;
+  int owp_on_result;
+  Send_Value_To_COM(21906);
+  SetTestStep("Bước 6 - OWP_019");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 6: Check Set_PMD=OFF, RecSet_OWP=ON ===");
+  testStep("Step6", "Check Set_PMD OFF, RecSet_OWP ON");
+
+  // 6.1: Check Set_PMD_OFF
+  write("Step 6.1: Check Set_PMD_OFF...");
+  pmd_off_result = Check_Set_PMD_OFF();
+
+  // 6.2: Check RecSet_OWP_ON
+  write("Step 6.2: Check RecSet_OWP_ON...");
+  owp_on_result = Check_RecSet_OWP_ON();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_off_result == 1 && owp_on_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=OFF, RecSet_OWP=ON <<<");
+    step6_passed = 1;
+    testStepPass("Step6", "Set_PMD OFF, RecSet_OWP ON - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_OFF=%d, RecSet_OWP_ON=%d <<<", pmd_off_result, owp_on_result);
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "Set_PMD_OFF=%d, RecSet_OWP_ON=%d - FAIL", pmd_off_result, owp_on_result);
+  }
+
+  write("=== FINISH STEP 6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 7: Turn_ON_PMD, Turn_ON_OWP, log "thao tac pop-up truc tiep"
+// ============================================================================
+testcase OWP_019_7()
+{
+  Send_Value_To_COM(21907);
+  SetTestStep("Bước 7 - OWP_019");
+  StartTestTimer();
+  write("");
+  write("=== STEP 7: Turn ON PMD, Turn ON OWP, Pop-up action ===");
+  testStep("Step7", "Turn ON PMD, Turn ON OWP, Pop-up truc tiep");
+
+  // 7.1: Turn ON PMD
+  write("Step 7.1: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(2000);
+
+  // 7.2: Turn ON OWP
+  write("Step 7.2: Turn ON OWP...");
+  Turn_ON_OWP();
+  testWaitForTimeout(3000);
+
+  // 7.3: Log pop-up action
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL ACTION REQUIRED]                              ***");
+  write("*** THAO TAC POP-UP TRUC TIEP TREN MAN HINH HU!          ***");
+  write("*** Hay thao tac voi pop-up hien thi tren thiet bi.        ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  step7_passed = 1;
+  testStepPass("Step7", "PMD ON, OWP ON, popup action - PASS");
+  write("=== FINISH STEP 7 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 8: Check Set_PMD_ON, Check RecSet_OWP_OFF, screenshot,
+//         log "nen thao tac truc tiep"
+// ============================================================================
+testcase OWP_019_8()
+{
+  int pmd_on_result;
+  int owp_off_result;
+  Send_Value_To_COM(21908);
+  SetTestStep("Bước 8 - OWP_019");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 8: Check Set_PMD=ON, RecSet_OWP=OFF, log thao tac ===");
+  testStep("Step8", "Check Set_PMD ON, RecSet_OWP OFF, thao tac truc tiep");
+
+  // 8.1: Check Set_PMD_ON
+  write("Step 8.1: Check Set_PMD_ON...");
+  pmd_on_result = Check_Set_PMD_ON();
+
+  // 8.2: Check RecSet_OWP_OFF
+  write("Step 8.2: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_on_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=ON, RecSet_OWP=OFF <<<");
+    step8_passed = 1;
+    testStepPass("Step8", "Set_PMD ON, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_ON=%d, RecSet_OWP_OFF=%d <<<", pmd_on_result, owp_off_result);
+    step8_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step8", "Set_PMD_ON=%d, RecSet_OWP_OFF=%d - FAIL", pmd_on_result, owp_off_result);
+  }
+
+  // 8.3: Log thao tac truc tiep
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] NEN THAO TAC TRUC TIEP!                        ***");
+  write("*** Cac buoc nay nen thao tac truc tiep tren thiet bi.     ***");
+  write("*************************************************************");
+  write("");
+
+  write("=== FINISH STEP 8 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 9: Turn_ON_PMD, Turn_OFF_OWP, Turn_ON_OWP, Turn_OFF_OWP,
+//         Check Set_PMD_OFF, Check RecSet_OWP_OFF
+// ============================================================================
+testcase OWP_019_9()
+{
+  int pmd_off_result;
+  int owp_off_result;
+  Send_Value_To_COM(21909);
+  SetTestStep("Bước 9 - OWP_019");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 9: PMD ON, OWP OFF/ON/OFF, Check PMD=OFF, OWP=OFF ===");
+  testStep("Step9", "PMD ON, OWP toggle, Check Set_PMD OFF, RecSet_OWP OFF");
+
+  // 9.1: Turn ON PMD
+  write("Step 9.1: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(2000);
+
+  // 9.2: Turn OFF OWP
+  write("Step 9.2: Turn OFF OWP...");
+  Turn_OFF_OWP();
+  testWaitForTimeout(2000);
+
+  // 9.3: Turn ON OWP
+  write("Step 9.3: Turn ON OWP...");
+  Turn_ON_OWP();
+  testWaitForTimeout(2000);
+
+  // 9.4: Turn OFF OWP
+  write("Step 9.4: Turn OFF OWP...");
+  Turn_OFF_OWP();
+  testWaitForTimeout(3000);
+
+  // 9.5: Check Set_PMD_OFF
+  write("Step 9.5: Check Set_PMD_OFF...");
+  pmd_off_result = Check_Set_PMD_OFF();
+
+  // 9.6: Check RecSet_OWP_OFF
+  write("Step 9.6: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_off_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=OFF, RecSet_OWP=OFF <<<");
+    step9_passed = 1;
+    testStepPass("Step9", "Set_PMD OFF, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_OFF=%d, RecSet_OWP_OFF=%d <<<", pmd_off_result, owp_off_result);
+    step9_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step9", "Set_PMD_OFF=%d, RecSet_OWP_OFF=%d - FAIL", pmd_off_result, owp_off_result);
+  }
+
+  write("=== FINISH STEP 9 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_019 - 2.5 generation_report");
+
+  OWP_019_Init();
+
+  OWP_019_1();
+  OWP_019_2();
+  OWP_019_3();
+  OWP_019_4();
+  OWP_019_5();
+  OWP_019_6();
+  OWP_019_7();
+  OWP_019_8();
+  OWP_019_9();
+
+}

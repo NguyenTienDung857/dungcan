@@ -1,0 +1,43 @@
+/*@!Encoding:65001*/
+
+variables
+{
+  message BDC_FD_SMK_03_200ms _BDC_FD_SMK_03_200ms;
+  int i;
+}
+
+/*
+ * Test case: KEY ON/OFF ngay lập tức 5 lần
+ * Quy ước:
+ *   SMK_TrmnlCtrlGrpStaBDC = 0x2 -> ON
+ *   SMK_TrmnlCtrlGrpStaBDC = 0x0 -> OFF
+ * Yêu cầu: dùng output(message), chạy ngay khi nhấn Run
+ */
+testcase BAS_KEY_ON_OFF_5X_IMMEDIATE()
+{
+  testStep("Notifications", "Start BAS_KEY_ON_OFF_5X_IMMEDIATE");
+  write("=== START BAS_KEY_ON_OFF_5X_IMMEDIATE ===");
+
+  for (i = 1; i <= 5; i++)
+  {
+    _BDC_FD_SMK_03_200ms.SMK_TrmnlCtrlGrpStaBDC = 0x0; // OFF
+    output(_BDC_FD_SMK_03_200ms);
+    write("Loop %d: KEY OFF (SMK_TrmnlCtrlGrpStaBDC=0x0)", i);
+    testWaitForTimeout(10); // Chờ 100ms giữa các lần gửi
+    _BDC_FD_SMK_03_200ms.SMK_TrmnlCtrlGrpStaBDC = 0x2; // ON
+    output(_BDC_FD_SMK_03_200ms);
+    write("Loop %d: KEY ON  (SMK_TrmnlCtrlGrpStaBDC=0x2)", i);
+    testWaitForTimeout(10);
+
+
+  }
+
+  testStepPass("Result", "Da gui KEY ON/OFF ngay lap tuc 5 lan bang output(message)");
+  write("=== FINISH BAS_KEY_ON_OFF_5X_IMMEDIATE ===");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\BAS_KEY_ON_OFF_5X_IMMEDIATE_report");
+  BAS_KEY_ON_OFF_5X_IMMEDIATE();
+}

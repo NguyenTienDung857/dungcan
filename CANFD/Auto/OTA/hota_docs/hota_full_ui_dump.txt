@@ -1,0 +1,2297 @@
+H-OTA FULL UI DUMP
+Generated: 2026-05-18T11:27:37
+Source scan: D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_105845
+
+=== RUNTIME WINDOWS / WIN32 CHILD IDS ===
+WINDOW hwnd=395308 title='ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r' class='Afx:002D0000:8:00010003:00000000:00B1048F' rect=[-1928, -8, 8, 1040]
+  CHILD hwnd=460918 id=-1 class='BCGPSlider:2d0000:8:10003:10' title='' rect=[-1522, 153, -1516, 1008]
+  CHILD hwnd=329626 id=32860 class='BCGPControlBar:2d0000:8:10003:10' title='Properties' rect=[-1920, 153, -1522, 1008]
+  CHILD hwnd=263904 id=2 class='BCGPPropList:2d0000:8:10003:10' title='' rect=[-1920, 213, -1522, 1008]
+  CHILD hwnd=198354 id=59392 class='BCGPToolBar:2d0000:8:10003:10' title='PropertyListToolbar' rect=[-1916, 215, -1867, 241]
+  CHILD hwnd=460714 id=4 class='Edit' title='' rect=[-1863, 215, -1526, 239]
+  CHILD hwnd=657288 id=1 class='SysHeader32' title='' rect=[-1920, 243, -1920, 264]
+  CHILD hwnd=526056 id=2 class='ScrollBar' title='' rect=[-1539, 243, -1522, 864]
+  CHILD hwnd=393390 id=160 class='BCGPToolBar:2d0000:8:10003:10' title='' rect=[-1920, 188, -1522, 213]
+  CHILD hwnd=1179666 id=-1 class='BCGPTabWnd:2d0000:8:10003:10' title='' rect=[-1920, 0, -1920, 0]
+  CHILD hwnd=1114756 id=-1 class='Button' title='' rect=[-1920, 0, -1920, 0]
+  CHILD hwnd=525988 id=-1 class='Button' title='' rect=[-1920, 0, -1920, 0]
+  CHILD hwnd=460120 id=-1 class='Button' title='' rect=[-1920, 0, -1920, 0]
+  CHILD hwnd=263498 id=59398 class='BCGPRibbonBar:2d0000:8:10003:10' title='ReprogramEditor' rect=[-1920, 0, 0, 153]
+  CHILD hwnd=460568 id=59393 class='BCGPRibbonStatusBar:2d0000:8:10003:10' title='Ready' rect=[-1920, 1008, 0, 1032]
+  CHILD hwnd=264328 id=59419 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 153, 0, 153]
+  CHILD hwnd=197112 id=59419 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 153, 0, 153]
+  CHILD hwnd=722684 id=59422 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 1008, 0, 1008]
+  CHILD hwnd=786648 id=59422 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 1008, 0, 1008]
+  CHILD hwnd=263866 id=59420 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 153, -1920, 1008]
+  CHILD hwnd=198574 id=59420 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[-1920, 153, -1920, 1008]
+  CHILD hwnd=329632 id=59421 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[0, 153, 0, 1008]
+  CHILD hwnd=460576 id=59421 class='BCGPDockBar:2d0000:8:10003:10' title='' rect=[0, 153, 0, 1008]
+  CHILD hwnd=590028 id=1 class='BCGPSlider:2d0000:8:10003:10' title='' rect=[-1920, 575, -1522, 581]
+  CHILD hwnd=460860 id=59648 class='MDIClient' title='' rect=[-1516, 153, 0, 1008]
+  CHILD hwnd=329724 id=65280 class='Afx:002D0000:b:00010003:00000006:00160233' title='ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 180, -5, 1003]
+  CHILD hwnd=327756 id=59648 class='AfxFrameOrView140u' title='' rect=[-1511, 180, -5, 1003]
+  CHILD hwnd=657538 id=66191504 class='VSFlexGrid8U' title='' rect=[-1511, 180, -5, 1003]
+  CHILD hwnd=460966 id=320 class='#32770' title='' rect=[-1511, 180, -5, 1003]
+  CHILD hwnd=328456 id=1219 class='Button' title='Stop' rect=[-1333, 344, -1248, 369]
+  CHILD hwnd=1050340 id=1218 class='Button' title='Start' rect=[-1467, 344, -1382, 369]
+  CHILD hwnd=393954 id=1231 class='Button' title='Stop' rect=[-953, 344, -868, 369]
+  CHILD hwnd=394012 id=1232 class='Button' title='Start' rect=[-1081, 344, -996, 369]
+  CHILD hwnd=720962 id=1222 class='SysListView32' title='' rect=[-1081, 436, -799, 954]
+  CHILD hwnd=328464 id=0 class='SysHeader32' title='' rect=[-1079, 438, -801, 462]
+  CHILD hwnd=328410 id=1239 class='Button' title='Action Rule' rect=[-1103, 310, -351, 968]
+  CHILD hwnd=526468 id=1221 class='SysListView32' title='' rect=[-1467, 436, -1161, 954]
+  CHILD hwnd=395170 id=0 class='SysHeader32' title='' rect=[-1465, 438, -1163, 462]
+  CHILD hwnd=394092 id=1238 class='Button' title='Testcase Rule' rect=[-1483, 310, -1143, 968]
+  CHILD hwnd=395196 id=1234 class='Button' title='For Cooperative ECU' rect=[-329, 238, -171, 264]
+  CHILD hwnd=852190 id=1236 class='Button' title='Add Pre Procedure' rect=[-713, 674, -479, 702]
+  CHILD hwnd=262932 id=1233 class='ComboBox' title='' rect=[-1137, 238, -975, 262]
+  CHILD hwnd=328430 id=1269 class='Static' title='SourceAddr : ' rect=[-1231, 244, -1139, 260]
+  CHILD hwnd=262326 id=1220 class='msctls_progress32' title='' rect=[-1467, 396, -1231, 424]
+  CHILD hwnd=459200 id=1223 class='msctls_progress32' title='' rect=[-1081, 396, -855, 424]
+  CHILD hwnd=723092 id=1260 class='Button' title='Add Background-Transfer' rect=[-713, 588, -461, 604]
+  CHILD hwnd=395072 id=1261 class='Button' title='Add Processing-Preperation(OBD EMS)' rect=[-713, 632, -419, 648]
+  CHILD hwnd=198764 id=1262 class='Button' title='Add Processing' rect=[-713, 726, -419, 742]
+  CHILD hwnd=262280 id=1263 class='Button' title='Add Activation' rect=[-713, 770, -419, 786]
+  CHILD hwnd=262268 id=1264 class='Button' title='Add Rollback' rect=[-713, 814, -419, 830]
+  CHILD hwnd=263042 id=1270 class='Button' title='Apply' rect=[-611, 906, -479, 942]
+  CHILD hwnd=196904 id=1271 class='Button' title='Add Rule Units' rect=[-743, 556, -379, 954]
+  CHILD hwnd=197150 id=1272 class='Button' title='Use Options' rect=[-1483, 198, 35, 288]
+  CHILD hwnd=263934 id=1276 class='Button' title='Add Scenario Units' rect=[-743, 338, -379, 542]
+  CHILD hwnd=198848 id=1273 class='Button' title='Wired-Rules' rect=[-713, 382, -599, 404]
+  CHILD hwnd=198850 id=1274 class='Button' title='Wireless-Rules' rect=[-713, 426, -579, 446]
+  CHILD hwnd=589864 id=1277 class='Button' title='Apply' rect=[-611, 494, -479, 528]
+  CHILD hwnd=591774 id=1278 class='Static' title='0.00%' rect=[-841, 400, -785, 416]
+  CHILD hwnd=788392 id=1279 class='Static' title='0.00%' rect=[-1219, 402, -1161, 418]
+  CHILD hwnd=1247238 id=1240 class='Button' title='Add Post Procedure' rect=[-713, 854, -479, 882]
+  CHILD hwnd=197320 id=1224 class='Button' title='OEUK Vehicle' rect=[-161, 242, -47, 262]
+  CHILD hwnd=524486 id=1225 class='Button' title='NFS' rect=[-35, 242, 21, 262]
+  CHILD hwnd=1114874 id=1241 class='ComboBox' title='' rect=[-1361, 238, -1237, 262]
+  CHILD hwnd=393284 id=1280 class='Static' title='GatewayType : ' rect=[-1475, 244, -1369, 260]
+  CHILD hwnd=1180552 id=1275 class='Button' title='OTA-estimatedRuntime' rect=[-713, 466, -537, 486]
+  CHILD hwnd=591616 id=-1 class='Static' title='Procedure Model Type :' rect=[-941, 244, -779, 260]
+  CHILD hwnd=198864 id=1250 class='ComboBox' title='' rect=[-777, 238, -541, 262]
+  CHILD hwnd=198868 id=1281 class='Static' title='DLC : ' rect=[-483, 244, -443, 260]
+  CHILD hwnd=198852 id=1235 class='ComboBox' title='' rect=[-437, 238, -341, 262]
+  CHILD hwnd=328292 id=-1 class='BCGPTabWnd:2d0000:8:10003:10' title='' rect=[-1516, 153, 0, 1008]
+  CHILD hwnd=198836 id=-1 class='Button' title='' rect=[-1516, 153, -1516, 153]
+  CHILD hwnd=198860 id=-1 class='Button' title='' rect=[-22, 157, -7, 172]
+  CHILD hwnd=198858 id=-1 class='Button' title='' rect=[-1516, 153, -1516, 153]
+OUTPUT hwnd=264308 title='Output' class='BCGPMiniFrame:2d0000:8:10003:10' rect=[-1917, 588, -1517, 1017]
+  OUTPUT_CHILD hwnd=788380 id=32803 class='BCGPControlBar:2d0000:8:10003:10' title='Output' rect=[-1913, 619, -1521, 1013]
+  OUTPUT_CHILD hwnd=262304 id=1 class='BCGPTabWnd:2d0000:8:10003:10' title='' rect=[-1913, 643, -1521, 1037]
+  OUTPUT_CHILD hwnd=263888 id=2 class='ListBox' title='' rect=[-1910, 646, -1524, 1015]
+  OUTPUT_CHILD hwnd=198382 id=59392 class='BCGPToolBar:2d0000:8:10003:10' title='' rect=[-1913, 619, -205, 643]
+  OUTPUT_CHILD hwnd=459620 id=65535 class='Static' title='Log Path :' rect=[-1912, 622, -204, 646]
+  OUTPUT_CHILD hwnd=198498 id=33001 class='Edit' title='' rect=[-1832, 623, -224, 638]
+
+=== UIA CONTROL TREE: initial (171 nodes) ===
+ Window - 'ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1928, -8, 8, 1040]
+ selector=child_window(title="ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r", control_type="Window") auto_id='' class='Afx:002D0000:8:00010003:00000000:00B1048F' enabled=True visible=True
+ texts=['ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r']
+   | Pane - 'Output' rect=[-1917, 588, -1517, 1017]
+   | selector=child_window(title="Output", control_type="Pane") auto_id='' class='BCGPMiniFrame:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Output']
+   |   | Pane - '' rect=[-1923, 1017, -1511, 1023]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1517, 588, -1511, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 582, -1511, 588]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 588, -1917, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - 'Output' rect=[-1913, 619, -1521, 1013]
+   |   | selector=child_window(title="Output", auto_id="32803", control_type="Pane") auto_id='32803' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['Output']
+   |   |   | Tab - '' rect=[-1913, 643, -1521, 1037]
+   |   |   | selector=child_window(auto_id="1", control_type="Tab") auto_id='1' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['', 'Log']
+   |   |   |   | List - '' rect=[-1910, 646, -1524, 1015]
+   |   |   |   | selector=child_window(auto_id="2", control_type="List") auto_id='2' class='ListBox' enabled=True visible=True
+   |   |   |   | TabItem - 'Log' rect=[-1913, 1017, -1882, 1035]
+   |   |   |   | selector=child_window(title="Log", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Log']
+   |   |   | Pane - '' rect=[-1913, 619, -205, 643]
+   |   |   | selector=child_window(auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Text - 'Log Path :' rect=[-1912, 622, -204, 646]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="65535", control_type="Text") auto_id='65535' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   |   |   |   | Edit - 'Log Path :' rect=[-1832, 623, -224, 638]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="33001", control_type="Edit") auto_id='33001' class='Edit' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   | ToolBar - '' rect=[-1522, 153, -1516, 1008]
+   | selector=child_window(control_type="ToolBar") auto_id='' class='BCGPSlider:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Properties' rect=[-1920, 153, -1522, 1008]
+   | selector=child_window(title="Properties", auto_id="32860", control_type="Pane") auto_id='32860' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Properties']
+   |   | Table - 'PropertyList' rect=[-1920, 213, -1522, 1008]
+   |   | selector=child_window(title="PropertyList", auto_id="2", control_type="Table") auto_id='2' class='BCGPPropList:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=[['PropertyListToolbar'], [''], [''], ['Wired'], ['TC_TAR_03010'], ['TC_TAR_03020'], ['TransferData_Invert_area'], ['TC_TAR_03030'], ['softwareInformation'], ['TC_TAR_02010'], ['Background-Transfer'], ['TC_TAR_01010'], ['TC_TAR_01011'], ['TransferData_Invert_area'], ['OTAReady'], ['TC_TAR_02020-02050'], ['TC_TAR_02020-02051'], ['VehicleType'], ['NMMessage_Type'], ['NMMessage_Time']]
+   |   |   | Pane - 'PropertyListToolbar' rect=[-1916, 215, -1867, 241]
+   |   |   | selector=child_window(title="PropertyListToolbar", auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['PropertyListToolbar']
+   |   |   |   | Button - 'Categorized' rect=[-1914, 216, -1892, 238]
+   |   |   |   | selector=child_window(title="Categorized", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Categorized']
+   |   |   |   | Button - 'Alphabetical' rect=[-1892, 216, -1870, 238]
+   |   |   |   | selector=child_window(title="Alphabetical", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Alphabetical']
+   |   |   | Edit - '' rect=[-1863, 215, -1526, 239]
+   |   |   | selector=child_window(auto_id="4", control_type="Edit") auto_id='4' class='Edit' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | ScrollBar - '' rect=[-1539, 243, -1522, 864]
+   |   |   | selector=child_window(auto_id="2", control_type="ScrollBar") auto_id='2' class='ScrollBar' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Line up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line up", auto_id="UpButton", control_type="Button") auto_id='UpButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line up']
+   |   |   |   | Button - 'Page up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page up", auto_id="UpPageButton", control_type="Button") auto_id='UpPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page up']
+   |   |   |   | Thumb - 'Position' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Position", auto_id="ScrollbarThumb", control_type="Thumb") auto_id='ScrollbarThumb' class='' enabled=True visible=False
+   |   |   |   | texts=['Position']
+   |   |   |   | Button - 'Page down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page down", auto_id="DownPageButton", control_type="Button") auto_id='DownPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page down']
+   |   |   |   | Button - 'Line down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line down", auto_id="DownButton", control_type="Button") auto_id='DownButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line down']
+   |   |   | Custom - 'Wired' rect=[-1920, 242, -1539, 259]
+   |   |   | selector=child_window(title="Wired", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Wired']
+   |   |   | Custom - 'TC_TAR_03010' rect=[-1903, 259, -1539, 276]
+   |   |   | selector=child_window(title="TC_TAR_03010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03010']
+   |   |   | Custom - 'TC_TAR_03020' rect=[-1903, 276, -1539, 293]
+   |   |   | selector=child_window(title="TC_TAR_03020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03020']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 293, -1539, 310]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_03030' rect=[-1903, 310, -1539, 327]
+   |   |   | selector=child_window(title="TC_TAR_03030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03030']
+   |   |   | Custom - 'softwareInformation' rect=[-1920, 327, -1539, 344]
+   |   |   | selector=child_window(title="softwareInformation", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['softwareInformation']
+   |   |   | Custom - 'TC_TAR_02010' rect=[-1903, 344, -1539, 361]
+   |   |   | selector=child_window(title="TC_TAR_02010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02010']
+   |   |   | Custom - 'Background-Transfer' rect=[-1920, 361, -1539, 378]
+   |   |   | selector=child_window(title="Background-Transfer", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Background-Transfer']
+   |   |   | Custom - 'TC_TAR_01010' rect=[-1903, 378, -1539, 395]
+   |   |   | selector=child_window(title="TC_TAR_01010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01010']
+   |   |   | Custom - 'TC_TAR_01011' rect=[-1903, 395, -1539, 412]
+   |   |   | selector=child_window(title="TC_TAR_01011", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01011']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 412, -1539, 429]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'OTAReady' rect=[-1920, 429, -1539, 446]
+   |   |   | selector=child_window(title="OTAReady", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAReady']
+   |   |   | Custom - 'TC_TAR_02020-02050' rect=[-1903, 446, -1539, 463]
+   |   |   | selector=child_window(title="TC_TAR_02020-02050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02050']
+   |   |   | Custom - 'TC_TAR_02020-02051' rect=[-1903, 463, -1539, 480]
+   |   |   | selector=child_window(title="TC_TAR_02020-02051", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02051']
+   |   |   | Custom - 'VehicleType' rect=[-1903, 480, -1539, 497]
+   |   |   | selector=child_window(title="VehicleType", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['VehicleType']
+   |   |   | Custom - 'NMMessage_Type' rect=[-1903, 497, -1539, 514]
+   |   |   | selector=child_window(title="NMMessage_Type", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Type']
+   |   |   | Custom - 'NMMessage_Time' rect=[-1903, 514, -1539, 531]
+   |   |   | selector=child_window(title="NMMessage_Time", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Time']
+   |   |   | Custom - 'TestECU' rect=[-1903, 531, -1539, 548]
+   |   |   | selector=child_window(title="TestECU", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TestECU']
+   |   |   | Custom - 'UpdateAndFinish' rect=[-1920, 548, -1539, 565]
+   |   |   | selector=child_window(title="UpdateAndFinish", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['UpdateAndFinish']
+   |   |   | Custom - 'TC_TAR_01020' rect=[-1903, 565, -1539, 582]
+   |   |   | selector=child_window(title="TC_TAR_01020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01020']
+   |   |   | Custom - 'TC_TAR_01021' rect=[-1903, 582, -1539, 599]
+   |   |   | selector=child_window(title="TC_TAR_01021", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01021']
+   |   |   | Custom - 'TC_TAR_01022' rect=[-1903, 599, -1539, 616]
+   |   |   | selector=child_window(title="TC_TAR_01022", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01022']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 616, -1539, 633]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_01023' rect=[-1903, 633, -1539, 650]
+   |   |   | selector=child_window(title="TC_TAR_01023", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01023']
+   |   |   | Custom - 'Reset' rect=[-1920, 650, -1539, 667]
+   |   |   | selector=child_window(title="Reset", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Reset']
+   |   |   | Custom - 'TC_TAR_01030' rect=[-1903, 667, -1539, 684]
+   |   |   | selector=child_window(title="TC_TAR_01030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01030']
+   |   |   | Custom - 'TC_TAR_01035' rect=[-1903, 684, -1539, 701]
+   |   |   | selector=child_window(title="TC_TAR_01035", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01035']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 701, -1539, 718]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'Rollback' rect=[-1920, 718, -1539, 735]
+   |   |   | selector=child_window(title="Rollback", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Rollback']
+   |   |   | Custom - 'TC_TAR_01040' rect=[-1903, 735, -1539, 752]
+   |   |   | selector=child_window(title="TC_TAR_01040", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01040']
+   |   |   | Custom - 'TC_TAR_01045' rect=[-1903, 752, -1539, 769]
+   |   |   | selector=child_window(title="TC_TAR_01045", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01045']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 769, -1539, 786]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_01050' rect=[-1903, 786, -1539, 803]
+   |   |   | selector=child_window(title="TC_TAR_01050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01050']
+   |   |   | Custom - 'TC_TAR_01053' rect=[-1903, 803, -1539, 820]
+   |   |   | selector=child_window(title="TC_TAR_01053", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01053']
+   |   |   | Custom - 'TC_TAR_01055' rect=[-1903, 820, -1539, 837]
+   |   |   | selector=child_window(title="TC_TAR_01055", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01055']
+   |   |   | Custom - 'General' rect=[-1920, 837, -1539, 854]
+   |   |   | selector=child_window(title="General", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['General']
+   |   |   | Custom - 'TC_TAR_01060' rect=[-1903, 854, -1539, 871]
+   |   |   | selector=child_window(title="TC_TAR_01060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01060']
+   |   |   | Custom - 'TC_TAR_01070' rect=[-1903, 871, -1539, 888]
+   |   |   | selector=child_window(title="TC_TAR_01070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01070']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 888, -1539, 905]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_02060' rect=[-1903, 905, -1539, 922]
+   |   |   | selector=child_window(title="TC_TAR_02060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02060']
+   |   |   | Custom - 'TC_TAR_02070' rect=[-1903, 922, -1539, 939]
+   |   |   | selector=child_window(title="TC_TAR_02070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02070']
+   |   |   | Custom - 'OTAFunctionSafety' rect=[-1920, 939, -1539, 956]
+   |   |   | selector=child_window(title="OTAFunctionSafety", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAFunctionSafety']
+   |   |   | Custom - 'TC_TAR_01080' rect=[-1903, 956, -1539, 973]
+   |   |   | selector=child_window(title="TC_TAR_01080", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01080']
+   |   |   | Custom - 'TC_TAR_01081' rect=[-1903, 973, -1539, 990]
+   |   |   | selector=child_window(title="TC_TAR_01081", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01081']
+   |   |   | Custom - 'TC_TAR_01082_01084' rect=[-1903, 990, -1539, 1007]
+   |   |   | selector=child_window(title="TC_TAR_01082_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01082_01084']
+   |   |   | Custom - 'TC_TAR_01083_01084' rect=[-1903, 1007, -1539, 1024]
+   |   |   | selector=child_window(title="TC_TAR_01083_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01083_01084']
+   |   |   | Custom - 'TC_TAR_01082_01085' rect=[-1903, 1024, -1539, 1041]
+   |   |   | selector=child_window(title="TC_TAR_01082_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01082_01085']
+   |   |   | Custom - 'TC_TAR_01083_01085' rect=[-1903, 1041, -1539, 1058]
+   |   |   | selector=child_window(title="TC_TAR_01083_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01083_01085']
+   |   | Pane - '' rect=[-1920, 188, -1522, 213]
+   |   | selector=child_window(auto_id="160", control_type="Pane") auto_id='160' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['']
+   | ToolBar - ' ' rect=[-1920, 0, 0, 153]
+   | selector=child_window(title=" ", auto_id="59398", control_type="ToolBar") auto_id='59398' class='BCGPRibbonBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Application menu', 'Quick Access Toolbar', 'Ribbon Tabs', 'Home', 'About']
+   |   | Button - 'Application menu' rect=[-1920, 33, -1861, 60]
+   |   | selector=child_window(title="Application menu", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Application menu']
+   |   | ToolBar - 'Quick Access Toolbar' rect=[-1912, 0, -1871, 33]
+   |   | selector=child_window(title="Quick Access Toolbar", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['SAVE', 'Customize Quick Access Toolbar']
+   |   |   | Button - 'SAVE' rect=[-1910, 0, -1888, 28]
+   |   |   | selector=child_window(title="SAVE", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['SAVE']
+   |   |   | SplitButton - 'Customize Quick Access Toolbar' rect=[-1886, 0, -1873, 27]
+   |   |   | selector=child_window(title="Customize Quick Access Toolbar", control_type="SplitButton") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Customize Quick Access Toolbar']
+   |   | Group - 'Ribbon Tabs' rect=[-1860, 33, -88, 60]
+   |   | selector=child_window(title="Ribbon Tabs", control_type="Group") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Ribbon Tabs']
+   |   |   | TabItem - 'Home' rect=[-1860, 33, -1802, 60]
+   |   |   | selector=child_window(title="Home", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Home']
+   |   |   | TabItem - 'Edit' rect=[-1802, 33, -1754, 60]
+   |   |   | selector=child_window(title="Edit", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Edit']
+   |   |   | TabItem - 'Window' rect=[-1754, 33, -1680, 60]
+   |   |   | selector=child_window(title="Window", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Window']
+   |   | ToolBar - 'Home' rect=[-1920, 60, 0, 153]
+   |   | selector=child_window(title="Home", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Tools', 'Mode', 'Help', 'Support']
+   |   |   | ToolBar - 'Tools' rect=[-1916, 63, -1475, 149]
+   |   |   | selector=child_window(title="Tools", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Hex2Binary', 'RomPakage', 'XML Conversion', 'LogView', 'Generator', 'RFS', 'Bi-Authenticaiton']
+   |   |   |   | Button - 'Hex2Binary' rect=[-1912, 65, -1851, 131]
+   |   |   |   | selector=child_window(title="Hex2Binary", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Hex2Binary']
+   |   |   |   | Button - 'RomPakage' rect=[-1851, 65, -1786, 131]
+   |   |   |   | selector=child_window(title="RomPakage", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RomPakage']
+   |   |   |   | Button - 'XML Conversion' rect=[-1786, 65, -1723, 131]
+   |   |   |   | selector=child_window(title="XML Conversion", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['XML Conversion']
+   |   |   |   | Button - 'LogView' rect=[-1723, 65, -1674, 131]
+   |   |   |   | selector=child_window(title="LogView", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['LogView']
+   |   |   |   | Button - 'Generator' rect=[-1674, 65, -1617, 131]
+   |   |   |   | selector=child_window(title="Generator", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Generator']
+   |   |   |   | Button - 'RFS' rect=[-1617, 65, -1575, 131]
+   |   |   |   | selector=child_window(title="RFS", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RFS']
+   |   |   |   | Button - 'Bi-Authenticaiton' rect=[-1575, 65, -1480, 131]
+   |   |   |   | selector=child_window(title="Bi-Authenticaiton", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Bi-Authenticaiton']
+   |   |   | ToolBar - 'Mode' rect=[-1473, 63, -1344, 149]
+   |   |   | selector=child_window(title="Mode", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TesterMode', 'EditMode']
+   |   |   |   | Button - 'TesterMode' rect=[-1469, 65, -1404, 131]
+   |   |   |   | selector=child_window(title="TesterMode", control_type="Button") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['TesterMode']
+   |   |   |   | Button - 'EditMode' rect=[-1404, 65, -1349, 131]
+   |   |   |   | selector=child_window(title="EditMode", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['EditMode']
+   |   |   | ToolBar - 'Help' rect=[-1342, 63, -1164, 149]
+   |   |   | selector=child_window(title="Help", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Option', 'Error Lookup', 'Report Config', 'Logout']
+   |   |   |   | Button - 'Option' rect=[-1338, 65, -1296, 131]
+   |   |   |   | selector=child_window(title="Option", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Option']
+   |   |   |   | Button - 'Error Lookup' rect=[-1296, 65, -1253, 131]
+   |   |   |   | selector=child_window(title="Error Lookup", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Error Lookup']
+   |   |   |   | Button - 'Report Config' rect=[-1253, 65, -1211, 131]
+   |   |   |   | selector=child_window(title="Report Config", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Report Config']
+   |   |   |   | Button - 'Logout' rect=[-1211, 65, -1169, 131]
+   |   |   |   | selector=child_window(title="Logout", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Logout']
+   |   |   | ToolBar - 'Support' rect=[-1162, 63, -1059, 149]
+   |   |   | selector=child_window(title="Support", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Manual', 'Technical Support']
+   |   |   |   | Button - 'Manual' rect=[-1158, 65, -1115, 131]
+   |   |   |   | selector=child_window(title="Manual", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Manual']
+   |   |   |   | Button - 'Technical Support' rect=[-1115, 65, -1064, 131]
+   |   |   |   | selector=child_window(title="Technical Support", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Technical Support']
+   |   | Button - 'About' rect=[-25, 35, -1, 57]
+   |   | selector=child_window(title="About", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['About']
+   | ToolBar - ' ' rect=[-1920, 1008, 0, 1032]
+   | selector=child_window(title=" ", auto_id="59393", control_type="ToolBar") auto_id='59393' class='BCGPRibbonStatusBar:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Workspace' rect=[-1516, 153, 0, 1008]
+   | selector=child_window(title="Workspace", auto_id="59648", control_type="Pane") auto_id='59648' class='MDIClient' enabled=True visible=True
+   | texts=['Workspace']
+   |   | Window - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 180, -5, 1003]
+   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", auto_id="65280", control_type="Window") auto_id='65280' class='Afx:002D0000:b:00010003:00000006:00160233' enabled=True visible=True
+   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Pane - '' rect=[-1511, 180, -5, 1003]
+   |   |   | selector=child_window(auto_id="59648", control_type="Pane") auto_id='59648' class='AfxFrameOrView140u' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Stop' rect=[-1333, 344, -1248, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1219", control_type="Button") auto_id='1219' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1467, 344, -1382, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1218", control_type="Button") auto_id='1218' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | Button - 'Stop' rect=[-953, 344, -868, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1231", control_type="Button") auto_id='1231' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1081, 344, -996, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1232", control_type="Button") auto_id='1232' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | List - '' rect=[-1081, 436, -799, 954]
+   |   |   |   | selector=child_window(auto_id="1222", control_type="List") auto_id='1222' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1079, 438, -801, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1079, 438, -1020, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1020, 438, -801, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Action Rule' rect=[-1103, 310, -351, 968]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1239", control_type="Group") auto_id='1239' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Action Rule']
+   |   |   |   | List - 'Action Rule' rect=[-1467, 436, -1161, 954]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1221", control_type="List") auto_id='1221' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1465, 438, -1163, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1465, 438, -1402, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1402, 438, -1163, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Testcase Rule' rect=[-1483, 310, -1143, 968]
+   |   |   |   | selector=child_window(title="Testcase Rule", auto_id="1238", control_type="Group") auto_id='1238' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Testcase Rule']
+   |   |   |   | CheckBox - 'For Cooperative ECU' rect=[-329, 238, -171, 264]
+   |   |   |   | selector=child_window(title="For Cooperative ECU", auto_id="1234", control_type="CheckBox") auto_id='1234' class='Button' enabled=True visible=True
+   |   |   |   | texts=['For Cooperative ECU']
+   |   |   |   | CheckBox - 'Add Pre Procedure' rect=[-713, 674, -479, 702]
+   |   |   |   | selector=child_window(title="Add Pre Procedure", auto_id="1236", control_type="CheckBox") auto_id='1236' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Pre Procedure']
+   |   |   |   | ComboBox - '' rect=[-1137, 238, -975, 262]
+   |   |   |   | selector=child_window(auto_id="1233", control_type="ComboBox") auto_id='1233' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 142, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-991, 239, -976, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'SourceAddr : ' rect=[-1231, 244, -1139, 260]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1269", control_type="Text") auto_id='1269' class='Static' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1467, 396, -1231, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1220", control_type="ProgressBar") auto_id='1220' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1081, 396, -855, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1223", control_type="ProgressBar") auto_id='1223' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | CheckBox - 'Add Background-Transfer' rect=[-713, 588, -461, 604]
+   |   |   |   | selector=child_window(title="Add Background-Transfer", auto_id="1260", control_type="CheckBox") auto_id='1260' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Background-Transfer']
+   |   |   |   | CheckBox - 'Add Processing-Preperation(OBD EMS)' rect=[-713, 632, -419, 648]
+   |   |   |   | selector=child_window(title="Add Processing-Preperation(OBD EMS)", auto_id="1261", control_type="CheckBox") auto_id='1261' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing-Preperation(OBD EMS)']
+   |   |   |   | CheckBox - 'Add Processing' rect=[-713, 726, -419, 742]
+   |   |   |   | selector=child_window(title="Add Processing", auto_id="1262", control_type="CheckBox") auto_id='1262' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing']
+   |   |   |   | CheckBox - 'Add Activation' rect=[-713, 770, -419, 786]
+   |   |   |   | selector=child_window(title="Add Activation", auto_id="1263", control_type="CheckBox") auto_id='1263' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Activation']
+   |   |   |   | CheckBox - 'Add Rollback' rect=[-713, 814, -419, 830]
+   |   |   |   | selector=child_window(title="Add Rollback", auto_id="1264", control_type="CheckBox") auto_id='1264' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rollback']
+   |   |   |   | Button - 'Apply' rect=[-611, 906, -479, 942]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1270", control_type="Button") auto_id='1270' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Group - 'Add Rule Units' rect=[-743, 556, -379, 954]
+   |   |   |   | selector=child_window(title="Add Rule Units", auto_id="1271", control_type="Group") auto_id='1271' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rule Units']
+   |   |   |   | Group - 'Use Options' rect=[-1483, 198, 35, 288]
+   |   |   |   | selector=child_window(title="Use Options", auto_id="1272", control_type="Group") auto_id='1272' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Use Options']
+   |   |   |   | Group - 'Add Scenario Units' rect=[-743, 338, -379, 542]
+   |   |   |   | selector=child_window(title="Add Scenario Units", auto_id="1276", control_type="Group") auto_id='1276' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Scenario Units']
+   |   |   |   | RadioButton - 'Wired-Rules' rect=[-713, 382, -599, 404]
+   |   |   |   | selector=child_window(title="Wired-Rules", auto_id="1273", control_type="RadioButton") auto_id='1273' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wired-Rules']
+   |   |   |   | RadioButton - 'Wireless-Rules' rect=[-713, 426, -579, 446]
+   |   |   |   | selector=child_window(title="Wireless-Rules", auto_id="1274", control_type="RadioButton") auto_id='1274' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wireless-Rules']
+   |   |   |   | Button - 'Apply' rect=[-611, 494, -479, 528]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1277", control_type="Button") auto_id='1277' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Text - '0.00%' rect=[-841, 400, -785, 416]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1278", control_type="Text") auto_id='1278' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | Text - '0.00%' rect=[-1219, 402, -1161, 418]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1279", control_type="Text") auto_id='1279' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | CheckBox - 'Add Post Procedure' rect=[-713, 854, -479, 882]
+   |   |   |   | selector=child_window(title="Add Post Procedure", auto_id="1240", control_type="CheckBox") auto_id='1240' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Post Procedure']
+   |   |   |   | CheckBox - 'OEUK Vehicle' rect=[-161, 242, -47, 262]
+   |   |   |   | selector=child_window(title="OEUK Vehicle", auto_id="1224", control_type="CheckBox") auto_id='1224' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OEUK Vehicle']
+   |   |   |   | CheckBox - 'NFS' rect=[-35, 242, 21, 262]
+   |   |   |   | selector=child_window(title="NFS", auto_id="1225", control_type="CheckBox") auto_id='1225' class='Button' enabled=True visible=True
+   |   |   |   | texts=['NFS']
+   |   |   |   | ComboBox - '' rect=[-1361, 238, -1237, 262]
+   |   |   |   | selector=child_window(auto_id="1241", control_type="ComboBox") auto_id='1241' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 104, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-1253, 239, -1238, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'GatewayType : ' rect=[-1475, 244, -1369, 260]
+   |   |   |   | selector=child_window(title="GatewayType : ", auto_id="1280", control_type="Text") auto_id='1280' class='Static' enabled=True visible=True
+   |   |   |   | texts=['GatewayType : ']
+   |   |   |   | RadioButton - 'OTA-estimatedRuntime' rect=[-713, 466, -537, 486]
+   |   |   |   | selector=child_window(title="OTA-estimatedRuntime", auto_id="1275", control_type="RadioButton") auto_id='1275' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OTA-estimatedRuntime']
+   |   |   |   | Text - 'Procedure Model Type :' rect=[-941, 244, -779, 260]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   | ComboBox - 'Procedure Model Type :' rect=[-777, 238, -541, 262]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", auto_id="1250", control_type="ComboBox") auto_id='1250' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :', 'Procedure Model Type :', 'Close']
+   |   |   |   |   | Text - 'Procedure Model Type :' rect=[3, 3, 216, 21]
+   |   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   |   | Button - 'Open' rect=[-557, 239, -542, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'DLC : ' rect=[-483, 244, -443, 260]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1281", control_type="Text") auto_id='1281' class='Static' enabled=True visible=True
+   |   |   |   | texts=['DLC : ']
+   |   |   |   | ComboBox - 'DLC : ' rect=[-437, 238, -341, 262]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1235", control_type="ComboBox") auto_id='1235' class='ComboBox' enabled=False visible=True
+   |   |   |   |   | Text - 'DLC : ' rect=[3, 3, 76, 21]
+   |   |   |   |   | selector=child_window(title="DLC : ", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['DLC : ']
+   |   |   |   |   | Button - 'Open' rect=[-357, 239, -342, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Thumb - '' rect=[-22, 986, -5, 1003]
+   |   |   |   | selector=child_window(control_type="Thumb") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['']
+   |   | Tab - '' rect=[-1516, 153, 0, 1008]
+   |   | selector=child_window(control_type="Tab") auto_id='' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['', 'ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Button - '' rect=[-22, 157, -7, 172]
+   |   |   | selector=child_window(control_type="Button") auto_id='' class='Button' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | TabItem - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 155, -1279, 176]
+   |   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   | TitleBar - '' rect=[-1898, 0, 0, 23]
+   | selector=child_window(control_type="TitleBar") auto_id='' class='' enabled=True visible=True
+   | texts=['']
+   |   | MenuBar - 'System' rect=[-1920, 0, -1898, 22]
+   |   | selector=child_window(title="System", auto_id="MenuBar", control_type="MenuBar") auto_id='MenuBar' class='' enabled=True visible=True
+   |   | texts=['System']
+   |   |   | MenuItem - 'System' rect=[-1920, 0, -1898, 22]
+   |   |   | selector=child_window(title="System", control_type="MenuItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['System']
+   |   | Button - 'Minimize' rect=[-67, -1, -43, 23]
+   |   | selector=child_window(title="Minimize", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Minimize']
+   |   | Button - 'Restore' rect=[-45, -1, -21, 23]
+   |   | selector=child_window(title="Restore", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Restore']
+   |   | Button - 'Close' rect=[-23, -1, 1, 23]
+   |   | selector=child_window(title="Close", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Close']
+
+=== UIA CONTROL TREE: after_config_load (171 nodes) ===
+ Window - 'ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1928, -8, 8, 1040]
+ selector=child_window(title="ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r", control_type="Window") auto_id='' class='Afx:002D0000:8:00010003:00000000:00B1048F' enabled=True visible=True
+ texts=['ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r']
+   | Pane - 'Output' rect=[-1917, 588, -1517, 1017]
+   | selector=child_window(title="Output", control_type="Pane") auto_id='' class='BCGPMiniFrame:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Output']
+   |   | Pane - '' rect=[-1923, 1017, -1511, 1023]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1517, 588, -1511, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 582, -1511, 588]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 588, -1917, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - 'Output' rect=[-1913, 619, -1521, 1013]
+   |   | selector=child_window(title="Output", auto_id="32803", control_type="Pane") auto_id='32803' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['Output']
+   |   |   | Tab - '' rect=[-1913, 643, -1521, 1037]
+   |   |   | selector=child_window(auto_id="1", control_type="Tab") auto_id='1' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['', 'Log']
+   |   |   |   | List - '' rect=[-1910, 646, -1524, 1015]
+   |   |   |   | selector=child_window(auto_id="2", control_type="List") auto_id='2' class='ListBox' enabled=True visible=True
+   |   |   |   | TabItem - 'Log' rect=[-1913, 1017, -1882, 1035]
+   |   |   |   | selector=child_window(title="Log", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Log']
+   |   |   | Pane - '' rect=[-1913, 619, -205, 643]
+   |   |   | selector=child_window(auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Text - 'Log Path :' rect=[-1912, 622, -204, 646]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="65535", control_type="Text") auto_id='65535' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   |   |   |   | Edit - 'Log Path :' rect=[-1832, 623, -224, 638]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="33001", control_type="Edit") auto_id='33001' class='Edit' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   | ToolBar - '' rect=[-1522, 153, -1516, 1008]
+   | selector=child_window(control_type="ToolBar") auto_id='' class='BCGPSlider:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Properties' rect=[-1920, 153, -1522, 1008]
+   | selector=child_window(title="Properties", auto_id="32860", control_type="Pane") auto_id='32860' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Properties']
+   |   | Table - 'PropertyList' rect=[-1920, 213, -1522, 1008]
+   |   | selector=child_window(title="PropertyList", auto_id="2", control_type="Table") auto_id='2' class='BCGPPropList:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=[['PropertyListToolbar'], [''], [''], ['Wired'], ['TC_TAR_03010'], ['TC_TAR_03020'], ['TransferData_Invert_area'], ['TC_TAR_03030'], ['softwareInformation'], ['TC_TAR_02010'], ['Background-Transfer'], ['TC_TAR_01010'], ['TC_TAR_01011'], ['TransferData_Invert_area'], ['OTAReady'], ['TC_TAR_02020-02050'], ['TC_TAR_02020-02051'], ['VehicleType'], ['NMMessage_Type'], ['NMMessage_Time']]
+   |   |   | Pane - 'PropertyListToolbar' rect=[-1916, 215, -1867, 241]
+   |   |   | selector=child_window(title="PropertyListToolbar", auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['PropertyListToolbar']
+   |   |   |   | Button - 'Categorized' rect=[-1914, 216, -1892, 238]
+   |   |   |   | selector=child_window(title="Categorized", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Categorized']
+   |   |   |   | Button - 'Alphabetical' rect=[-1892, 216, -1870, 238]
+   |   |   |   | selector=child_window(title="Alphabetical", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Alphabetical']
+   |   |   | Edit - '' rect=[-1863, 215, -1526, 239]
+   |   |   | selector=child_window(auto_id="4", control_type="Edit") auto_id='4' class='Edit' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | ScrollBar - '' rect=[-1539, 243, -1522, 864]
+   |   |   | selector=child_window(auto_id="2", control_type="ScrollBar") auto_id='2' class='ScrollBar' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Line up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line up", auto_id="UpButton", control_type="Button") auto_id='UpButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line up']
+   |   |   |   | Button - 'Page up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page up", auto_id="UpPageButton", control_type="Button") auto_id='UpPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page up']
+   |   |   |   | Thumb - 'Position' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Position", auto_id="ScrollbarThumb", control_type="Thumb") auto_id='ScrollbarThumb' class='' enabled=True visible=False
+   |   |   |   | texts=['Position']
+   |   |   |   | Button - 'Page down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page down", auto_id="DownPageButton", control_type="Button") auto_id='DownPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page down']
+   |   |   |   | Button - 'Line down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line down", auto_id="DownButton", control_type="Button") auto_id='DownButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line down']
+   |   |   | Custom - 'Wired' rect=[-1920, 242, -1539, 259]
+   |   |   | selector=child_window(title="Wired", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Wired']
+   |   |   | Custom - 'TC_TAR_03010' rect=[-1903, 259, -1539, 276]
+   |   |   | selector=child_window(title="TC_TAR_03010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03010']
+   |   |   | Custom - 'TC_TAR_03020' rect=[-1903, 276, -1539, 293]
+   |   |   | selector=child_window(title="TC_TAR_03020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03020']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 293, -1539, 310]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_03030' rect=[-1903, 310, -1539, 327]
+   |   |   | selector=child_window(title="TC_TAR_03030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03030']
+   |   |   | Custom - 'softwareInformation' rect=[-1920, 327, -1539, 344]
+   |   |   | selector=child_window(title="softwareInformation", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['softwareInformation']
+   |   |   | Custom - 'TC_TAR_02010' rect=[-1903, 344, -1539, 361]
+   |   |   | selector=child_window(title="TC_TAR_02010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02010']
+   |   |   | Custom - 'Background-Transfer' rect=[-1920, 361, -1539, 378]
+   |   |   | selector=child_window(title="Background-Transfer", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Background-Transfer']
+   |   |   | Custom - 'TC_TAR_01010' rect=[-1903, 378, -1539, 395]
+   |   |   | selector=child_window(title="TC_TAR_01010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01010']
+   |   |   | Custom - 'TC_TAR_01011' rect=[-1903, 395, -1539, 412]
+   |   |   | selector=child_window(title="TC_TAR_01011", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01011']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 412, -1539, 429]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'OTAReady' rect=[-1920, 429, -1539, 446]
+   |   |   | selector=child_window(title="OTAReady", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAReady']
+   |   |   | Custom - 'TC_TAR_02020-02050' rect=[-1903, 446, -1539, 463]
+   |   |   | selector=child_window(title="TC_TAR_02020-02050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02050']
+   |   |   | Custom - 'TC_TAR_02020-02051' rect=[-1903, 463, -1539, 480]
+   |   |   | selector=child_window(title="TC_TAR_02020-02051", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02051']
+   |   |   | Custom - 'VehicleType' rect=[-1903, 480, -1539, 497]
+   |   |   | selector=child_window(title="VehicleType", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['VehicleType']
+   |   |   | Custom - 'NMMessage_Type' rect=[-1903, 497, -1539, 514]
+   |   |   | selector=child_window(title="NMMessage_Type", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Type']
+   |   |   | Custom - 'NMMessage_Time' rect=[-1903, 514, -1539, 531]
+   |   |   | selector=child_window(title="NMMessage_Time", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Time']
+   |   |   | Custom - 'TestECU' rect=[-1903, 531, -1539, 548]
+   |   |   | selector=child_window(title="TestECU", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TestECU']
+   |   |   | Custom - 'UpdateAndFinish' rect=[-1920, 548, -1539, 565]
+   |   |   | selector=child_window(title="UpdateAndFinish", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['UpdateAndFinish']
+   |   |   | Custom - 'TC_TAR_01020' rect=[-1903, 565, -1539, 582]
+   |   |   | selector=child_window(title="TC_TAR_01020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01020']
+   |   |   | Custom - 'TC_TAR_01021' rect=[-1903, 582, -1539, 599]
+   |   |   | selector=child_window(title="TC_TAR_01021", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01021']
+   |   |   | Custom - 'TC_TAR_01022' rect=[-1903, 599, -1539, 616]
+   |   |   | selector=child_window(title="TC_TAR_01022", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01022']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 616, -1539, 633]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_01023' rect=[-1903, 633, -1539, 650]
+   |   |   | selector=child_window(title="TC_TAR_01023", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01023']
+   |   |   | Custom - 'Reset' rect=[-1920, 650, -1539, 667]
+   |   |   | selector=child_window(title="Reset", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Reset']
+   |   |   | Custom - 'TC_TAR_01030' rect=[-1903, 667, -1539, 684]
+   |   |   | selector=child_window(title="TC_TAR_01030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01030']
+   |   |   | Custom - 'TC_TAR_01035' rect=[-1903, 684, -1539, 701]
+   |   |   | selector=child_window(title="TC_TAR_01035", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01035']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 701, -1539, 718]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'Rollback' rect=[-1920, 718, -1539, 735]
+   |   |   | selector=child_window(title="Rollback", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Rollback']
+   |   |   | Custom - 'TC_TAR_01040' rect=[-1903, 735, -1539, 752]
+   |   |   | selector=child_window(title="TC_TAR_01040", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01040']
+   |   |   | Custom - 'TC_TAR_01045' rect=[-1903, 752, -1539, 769]
+   |   |   | selector=child_window(title="TC_TAR_01045", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01045']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 769, -1539, 786]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_01050' rect=[-1903, 786, -1539, 803]
+   |   |   | selector=child_window(title="TC_TAR_01050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01050']
+   |   |   | Custom - 'TC_TAR_01053' rect=[-1903, 803, -1539, 820]
+   |   |   | selector=child_window(title="TC_TAR_01053", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01053']
+   |   |   | Custom - 'TC_TAR_01055' rect=[-1903, 820, -1539, 837]
+   |   |   | selector=child_window(title="TC_TAR_01055", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01055']
+   |   |   | Custom - 'General' rect=[-1920, 837, -1539, 854]
+   |   |   | selector=child_window(title="General", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['General']
+   |   |   | Custom - 'TC_TAR_01060' rect=[-1903, 854, -1539, 871]
+   |   |   | selector=child_window(title="TC_TAR_01060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01060']
+   |   |   | Custom - 'TC_TAR_01070' rect=[-1903, 871, -1539, 888]
+   |   |   | selector=child_window(title="TC_TAR_01070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01070']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 888, -1539, 905]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_02060' rect=[-1903, 905, -1539, 922]
+   |   |   | selector=child_window(title="TC_TAR_02060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02060']
+   |   |   | Custom - 'TC_TAR_02070' rect=[-1903, 922, -1539, 939]
+   |   |   | selector=child_window(title="TC_TAR_02070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02070']
+   |   |   | Custom - 'OTAFunctionSafety' rect=[-1920, 939, -1539, 956]
+   |   |   | selector=child_window(title="OTAFunctionSafety", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAFunctionSafety']
+   |   |   | Custom - 'TC_TAR_01080' rect=[-1903, 956, -1539, 973]
+   |   |   | selector=child_window(title="TC_TAR_01080", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01080']
+   |   |   | Custom - 'TC_TAR_01081' rect=[-1903, 973, -1539, 990]
+   |   |   | selector=child_window(title="TC_TAR_01081", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01081']
+   |   |   | Custom - 'TC_TAR_01082_01084' rect=[-1903, 990, -1539, 1007]
+   |   |   | selector=child_window(title="TC_TAR_01082_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01082_01084']
+   |   |   | Custom - 'TC_TAR_01083_01084' rect=[-1903, 1007, -1539, 1024]
+   |   |   | selector=child_window(title="TC_TAR_01083_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01083_01084']
+   |   |   | Custom - 'TC_TAR_01082_01085' rect=[-1903, 1024, -1539, 1041]
+   |   |   | selector=child_window(title="TC_TAR_01082_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01082_01085']
+   |   |   | Custom - 'TC_TAR_01083_01085' rect=[-1903, 1041, -1539, 1058]
+   |   |   | selector=child_window(title="TC_TAR_01083_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01083_01085']
+   |   | Pane - '' rect=[-1920, 188, -1522, 213]
+   |   | selector=child_window(auto_id="160", control_type="Pane") auto_id='160' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['']
+   | ToolBar - ' ' rect=[-1920, 0, 0, 153]
+   | selector=child_window(title=" ", auto_id="59398", control_type="ToolBar") auto_id='59398' class='BCGPRibbonBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Application menu', 'Quick Access Toolbar', 'Ribbon Tabs', 'Home', 'About']
+   |   | Button - 'Application menu' rect=[-1920, 33, -1861, 60]
+   |   | selector=child_window(title="Application menu", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Application menu']
+   |   | ToolBar - 'Quick Access Toolbar' rect=[-1912, 0, -1871, 33]
+   |   | selector=child_window(title="Quick Access Toolbar", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['SAVE', 'Customize Quick Access Toolbar']
+   |   |   | Button - 'SAVE' rect=[-1910, 0, -1888, 28]
+   |   |   | selector=child_window(title="SAVE", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['SAVE']
+   |   |   | SplitButton - 'Customize Quick Access Toolbar' rect=[-1886, 0, -1873, 27]
+   |   |   | selector=child_window(title="Customize Quick Access Toolbar", control_type="SplitButton") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Customize Quick Access Toolbar']
+   |   | Group - 'Ribbon Tabs' rect=[-1860, 33, -88, 60]
+   |   | selector=child_window(title="Ribbon Tabs", control_type="Group") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Ribbon Tabs']
+   |   |   | TabItem - 'Home' rect=[-1860, 33, -1802, 60]
+   |   |   | selector=child_window(title="Home", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Home']
+   |   |   | TabItem - 'Edit' rect=[-1802, 33, -1754, 60]
+   |   |   | selector=child_window(title="Edit", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Edit']
+   |   |   | TabItem - 'Window' rect=[-1754, 33, -1680, 60]
+   |   |   | selector=child_window(title="Window", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Window']
+   |   | ToolBar - 'Home' rect=[-1920, 60, 0, 153]
+   |   | selector=child_window(title="Home", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Tools', 'Mode', 'Help', 'Support']
+   |   |   | ToolBar - 'Tools' rect=[-1916, 63, -1475, 149]
+   |   |   | selector=child_window(title="Tools", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Hex2Binary', 'RomPakage', 'XML Conversion', 'LogView', 'Generator', 'RFS', 'Bi-Authenticaiton']
+   |   |   |   | Button - 'Hex2Binary' rect=[-1912, 65, -1851, 131]
+   |   |   |   | selector=child_window(title="Hex2Binary", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Hex2Binary']
+   |   |   |   | Button - 'RomPakage' rect=[-1851, 65, -1786, 131]
+   |   |   |   | selector=child_window(title="RomPakage", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RomPakage']
+   |   |   |   | Button - 'XML Conversion' rect=[-1786, 65, -1723, 131]
+   |   |   |   | selector=child_window(title="XML Conversion", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['XML Conversion']
+   |   |   |   | Button - 'LogView' rect=[-1723, 65, -1674, 131]
+   |   |   |   | selector=child_window(title="LogView", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['LogView']
+   |   |   |   | Button - 'Generator' rect=[-1674, 65, -1617, 131]
+   |   |   |   | selector=child_window(title="Generator", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Generator']
+   |   |   |   | Button - 'RFS' rect=[-1617, 65, -1575, 131]
+   |   |   |   | selector=child_window(title="RFS", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RFS']
+   |   |   |   | Button - 'Bi-Authenticaiton' rect=[-1575, 65, -1480, 131]
+   |   |   |   | selector=child_window(title="Bi-Authenticaiton", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Bi-Authenticaiton']
+   |   |   | ToolBar - 'Mode' rect=[-1473, 63, -1344, 149]
+   |   |   | selector=child_window(title="Mode", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TesterMode', 'EditMode']
+   |   |   |   | Button - 'TesterMode' rect=[-1469, 65, -1404, 131]
+   |   |   |   | selector=child_window(title="TesterMode", control_type="Button") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['TesterMode']
+   |   |   |   | Button - 'EditMode' rect=[-1404, 65, -1349, 131]
+   |   |   |   | selector=child_window(title="EditMode", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['EditMode']
+   |   |   | ToolBar - 'Help' rect=[-1342, 63, -1164, 149]
+   |   |   | selector=child_window(title="Help", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Option', 'Error Lookup', 'Report Config', 'Logout']
+   |   |   |   | Button - 'Option' rect=[-1338, 65, -1296, 131]
+   |   |   |   | selector=child_window(title="Option", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Option']
+   |   |   |   | Button - 'Error Lookup' rect=[-1296, 65, -1253, 131]
+   |   |   |   | selector=child_window(title="Error Lookup", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Error Lookup']
+   |   |   |   | Button - 'Report Config' rect=[-1253, 65, -1211, 131]
+   |   |   |   | selector=child_window(title="Report Config", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Report Config']
+   |   |   |   | Button - 'Logout' rect=[-1211, 65, -1169, 131]
+   |   |   |   | selector=child_window(title="Logout", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Logout']
+   |   |   | ToolBar - 'Support' rect=[-1162, 63, -1059, 149]
+   |   |   | selector=child_window(title="Support", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Manual', 'Technical Support']
+   |   |   |   | Button - 'Manual' rect=[-1158, 65, -1115, 131]
+   |   |   |   | selector=child_window(title="Manual", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Manual']
+   |   |   |   | Button - 'Technical Support' rect=[-1115, 65, -1064, 131]
+   |   |   |   | selector=child_window(title="Technical Support", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Technical Support']
+   |   | Button - 'About' rect=[-25, 35, -1, 57]
+   |   | selector=child_window(title="About", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['About']
+   | ToolBar - ' ' rect=[-1920, 1008, 0, 1032]
+   | selector=child_window(title=" ", auto_id="59393", control_type="ToolBar") auto_id='59393' class='BCGPRibbonStatusBar:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Workspace' rect=[-1516, 153, 0, 1008]
+   | selector=child_window(title="Workspace", auto_id="59648", control_type="Pane") auto_id='59648' class='MDIClient' enabled=True visible=True
+   | texts=['Workspace']
+   |   | Window - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 180, -5, 1003]
+   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", auto_id="65280", control_type="Window") auto_id='65280' class='Afx:002D0000:b:00010003:00000006:00160233' enabled=True visible=True
+   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Pane - '' rect=[-1511, 180, -5, 1003]
+   |   |   | selector=child_window(auto_id="59648", control_type="Pane") auto_id='59648' class='AfxFrameOrView140u' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Stop' rect=[-1333, 344, -1248, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1219", control_type="Button") auto_id='1219' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1467, 344, -1382, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1218", control_type="Button") auto_id='1218' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | Button - 'Stop' rect=[-953, 344, -868, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1231", control_type="Button") auto_id='1231' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1081, 344, -996, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1232", control_type="Button") auto_id='1232' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | List - '' rect=[-1081, 436, -799, 954]
+   |   |   |   | selector=child_window(auto_id="1222", control_type="List") auto_id='1222' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1079, 438, -801, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1079, 438, -1020, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1020, 438, -801, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Action Rule' rect=[-1103, 310, -351, 968]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1239", control_type="Group") auto_id='1239' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Action Rule']
+   |   |   |   | List - 'Action Rule' rect=[-1467, 436, -1161, 954]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1221", control_type="List") auto_id='1221' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1465, 438, -1163, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1465, 438, -1402, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1402, 438, -1163, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Testcase Rule' rect=[-1483, 310, -1143, 968]
+   |   |   |   | selector=child_window(title="Testcase Rule", auto_id="1238", control_type="Group") auto_id='1238' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Testcase Rule']
+   |   |   |   | CheckBox - 'For Cooperative ECU' rect=[-329, 238, -171, 264]
+   |   |   |   | selector=child_window(title="For Cooperative ECU", auto_id="1234", control_type="CheckBox") auto_id='1234' class='Button' enabled=True visible=True
+   |   |   |   | texts=['For Cooperative ECU']
+   |   |   |   | CheckBox - 'Add Pre Procedure' rect=[-713, 674, -479, 702]
+   |   |   |   | selector=child_window(title="Add Pre Procedure", auto_id="1236", control_type="CheckBox") auto_id='1236' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Pre Procedure']
+   |   |   |   | ComboBox - '' rect=[-1137, 238, -975, 262]
+   |   |   |   | selector=child_window(auto_id="1233", control_type="ComboBox") auto_id='1233' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 142, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-991, 239, -976, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'SourceAddr : ' rect=[-1231, 244, -1139, 260]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1269", control_type="Text") auto_id='1269' class='Static' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1467, 396, -1231, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1220", control_type="ProgressBar") auto_id='1220' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1081, 396, -855, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1223", control_type="ProgressBar") auto_id='1223' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | CheckBox - 'Add Background-Transfer' rect=[-713, 588, -461, 604]
+   |   |   |   | selector=child_window(title="Add Background-Transfer", auto_id="1260", control_type="CheckBox") auto_id='1260' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Background-Transfer']
+   |   |   |   | CheckBox - 'Add Processing-Preperation(OBD EMS)' rect=[-713, 632, -419, 648]
+   |   |   |   | selector=child_window(title="Add Processing-Preperation(OBD EMS)", auto_id="1261", control_type="CheckBox") auto_id='1261' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing-Preperation(OBD EMS)']
+   |   |   |   | CheckBox - 'Add Processing' rect=[-713, 726, -419, 742]
+   |   |   |   | selector=child_window(title="Add Processing", auto_id="1262", control_type="CheckBox") auto_id='1262' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing']
+   |   |   |   | CheckBox - 'Add Activation' rect=[-713, 770, -419, 786]
+   |   |   |   | selector=child_window(title="Add Activation", auto_id="1263", control_type="CheckBox") auto_id='1263' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Activation']
+   |   |   |   | CheckBox - 'Add Rollback' rect=[-713, 814, -419, 830]
+   |   |   |   | selector=child_window(title="Add Rollback", auto_id="1264", control_type="CheckBox") auto_id='1264' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rollback']
+   |   |   |   | Button - 'Apply' rect=[-611, 906, -479, 942]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1270", control_type="Button") auto_id='1270' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Group - 'Add Rule Units' rect=[-743, 556, -379, 954]
+   |   |   |   | selector=child_window(title="Add Rule Units", auto_id="1271", control_type="Group") auto_id='1271' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rule Units']
+   |   |   |   | Group - 'Use Options' rect=[-1483, 198, 35, 288]
+   |   |   |   | selector=child_window(title="Use Options", auto_id="1272", control_type="Group") auto_id='1272' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Use Options']
+   |   |   |   | Group - 'Add Scenario Units' rect=[-743, 338, -379, 542]
+   |   |   |   | selector=child_window(title="Add Scenario Units", auto_id="1276", control_type="Group") auto_id='1276' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Scenario Units']
+   |   |   |   | RadioButton - 'Wired-Rules' rect=[-713, 382, -599, 404]
+   |   |   |   | selector=child_window(title="Wired-Rules", auto_id="1273", control_type="RadioButton") auto_id='1273' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wired-Rules']
+   |   |   |   | RadioButton - 'Wireless-Rules' rect=[-713, 426, -579, 446]
+   |   |   |   | selector=child_window(title="Wireless-Rules", auto_id="1274", control_type="RadioButton") auto_id='1274' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wireless-Rules']
+   |   |   |   | Button - 'Apply' rect=[-611, 494, -479, 528]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1277", control_type="Button") auto_id='1277' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Text - '0.00%' rect=[-841, 400, -785, 416]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1278", control_type="Text") auto_id='1278' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | Text - '0.00%' rect=[-1219, 402, -1161, 418]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1279", control_type="Text") auto_id='1279' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | CheckBox - 'Add Post Procedure' rect=[-713, 854, -479, 882]
+   |   |   |   | selector=child_window(title="Add Post Procedure", auto_id="1240", control_type="CheckBox") auto_id='1240' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Post Procedure']
+   |   |   |   | CheckBox - 'OEUK Vehicle' rect=[-161, 242, -47, 262]
+   |   |   |   | selector=child_window(title="OEUK Vehicle", auto_id="1224", control_type="CheckBox") auto_id='1224' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OEUK Vehicle']
+   |   |   |   | CheckBox - 'NFS' rect=[-35, 242, 21, 262]
+   |   |   |   | selector=child_window(title="NFS", auto_id="1225", control_type="CheckBox") auto_id='1225' class='Button' enabled=True visible=True
+   |   |   |   | texts=['NFS']
+   |   |   |   | ComboBox - '' rect=[-1361, 238, -1237, 262]
+   |   |   |   | selector=child_window(auto_id="1241", control_type="ComboBox") auto_id='1241' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 104, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-1253, 239, -1238, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'GatewayType : ' rect=[-1475, 244, -1369, 260]
+   |   |   |   | selector=child_window(title="GatewayType : ", auto_id="1280", control_type="Text") auto_id='1280' class='Static' enabled=True visible=True
+   |   |   |   | texts=['GatewayType : ']
+   |   |   |   | RadioButton - 'OTA-estimatedRuntime' rect=[-713, 466, -537, 486]
+   |   |   |   | selector=child_window(title="OTA-estimatedRuntime", auto_id="1275", control_type="RadioButton") auto_id='1275' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OTA-estimatedRuntime']
+   |   |   |   | Text - 'Procedure Model Type :' rect=[-941, 244, -779, 260]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   | ComboBox - 'Procedure Model Type :' rect=[-777, 238, -541, 262]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", auto_id="1250", control_type="ComboBox") auto_id='1250' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :', 'Procedure Model Type :', 'Close']
+   |   |   |   |   | Text - 'Procedure Model Type :' rect=[3, 3, 216, 21]
+   |   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   |   | Button - 'Open' rect=[-557, 239, -542, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'DLC : ' rect=[-483, 244, -443, 260]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1281", control_type="Text") auto_id='1281' class='Static' enabled=True visible=True
+   |   |   |   | texts=['DLC : ']
+   |   |   |   | ComboBox - 'DLC : ' rect=[-437, 238, -341, 262]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1235", control_type="ComboBox") auto_id='1235' class='ComboBox' enabled=False visible=True
+   |   |   |   |   | Text - 'DLC : ' rect=[3, 3, 76, 21]
+   |   |   |   |   | selector=child_window(title="DLC : ", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['DLC : ']
+   |   |   |   |   | Button - 'Open' rect=[-357, 239, -342, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Thumb - '' rect=[-22, 986, -5, 1003]
+   |   |   |   | selector=child_window(control_type="Thumb") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['']
+   |   | Tab - '' rect=[-1516, 153, 0, 1008]
+   |   | selector=child_window(control_type="Tab") auto_id='' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['', 'ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Button - '' rect=[-22, 157, -7, 172]
+   |   |   | selector=child_window(control_type="Button") auto_id='' class='Button' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | TabItem - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 155, -1279, 176]
+   |   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   | TitleBar - '' rect=[-1898, 0, 0, 23]
+   | selector=child_window(control_type="TitleBar") auto_id='' class='' enabled=True visible=True
+   | texts=['']
+   |   | MenuBar - 'System' rect=[-1920, 0, -1898, 22]
+   |   | selector=child_window(title="System", auto_id="MenuBar", control_type="MenuBar") auto_id='MenuBar' class='' enabled=True visible=True
+   |   | texts=['System']
+   |   |   | MenuItem - 'System' rect=[-1920, 0, -1898, 22]
+   |   |   | selector=child_window(title="System", control_type="MenuItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['System']
+   |   | Button - 'Minimize' rect=[-67, -1, -43, 23]
+   |   | selector=child_window(title="Minimize", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Minimize']
+   |   | Button - 'Restore' rect=[-45, -1, -21, 23]
+   |   | selector=child_window(title="Restore", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Restore']
+   |   | Button - 'Close' rect=[-23, -1, 1, 23]
+   |   | selector=child_window(title="Close", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Close']
+
+=== UIA CONTROL TREE: after_tester_mode (171 nodes) ===
+ Window - 'ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1928, -8, 8, 1040]
+ selector=child_window(title="ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r", control_type="Window") auto_id='' class='Afx:002D0000:8:00010003:00000000:00B1048F' enabled=True visible=True
+ texts=['ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r']
+   | Pane - 'Output' rect=[-1917, 588, -1517, 1017]
+   | selector=child_window(title="Output", control_type="Pane") auto_id='' class='BCGPMiniFrame:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Output']
+   |   | Pane - '' rect=[-1923, 1017, -1511, 1023]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1517, 588, -1511, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 582, -1511, 588]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - '' rect=[-1923, 588, -1917, 1017]
+   |   | selector=child_window(control_type="Pane") auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True
+   |   | texts=['']
+   |   | Pane - 'Output' rect=[-1913, 619, -1521, 1013]
+   |   | selector=child_window(title="Output", auto_id="32803", control_type="Pane") auto_id='32803' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['Output']
+   |   |   | Tab - '' rect=[-1913, 643, -1521, 1037]
+   |   |   | selector=child_window(auto_id="1", control_type="Tab") auto_id='1' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['', 'Log']
+   |   |   |   | List - '' rect=[-1910, 646, -1524, 1015]
+   |   |   |   | selector=child_window(auto_id="2", control_type="List") auto_id='2' class='ListBox' enabled=True visible=True
+   |   |   |   | TabItem - 'Log' rect=[-1913, 1017, -1882, 1035]
+   |   |   |   | selector=child_window(title="Log", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Log']
+   |   |   | Pane - '' rect=[-1913, 619, -205, 643]
+   |   |   | selector=child_window(auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Text - 'Log Path :' rect=[-1912, 622, -204, 646]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="65535", control_type="Text") auto_id='65535' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   |   |   |   | Edit - 'Log Path :' rect=[-1832, 623, -224, 638]
+   |   |   |   | selector=child_window(title="Log Path :", auto_id="33001", control_type="Edit") auto_id='33001' class='Edit' enabled=True visible=True
+   |   |   |   | texts=['Log Path :']
+   | ToolBar - '' rect=[-1522, 153, -1516, 1008]
+   | selector=child_window(control_type="ToolBar") auto_id='' class='BCGPSlider:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Properties' rect=[-1920, 153, -1522, 1008]
+   | selector=child_window(title="Properties", auto_id="32860", control_type="Pane") auto_id='32860' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Properties']
+   |   | Table - 'PropertyList' rect=[-1920, 213, -1522, 1008]
+   |   | selector=child_window(title="PropertyList", auto_id="2", control_type="Table") auto_id='2' class='BCGPPropList:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=[['PropertyListToolbar'], [''], [''], ['Wired'], ['TC_TAR_03010'], ['TC_TAR_03020'], ['TransferData_Invert_area'], ['TC_TAR_03030'], ['softwareInformation'], ['TC_TAR_02010'], ['Background-Transfer'], ['TC_TAR_01010'], ['TC_TAR_01011'], ['TransferData_Invert_area'], ['OTAReady'], ['TC_TAR_02020-02050'], ['TC_TAR_02020-02051'], ['VehicleType'], ['NMMessage_Type'], ['NMMessage_Time']]
+   |   |   | Pane - 'PropertyListToolbar' rect=[-1916, 215, -1867, 241]
+   |   |   | selector=child_window(title="PropertyListToolbar", auto_id="59392", control_type="Pane") auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   |   | texts=['PropertyListToolbar']
+   |   |   |   | Button - 'Categorized' rect=[-1914, 216, -1892, 238]
+   |   |   |   | selector=child_window(title="Categorized", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Categorized']
+   |   |   |   | Button - 'Alphabetical' rect=[-1892, 216, -1870, 238]
+   |   |   |   | selector=child_window(title="Alphabetical", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Alphabetical']
+   |   |   | Edit - '' rect=[-1863, 215, -1526, 239]
+   |   |   | selector=child_window(auto_id="4", control_type="Edit") auto_id='4' class='Edit' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | ScrollBar - '' rect=[-1539, 243, -1522, 864]
+   |   |   | selector=child_window(auto_id="2", control_type="ScrollBar") auto_id='2' class='ScrollBar' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Line up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line up", auto_id="UpButton", control_type="Button") auto_id='UpButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line up']
+   |   |   |   | Button - 'Page up' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page up", auto_id="UpPageButton", control_type="Button") auto_id='UpPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page up']
+   |   |   |   | Thumb - 'Position' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Position", auto_id="ScrollbarThumb", control_type="Thumb") auto_id='ScrollbarThumb' class='' enabled=True visible=False
+   |   |   |   | texts=['Position']
+   |   |   |   | Button - 'Page down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Page down", auto_id="DownPageButton", control_type="Button") auto_id='DownPageButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Page down']
+   |   |   |   | Button - 'Line down' rect=[0, 0, 0, 0]
+   |   |   |   | selector=child_window(title="Line down", auto_id="DownButton", control_type="Button") auto_id='DownButton' class='' enabled=True visible=False
+   |   |   |   | texts=['Line down']
+   |   |   | Custom - 'Wired' rect=[-1920, 242, -1539, 259]
+   |   |   | selector=child_window(title="Wired", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Wired']
+   |   |   | Custom - 'TC_TAR_03010' rect=[-1903, 259, -1539, 276]
+   |   |   | selector=child_window(title="TC_TAR_03010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03010']
+   |   |   | Custom - 'TC_TAR_03020' rect=[-1903, 276, -1539, 293]
+   |   |   | selector=child_window(title="TC_TAR_03020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03020']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 293, -1539, 310]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_03030' rect=[-1903, 310, -1539, 327]
+   |   |   | selector=child_window(title="TC_TAR_03030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_03030']
+   |   |   | Custom - 'softwareInformation' rect=[-1920, 327, -1539, 344]
+   |   |   | selector=child_window(title="softwareInformation", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['softwareInformation']
+   |   |   | Custom - 'TC_TAR_02010' rect=[-1903, 344, -1539, 361]
+   |   |   | selector=child_window(title="TC_TAR_02010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02010']
+   |   |   | Custom - 'Background-Transfer' rect=[-1920, 361, -1539, 378]
+   |   |   | selector=child_window(title="Background-Transfer", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Background-Transfer']
+   |   |   | Custom - 'TC_TAR_01010' rect=[-1903, 378, -1539, 395]
+   |   |   | selector=child_window(title="TC_TAR_01010", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01010']
+   |   |   | Custom - 'TC_TAR_01011' rect=[-1903, 395, -1539, 412]
+   |   |   | selector=child_window(title="TC_TAR_01011", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01011']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 412, -1539, 429]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'OTAReady' rect=[-1920, 429, -1539, 446]
+   |   |   | selector=child_window(title="OTAReady", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAReady']
+   |   |   | Custom - 'TC_TAR_02020-02050' rect=[-1903, 446, -1539, 463]
+   |   |   | selector=child_window(title="TC_TAR_02020-02050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02050']
+   |   |   | Custom - 'TC_TAR_02020-02051' rect=[-1903, 463, -1539, 480]
+   |   |   | selector=child_window(title="TC_TAR_02020-02051", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02020-02051']
+   |   |   | Custom - 'VehicleType' rect=[-1903, 480, -1539, 497]
+   |   |   | selector=child_window(title="VehicleType", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['VehicleType']
+   |   |   | Custom - 'NMMessage_Type' rect=[-1903, 497, -1539, 514]
+   |   |   | selector=child_window(title="NMMessage_Type", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Type']
+   |   |   | Custom - 'NMMessage_Time' rect=[-1903, 514, -1539, 531]
+   |   |   | selector=child_window(title="NMMessage_Time", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['NMMessage_Time']
+   |   |   | Custom - 'TestECU' rect=[-1903, 531, -1539, 548]
+   |   |   | selector=child_window(title="TestECU", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TestECU']
+   |   |   | Custom - 'UpdateAndFinish' rect=[-1920, 548, -1539, 565]
+   |   |   | selector=child_window(title="UpdateAndFinish", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['UpdateAndFinish']
+   |   |   | Custom - 'TC_TAR_01020' rect=[-1903, 565, -1539, 582]
+   |   |   | selector=child_window(title="TC_TAR_01020", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01020']
+   |   |   | Custom - 'TC_TAR_01021' rect=[-1903, 582, -1539, 599]
+   |   |   | selector=child_window(title="TC_TAR_01021", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01021']
+   |   |   | Custom - 'TC_TAR_01022' rect=[-1903, 599, -1539, 616]
+   |   |   | selector=child_window(title="TC_TAR_01022", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01022']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 616, -1539, 633]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'TC_TAR_01023' rect=[-1903, 633, -1539, 650]
+   |   |   | selector=child_window(title="TC_TAR_01023", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01023']
+   |   |   | Custom - 'Reset' rect=[-1920, 650, -1539, 667]
+   |   |   | selector=child_window(title="Reset", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Reset']
+   |   |   | Custom - 'TC_TAR_01030' rect=[-1903, 667, -1539, 684]
+   |   |   | selector=child_window(title="TC_TAR_01030", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01030']
+   |   |   | Custom - 'TC_TAR_01035' rect=[-1903, 684, -1539, 701]
+   |   |   | selector=child_window(title="TC_TAR_01035", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01035']
+   |   |   | Custom - 'TransferData_Invert_area' rect=[-1903, 701, -1539, 718]
+   |   |   | selector=child_window(title="TransferData_Invert_area", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TransferData_Invert_area']
+   |   |   | Custom - 'Rollback' rect=[-1920, 718, -1539, 735]
+   |   |   | selector=child_window(title="Rollback", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Rollback']
+   |   |   | Custom - 'TC_TAR_01040' rect=[-1903, 735, -1539, 752]
+   |   |   | selector=child_window(title="TC_TAR_01040", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01040']
+   |   |   | Custom - 'TC_TAR_01045' rect=[-1903, 752, -1539, 769]
+   |   |   | selector=child_window(title="TC_TAR_01045", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01045']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 769, -1539, 786]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_01050' rect=[-1903, 786, -1539, 803]
+   |   |   | selector=child_window(title="TC_TAR_01050", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01050']
+   |   |   | Custom - 'TC_TAR_01053' rect=[-1903, 803, -1539, 820]
+   |   |   | selector=child_window(title="TC_TAR_01053", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01053']
+   |   |   | Custom - 'TC_TAR_01055' rect=[-1903, 820, -1539, 837]
+   |   |   | selector=child_window(title="TC_TAR_01055", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01055']
+   |   |   | Custom - 'General' rect=[-1920, 837, -1539, 854]
+   |   |   | selector=child_window(title="General", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['General']
+   |   |   | Custom - 'TC_TAR_01060' rect=[-1903, 854, -1539, 871]
+   |   |   | selector=child_window(title="TC_TAR_01060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01060']
+   |   |   | Custom - 'TC_TAR_01070' rect=[-1903, 871, -1539, 888]
+   |   |   | selector=child_window(title="TC_TAR_01070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01070']
+   |   |   | Custom - 'R-ROM Path' rect=[-1903, 888, -1539, 905]
+   |   |   | selector=child_window(title="R-ROM Path", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['R-ROM Path']
+   |   |   | Custom - 'TC_TAR_02060' rect=[-1903, 905, -1539, 922]
+   |   |   | selector=child_window(title="TC_TAR_02060", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02060']
+   |   |   | Custom - 'TC_TAR_02070' rect=[-1903, 922, -1539, 939]
+   |   |   | selector=child_window(title="TC_TAR_02070", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_02070']
+   |   |   | Custom - 'OTAFunctionSafety' rect=[-1920, 939, -1539, 956]
+   |   |   | selector=child_window(title="OTAFunctionSafety", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['OTAFunctionSafety']
+   |   |   | Custom - 'TC_TAR_01080' rect=[-1903, 956, -1539, 973]
+   |   |   | selector=child_window(title="TC_TAR_01080", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01080']
+   |   |   | Custom - 'TC_TAR_01081' rect=[-1903, 973, -1539, 990]
+   |   |   | selector=child_window(title="TC_TAR_01081", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01081']
+   |   |   | Custom - 'TC_TAR_01082_01084' rect=[-1903, 990, -1539, 1007]
+   |   |   | selector=child_window(title="TC_TAR_01082_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01082_01084']
+   |   |   | Custom - 'TC_TAR_01083_01084' rect=[-1903, 1007, -1539, 1024]
+   |   |   | selector=child_window(title="TC_TAR_01083_01084", control_type="Custom") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TC_TAR_01083_01084']
+   |   |   | Custom - 'TC_TAR_01082_01085' rect=[-1903, 1024, -1539, 1041]
+   |   |   | selector=child_window(title="TC_TAR_01082_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01082_01085']
+   |   |   | Custom - 'TC_TAR_01083_01085' rect=[-1903, 1041, -1539, 1058]
+   |   |   | selector=child_window(title="TC_TAR_01083_01085", control_type="Custom") auto_id='' class='' enabled=True visible=False
+   |   |   | texts=['TC_TAR_01083_01085']
+   |   | Pane - '' rect=[-1920, 188, -1522, 213]
+   |   | selector=child_window(auto_id="160", control_type="Pane") auto_id='160' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['']
+   | ToolBar - ' ' rect=[-1920, 0, 0, 153]
+   | selector=child_window(title=" ", auto_id="59398", control_type="ToolBar") auto_id='59398' class='BCGPRibbonBar:2d0000:8:10003:10' enabled=True visible=True
+   | texts=['Application menu', 'Quick Access Toolbar', 'Ribbon Tabs', 'Home', 'About']
+   |   | Button - 'Application menu' rect=[-1920, 33, -1861, 60]
+   |   | selector=child_window(title="Application menu", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Application menu']
+   |   | ToolBar - 'Quick Access Toolbar' rect=[-1912, 0, -1871, 33]
+   |   | selector=child_window(title="Quick Access Toolbar", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['SAVE', 'Customize Quick Access Toolbar']
+   |   |   | Button - 'SAVE' rect=[-1910, 0, -1888, 28]
+   |   |   | selector=child_window(title="SAVE", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['SAVE']
+   |   |   | SplitButton - 'Customize Quick Access Toolbar' rect=[-1886, 0, -1873, 27]
+   |   |   | selector=child_window(title="Customize Quick Access Toolbar", control_type="SplitButton") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Customize Quick Access Toolbar']
+   |   | Group - 'Ribbon Tabs' rect=[-1860, 33, -88, 60]
+   |   | selector=child_window(title="Ribbon Tabs", control_type="Group") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Ribbon Tabs']
+   |   |   | TabItem - 'Home' rect=[-1860, 33, -1802, 60]
+   |   |   | selector=child_window(title="Home", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Home']
+   |   |   | TabItem - 'Edit' rect=[-1802, 33, -1754, 60]
+   |   |   | selector=child_window(title="Edit", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Edit']
+   |   |   | TabItem - 'Window' rect=[-1754, 33, -1680, 60]
+   |   |   | selector=child_window(title="Window", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Window']
+   |   | ToolBar - 'Home' rect=[-1920, 60, 0, 153]
+   |   | selector=child_window(title="Home", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Tools', 'Mode', 'Help', 'Support']
+   |   |   | ToolBar - 'Tools' rect=[-1916, 63, -1475, 149]
+   |   |   | selector=child_window(title="Tools", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Hex2Binary', 'RomPakage', 'XML Conversion', 'LogView', 'Generator', 'RFS', 'Bi-Authenticaiton']
+   |   |   |   | Button - 'Hex2Binary' rect=[-1912, 65, -1851, 131]
+   |   |   |   | selector=child_window(title="Hex2Binary", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Hex2Binary']
+   |   |   |   | Button - 'RomPakage' rect=[-1851, 65, -1786, 131]
+   |   |   |   | selector=child_window(title="RomPakage", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RomPakage']
+   |   |   |   | Button - 'XML Conversion' rect=[-1786, 65, -1723, 131]
+   |   |   |   | selector=child_window(title="XML Conversion", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['XML Conversion']
+   |   |   |   | Button - 'LogView' rect=[-1723, 65, -1674, 131]
+   |   |   |   | selector=child_window(title="LogView", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['LogView']
+   |   |   |   | Button - 'Generator' rect=[-1674, 65, -1617, 131]
+   |   |   |   | selector=child_window(title="Generator", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Generator']
+   |   |   |   | Button - 'RFS' rect=[-1617, 65, -1575, 131]
+   |   |   |   | selector=child_window(title="RFS", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['RFS']
+   |   |   |   | Button - 'Bi-Authenticaiton' rect=[-1575, 65, -1480, 131]
+   |   |   |   | selector=child_window(title="Bi-Authenticaiton", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Bi-Authenticaiton']
+   |   |   | ToolBar - 'Mode' rect=[-1473, 63, -1344, 149]
+   |   |   | selector=child_window(title="Mode", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['TesterMode', 'EditMode']
+   |   |   |   | Button - 'TesterMode' rect=[-1469, 65, -1404, 131]
+   |   |   |   | selector=child_window(title="TesterMode", control_type="Button") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['TesterMode']
+   |   |   |   | Button - 'EditMode' rect=[-1404, 65, -1349, 131]
+   |   |   |   | selector=child_window(title="EditMode", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['EditMode']
+   |   |   | ToolBar - 'Help' rect=[-1342, 63, -1164, 149]
+   |   |   | selector=child_window(title="Help", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Option', 'Error Lookup', 'Report Config', 'Logout']
+   |   |   |   | Button - 'Option' rect=[-1338, 65, -1296, 131]
+   |   |   |   | selector=child_window(title="Option", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Option']
+   |   |   |   | Button - 'Error Lookup' rect=[-1296, 65, -1253, 131]
+   |   |   |   | selector=child_window(title="Error Lookup", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Error Lookup']
+   |   |   |   | Button - 'Report Config' rect=[-1253, 65, -1211, 131]
+   |   |   |   | selector=child_window(title="Report Config", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Report Config']
+   |   |   |   | Button - 'Logout' rect=[-1211, 65, -1169, 131]
+   |   |   |   | selector=child_window(title="Logout", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Logout']
+   |   |   | ToolBar - 'Support' rect=[-1162, 63, -1059, 149]
+   |   |   | selector=child_window(title="Support", control_type="ToolBar") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['Manual', 'Technical Support']
+   |   |   |   | Button - 'Manual' rect=[-1158, 65, -1115, 131]
+   |   |   |   | selector=child_window(title="Manual", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Manual']
+   |   |   |   | Button - 'Technical Support' rect=[-1115, 65, -1064, 131]
+   |   |   |   | selector=child_window(title="Technical Support", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   |   |   | texts=['Technical Support']
+   |   | Button - 'About' rect=[-25, 35, -1, 57]
+   |   | selector=child_window(title="About", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['About']
+   | ToolBar - ' ' rect=[-1920, 1008, 0, 1032]
+   | selector=child_window(title=" ", auto_id="59393", control_type="ToolBar") auto_id='59393' class='BCGPRibbonStatusBar:2d0000:8:10003:10' enabled=True visible=True
+   | Pane - 'Workspace' rect=[-1516, 153, 0, 1008]
+   | selector=child_window(title="Workspace", auto_id="59648", control_type="Pane") auto_id='59648' class='MDIClient' enabled=True visible=True
+   | texts=['Workspace']
+   |   | Window - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 180, -5, 1003]
+   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", auto_id="65280", control_type="Window") auto_id='65280' class='Afx:002D0000:b:00010003:00000006:00160233' enabled=True visible=True
+   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Pane - '' rect=[-1511, 180, -5, 1003]
+   |   |   | selector=child_window(auto_id="59648", control_type="Pane") auto_id='59648' class='AfxFrameOrView140u' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   |   | Button - 'Stop' rect=[-1333, 344, -1248, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1219", control_type="Button") auto_id='1219' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1467, 344, -1382, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1218", control_type="Button") auto_id='1218' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | Button - 'Stop' rect=[-953, 344, -868, 369]
+   |   |   |   | selector=child_window(title="Stop", auto_id="1231", control_type="Button") auto_id='1231' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Stop']
+   |   |   |   | Button - 'Start' rect=[-1081, 344, -996, 369]
+   |   |   |   | selector=child_window(title="Start", auto_id="1232", control_type="Button") auto_id='1232' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Start']
+   |   |   |   | List - '' rect=[-1081, 436, -799, 954]
+   |   |   |   | selector=child_window(auto_id="1222", control_type="List") auto_id='1222' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1079, 438, -801, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1079, 438, -1020, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1020, 438, -801, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Action Rule' rect=[-1103, 310, -351, 968]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1239", control_type="Group") auto_id='1239' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Action Rule']
+   |   |   |   | List - 'Action Rule' rect=[-1467, 436, -1161, 954]
+   |   |   |   | selector=child_window(title="Action Rule", auto_id="1221", control_type="List") auto_id='1221' class='SysListView32' enabled=True visible=True
+   |   |   |   | texts=[['Header Control']]
+   |   |   |   |   | Header - 'Header Control' rect=[-1465, 438, -1163, 462]
+   |   |   |   |   | selector=child_window(title="Header Control", auto_id="Header", control_type="Header") auto_id='Header' class='SysHeader32' enabled=True visible=True
+   |   |   |   |   | texts=['Header Control']
+   |   |   |   |   |   | HeaderItem - 'Stauts' rect=[-1465, 438, -1402, 462]
+   |   |   |   |   |   | selector=child_window(title="Stauts", auto_id="HeaderItem 0", control_type="HeaderItem") auto_id='HeaderItem 0' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Stauts']
+   |   |   |   |   |   | HeaderItem - 'Description' rect=[-1402, 438, -1163, 462]
+   |   |   |   |   |   | selector=child_window(title="Description", auto_id="HeaderItem 1", control_type="HeaderItem") auto_id='HeaderItem 1' class='' enabled=True visible=True
+   |   |   |   |   |   | texts=['Description']
+   |   |   |   | Group - 'Testcase Rule' rect=[-1483, 310, -1143, 968]
+   |   |   |   | selector=child_window(title="Testcase Rule", auto_id="1238", control_type="Group") auto_id='1238' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Testcase Rule']
+   |   |   |   | CheckBox - 'For Cooperative ECU' rect=[-329, 238, -171, 264]
+   |   |   |   | selector=child_window(title="For Cooperative ECU", auto_id="1234", control_type="CheckBox") auto_id='1234' class='Button' enabled=True visible=True
+   |   |   |   | texts=['For Cooperative ECU']
+   |   |   |   | CheckBox - 'Add Pre Procedure' rect=[-713, 674, -479, 702]
+   |   |   |   | selector=child_window(title="Add Pre Procedure", auto_id="1236", control_type="CheckBox") auto_id='1236' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Pre Procedure']
+   |   |   |   | ComboBox - '' rect=[-1137, 238, -975, 262]
+   |   |   |   | selector=child_window(auto_id="1233", control_type="ComboBox") auto_id='1233' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 142, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-991, 239, -976, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'SourceAddr : ' rect=[-1231, 244, -1139, 260]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1269", control_type="Text") auto_id='1269' class='Static' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1467, 396, -1231, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1220", control_type="ProgressBar") auto_id='1220' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | ProgressBar - 'SourceAddr : ' rect=[-1081, 396, -855, 424]
+   |   |   |   | selector=child_window(title="SourceAddr : ", auto_id="1223", control_type="ProgressBar") auto_id='1223' class='msctls_progress32' enabled=True visible=True
+   |   |   |   | texts=['SourceAddr : ']
+   |   |   |   | CheckBox - 'Add Background-Transfer' rect=[-713, 588, -461, 604]
+   |   |   |   | selector=child_window(title="Add Background-Transfer", auto_id="1260", control_type="CheckBox") auto_id='1260' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Background-Transfer']
+   |   |   |   | CheckBox - 'Add Processing-Preperation(OBD EMS)' rect=[-713, 632, -419, 648]
+   |   |   |   | selector=child_window(title="Add Processing-Preperation(OBD EMS)", auto_id="1261", control_type="CheckBox") auto_id='1261' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing-Preperation(OBD EMS)']
+   |   |   |   | CheckBox - 'Add Processing' rect=[-713, 726, -419, 742]
+   |   |   |   | selector=child_window(title="Add Processing", auto_id="1262", control_type="CheckBox") auto_id='1262' class='Button' enabled=False visible=True
+   |   |   |   | texts=['Add Processing']
+   |   |   |   | CheckBox - 'Add Activation' rect=[-713, 770, -419, 786]
+   |   |   |   | selector=child_window(title="Add Activation", auto_id="1263", control_type="CheckBox") auto_id='1263' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Activation']
+   |   |   |   | CheckBox - 'Add Rollback' rect=[-713, 814, -419, 830]
+   |   |   |   | selector=child_window(title="Add Rollback", auto_id="1264", control_type="CheckBox") auto_id='1264' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rollback']
+   |   |   |   | Button - 'Apply' rect=[-611, 906, -479, 942]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1270", control_type="Button") auto_id='1270' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Group - 'Add Rule Units' rect=[-743, 556, -379, 954]
+   |   |   |   | selector=child_window(title="Add Rule Units", auto_id="1271", control_type="Group") auto_id='1271' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Rule Units']
+   |   |   |   | Group - 'Use Options' rect=[-1483, 198, 35, 288]
+   |   |   |   | selector=child_window(title="Use Options", auto_id="1272", control_type="Group") auto_id='1272' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Use Options']
+   |   |   |   | Group - 'Add Scenario Units' rect=[-743, 338, -379, 542]
+   |   |   |   | selector=child_window(title="Add Scenario Units", auto_id="1276", control_type="Group") auto_id='1276' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Scenario Units']
+   |   |   |   | RadioButton - 'Wired-Rules' rect=[-713, 382, -599, 404]
+   |   |   |   | selector=child_window(title="Wired-Rules", auto_id="1273", control_type="RadioButton") auto_id='1273' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wired-Rules']
+   |   |   |   | RadioButton - 'Wireless-Rules' rect=[-713, 426, -579, 446]
+   |   |   |   | selector=child_window(title="Wireless-Rules", auto_id="1274", control_type="RadioButton") auto_id='1274' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Wireless-Rules']
+   |   |   |   | Button - 'Apply' rect=[-611, 494, -479, 528]
+   |   |   |   | selector=child_window(title="Apply", auto_id="1277", control_type="Button") auto_id='1277' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Apply']
+   |   |   |   | Text - '0.00%' rect=[-841, 400, -785, 416]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1278", control_type="Text") auto_id='1278' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | Text - '0.00%' rect=[-1219, 402, -1161, 418]
+   |   |   |   | selector=child_window(title="0.00%", auto_id="1279", control_type="Text") auto_id='1279' class='Static' enabled=True visible=True
+   |   |   |   | texts=['0.00%']
+   |   |   |   | CheckBox - 'Add Post Procedure' rect=[-713, 854, -479, 882]
+   |   |   |   | selector=child_window(title="Add Post Procedure", auto_id="1240", control_type="CheckBox") auto_id='1240' class='Button' enabled=True visible=True
+   |   |   |   | texts=['Add Post Procedure']
+   |   |   |   | CheckBox - 'OEUK Vehicle' rect=[-161, 242, -47, 262]
+   |   |   |   | selector=child_window(title="OEUK Vehicle", auto_id="1224", control_type="CheckBox") auto_id='1224' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OEUK Vehicle']
+   |   |   |   | CheckBox - 'NFS' rect=[-35, 242, 21, 262]
+   |   |   |   | selector=child_window(title="NFS", auto_id="1225", control_type="CheckBox") auto_id='1225' class='Button' enabled=True visible=True
+   |   |   |   | texts=['NFS']
+   |   |   |   | ComboBox - '' rect=[-1361, 238, -1237, 262]
+   |   |   |   | selector=child_window(auto_id="1241", control_type="ComboBox") auto_id='1241' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['', '', 'Close']
+   |   |   |   |   | Text - '' rect=[3, 3, 104, 21]
+   |   |   |   |   | selector=child_window(control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['']
+   |   |   |   |   | Button - 'Open' rect=[-1253, 239, -1238, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'GatewayType : ' rect=[-1475, 244, -1369, 260]
+   |   |   |   | selector=child_window(title="GatewayType : ", auto_id="1280", control_type="Text") auto_id='1280' class='Static' enabled=True visible=True
+   |   |   |   | texts=['GatewayType : ']
+   |   |   |   | RadioButton - 'OTA-estimatedRuntime' rect=[-713, 466, -537, 486]
+   |   |   |   | selector=child_window(title="OTA-estimatedRuntime", auto_id="1275", control_type="RadioButton") auto_id='1275' class='Button' enabled=True visible=True
+   |   |   |   | texts=['OTA-estimatedRuntime']
+   |   |   |   | Text - 'Procedure Model Type :' rect=[-941, 244, -779, 260]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='Static' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   | ComboBox - 'Procedure Model Type :' rect=[-777, 238, -541, 262]
+   |   |   |   | selector=child_window(title="Procedure Model Type :", auto_id="1250", control_type="ComboBox") auto_id='1250' class='ComboBox' enabled=True visible=True
+   |   |   |   | texts=['Procedure Model Type :', 'Procedure Model Type :', 'Close']
+   |   |   |   |   | Text - 'Procedure Model Type :' rect=[3, 3, 216, 21]
+   |   |   |   |   | selector=child_window(title="Procedure Model Type :", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['Procedure Model Type :']
+   |   |   |   |   | Button - 'Open' rect=[-557, 239, -542, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Text - 'DLC : ' rect=[-483, 244, -443, 260]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1281", control_type="Text") auto_id='1281' class='Static' enabled=True visible=True
+   |   |   |   | texts=['DLC : ']
+   |   |   |   | ComboBox - 'DLC : ' rect=[-437, 238, -341, 262]
+   |   |   |   | selector=child_window(title="DLC : ", auto_id="1235", control_type="ComboBox") auto_id='1235' class='ComboBox' enabled=False visible=True
+   |   |   |   |   | Text - 'DLC : ' rect=[3, 3, 76, 21]
+   |   |   |   |   | selector=child_window(title="DLC : ", control_type="Text") auto_id='' class='' enabled=True visible=False
+   |   |   |   |   | texts=['DLC : ']
+   |   |   |   |   | Button - 'Open' rect=[-357, 239, -342, 261]
+   |   |   |   |   | selector=child_window(title="Open", auto_id="DropDown", control_type="Button") auto_id='DropDown' class='' enabled=True visible=True
+   |   |   |   |   | texts=['Open']
+   |   |   |   | Thumb - '' rect=[-22, 986, -5, 1003]
+   |   |   |   | selector=child_window(control_type="Thumb") auto_id='' class='' enabled=False visible=True
+   |   |   |   | texts=['']
+   |   | Tab - '' rect=[-1516, 153, 0, 1008]
+   |   | selector=child_window(control_type="Tab") auto_id='' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True
+   |   | texts=['', 'ReprogramConfig_0_1_1_114.hcfg-r']
+   |   |   | Button - '' rect=[-22, 157, -7, 172]
+   |   |   | selector=child_window(control_type="Button") auto_id='' class='Button' enabled=True visible=True
+   |   |   | texts=['']
+   |   |   | TabItem - 'ReprogramConfig_0_1_1_114.hcfg-r' rect=[-1511, 155, -1279, 176]
+   |   |   | selector=child_window(title="ReprogramConfig_0_1_1_114.hcfg-r", control_type="TabItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['ReprogramConfig_0_1_1_114.hcfg-r']
+   | TitleBar - '' rect=[-1898, 0, 0, 23]
+   | selector=child_window(control_type="TitleBar") auto_id='' class='' enabled=True visible=True
+   | texts=['']
+   |   | MenuBar - 'System' rect=[-1920, 0, -1898, 22]
+   |   | selector=child_window(title="System", auto_id="MenuBar", control_type="MenuBar") auto_id='MenuBar' class='' enabled=True visible=True
+   |   | texts=['System']
+   |   |   | MenuItem - 'System' rect=[-1920, 0, -1898, 22]
+   |   |   | selector=child_window(title="System", control_type="MenuItem") auto_id='' class='' enabled=True visible=True
+   |   |   | texts=['System']
+   |   | Button - 'Minimize' rect=[-67, -1, -43, 23]
+   |   | selector=child_window(title="Minimize", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Minimize']
+   |   | Button - 'Restore' rect=[-45, -1, -21, 23]
+   |   | selector=child_window(title="Restore", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Restore']
+   |   | Button - 'Close' rect=[-23, -1, 1, 23]
+   |   | selector=child_window(title="Close", control_type="Button") auto_id='' class='' enabled=True visible=True
+   |   | texts=['Close']
+
+=== COMBO BOX OPTIONS ===
+COMBO name='' auto_id='1233' status='expanded' rect=[-1137, 238, -975, 262]
+  OPTION 'CCU/CWC : 0x0F00'
+  OPTION 'ERT : 0x0E81'
+  OPTION 'HPVC : 0x0F10'
+COMBO name='' auto_id='1241' status='expanded' rect=[-1361, 238, -1237, 262]
+  OPTION 'CCU2 : DoIP'
+  OPTION 'CCU1 : EthDiag'
+COMBO name='Procedure Model Type :' auto_id='1250' status='expanded' rect=[-777, 238, -541, 262]
+  OPTION 'GroupA(LX3,SW1,LQ2,JG1)'
+  OPTION 'GroupB(GN7PE~)'
+COMBO name='DLC : ' auto_id='1235' status='failed' rect=[-437, 238, -341, 262]
+  ERROR (-2147220992, None, (None, None, None, 0, None))
+
+=== SAFE BUTTON CLICK PROBES ===
+BUTTON 'Hex2Binary' status='invoked' method='invoke'
+  OPENED hwnd=329918 title='Hex2Binary - Hex2Binary1' class='Afx:00490000:8:00010003:00000000:07B308C1' rect=[52, 52, 1492, 805]
+BUTTON 'RomPakage' status='invoked' method='invoke'
+  OPENED hwnd=330022 title='ROM PACKAGE(CCU2)' class='#32770' rect=[-1166, 316, -754, 717]
+BUTTON 'XML Conversion' status='invoked' method='invoke'
+  OPENED hwnd=592060 title='XML Conversion' class='#32770' rect=[-1181, 411, -739, 621]
+BUTTON 'LogView' status='invoked' method='invoke'
+  OPENED hwnd=263478 title='LogView' class='#32770' rect=[456, 271, 1464, 762]
+BUTTON 'Generator' status='invoked' method='invoke'
+  OPENED hwnd=395528 title='Generator' class='#32770' rect=[-1410, 126, -510, 906]
+BUTTON 'RFS' status='invoked' method='invoke'
+  OPENED hwnd=1704760 title='RFS - File transfer' class='#32770' rect=[-1173, 408, -747, 624]
+BUTTON 'Bi-Authenticaiton' status='invoked' method='invoke'
+  OPENED hwnd=461120 title='Bidir Authentication' class='#32770' rect=[-1200, 371, -720, 662]
+BUTTON 'Option' status='invoked' method='invoke'
+  OPENED hwnd=657728 title='Option' class='#32770' rect=[-1273, 275, -646, 758]
+BUTTON 'Error Lookup' status='invoked' method='invoke'
+  OPENED hwnd=1575146 title='H-OTA Error Lookup' class='#32770' rect=[729, 396, 1191, 637]
+BUTTON 'Report Config' status='invoked' method='invoke'
+  OPENED hwnd=657658 title='Report Configuration' class='#32770' rect=[-1168, 353, -751, 680]
+BUTTON 'About' status='invoked' method='invoke'
+  OPENED hwnd=1966116 title='About H-OTA Studio' class='#32770' rect=[-1144, 452, -775, 580]
+
+=== SCAN ACTION LOG ===
+{"action": "reuse_existing_hota_window", "hwnd": 395308}
+{"action": "dump_ui_tree", "state": "initial", "nodes": 171, "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\ui_tree_initial.json"}
+{"action": "capture_window", "state": "initial", "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\screenshots\\initial.png", "rect": [-1928, -8, 8, 1040]}
+{"action": "load_config", "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\0\\ReprogramConfig_0_1_1_114.hcfg-r"}
+{"action": "dump_ui_tree", "state": "after_config_load", "nodes": 171, "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\ui_tree_after_config_load.json"}
+{"action": "capture_window", "state": "after_config_load", "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\screenshots\\after_config_load.png", "rect": [-1928, -8, 8, 1040]}
+{"action": "click", "target": "TesterMode", "status": "ok"}
+{"action": "dump_ui_tree", "state": "after_tester_mode", "nodes": 171, "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\ui_tree_after_tester_mode.json"}
+{"action": "capture_window", "state": "after_tester_mode", "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\screenshots\\after_tester_mode.png", "rect": [-1928, -8, 8, 1040]}
+{"action": "collect_combo_options", "count": 4, "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\combo_options.json"}
+{"action": "probe_safe_buttons", "count": 11, "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105845\\safe_button_probes.json"}
+
+=== EXISTING PYTHON RUNNER SELECTORS ===
+case_001.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+case_001.py:100 selector auto_id="2", control_type="List"
+case_001.py:448 selector title="TesterMode", control_type="Button"
+case_001.py:458 selector auto_id="1241", control_type="ComboBox"
+case_001.py:476 selector auto_id="1274", control_type="RadioButton"
+case_001.py:483 selector auto_id="1277", control_type="Button"
+case_001.py:493 selector auto_id="1232", control_type="Button"
+case_001.py:69 send_keys "%"
+case_001.py:396 send_keys "^o"
+case_001.py:434 send_keys file_path, with_spaces=True
+case_001.py:438 send_keys "{ENTER}"
+case_001.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_002.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_002.py:102 selector auto_id="2", control_type="List"
+case_002.py:473 selector title="TesterMode", control_type="Button"
+case_002.py:483 selector auto_id="1241", control_type="ComboBox"
+case_002.py:501 selector auto_id="1274", control_type="RadioButton"
+case_002.py:508 selector auto_id="1277", control_type="Button"
+case_002.py:518 selector auto_id="1232", control_type="Button"
+case_002.py:71 send_keys "%"
+case_002.py:421 send_keys "^o"
+case_002.py:459 send_keys file_path, with_spaces=True
+case_002.py:463 send_keys "{ENTER}"
+case_002.py:495 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_003.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_003.py:102 selector auto_id="2", control_type="List"
+case_003.py:473 selector title="TesterMode", control_type="Button"
+case_003.py:483 selector auto_id="1241", control_type="ComboBox"
+case_003.py:501 selector auto_id="1274", control_type="RadioButton"
+case_003.py:508 selector auto_id="1277", control_type="Button"
+case_003.py:518 selector auto_id="1232", control_type="Button"
+case_003.py:71 send_keys "%"
+case_003.py:421 send_keys "^o"
+case_003.py:459 send_keys file_path, with_spaces=True
+case_003.py:463 send_keys "{ENTER}"
+case_003.py:495 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_004.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_004.py:102 selector auto_id="2", control_type="List"
+case_004.py:473 selector title="TesterMode", control_type="Button"
+case_004.py:483 selector auto_id="1241", control_type="ComboBox"
+case_004.py:501 selector auto_id="1274", control_type="RadioButton"
+case_004.py:508 selector auto_id="1277", control_type="Button"
+case_004.py:518 selector auto_id="1232", control_type="Button"
+case_004.py:71 send_keys "%"
+case_004.py:421 send_keys "^o"
+case_004.py:459 send_keys file_path, with_spaces=True
+case_004.py:463 send_keys "{ENTER}"
+case_004.py:495 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_005.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_005.py:102 selector auto_id="2", control_type="List"
+case_005.py:473 selector title="TesterMode", control_type="Button"
+case_005.py:483 selector auto_id="1241", control_type="ComboBox"
+case_005.py:501 selector auto_id="1274", control_type="RadioButton"
+case_005.py:508 selector auto_id="1277", control_type="Button"
+case_005.py:518 selector auto_id="1232", control_type="Button"
+case_005.py:71 send_keys "%"
+case_005.py:421 send_keys "^o"
+case_005.py:459 send_keys file_path, with_spaces=True
+case_005.py:463 send_keys "{ENTER}"
+case_005.py:495 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_006.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+case_006.py:100 selector auto_id="2", control_type="List"
+case_006.py:448 selector title="TesterMode", control_type="Button"
+case_006.py:458 selector auto_id="1241", control_type="ComboBox"
+case_006.py:476 selector auto_id="1274", control_type="RadioButton"
+case_006.py:483 selector auto_id="1277", control_type="Button"
+case_006.py:493 selector auto_id="1232", control_type="Button"
+case_006.py:69 send_keys "%"
+case_006.py:396 send_keys "^o"
+case_006.py:434 send_keys file_path, with_spaces=True
+case_006.py:438 send_keys "{ENTER}"
+case_006.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_007.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_007.py:101 selector auto_id="2", control_type="List"
+case_007.py:472 selector title="TesterMode", control_type="Button"
+case_007.py:482 selector auto_id="1241", control_type="ComboBox"
+case_007.py:500 selector auto_id="1274", control_type="RadioButton"
+case_007.py:507 selector auto_id="1277", control_type="Button"
+case_007.py:517 selector auto_id="1232", control_type="Button"
+case_007.py:70 send_keys "%"
+case_007.py:420 send_keys "^o"
+case_007.py:458 send_keys file_path, with_spaces=True
+case_007.py:462 send_keys "{ENTER}"
+case_007.py:494 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_008.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_008.py:101 selector auto_id="2", control_type="List"
+case_008.py:472 selector title="TesterMode", control_type="Button"
+case_008.py:482 selector auto_id="1241", control_type="ComboBox"
+case_008.py:500 selector auto_id="1274", control_type="RadioButton"
+case_008.py:507 selector auto_id="1277", control_type="Button"
+case_008.py:517 selector auto_id="1232", control_type="Button"
+case_008.py:70 send_keys "%"
+case_008.py:420 send_keys "^o"
+case_008.py:458 send_keys file_path, with_spaces=True
+case_008.py:462 send_keys "{ENTER}"
+case_008.py:494 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_009.py:100 selector title="Output", auto_id="32803", control_type="Pane"
+case_009.py:104 selector auto_id="2", control_type="List"
+case_009.py:489 selector title="TesterMode", control_type="Button"
+case_009.py:499 selector auto_id="1241", control_type="ComboBox"
+case_009.py:517 selector auto_id="1274", control_type="RadioButton"
+case_009.py:524 selector auto_id="1277", control_type="Button"
+case_009.py:534 selector auto_id="1232", control_type="Button"
+case_009.py:73 send_keys "%"
+case_009.py:437 send_keys "^o"
+case_009.py:475 send_keys file_path, with_spaces=True
+case_009.py:479 send_keys "{ENTER}"
+case_009.py:511 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_009_2.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_009_2.py:101 selector auto_id="2", control_type="List"
+case_009_2.py:333 selector title=title, control_type="CheckBox"
+case_009_2.py:464 selector title="TesterMode", control_type="Button"
+case_009_2.py:474 selector auto_id="1241", control_type="ComboBox"
+case_009_2.py:517 selector auto_id="1277", control_type="Button"
+case_009_2.py:529 selector auto_id="1232", control_type="Button"
+case_009_2.py:70 send_keys "%"
+case_009_2.py:412 send_keys "^o"
+case_009_2.py:450 send_keys file_path, with_spaces=True
+case_009_2.py:454 send_keys "{ENTER}"
+case_009_2.py:486 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_010.py:99 selector title="Output", auto_id="32803", control_type="Pane"
+case_010.py:103 selector auto_id="2", control_type="List"
+case_010.py:454 selector title="TesterMode", control_type="Button"
+case_010.py:464 selector auto_id="1241", control_type="ComboBox"
+case_010.py:482 selector auto_id="1274", control_type="RadioButton"
+case_010.py:489 selector auto_id="1277", control_type="Button"
+case_010.py:499 selector auto_id="1232", control_type="Button"
+case_010.py:72 send_keys "%"
+case_010.py:402 send_keys "^o"
+case_010.py:440 send_keys file_path, with_spaces=True
+case_010.py:444 send_keys "{ENTER}"
+case_010.py:476 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_010_2.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_010_2.py:101 selector auto_id="2", control_type="List"
+case_010_2.py:333 selector title=title, control_type="CheckBox"
+case_010_2.py:464 selector title="TesterMode", control_type="Button"
+case_010_2.py:474 selector auto_id="1241", control_type="ComboBox"
+case_010_2.py:517 selector auto_id="1277", control_type="Button"
+case_010_2.py:529 selector auto_id="1232", control_type="Button"
+case_010_2.py:70 send_keys "%"
+case_010_2.py:412 send_keys "^o"
+case_010_2.py:450 send_keys file_path, with_spaces=True
+case_010_2.py:454 send_keys "{ENTER}"
+case_010_2.py:486 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_011.py:100 selector title="Output", auto_id="32803", control_type="Pane"
+case_011.py:104 selector auto_id="2", control_type="List"
+case_011.py:489 selector title="TesterMode", control_type="Button"
+case_011.py:499 selector auto_id="1241", control_type="ComboBox"
+case_011.py:517 selector auto_id="1274", control_type="RadioButton"
+case_011.py:524 selector auto_id="1277", control_type="Button"
+case_011.py:534 selector auto_id="1232", control_type="Button"
+case_011.py:73 send_keys "%"
+case_011.py:437 send_keys "^o"
+case_011.py:475 send_keys file_path, with_spaces=True
+case_011.py:479 send_keys "{ENTER}"
+case_011.py:511 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_012.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_012.py:102 selector auto_id="2", control_type="List"
+case_012.py:453 selector title="TesterMode", control_type="Button"
+case_012.py:463 selector auto_id="1241", control_type="ComboBox"
+case_012.py:481 selector auto_id="1274", control_type="RadioButton"
+case_012.py:488 selector auto_id="1277", control_type="Button"
+case_012.py:498 selector auto_id="1232", control_type="Button"
+case_012.py:71 send_keys "%"
+case_012.py:401 send_keys "^o"
+case_012.py:439 send_keys file_path, with_spaces=True
+case_012.py:443 send_keys "{ENTER}"
+case_012.py:475 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_015.py:98 selector title="Output", auto_id="32803", control_type="Pane"
+case_015.py:102 selector auto_id="2", control_type="List"
+case_015.py:334 selector title=title, control_type="CheckBox"
+case_015.py:466 selector title="TesterMode", control_type="Button"
+case_015.py:476 selector auto_id="1241", control_type="ComboBox"
+case_015.py:497 selector title_re=".*OEUK.*Vehicle.*", control_type=ctrl_type
+case_015.py:560 selector auto_id="1277", control_type="Button"
+case_015.py:572 selector auto_id="1232", control_type="Button"
+case_015.py:71 send_keys "%"
+case_015.py:414 send_keys "^o"
+case_015.py:452 send_keys file_path, with_spaces=True
+case_015.py:456 send_keys "{ENTER}"
+case_015.py:488 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_016.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_016.py:101 selector auto_id="2", control_type="List"
+case_016.py:333 selector title=title, control_type="CheckBox"
+case_016.py:465 selector title="TesterMode", control_type="Button"
+case_016.py:475 selector auto_id="1241", control_type="ComboBox"
+case_016.py:519 selector auto_id="1277", control_type="Button"
+case_016.py:531 selector auto_id="1232", control_type="Button"
+case_016.py:70 send_keys "%"
+case_016.py:413 send_keys "^o"
+case_016.py:451 send_keys file_path, with_spaces=True
+case_016.py:455 send_keys "{ENTER}"
+case_016.py:487 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_019.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_019.py:101 selector auto_id="2", control_type="List"
+case_019.py:449 selector title="TesterMode", control_type="Button"
+case_019.py:459 selector auto_id="1241", control_type="ComboBox"
+case_019.py:480 selector title_re=".*OEUK.*Vehicle.*", control_type=ctrl_type
+case_019.py:517 selector auto_id="1274", control_type="RadioButton"
+case_019.py:524 selector auto_id="1277", control_type="Button"
+case_019.py:534 selector auto_id="1232", control_type="Button"
+case_019.py:70 send_keys "%"
+case_019.py:397 send_keys "^o"
+case_019.py:435 send_keys file_path, with_spaces=True
+case_019.py:439 send_keys "{ENTER}"
+case_019.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_020.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+case_020.py:100 selector auto_id="2", control_type="List"
+case_020.py:448 selector title="TesterMode", control_type="Button"
+case_020.py:458 selector auto_id="1241", control_type="ComboBox"
+case_020.py:476 selector auto_id="1274", control_type="RadioButton"
+case_020.py:483 selector auto_id="1277", control_type="Button"
+case_020.py:493 selector auto_id="1232", control_type="Button"
+case_020.py:69 send_keys "%"
+case_020.py:396 send_keys "^o"
+case_020.py:434 send_keys file_path, with_spaces=True
+case_020.py:438 send_keys "{ENTER}"
+case_020.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_021.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_021.py:101 selector auto_id="2", control_type="List"
+case_021.py:449 selector title="TesterMode", control_type="Button"
+case_021.py:459 selector auto_id="1241", control_type="ComboBox"
+case_021.py:478 selector auto_id="1233", control_type="ComboBox"
+case_021.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+case_021.py:523 selector auto_id="1277", control_type="Button"
+case_021.py:533 selector auto_id="1232", control_type="Button"
+case_021.py:70 send_keys "%"
+case_021.py:397 send_keys "^o"
+case_021.py:435 send_keys file_path, with_spaces=True
+case_021.py:439 send_keys "{ENTER}"
+case_021.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_021.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+case_022.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_022.py:101 selector auto_id="2", control_type="List"
+case_022.py:449 selector title="TesterMode", control_type="Button"
+case_022.py:459 selector auto_id="1241", control_type="ComboBox"
+case_022.py:478 selector auto_id="1233", control_type="ComboBox"
+case_022.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+case_022.py:523 selector auto_id="1277", control_type="Button"
+case_022.py:533 selector auto_id="1232", control_type="Button"
+case_022.py:70 send_keys "%"
+case_022.py:397 send_keys "^o"
+case_022.py:435 send_keys file_path, with_spaces=True
+case_022.py:439 send_keys "{ENTER}"
+case_022.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_022.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+case_023.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_023.py:101 selector auto_id="2", control_type="List"
+case_023.py:449 selector title="TesterMode", control_type="Button"
+case_023.py:459 selector auto_id="1241", control_type="ComboBox"
+case_023.py:478 selector auto_id="1233", control_type="ComboBox"
+case_023.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+case_023.py:523 selector auto_id="1277", control_type="Button"
+case_023.py:533 selector auto_id="1232", control_type="Button"
+case_023.py:70 send_keys "%"
+case_023.py:397 send_keys "^o"
+case_023.py:435 send_keys file_path, with_spaces=True
+case_023.py:439 send_keys "{ENTER}"
+case_023.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_023.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+case_024.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+case_024.py:101 selector auto_id="2", control_type="List"
+case_024.py:449 selector title="TesterMode", control_type="Button"
+case_024.py:459 selector auto_id="1241", control_type="ComboBox"
+case_024.py:478 selector auto_id="1233", control_type="ComboBox"
+case_024.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+case_024.py:523 selector auto_id="1277", control_type="Button"
+case_024.py:533 selector auto_id="1232", control_type="Button"
+case_024.py:70 send_keys "%"
+case_024.py:397 send_keys "^o"
+case_024.py:435 send_keys file_path, with_spaces=True
+case_024.py:439 send_keys "{ENTER}"
+case_024.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+case_024.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+Rollback_to_00.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+Rollback_to_00.py:101 selector auto_id="2", control_type="List"
+Rollback_to_00.py:333 selector title=title, control_type="CheckBox"
+Rollback_to_00.py:465 selector title="TesterMode", control_type="Button"
+Rollback_to_00.py:475 selector auto_id="1241", control_type="ComboBox"
+Rollback_to_00.py:519 selector auto_id="1277", control_type="Button"
+Rollback_to_00.py:531 selector auto_id="1232", control_type="Button"
+Rollback_to_00.py:70 send_keys "%"
+Rollback_to_00.py:413 send_keys "^o"
+Rollback_to_00.py:451 send_keys file_path, with_spaces=True
+Rollback_to_00.py:455 send_keys "{ENTER}"
+Rollback_to_00.py:487 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_00.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_00.py:100 selector auto_id="2", control_type="List"
+update_to_00.py:448 selector title="TesterMode", control_type="Button"
+update_to_00.py:458 selector auto_id="1241", control_type="ComboBox"
+update_to_00.py:476 selector auto_id="1274", control_type="RadioButton"
+update_to_00.py:483 selector auto_id="1277", control_type="Button"
+update_to_00.py:493 selector auto_id="1232", control_type="Button"
+update_to_00.py:69 send_keys "%"
+update_to_00.py:396 send_keys "^o"
+update_to_00.py:434 send_keys file_path, with_spaces=True
+update_to_00.py:438 send_keys "{ENTER}"
+update_to_00.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_00_ERT.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_00_ERT.py:101 selector auto_id="2", control_type="List"
+update_to_00_ERT.py:449 selector title="TesterMode", control_type="Button"
+update_to_00_ERT.py:459 selector auto_id="1241", control_type="ComboBox"
+update_to_00_ERT.py:478 selector auto_id="1233", control_type="ComboBox"
+update_to_00_ERT.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+update_to_00_ERT.py:523 selector auto_id="1277", control_type="Button"
+update_to_00_ERT.py:533 selector auto_id="1232", control_type="Button"
+update_to_00_ERT.py:70 send_keys "%"
+update_to_00_ERT.py:397 send_keys "^o"
+update_to_00_ERT.py:435 send_keys file_path, with_spaces=True
+update_to_00_ERT.py:439 send_keys "{ENTER}"
+update_to_00_ERT.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_00_ERT.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+update_to_01.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_01.py:100 selector auto_id="2", control_type="List"
+update_to_01.py:448 selector title="TesterMode", control_type="Button"
+update_to_01.py:458 selector auto_id="1241", control_type="ComboBox"
+update_to_01.py:476 selector auto_id="1274", control_type="RadioButton"
+update_to_01.py:483 selector auto_id="1277", control_type="Button"
+update_to_01.py:493 selector auto_id="1232", control_type="Button"
+update_to_01.py:69 send_keys "%"
+update_to_01.py:396 send_keys "^o"
+update_to_01.py:434 send_keys file_path, with_spaces=True
+update_to_01.py:438 send_keys "{ENTER}"
+update_to_01.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_01_ERT.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_01_ERT.py:101 selector auto_id="2", control_type="List"
+update_to_01_ERT.py:449 selector title="TesterMode", control_type="Button"
+update_to_01_ERT.py:459 selector auto_id="1241", control_type="ComboBox"
+update_to_01_ERT.py:478 selector auto_id="1233", control_type="ComboBox"
+update_to_01_ERT.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+update_to_01_ERT.py:523 selector auto_id="1277", control_type="Button"
+update_to_01_ERT.py:533 selector auto_id="1232", control_type="Button"
+update_to_01_ERT.py:70 send_keys "%"
+update_to_01_ERT.py:397 send_keys "^o"
+update_to_01_ERT.py:435 send_keys file_path, with_spaces=True
+update_to_01_ERT.py:439 send_keys "{ENTER}"
+update_to_01_ERT.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_01_ERT.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+update_to_02.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_02.py:100 selector auto_id="2", control_type="List"
+update_to_02.py:448 selector title="TesterMode", control_type="Button"
+update_to_02.py:458 selector auto_id="1241", control_type="ComboBox"
+update_to_02.py:476 selector auto_id="1274", control_type="RadioButton"
+update_to_02.py:483 selector auto_id="1277", control_type="Button"
+update_to_02.py:493 selector auto_id="1232", control_type="Button"
+update_to_02.py:69 send_keys "%"
+update_to_02.py:396 send_keys "^o"
+update_to_02.py:434 send_keys file_path, with_spaces=True
+update_to_02.py:438 send_keys "{ENTER}"
+update_to_02.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_02_ERT.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_02_ERT.py:101 selector auto_id="2", control_type="List"
+update_to_02_ERT.py:449 selector title="TesterMode", control_type="Button"
+update_to_02_ERT.py:459 selector auto_id="1241", control_type="ComboBox"
+update_to_02_ERT.py:478 selector auto_id="1233", control_type="ComboBox"
+update_to_02_ERT.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+update_to_02_ERT.py:523 selector auto_id="1277", control_type="Button"
+update_to_02_ERT.py:533 selector auto_id="1232", control_type="Button"
+update_to_02_ERT.py:70 send_keys "%"
+update_to_02_ERT.py:397 send_keys "^o"
+update_to_02_ERT.py:435 send_keys file_path, with_spaces=True
+update_to_02_ERT.py:439 send_keys "{ENTER}"
+update_to_02_ERT.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_02_ERT.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+update_to_03.py:96 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_03.py:100 selector auto_id="2", control_type="List"
+update_to_03.py:448 selector title="TesterMode", control_type="Button"
+update_to_03.py:458 selector auto_id="1241", control_type="ComboBox"
+update_to_03.py:476 selector auto_id="1274", control_type="RadioButton"
+update_to_03.py:483 selector auto_id="1277", control_type="Button"
+update_to_03.py:493 selector auto_id="1232", control_type="Button"
+update_to_03.py:69 send_keys "%"
+update_to_03.py:396 send_keys "^o"
+update_to_03.py:434 send_keys file_path, with_spaces=True
+update_to_03.py:438 send_keys "{ENTER}"
+update_to_03.py:470 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_03_ERT.py:97 selector title="Output", auto_id="32803", control_type="Pane"
+update_to_03_ERT.py:101 selector auto_id="2", control_type="List"
+update_to_03_ERT.py:449 selector title="TesterMode", control_type="Button"
+update_to_03_ERT.py:459 selector auto_id="1241", control_type="ComboBox"
+update_to_03_ERT.py:478 selector auto_id="1233", control_type="ComboBox"
+update_to_03_ERT.py:515 selector title_re=".*Wired.*Rule.*", control_type="RadioButton"
+update_to_03_ERT.py:523 selector auto_id="1277", control_type="Button"
+update_to_03_ERT.py:533 selector auto_id="1232", control_type="Button"
+update_to_03_ERT.py:70 send_keys "%"
+update_to_03_ERT.py:397 send_keys "^o"
+update_to_03_ERT.py:435 send_keys file_path, with_spaces=True
+update_to_03_ERT.py:439 send_keys "{ENTER}"
+update_to_03_ERT.py:471 send_keys "CCU1 : EthDiag{ENTER}", with_spaces=True
+update_to_03_ERT.py:508 send_keys "ERT :0x1000{ENTER}", with_spaces=True
+
+=== INSTALLED CONFIG / RESOURCE SUMMARY ===
+Installed folder: C:\Program Files (x86)\GIT\H-OTA Studio GEN2
+Property definitions: 179
+Schema files: 54
+Parsed runner scripts: 33
+
+=== SAFETY NOTES ===
+The regular scanner avoids real update-changing actions during normal discovery.
+The disconnected exhaustive probe clicked the Testcase Rule Start button and recorded the H-OTA popup: there is no selected testcase.
+Action Rule Start and Stop were disabled in that state; SAVE and Logout were intentionally skipped because they change user/config state.
+Utility/dialog buttons were invoked and their spawned windows were closed.
+For real OTA execution, use the existing case_*.py runner flow with CANoe AppState handling.
+
+=== EXHAUSTIVE CLICK PROBE REPORT ===
+H-OTA EXHAUSTIVE CLICK PROBE
+Generated: 2026-05-18T11:17:27
+Admin: True
+
+=== CLICK LOG ===
+{"kind": "window", "title": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r", "hwnd": 395308}
+{"kind": "button", "name": "Hex2Binary", "status": "clicked", "meta": {"name": "Hex2Binary", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1912, 65, -1851, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1116496, "title": "Hex2Binary - Hex2Binary1", "class_name": "Afx:00490000:8:00010003:00000000:0F9007FF", "rect": [156, 156, 1596, 909]}]}
+{"kind": "button", "name": "RomPakage", "status": "clicked", "meta": {"name": "RomPakage", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1851, 65, -1786, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1182032, "title": "ROM PACKAGE(CCU2)", "class_name": "#32770", "rect": [-1166, 316, -754, 717]}]}
+{"kind": "button", "name": "XML Conversion", "status": "clicked", "meta": {"name": "XML Conversion", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1786, 65, -1723, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1639146, "title": "XML Conversion", "class_name": "#32770", "rect": [-1181, 411, -739, 621]}]}
+{"kind": "button", "name": "LogView", "status": "clicked", "meta": {"name": "LogView", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1723, 65, -1674, 131]}, "method": "invoke", "new_windows": [{"hwnd": 263478, "title": "LogView", "class_name": "#32770", "rect": [456, 271, 1464, 762]}]}
+{"kind": "button", "name": "Generator", "status": "clicked", "meta": {"name": "Generator", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1674, 65, -1617, 131]}, "method": "invoke", "new_windows": [{"hwnd": 592116, "title": "Generator", "class_name": "#32770", "rect": [-1410, 126, -510, 906]}]}
+{"kind": "button", "name": "RFS", "status": "clicked", "meta": {"name": "RFS", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1617, 65, -1575, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1706292, "title": "RFS - File transfer", "class_name": "#32770", "rect": [-1173, 408, -747, 624]}]}
+{"kind": "button", "name": "Bi-Authenticaiton", "status": "clicked", "meta": {"name": "Bi-Authenticaiton", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1575, 65, -1480, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1640612, "title": "Bidir Authentication", "class_name": "#32770", "rect": [-1200, 371, -720, 662]}]}
+{"kind": "button", "name": "EditMode", "status": "clicked", "meta": {"name": "EditMode", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1404, 65, -1349, 131]}, "method": "invoke", "new_windows": []}
+{"kind": "button", "name": "TesterMode", "status": "clicked", "meta": {"name": "TesterMode", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1469, 65, -1404, 131]}, "method": "invoke", "new_windows": []}
+{"kind": "button", "name": "Option", "status": "clicked", "meta": {"name": "Option", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1338, 65, -1296, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1835166, "title": "Option", "class_name": "#32770", "rect": [-1273, 275, -646, 758]}]}
+{"kind": "button", "name": "Error Lookup", "status": "clicked", "meta": {"name": "Error Lookup", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1296, 65, -1253, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1247500, "title": "H-OTA Error Lookup", "class_name": "#32770", "rect": [729, 396, 1191, 637]}]}
+{"kind": "button", "name": "Report Config", "status": "clicked", "meta": {"name": "Report Config", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1253, 65, -1211, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1313036, "title": "Report Configuration", "class_name": "#32770", "rect": [-1168, 353, -751, 680]}]}
+{"kind": "button", "name": "Manual", "status": "clicked", "meta": {"name": "Manual", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1158, 65, -1115, 131]}, "method": "invoke", "new_windows": [{"hwnd": 721604, "title": "H-OTA Studio Manual", "class_name": "#32770", "rect": [-1191, 375, -729, 690]}]}
+{"kind": "button", "name": "Technical Support", "status": "clicked", "meta": {"name": "Technical Support", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-1115, 65, -1064, 131]}, "method": "invoke", "new_windows": [{"hwnd": 1640638, "title": "Technical Support (Q&A)", "class_name": "#32770", "rect": [-1296, 220, -624, 812]}]}
+{"kind": "button", "name": "About", "status": "clicked", "meta": {"name": "About", "auto_id": "", "control_type": "Button", "class_name": "", "enabled": true, "visible": true, "rect": [-25, 35, -1, 57]}, "method": "invoke", "new_windows": [{"hwnd": 1508654, "title": "About H-OTA Studio", "class_name": "#32770", "rect": [-1144, 452, -775, 580]}]}
+{"kind": "toggle", "label": "For Cooperative ECU", "auto_id": "1234", "status": "toggled_twice_restore_attempted", "meta": {"name": "For Cooperative ECU", "auto_id": "1234", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-329, 238, -171, 264]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "Add Pre Procedure", "auto_id": "1236", "status": "toggled_twice_restore_attempted", "meta": {"name": "Add Pre Procedure", "auto_id": "1236", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 674, -479, 702]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "Add Background-Transfer", "auto_id": "1260", "status": "toggled_twice_restore_attempted", "meta": {"name": "Add Background-Transfer", "auto_id": "1260", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 588, -461, 604]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "Add Processing-Preperation(OBD EMS)", "auto_id": "1261", "status": "disabled", "meta": {"name": "Add Processing-Preperation(OBD EMS)", "auto_id": "1261", "control_type": "CheckBox", "class_name": "Button", "enabled": false, "visible": true, "rect": [-713, 632, -419, 648]}}
+{"kind": "toggle", "label": "Add Processing", "auto_id": "1262", "status": "disabled", "meta": {"name": "Add Processing", "auto_id": "1262", "control_type": "CheckBox", "class_name": "Button", "enabled": false, "visible": true, "rect": [-713, 726, -419, 742]}}
+{"kind": "toggle", "label": "Add Activation", "auto_id": "1263", "status": "toggled_twice_restore_attempted", "meta": {"name": "Add Activation", "auto_id": "1263", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 770, -419, 786]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "Add Rollback", "auto_id": "1264", "status": "toggled_twice_restore_attempted", "meta": {"name": "Add Rollback", "auto_id": "1264", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 814, -419, 830]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "Add Post Procedure", "auto_id": "1240", "status": "toggled_twice_restore_attempted", "meta": {"name": "Add Post Procedure", "auto_id": "1240", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 854, -479, 882]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "OEUK Vehicle", "auto_id": "1224", "status": "toggled_twice_restore_attempted", "meta": {"name": "OEUK Vehicle", "auto_id": "1224", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-161, 242, -47, 262]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "toggle", "label": "NFS", "auto_id": "1225", "status": "toggled_twice_restore_attempted", "meta": {"name": "NFS", "auto_id": "1225", "control_type": "CheckBox", "class_name": "Button", "enabled": true, "visible": true, "rect": [-35, 242, 21, 262]}, "toggle_1": "click_input", "toggle_2": "click_input"}
+{"kind": "RadioButton", "label": "Wired-Rules", "auto_id": "1273", "status": "clicked", "meta": {"name": "Wired-Rules", "auto_id": "1273", "control_type": "RadioButton", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 382, -599, 404]}, "method": "click_input"}
+{"kind": "RadioButton", "label": "Wireless-Rules", "auto_id": "1274", "status": "clicked", "meta": {"name": "Wireless-Rules", "auto_id": "1274", "control_type": "RadioButton", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 426, -579, 446]}, "method": "invoke"}
+{"kind": "RadioButton", "label": "OTA-estimatedRuntime", "auto_id": "1275", "status": "clicked", "meta": {"name": "OTA-estimatedRuntime", "auto_id": "1275", "control_type": "RadioButton", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 466, -537, 486]}, "method": "invoke"}
+{"kind": "RadioButton", "label": "Wireless-Rules restore", "auto_id": "1274", "status": "clicked", "meta": {"name": "Wireless-Rules", "auto_id": "1274", "control_type": "RadioButton", "class_name": "Button", "enabled": true, "visible": true, "rect": [-713, 426, -579, 446]}, "method": "invoke"}
+{"kind": "Button", "label": "Apply Scenario Units", "auto_id": "1277", "status": "clicked", "meta": {"name": "Apply", "auto_id": "1277", "control_type": "Button", "class_name": "Button", "enabled": true, "visible": true, "rect": [-611, 494, -479, 528]}, "method": "invoke"}
+{"kind": "Button", "label": "Apply Rule Units", "auto_id": "1270", "status": "clicked", "meta": {"name": "Apply", "auto_id": "1270", "control_type": "Button", "class_name": "Button", "enabled": true, "visible": true, "rect": [-611, 906, -479, 942]}, "method": "invoke"}
+{"kind": "start_stop", "label": "Testcase Rule Start/Stop", "start_id": "1218", "stop_id": "1219", "start_meta": {"name": "Start", "auto_id": "1218", "control_type": "Button", "class_name": "Button", "enabled": true, "visible": true, "rect": [-1467, 344, -1382, 369]}, "start_method": "invoke", "status": "start_clicked", "stop_meta": {"name": "Stop", "auto_id": "1219", "control_type": "Button", "class_name": "Button", "enabled": false, "visible": true, "rect": [-1333, 344, -1248, 369]}, "new_windows": [{"hwnd": 5048170, "title": "H-OTA Studio", "class_name": "#32770", "rect": [-1095, 431, -825, 601]}], "output_before_count": 0, "output_after_count": 0, "new_output_lines": []}
+{"kind": "start_stop", "label": "Action Rule Start/Stop", "start_id": "1232", "stop_id": "1231", "start_meta": {"name": "Start", "auto_id": "1232", "control_type": "Button", "class_name": "Button", "enabled": false, "visible": true, "rect": [-1081, 344, -996, 369]}, "status": "start_disabled", "output_before_count": 0, "output_after_count": 0, "new_output_lines": []}
+{"kind": "skipped", "name": "SAVE", "reason": "Would write the loaded H-OTA config file."}
+{"kind": "skipped", "name": "Logout", "reason": "Would change the user's H-OTA login/session state."}
+
+=== FINAL UI TREE ===
+ Window name='ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r' auto_id='' class='Afx:002D0000:8:00010003:00000000:00B1048F' enabled=False visible=True rect=[-1928, -8, 8, 1040]
+   | Pane name='H-OTA Studio' auto_id='' class='#32770' enabled=True visible=True rect=[-1095, 431, -825, 601]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True rect=[-1101, 601, -819, 607]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True rect=[-825, 431, -819, 601]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True rect=[-1101, 425, -819, 431]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=True visible=True rect=[-1101, 431, -1095, 601]
+   |   | Button name='OK' auto_id='1' class='Button' enabled=True visible=True rect=[-928, 559, -840, 585]
+   |   | Text name='There is no selected testcase.\r\nPlease check the Properties window.' auto_id='65535' class='Static' enabled=True visible=True rect=[-1032, 491, -843, 523]
+   | Pane name='Output' auto_id='' class='BCGPMiniFrame:2d0000:8:10003:10' enabled=False visible=True rect=[-1917, 588, -1517, 1017]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=False visible=True rect=[-1923, 1017, -1511, 1023]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=False visible=True rect=[-1517, 588, -1511, 1017]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=False visible=True rect=[-1923, 582, -1511, 588]
+   |   | Pane name='' auto_id='' class='BCGPShadowSideWnd' enabled=False visible=True rect=[-1923, 588, -1917, 1017]
+   |   | Pane name='Output' auto_id='32803' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1913, 619, -1521, 1013]
+   |   |   | Tab name='' auto_id='1' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True rect=[-1913, 643, -1521, 1037]
+   |   |   |   | List name='' auto_id='2' class='ListBox' enabled=True visible=True rect=[-1910, 646, -1524, 1015]
+   |   |   |   | TabItem name='Log' auto_id='' class='' enabled=True visible=True rect=[-1913, 1017, -1882, 1035]
+   |   |   | Pane name='' auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1913, 619, -205, 643]
+   |   |   |   | Text name='Log Path :' auto_id='65535' class='Static' enabled=True visible=True rect=[-1912, 622, -204, 646]
+   |   |   |   | Edit name='Log Path :' auto_id='33001' class='Edit' enabled=True visible=True rect=[-1832, 623, -224, 638]
+   | ToolBar name='' auto_id='' class='BCGPSlider:2d0000:8:10003:10' enabled=True visible=True rect=[-1522, 153, -1516, 1008]
+   | Pane name='Properties' auto_id='32860' class='BCGPControlBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1920, 153, -1522, 1008]
+   |   | Table name='PropertyList' auto_id='2' class='BCGPPropList:2d0000:8:10003:10' enabled=True visible=True rect=[-1920, 213, -1522, 1008]
+   |   |   | Pane name='PropertyListToolbar' auto_id='59392' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1916, 215, -1867, 241]
+   |   |   |   | Button name='Categorized' auto_id='' class='' enabled=True visible=True rect=[-1914, 216, -1892, 238]
+   |   |   |   | Button name='Alphabetical' auto_id='' class='' enabled=True visible=True rect=[-1892, 216, -1870, 238]
+   |   |   | Edit name='' auto_id='4' class='Edit' enabled=True visible=True rect=[-1863, 215, -1526, 239]
+   |   |   | ScrollBar name='' auto_id='2' class='ScrollBar' enabled=True visible=True rect=[-1539, 243, -1522, 864]
+   |   |   |   | Button name='Line up' auto_id='UpButton' class='' enabled=True visible=False rect=[0, 0, 0, 0]
+   |   |   |   | Button name='Page up' auto_id='UpPageButton' class='' enabled=True visible=False rect=[0, 0, 0, 0]
+   |   |   |   | Thumb name='Position' auto_id='ScrollbarThumb' class='' enabled=True visible=False rect=[0, 0, 0, 0]
+   |   |   |   | Button name='Page down' auto_id='DownPageButton' class='' enabled=True visible=False rect=[0, 0, 0, 0]
+   |   |   |   | Button name='Line down' auto_id='DownButton' class='' enabled=True visible=False rect=[0, 0, 0, 0]
+   |   |   | Custom name='Wired' auto_id='' class='' enabled=True visible=True rect=[-1920, 242, -1539, 259]
+   |   |   | Custom name='TC_TAR_03010' auto_id='' class='' enabled=True visible=True rect=[-1903, 259, -1539, 276]
+   |   |   | Custom name='TC_TAR_03020' auto_id='' class='' enabled=True visible=True rect=[-1903, 276, -1539, 293]
+   |   |   | Custom name='TransferData_Invert_area' auto_id='' class='' enabled=True visible=True rect=[-1903, 293, -1539, 310]
+   |   |   | Custom name='TC_TAR_03030' auto_id='' class='' enabled=True visible=True rect=[-1903, 310, -1539, 327]
+   |   |   | Custom name='softwareInformation' auto_id='' class='' enabled=True visible=True rect=[-1920, 327, -1539, 344]
+   |   |   | Custom name='TC_TAR_02010' auto_id='' class='' enabled=True visible=True rect=[-1903, 344, -1539, 361]
+   |   |   | Custom name='Background-Transfer' auto_id='' class='' enabled=True visible=True rect=[-1920, 361, -1539, 378]
+   |   |   | Custom name='TC_TAR_01010' auto_id='' class='' enabled=True visible=True rect=[-1903, 378, -1539, 395]
+   |   |   | Custom name='TC_TAR_01011' auto_id='' class='' enabled=True visible=True rect=[-1903, 395, -1539, 412]
+   |   |   | Custom name='TransferData_Invert_area' auto_id='' class='' enabled=True visible=True rect=[-1903, 412, -1539, 429]
+   |   |   | Custom name='OTAReady' auto_id='' class='' enabled=True visible=True rect=[-1920, 429, -1539, 446]
+   |   |   | Custom name='TC_TAR_02020-02050' auto_id='' class='' enabled=True visible=True rect=[-1903, 446, -1539, 463]
+   |   |   | Custom name='TC_TAR_02020-02051' auto_id='' class='' enabled=True visible=True rect=[-1903, 463, -1539, 480]
+   |   |   | Custom name='VehicleType' auto_id='' class='' enabled=True visible=True rect=[-1903, 480, -1539, 497]
+   |   |   | Custom name='NMMessage_Type' auto_id='' class='' enabled=True visible=True rect=[-1903, 497, -1539, 514]
+   |   |   | Custom name='NMMessage_Time' auto_id='' class='' enabled=True visible=True rect=[-1903, 514, -1539, 531]
+   |   |   | Custom name='TestECU' auto_id='' class='' enabled=True visible=True rect=[-1903, 531, -1539, 548]
+   |   |   | Custom name='UpdateAndFinish' auto_id='' class='' enabled=True visible=True rect=[-1920, 548, -1539, 565]
+   |   |   | Custom name='TC_TAR_01020' auto_id='' class='' enabled=True visible=True rect=[-1903, 565, -1539, 582]
+   |   |   | Custom name='TC_TAR_01021' auto_id='' class='' enabled=True visible=True rect=[-1903, 582, -1539, 599]
+   |   |   | Custom name='TC_TAR_01022' auto_id='' class='' enabled=True visible=True rect=[-1903, 599, -1539, 616]
+   |   |   | Custom name='TransferData_Invert_area' auto_id='' class='' enabled=True visible=True rect=[-1903, 616, -1539, 633]
+   |   |   | Custom name='TC_TAR_01023' auto_id='' class='' enabled=True visible=True rect=[-1903, 633, -1539, 650]
+   |   |   | Custom name='Reset' auto_id='' class='' enabled=True visible=True rect=[-1920, 650, -1539, 667]
+   |   |   | Custom name='TC_TAR_01030' auto_id='' class='' enabled=True visible=True rect=[-1903, 667, -1539, 684]
+   |   |   | Custom name='TC_TAR_01035' auto_id='' class='' enabled=True visible=True rect=[-1903, 684, -1539, 701]
+   |   |   | Custom name='TransferData_Invert_area' auto_id='' class='' enabled=True visible=True rect=[-1903, 701, -1539, 718]
+   |   |   | Custom name='Rollback' auto_id='' class='' enabled=True visible=True rect=[-1920, 718, -1539, 735]
+   |   |   | Custom name='TC_TAR_01040' auto_id='' class='' enabled=True visible=True rect=[-1903, 735, -1539, 752]
+   |   |   | Custom name='TC_TAR_01045' auto_id='' class='' enabled=True visible=True rect=[-1903, 752, -1539, 769]
+   |   |   | Custom name='R-ROM Path' auto_id='' class='' enabled=True visible=True rect=[-1903, 769, -1539, 786]
+   |   |   | Custom name='TC_TAR_01050' auto_id='' class='' enabled=True visible=True rect=[-1903, 786, -1539, 803]
+   |   |   | Custom name='TC_TAR_01053' auto_id='' class='' enabled=True visible=True rect=[-1903, 803, -1539, 820]
+   |   |   | Custom name='TC_TAR_01055' auto_id='' class='' enabled=True visible=True rect=[-1903, 820, -1539, 837]
+   |   |   | Custom name='General' auto_id='' class='' enabled=True visible=True rect=[-1920, 837, -1539, 854]
+   |   |   | Custom name='TC_TAR_01060' auto_id='' class='' enabled=True visible=True rect=[-1903, 854, -1539, 871]
+   |   |   | Custom name='TC_TAR_01070' auto_id='' class='' enabled=True visible=True rect=[-1903, 871, -1539, 888]
+   |   |   | Custom name='R-ROM Path' auto_id='' class='' enabled=True visible=True rect=[-1903, 888, -1539, 905]
+   |   |   | Custom name='TC_TAR_02060' auto_id='' class='' enabled=True visible=True rect=[-1903, 905, -1539, 922]
+   |   |   | Custom name='TC_TAR_02070' auto_id='' class='' enabled=True visible=True rect=[-1903, 922, -1539, 939]
+   |   |   | Custom name='OTAFunctionSafety' auto_id='' class='' enabled=True visible=True rect=[-1920, 939, -1539, 956]
+   |   |   | Custom name='TC_TAR_01080' auto_id='' class='' enabled=True visible=True rect=[-1903, 956, -1539, 973]
+   |   |   | Custom name='TC_TAR_01081' auto_id='' class='' enabled=True visible=True rect=[-1903, 973, -1539, 990]
+   |   |   | Custom name='TC_TAR_01082_01084' auto_id='' class='' enabled=True visible=True rect=[-1903, 990, -1539, 1007]
+   |   |   | Custom name='TC_TAR_01083_01084' auto_id='' class='' enabled=True visible=True rect=[-1903, 1007, -1539, 1024]
+   |   |   | Custom name='TC_TAR_01082_01085' auto_id='' class='' enabled=True visible=False rect=[-1903, 1024, -1539, 1041]
+   |   |   | Custom name='TC_TAR_01083_01085' auto_id='' class='' enabled=True visible=False rect=[-1903, 1041, -1539, 1058]
+   |   | Pane name='' auto_id='160' class='BCGPToolBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1920, 188, -1522, 213]
+   | ToolBar name=' ' auto_id='59398' class='BCGPRibbonBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1920, 0, 0, 153]
+   |   | Button name='Application menu' auto_id='' class='' enabled=True visible=True rect=[-1920, 33, -1861, 60]
+   |   | ToolBar name='Quick Access Toolbar' auto_id='' class='' enabled=True visible=True rect=[-1912, 0, -1871, 33]
+   |   |   | Button name='SAVE' auto_id='' class='' enabled=True visible=True rect=[-1910, 0, -1888, 28]
+   |   |   | SplitButton name='Customize Quick Access Toolbar' auto_id='' class='' enabled=True visible=True rect=[-1886, 0, -1873, 27]
+   |   | Group name='Ribbon Tabs' auto_id='' class='' enabled=True visible=True rect=[-1860, 33, -88, 60]
+   |   |   | TabItem name='Home' auto_id='' class='' enabled=True visible=True rect=[-1860, 33, -1802, 60]
+   |   |   | TabItem name='Edit' auto_id='' class='' enabled=True visible=True rect=[-1802, 33, -1754, 60]
+   |   |   | TabItem name='Window' auto_id='' class='' enabled=True visible=True rect=[-1754, 33, -1680, 60]
+   |   | ToolBar name='Home' auto_id='' class='' enabled=True visible=True rect=[-1920, 60, 0, 153]
+   |   |   | ToolBar name='Tools' auto_id='' class='' enabled=True visible=True rect=[-1916, 63, -1475, 149]
+   |   |   |   | Button name='Hex2Binary' auto_id='' class='' enabled=True visible=True rect=[-1912, 65, -1851, 131]
+   |   |   |   | Button name='RomPakage' auto_id='' class='' enabled=True visible=True rect=[-1851, 65, -1786, 131]
+   |   |   |   | Button name='XML Conversion' auto_id='' class='' enabled=True visible=True rect=[-1786, 65, -1723, 131]
+   |   |   |   | Button name='LogView' auto_id='' class='' enabled=True visible=True rect=[-1723, 65, -1674, 131]
+   |   |   |   | Button name='Generator' auto_id='' class='' enabled=True visible=True rect=[-1674, 65, -1617, 131]
+   |   |   |   | Button name='RFS' auto_id='' class='' enabled=True visible=True rect=[-1617, 65, -1575, 131]
+   |   |   |   | Button name='Bi-Authenticaiton' auto_id='' class='' enabled=True visible=True rect=[-1575, 65, -1480, 131]
+   |   |   | ToolBar name='Mode' auto_id='' class='' enabled=True visible=True rect=[-1473, 63, -1344, 149]
+   |   |   |   | Button name='TesterMode' auto_id='' class='' enabled=False visible=True rect=[-1469, 65, -1404, 131]
+   |   |   |   | Button name='EditMode' auto_id='' class='' enabled=True visible=True rect=[-1404, 65, -1349, 131]
+   |   |   | ToolBar name='Help' auto_id='' class='' enabled=True visible=True rect=[-1342, 63, -1164, 149]
+   |   |   |   | Button name='Option' auto_id='' class='' enabled=True visible=True rect=[-1338, 65, -1296, 131]
+   |   |   |   | Button name='Error Lookup' auto_id='' class='' enabled=True visible=True rect=[-1296, 65, -1253, 131]
+   |   |   |   | Button name='Report Config' auto_id='' class='' enabled=True visible=True rect=[-1253, 65, -1211, 131]
+   |   |   |   | Button name='Logout' auto_id='' class='' enabled=True visible=True rect=[-1211, 65, -1169, 131]
+   |   |   | ToolBar name='Support' auto_id='' class='' enabled=True visible=True rect=[-1162, 63, -1059, 149]
+   |   |   |   | Button name='Manual' auto_id='' class='' enabled=True visible=True rect=[-1158, 65, -1115, 131]
+   |   |   |   | Button name='Technical Support' auto_id='' class='' enabled=True visible=True rect=[-1115, 65, -1064, 131]
+   |   | Button name='About' auto_id='' class='' enabled=True visible=True rect=[-25, 35, -1, 57]
+   | ToolBar name=' ' auto_id='59393' class='BCGPRibbonStatusBar:2d0000:8:10003:10' enabled=True visible=True rect=[-1920, 1008, 0, 1032]
+   | Pane name='Workspace' auto_id='59648' class='MDIClient' enabled=True visible=True rect=[-1516, 153, 0, 1008]
+   |   | Window name='ReprogramConfig_0_1_1_114.hcfg-r' auto_id='65280' class='Afx:002D0000:b:00010003:00000006:00160233' enabled=True visible=True rect=[-1511, 180, -5, 1003]
+   |   |   | Pane name='' auto_id='59648' class='AfxFrameOrView140u' enabled=True visible=True rect=[-1511, 180, -5, 1003]
+   |   |   |   | Button name='Stop' auto_id='1219' class='Button' enabled=False visible=True rect=[-1333, 344, -1248, 369]
+   |   |   |   | Button name='Start' auto_id='1218' class='Button' enabled=True visible=True rect=[-1467, 344, -1382, 369]
+   |   |   |   | Button name='Stop' auto_id='1231' class='Button' enabled=False visible=True rect=[-953, 344, -868, 369]
+   |   |   |   | Button name='Start' auto_id='1232' class='Button' enabled=False visible=True rect=[-1081, 344, -996, 369]
+   |   |   |   | List name='' auto_id='1222' class='SysListView32' enabled=True visible=True rect=[-1081, 436, -799, 954]
+   |   |   |   |   | Header name='Header Control' auto_id='Header' class='SysHeader32' enabled=True visible=True rect=[-1079, 438, -801, 462]
+   |   |   |   |   |   | HeaderItem name='Stauts' auto_id='HeaderItem 0' class='' enabled=True visible=True rect=[-1079, 438, -1020, 462]
+   |   |   |   |   |   | HeaderItem name='Description' auto_id='HeaderItem 1' class='' enabled=True visible=True rect=[-1020, 438, -801, 462]
+   |   |   |   | Group name='Action Rule' auto_id='1239' class='Button' enabled=True visible=True rect=[-1103, 310, -351, 968]
+   |   |   |   | List name='Action Rule' auto_id='1221' class='SysListView32' enabled=True visible=True rect=[-1467, 436, -1161, 954]
+   |   |   |   |   | Header name='Header Control' auto_id='Header' class='SysHeader32' enabled=True visible=True rect=[-1465, 438, -1163, 462]
+   |   |   |   |   |   | HeaderItem name='Stauts' auto_id='HeaderItem 0' class='' enabled=True visible=True rect=[-1465, 438, -1402, 462]
+   |   |   |   |   |   | HeaderItem name='Description' auto_id='HeaderItem 1' class='' enabled=True visible=True rect=[-1402, 438, -1163, 462]
+   |   |   |   | Group name='Testcase Rule' auto_id='1238' class='Button' enabled=True visible=True rect=[-1483, 310, -1143, 968]
+   |   |   |   | CheckBox name='For Cooperative ECU' auto_id='1234' class='Button' enabled=True visible=True rect=[-329, 238, -171, 264]
+   |   |   |   | CheckBox name='Add Pre Procedure' auto_id='1236' class='Button' enabled=True visible=True rect=[-713, 674, -479, 702]
+   |   |   |   | ComboBox name='' auto_id='1233' class='ComboBox' enabled=True visible=True rect=[-1137, 238, -975, 262]
+   |   |   |   |   | Text name='' auto_id='' class='' enabled=True visible=False rect=[3, 3, 142, 21]
+   |   |   |   |   | Button name='Open' auto_id='DropDown' class='' enabled=True visible=True rect=[-991, 239, -976, 261]
+   |   |   |   | Text name='SourceAddr : ' auto_id='1269' class='Static' enabled=True visible=True rect=[-1231, 244, -1139, 260]
+   |   |   |   | ProgressBar name='SourceAddr : ' auto_id='1220' class='msctls_progress32' enabled=True visible=True rect=[-1467, 396, -1231, 424]
+   |   |   |   | ProgressBar name='SourceAddr : ' auto_id='1223' class='msctls_progress32' enabled=True visible=True rect=[-1081, 396, -855, 424]
+   |   |   |   | CheckBox name='Add Background-Transfer' auto_id='1260' class='Button' enabled=True visible=True rect=[-713, 588, -461, 604]
+   |   |   |   | CheckBox name='Add Processing-Preperation(OBD EMS)' auto_id='1261' class='Button' enabled=False visible=True rect=[-713, 632, -419, 648]
+   |   |   |   | CheckBox name='Add Processing' auto_id='1262' class='Button' enabled=False visible=True rect=[-713, 726, -419, 742]
+   |   |   |   | CheckBox name='Add Activation' auto_id='1263' class='Button' enabled=True visible=True rect=[-713, 770, -419, 786]
+   |   |   |   | CheckBox name='Add Rollback' auto_id='1264' class='Button' enabled=True visible=True rect=[-713, 814, -419, 830]
+   |   |   |   | Button name='Apply' auto_id='1270' class='Button' enabled=True visible=True rect=[-611, 906, -479, 942]
+   |   |   |   | Group name='Add Rule Units' auto_id='1271' class='Button' enabled=True visible=True rect=[-743, 556, -379, 954]
+   |   |   |   | Group name='Use Options' auto_id='1272' class='Button' enabled=True visible=True rect=[-1483, 198, 35, 288]
+   |   |   |   | Group name='Add Scenario Units' auto_id='1276' class='Button' enabled=True visible=True rect=[-743, 338, -379, 542]
+   |   |   |   | RadioButton name='Wired-Rules' auto_id='1273' class='Button' enabled=True visible=True rect=[-713, 382, -599, 404]
+   |   |   |   | RadioButton name='Wireless-Rules' auto_id='1274' class='Button' enabled=True visible=True rect=[-713, 426, -579, 446]
+   |   |   |   | Button name='Apply' auto_id='1277' class='Button' enabled=True visible=True rect=[-611, 494, -479, 528]
+   |   |   |   | Text name='0.00%' auto_id='1278' class='Static' enabled=True visible=True rect=[-841, 400, -785, 416]
+   |   |   |   | Text name='0.00%' auto_id='1279' class='Static' enabled=True visible=True rect=[-1219, 402, -1161, 418]
+   |   |   |   | CheckBox name='Add Post Procedure' auto_id='1240' class='Button' enabled=True visible=True rect=[-713, 854, -479, 882]
+   |   |   |   | CheckBox name='OEUK Vehicle' auto_id='1224' class='Button' enabled=True visible=True rect=[-161, 242, -47, 262]
+   |   |   |   | CheckBox name='NFS' auto_id='1225' class='Button' enabled=True visible=True rect=[-35, 242, 21, 262]
+   |   |   |   | ComboBox name='' auto_id='1241' class='ComboBox' enabled=True visible=True rect=[-1361, 238, -1237, 262]
+   |   |   |   |   | Text name='' auto_id='' class='' enabled=True visible=False rect=[3, 3, 104, 21]
+   |   |   |   |   | Button name='Open' auto_id='DropDown' class='' enabled=True visible=True rect=[-1253, 239, -1238, 261]
+   |   |   |   | Text name='GatewayType : ' auto_id='1280' class='Static' enabled=True visible=True rect=[-1475, 244, -1369, 260]
+   |   |   |   | RadioButton name='OTA-estimatedRuntime' auto_id='1275' class='Button' enabled=True visible=True rect=[-713, 466, -537, 486]
+   |   |   |   | Text name='Procedure Model Type :' auto_id='' class='Static' enabled=True visible=True rect=[-941, 244, -779, 260]
+   |   |   |   | ComboBox name='Procedure Model Type :' auto_id='1250' class='ComboBox' enabled=True visible=True rect=[-777, 238, -541, 262]
+   |   |   |   |   | Text name='Procedure Model Type :' auto_id='' class='' enabled=True visible=False rect=[3, 3, 216, 21]
+   |   |   |   |   | Button name='Open' auto_id='DropDown' class='' enabled=True visible=True rect=[-557, 239, -542, 261]
+   |   |   |   | Text name='DLC : ' auto_id='1281' class='Static' enabled=True visible=True rect=[-483, 244, -443, 260]
+   |   |   |   | ComboBox name='DLC : ' auto_id='1235' class='ComboBox' enabled=False visible=True rect=[-437, 238, -341, 262]
+   |   |   |   |   | Text name='DLC : ' auto_id='' class='' enabled=True visible=False rect=[3, 3, 76, 21]
+   |   |   |   |   | Button name='Open' auto_id='DropDown' class='' enabled=True visible=True rect=[-357, 239, -342, 261]
+   |   |   |   | Thumb name='' auto_id='' class='' enabled=False visible=True rect=[-22, 986, -5, 1003]
+   |   | Tab name='' auto_id='' class='BCGPTabWnd:2d0000:8:10003:10' enabled=True visible=True rect=[-1516, 153, 0, 1008]
+   |   |   | Button name='' auto_id='' class='Button' enabled=True visible=True rect=[-22, 157, -7, 172]
+   |   |   | TabItem name='ReprogramConfig_0_1_1_114.hcfg-r' auto_id='' class='' enabled=True visible=True rect=[-1511, 155, -1279, 176]
+   | TitleBar name='' auto_id='' class='' enabled=True visible=True rect=[-1898, 0, 0, 23]
+   |   | MenuBar name='System' auto_id='MenuBar' class='' enabled=True visible=True rect=[-1920, 0, -1898, 22]
+   |   |   | MenuItem name='System' auto_id='' class='' enabled=True visible=True rect=[-1920, 0, -1898, 22]
+   |   | Button name='Minimize' auto_id='' class='' enabled=True visible=True rect=[-67, -1, -43, 23]
+   |   | Button name='Restore' auto_id='' class='' enabled=True visible=True rect=[-45, -1, -21, 23]
+   |   | Button name='Close' auto_id='' class='' enabled=True visible=True rect=[-23, -1, 1, 23]

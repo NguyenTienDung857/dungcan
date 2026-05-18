@@ -1,0 +1,4561 @@
+{
+  "script_count": 33,
+  "selectors": [
+    {
+      "file": "case_001.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_001.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_001.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_001.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_001.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_001.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_002.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 473,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 483,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 501,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 508,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 518,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_002.py",
+      "line": 421,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_002.py",
+      "line": 459,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_002.py",
+      "line": 463,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_002.py",
+      "line": 495,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_003.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 473,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 483,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 501,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 508,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 518,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_003.py",
+      "line": 421,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_003.py",
+      "line": 459,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_003.py",
+      "line": 463,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_003.py",
+      "line": 495,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_004.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 473,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 483,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 501,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 508,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 518,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_004.py",
+      "line": 421,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_004.py",
+      "line": 459,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_004.py",
+      "line": 463,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_004.py",
+      "line": 495,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_005.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 473,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 483,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 501,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 508,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 518,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_005.py",
+      "line": 421,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_005.py",
+      "line": 459,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_005.py",
+      "line": 463,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_005.py",
+      "line": 495,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_006.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_006.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_006.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_006.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_006.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_007.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 472,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 482,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 500,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 507,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 517,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_007.py",
+      "line": 420,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_007.py",
+      "line": 458,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_007.py",
+      "line": 462,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_007.py",
+      "line": 494,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_008.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 472,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 482,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 500,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 507,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 517,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_008.py",
+      "line": 420,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_008.py",
+      "line": 458,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_008.py",
+      "line": 462,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_008.py",
+      "line": 494,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_009.py",
+      "line": 100,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 104,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 489,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 499,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 517,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 524,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 534,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "line": 73,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_009.py",
+      "line": 437,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_009.py",
+      "line": 475,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_009.py",
+      "line": 479,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_009.py",
+      "line": 511,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 333,
+      "selector": "title=title, control_type=\"CheckBox\"",
+      "auto_ids": [],
+      "titles": [],
+      "control_types": [
+        "CheckBox"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 464,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 474,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 517,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 529,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 412,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 450,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 454,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_009_2.py",
+      "line": 486,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_010.py",
+      "line": 99,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 103,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 454,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 464,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 482,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 489,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 499,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "line": 72,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_010.py",
+      "line": 402,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_010.py",
+      "line": 440,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_010.py",
+      "line": 444,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_010.py",
+      "line": 476,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 333,
+      "selector": "title=title, control_type=\"CheckBox\"",
+      "auto_ids": [],
+      "titles": [],
+      "control_types": [
+        "CheckBox"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 464,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 474,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 517,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 529,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 412,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 450,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 454,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_010_2.py",
+      "line": 486,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_011.py",
+      "line": 100,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 104,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 489,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 499,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 517,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 524,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 534,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "line": 73,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_011.py",
+      "line": 437,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_011.py",
+      "line": 475,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_011.py",
+      "line": 479,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_011.py",
+      "line": 511,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_012.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 453,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 463,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 481,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 488,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 498,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_012.py",
+      "line": 401,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_012.py",
+      "line": 439,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_012.py",
+      "line": 443,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_012.py",
+      "line": 475,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_015.py",
+      "line": 98,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 102,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 334,
+      "selector": "title=title, control_type=\"CheckBox\"",
+      "auto_ids": [],
+      "titles": [],
+      "control_types": [
+        "CheckBox"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 466,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 476,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 497,
+      "selector": "title_re=\".*OEUK.*Vehicle.*\", control_type=ctrl_type",
+      "auto_ids": [],
+      "titles": [
+        ".*OEUK.*Vehicle.*"
+      ],
+      "control_types": []
+    },
+    {
+      "file": "case_015.py",
+      "line": 560,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 572,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "line": 71,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_015.py",
+      "line": 414,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_015.py",
+      "line": 452,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_015.py",
+      "line": 456,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_015.py",
+      "line": 488,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_016.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 333,
+      "selector": "title=title, control_type=\"CheckBox\"",
+      "auto_ids": [],
+      "titles": [],
+      "control_types": [
+        "CheckBox"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 465,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 475,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 519,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 531,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_016.py",
+      "line": 413,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_016.py",
+      "line": 451,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_016.py",
+      "line": 455,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_016.py",
+      "line": 487,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_019.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 480,
+      "selector": "title_re=\".*OEUK.*Vehicle.*\", control_type=ctrl_type",
+      "auto_ids": [],
+      "titles": [
+        ".*OEUK.*Vehicle.*"
+      ],
+      "control_types": []
+    },
+    {
+      "file": "case_019.py",
+      "line": 517,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 524,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 534,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_019.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_019.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_019.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_019.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_020.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_020.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_020.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_020.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_020.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_021.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_021.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_021.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_021.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_021.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_021.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_022.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_022.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_022.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_022.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_022.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_022.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_023.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_023.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_023.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_023.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_023.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_023.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_024.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "case_024.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "case_024.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "case_024.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "case_024.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "case_024.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 333,
+      "selector": "title=title, control_type=\"CheckBox\"",
+      "auto_ids": [],
+      "titles": [],
+      "control_types": [
+        "CheckBox"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 465,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 475,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 519,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 531,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 413,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 451,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 455,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "line": 487,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_00.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_01.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_02.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 96,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 100,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 448,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 458,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 476,
+      "selector": "auto_id=\"1274\", control_type=\"RadioButton\"",
+      "auto_ids": [
+        "1274"
+      ],
+      "titles": [],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 483,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 493,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 69,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 396,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 434,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 438,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_03.py",
+      "line": 470,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 97,
+      "selector": "title=\"Output\", auto_id=\"32803\", control_type=\"Pane\"",
+      "auto_ids": [
+        "32803"
+      ],
+      "titles": [
+        "Output"
+      ],
+      "control_types": [
+        "Pane"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 101,
+      "selector": "auto_id=\"2\", control_type=\"List\"",
+      "auto_ids": [
+        "2"
+      ],
+      "titles": [],
+      "control_types": [
+        "List"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 449,
+      "selector": "title=\"TesterMode\", control_type=\"Button\"",
+      "auto_ids": [],
+      "titles": [
+        "TesterMode"
+      ],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 459,
+      "selector": "auto_id=\"1241\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1241"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 478,
+      "selector": "auto_id=\"1233\", control_type=\"ComboBox\"",
+      "auto_ids": [
+        "1233"
+      ],
+      "titles": [],
+      "control_types": [
+        "ComboBox"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 515,
+      "selector": "title_re=\".*Wired.*Rule.*\", control_type=\"RadioButton\"",
+      "auto_ids": [],
+      "titles": [
+        ".*Wired.*Rule.*"
+      ],
+      "control_types": [
+        "RadioButton"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 523,
+      "selector": "auto_id=\"1277\", control_type=\"Button\"",
+      "auto_ids": [
+        "1277"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 533,
+      "selector": "auto_id=\"1232\", control_type=\"Button\"",
+      "auto_ids": [
+        "1232"
+      ],
+      "titles": [],
+      "control_types": [
+        "Button"
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 70,
+      "send_keys": "\"%\""
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 397,
+      "send_keys": "\"^o\""
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 435,
+      "send_keys": "file_path, with_spaces=True"
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 439,
+      "send_keys": "\"{ENTER}\""
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 471,
+      "send_keys": "\"CCU1 : EthDiag{ENTER}\", with_spaces=True"
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "line": 508,
+      "send_keys": "\"ERT :0x1000{ENTER}\", with_spaces=True"
+    }
+  ],
+  "flows": [
+    {
+      "file": "case_001.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_002.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports Pre-Procedure Rule Start, set PythonCom::AppState = 12.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_003.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports Pre-Procedure Rule Start, set PythonCom::AppState = 12.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_004.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports Pre-Procedure Rule Start, set PythonCom::AppState = 12.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_005.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports Pre-Procedure Rule Start, set PythonCom::AppState = 12.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_006.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 2.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_007.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_008.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_009.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports CommunicationControl or Activate-Rule, set",
+        "PythonCom::AppState = 9, capture _half screenshots, close H-OTA Studio,",
+        "and return immediately.",
+        "12. If no early return happened, continue waiting for the final result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_009_2.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. In Add Rule Units, check Add Pre Procedure, Add Activation,",
+        "and Add Post Procedure, then click Apply.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_010.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output contains activate-rule, wait for a later securityAccess",
+        "line, wait 5s, then set PythonCom::AppState = 10, capture _half screenshots,",
+        "close H-OTA Studio, and return immediately.",
+        "12. If no early return happened, continue waiting for the final result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_010_2.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. In Add Rule Units, check Add Pre Procedure, Add Activation,",
+        "and Add Post Procedure, then click Apply.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_011.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output reports CommunicationControl or Activate-Rule, set",
+        "PythonCom::AppState = 11 once, capture _half screenshots, then keep",
+        "waiting for the popup.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_012.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. When Output contains activate-rule, wait for a later securityAccess",
+        "line, wait 5s, then set PythonCom::AppState = 12 and capture _half screenshots.",
+        "12. Continue waiting for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_015.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select OEUK Vehicle before configuring rule units.",
+        "9. In Add Rule Units, check Add Pre Procedure, Add Rollback,",
+        "and Add Post Procedure, then click Apply.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_016.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. In Add Rule Units, check Add Pre Procedure, Add Rollback,",
+        "and Add Post Procedure, then click Apply.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_019.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select OEUK Vehicle.",
+        "9. Select Wireless-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_020.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_021.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_022.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_023.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 2.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "case_024.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "Rollback_to_00.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. In Add Rule Units, check Add Pre Procedure, Add Rollback,",
+        "and Add Post Procedure, then click Apply.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_00.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_00_ERT.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 0.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_01.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_01_ERT.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 1.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_02.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 2.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_02_ERT.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 2.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_03.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Select Wireless-Rules and click Apply for Scenario Units.",
+        "9. Click Start in Action Rule.",
+        "10. Mirror new Output pane lines to the terminal while waiting.",
+        "11. Wait for the final H-OTA result popup.",
+        "12. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "13. Capture the H-OTA window and every monitor into Report/.",
+        "14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    },
+    {
+      "file": "update_to_03_ERT.py",
+      "flow": [
+        "1. Ensure Administrator rights; relaunch elevated when needed.",
+        "2. Kill old H-OTA Studio processes for a clean start.",
+        "3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.",
+        "4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.",
+        "5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.",
+        "6. Click TesterMode.",
+        "7. Set Gateway Type to \"CCU1 : EthDiag\".",
+        "8. Set SourceAddr to \"ERT :0x1000\".",
+        "9. Select Wired-Rules and click Apply for Scenario Units.",
+        "10. Click Start in Action Rule.",
+        "11. Mirror new Output pane lines to the terminal while waiting.",
+        "12. Wait for the final H-OTA result popup.",
+        "13. If popup text contains success, set PythonCom::AppState = 3;",
+        "otherwise set PythonCom::AppState = 4.",
+        "14. Capture the H-OTA window and every monitor into Report/.",
+        "15. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\\*.asc to",
+        "LOGASC\\<original>_<script_name>_YYYYMMDD_HHMMSS.asc."
+      ]
+    }
+  ],
+  "auto_id_counts": {
+    "32803": 31,
+    "2": 31,
+    "1241": 31,
+    "1277": 31,
+    "1232": 31,
+    "1274": 18,
+    "1233": 8
+  },
+  "title_counts": {
+    "Output": 31,
+    "TesterMode": 31,
+    ".*Wired.*Rule.*": 8,
+    ".*OEUK.*Vehicle.*": 2
+  },
+  "control_type_counts": {
+    "Button": 93,
+    "ComboBox": 39,
+    "Pane": 31,
+    "List": 31,
+    "RadioButton": 26,
+    "CheckBox": 5
+  },
+  "action_hits": {
+    "TesterMode": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "Gateway Type": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "Wireless-Rules": [
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_010.py",
+      "case_011.py",
+      "case_012.py",
+      "case_019.py",
+      "case_020.py",
+      "update_to_00.py",
+      "update_to_01.py",
+      "update_to_02.py",
+      "update_to_03.py"
+    ],
+    "Apply": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "Start": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "Output": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "AppState": [
+      "Rollback_to_00.py",
+      "case_001.py",
+      "case_002.py",
+      "case_003.py",
+      "case_004.py",
+      "case_005.py",
+      "case_006.py",
+      "case_007.py",
+      "case_008.py",
+      "case_009.py",
+      "case_009_2.py",
+      "case_010.py",
+      "case_010_2.py",
+      "case_011.py",
+      "case_012.py",
+      "case_015.py",
+      "case_016.py",
+      "case_019.py",
+      "case_020.py",
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00.py",
+      "update_to_00_ERT.py",
+      "update_to_01.py",
+      "update_to_01_ERT.py",
+      "update_to_02.py",
+      "update_to_02_ERT.py",
+      "update_to_03.py",
+      "update_to_03_ERT.py"
+    ],
+    "Add Activation": [
+      "case_009_2.py",
+      "case_010_2.py"
+    ],
+    "Add Rollback": [
+      "Rollback_to_00.py",
+      "case_015.py",
+      "case_016.py"
+    ],
+    "OEUK": [
+      "case_015.py",
+      "case_019.py"
+    ],
+    "SourceAddr": [
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00_ERT.py",
+      "update_to_01_ERT.py",
+      "update_to_02_ERT.py",
+      "update_to_03_ERT.py"
+    ],
+    "Wired-Rules": [
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00_ERT.py",
+      "update_to_01_ERT.py",
+      "update_to_02_ERT.py",
+      "update_to_03_ERT.py"
+    ],
+    "ERT": [
+      "case_021.py",
+      "case_022.py",
+      "case_023.py",
+      "case_024.py",
+      "update_to_00_ERT.py",
+      "update_to_01_ERT.py",
+      "update_to_02_ERT.py",
+      "update_to_03_ERT.py"
+    ]
+  }
+}

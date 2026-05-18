@@ -1,0 +1,1102 @@
+{
+  "top_windows": [
+    {
+      "hwnd": 395414,
+      "title": "[ . ] Action Required | CANFD",
+      "class_name": "ConsoleWindowClass",
+      "rect": [
+        -8,
+        -8,
+        1928,
+        1040
+      ]
+    },
+    {
+      "hwnd": 4326702,
+      "title": "doc - File Explorer",
+      "class_name": "CabinetWClass",
+      "rect": [
+        603,
+        92,
+        1604,
+        1032
+      ]
+    },
+    {
+      "hwnd": 264308,
+      "title": "Output",
+      "class_name": "BCGPMiniFrame:2d0000:8:10003:10",
+      "rect": [
+        -1917,
+        588,
+        -1517,
+        1017
+      ]
+    },
+    {
+      "hwnd": 395308,
+      "title": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r",
+      "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+      "rect": [
+        -1928,
+        -8,
+        8,
+        1040
+      ]
+    },
+    {
+      "hwnd": 459546,
+      "title": "scan_20260518_105845 - File Explorer",
+      "class_name": "CabinetWClass",
+      "rect": [
+        -1928,
+        -8,
+        8,
+        1040
+      ]
+    },
+    {
+      "hwnd": 264224,
+      "title": "C:\\Windows\\System32\\cmd.exe",
+      "class_name": "ConsoleWindowClass",
+      "rect": [
+        156,
+        156,
+        1149,
+        675
+      ]
+    },
+    {
+      "hwnd": 394530,
+      "title": "Settings",
+      "class_name": "Windows.UI.Core.CoreWindow",
+      "rect": [
+        0,
+        8,
+        1920,
+        1040
+      ]
+    },
+    {
+      "hwnd": 133280,
+      "title": "Settings",
+      "class_name": "ApplicationFrameWindow",
+      "rect": [
+        -8,
+        -8,
+        1928,
+        1040
+      ]
+    },
+    {
+      "hwnd": 132086,
+      "title": "Windows Input Experience",
+      "class_name": "Windows.UI.Core.CoreWindow",
+      "rect": [
+        0,
+        0,
+        1920,
+        1080
+      ]
+    },
+    {
+      "hwnd": 720934,
+      "title": "New tab and 1 more page - Personal - Microsoft​ Edge",
+      "class_name": "Chrome_WidgetWin_1",
+      "rect": [
+        -32000,
+        -32000,
+        -31840,
+        -31972
+      ]
+    },
+    {
+      "hwnd": 133058,
+      "title": "Form1",
+      "class_name": "WindowsForms10.Window.8.app.0.33c0d9d_r3_ad1",
+      "rect": [
+        -32000,
+        -32000,
+        -31840,
+        -31972
+      ]
+    },
+    {
+      "hwnd": 65814,
+      "title": "Program Manager",
+      "class_name": "Progman",
+      "rect": [
+        -1920,
+        0,
+        1920,
+        1080
+      ]
+    }
+  ],
+  "hota_windows": [
+    {
+      "hwnd": 395308,
+      "title": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r",
+      "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+      "rect": [
+        -1928,
+        -8,
+        8,
+        1040
+      ],
+      "children": [
+        {
+          "hwnd": 460918,
+          "id": -1,
+          "title": "",
+          "class_name": "BCGPSlider:2d0000:8:10003:10",
+          "rect": [
+            -1522,
+            153,
+            -1516,
+            1008
+          ]
+        },
+        {
+          "hwnd": 329626,
+          "id": 32860,
+          "title": "Properties",
+          "class_name": "BCGPControlBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            153,
+            -1522,
+            1008
+          ]
+        },
+        {
+          "hwnd": 263904,
+          "id": 2,
+          "title": "",
+          "class_name": "BCGPPropList:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            213,
+            -1522,
+            1008
+          ]
+        },
+        {
+          "hwnd": 198354,
+          "id": 59392,
+          "title": "PropertyListToolbar",
+          "class_name": "BCGPToolBar:2d0000:8:10003:10",
+          "rect": [
+            -1916,
+            215,
+            -1867,
+            241
+          ]
+        },
+        {
+          "hwnd": 460714,
+          "id": 4,
+          "title": "",
+          "class_name": "Edit",
+          "rect": [
+            -1863,
+            215,
+            -1526,
+            239
+          ]
+        },
+        {
+          "hwnd": 657288,
+          "id": 1,
+          "title": "",
+          "class_name": "SysHeader32",
+          "rect": [
+            -1920,
+            243,
+            -1920,
+            264
+          ]
+        },
+        {
+          "hwnd": 526056,
+          "id": 2,
+          "title": "",
+          "class_name": "ScrollBar",
+          "rect": [
+            -1539,
+            243,
+            -1522,
+            864
+          ]
+        },
+        {
+          "hwnd": 393390,
+          "id": 160,
+          "title": "",
+          "class_name": "BCGPToolBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            188,
+            -1522,
+            213
+          ]
+        },
+        {
+          "hwnd": 1179666,
+          "id": -1,
+          "title": "",
+          "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            0,
+            -1920,
+            0
+          ]
+        },
+        {
+          "hwnd": 1114756,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -1920,
+            0,
+            -1920,
+            0
+          ]
+        },
+        {
+          "hwnd": 525988,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -1920,
+            0,
+            -1920,
+            0
+          ]
+        },
+        {
+          "hwnd": 460120,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -1920,
+            0,
+            -1920,
+            0
+          ]
+        },
+        {
+          "hwnd": 263498,
+          "id": 59398,
+          "title": "ReprogramEditor",
+          "class_name": "BCGPRibbonBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            0,
+            0,
+            153
+          ]
+        },
+        {
+          "hwnd": 460568,
+          "id": 59393,
+          "title": "Ready",
+          "class_name": "BCGPRibbonStatusBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            1008,
+            0,
+            1032
+          ]
+        },
+        {
+          "hwnd": 264328,
+          "id": 59419,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            153,
+            0,
+            153
+          ]
+        },
+        {
+          "hwnd": 197112,
+          "id": 59419,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            153,
+            0,
+            153
+          ]
+        },
+        {
+          "hwnd": 722684,
+          "id": 59422,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            1008,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 786648,
+          "id": 59422,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            1008,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 263866,
+          "id": 59420,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            153,
+            -1920,
+            1008
+          ]
+        },
+        {
+          "hwnd": 198574,
+          "id": 59420,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            153,
+            -1920,
+            1008
+          ]
+        },
+        {
+          "hwnd": 329632,
+          "id": 59421,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            0,
+            153,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 460576,
+          "id": 59421,
+          "title": "",
+          "class_name": "BCGPDockBar:2d0000:8:10003:10",
+          "rect": [
+            0,
+            153,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 590028,
+          "id": 1,
+          "title": "",
+          "class_name": "BCGPSlider:2d0000:8:10003:10",
+          "rect": [
+            -1920,
+            575,
+            -1522,
+            581
+          ]
+        },
+        {
+          "hwnd": 460860,
+          "id": 59648,
+          "title": "",
+          "class_name": "MDIClient",
+          "rect": [
+            -1516,
+            153,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 329724,
+          "id": 65280,
+          "title": "ReprogramConfig_0_1_1_114.hcfg-r",
+          "class_name": "Afx:002D0000:b:00010003:00000006:00160233",
+          "rect": [
+            -1511,
+            180,
+            -5,
+            1003
+          ]
+        },
+        {
+          "hwnd": 327756,
+          "id": 59648,
+          "title": "",
+          "class_name": "AfxFrameOrView140u",
+          "rect": [
+            -1511,
+            180,
+            -5,
+            1003
+          ]
+        },
+        {
+          "hwnd": 657538,
+          "id": 66191504,
+          "title": "",
+          "class_name": "VSFlexGrid8U",
+          "rect": [
+            -1511,
+            180,
+            -5,
+            1003
+          ]
+        },
+        {
+          "hwnd": 460966,
+          "id": 320,
+          "title": "",
+          "class_name": "#32770",
+          "rect": [
+            -1511,
+            180,
+            -5,
+            1003
+          ]
+        },
+        {
+          "hwnd": 328456,
+          "id": 1219,
+          "title": "Stop",
+          "class_name": "Button",
+          "rect": [
+            -1333,
+            344,
+            -1248,
+            369
+          ]
+        },
+        {
+          "hwnd": 1050340,
+          "id": 1218,
+          "title": "Start",
+          "class_name": "Button",
+          "rect": [
+            -1467,
+            344,
+            -1382,
+            369
+          ]
+        },
+        {
+          "hwnd": 393954,
+          "id": 1231,
+          "title": "Stop",
+          "class_name": "Button",
+          "rect": [
+            -953,
+            344,
+            -868,
+            369
+          ]
+        },
+        {
+          "hwnd": 394012,
+          "id": 1232,
+          "title": "Start",
+          "class_name": "Button",
+          "rect": [
+            -1081,
+            344,
+            -996,
+            369
+          ]
+        },
+        {
+          "hwnd": 720962,
+          "id": 1222,
+          "title": "",
+          "class_name": "SysListView32",
+          "rect": [
+            -1081,
+            436,
+            -799,
+            954
+          ]
+        },
+        {
+          "hwnd": 328464,
+          "id": 0,
+          "title": "",
+          "class_name": "SysHeader32",
+          "rect": [
+            -1079,
+            438,
+            -801,
+            462
+          ]
+        },
+        {
+          "hwnd": 328410,
+          "id": 1239,
+          "title": "Action Rule",
+          "class_name": "Button",
+          "rect": [
+            -1103,
+            310,
+            -351,
+            968
+          ]
+        },
+        {
+          "hwnd": 526468,
+          "id": 1221,
+          "title": "",
+          "class_name": "SysListView32",
+          "rect": [
+            -1467,
+            436,
+            -1161,
+            954
+          ]
+        },
+        {
+          "hwnd": 395170,
+          "id": 0,
+          "title": "",
+          "class_name": "SysHeader32",
+          "rect": [
+            -1465,
+            438,
+            -1163,
+            462
+          ]
+        },
+        {
+          "hwnd": 394092,
+          "id": 1238,
+          "title": "Testcase Rule",
+          "class_name": "Button",
+          "rect": [
+            -1483,
+            310,
+            -1143,
+            968
+          ]
+        },
+        {
+          "hwnd": 395196,
+          "id": 1234,
+          "title": "For Cooperative ECU",
+          "class_name": "Button",
+          "rect": [
+            -329,
+            238,
+            -171,
+            264
+          ]
+        },
+        {
+          "hwnd": 852190,
+          "id": 1236,
+          "title": "Add Pre Procedure",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            674,
+            -479,
+            702
+          ]
+        },
+        {
+          "hwnd": 262932,
+          "id": 1233,
+          "title": "",
+          "class_name": "ComboBox",
+          "rect": [
+            -1137,
+            238,
+            -975,
+            262
+          ]
+        },
+        {
+          "hwnd": 328430,
+          "id": 1269,
+          "title": "SourceAddr : ",
+          "class_name": "Static",
+          "rect": [
+            -1231,
+            244,
+            -1139,
+            260
+          ]
+        },
+        {
+          "hwnd": 262326,
+          "id": 1220,
+          "title": "",
+          "class_name": "msctls_progress32",
+          "rect": [
+            -1467,
+            396,
+            -1231,
+            424
+          ]
+        },
+        {
+          "hwnd": 459200,
+          "id": 1223,
+          "title": "",
+          "class_name": "msctls_progress32",
+          "rect": [
+            -1081,
+            396,
+            -855,
+            424
+          ]
+        },
+        {
+          "hwnd": 723092,
+          "id": 1260,
+          "title": "Add Background-Transfer",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            588,
+            -461,
+            604
+          ]
+        },
+        {
+          "hwnd": 395072,
+          "id": 1261,
+          "title": "Add Processing-Preperation(OBD EMS)",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            632,
+            -419,
+            648
+          ]
+        },
+        {
+          "hwnd": 198764,
+          "id": 1262,
+          "title": "Add Processing",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            726,
+            -419,
+            742
+          ]
+        },
+        {
+          "hwnd": 262280,
+          "id": 1263,
+          "title": "Add Activation",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            770,
+            -419,
+            786
+          ]
+        },
+        {
+          "hwnd": 262268,
+          "id": 1264,
+          "title": "Add Rollback",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            814,
+            -419,
+            830
+          ]
+        },
+        {
+          "hwnd": 263042,
+          "id": 1270,
+          "title": "Apply",
+          "class_name": "Button",
+          "rect": [
+            -611,
+            906,
+            -479,
+            942
+          ]
+        },
+        {
+          "hwnd": 196904,
+          "id": 1271,
+          "title": "Add Rule Units",
+          "class_name": "Button",
+          "rect": [
+            -743,
+            556,
+            -379,
+            954
+          ]
+        },
+        {
+          "hwnd": 197150,
+          "id": 1272,
+          "title": "Use Options",
+          "class_name": "Button",
+          "rect": [
+            -1483,
+            198,
+            35,
+            288
+          ]
+        },
+        {
+          "hwnd": 263934,
+          "id": 1276,
+          "title": "Add Scenario Units",
+          "class_name": "Button",
+          "rect": [
+            -743,
+            338,
+            -379,
+            542
+          ]
+        },
+        {
+          "hwnd": 198848,
+          "id": 1273,
+          "title": "Wired-Rules",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            382,
+            -599,
+            404
+          ]
+        },
+        {
+          "hwnd": 198850,
+          "id": 1274,
+          "title": "Wireless-Rules",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            426,
+            -579,
+            446
+          ]
+        },
+        {
+          "hwnd": 589864,
+          "id": 1277,
+          "title": "Apply",
+          "class_name": "Button",
+          "rect": [
+            -611,
+            494,
+            -479,
+            528
+          ]
+        },
+        {
+          "hwnd": 591774,
+          "id": 1278,
+          "title": "0.00%",
+          "class_name": "Static",
+          "rect": [
+            -841,
+            400,
+            -785,
+            416
+          ]
+        },
+        {
+          "hwnd": 788392,
+          "id": 1279,
+          "title": "0.00%",
+          "class_name": "Static",
+          "rect": [
+            -1219,
+            402,
+            -1161,
+            418
+          ]
+        },
+        {
+          "hwnd": 1247238,
+          "id": 1240,
+          "title": "Add Post Procedure",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            854,
+            -479,
+            882
+          ]
+        },
+        {
+          "hwnd": 197320,
+          "id": 1224,
+          "title": "OEUK Vehicle",
+          "class_name": "Button",
+          "rect": [
+            -161,
+            242,
+            -47,
+            262
+          ]
+        },
+        {
+          "hwnd": 524486,
+          "id": 1225,
+          "title": "NFS",
+          "class_name": "Button",
+          "rect": [
+            -35,
+            242,
+            21,
+            262
+          ]
+        },
+        {
+          "hwnd": 1114874,
+          "id": 1241,
+          "title": "",
+          "class_name": "ComboBox",
+          "rect": [
+            -1361,
+            238,
+            -1237,
+            262
+          ]
+        },
+        {
+          "hwnd": 393284,
+          "id": 1280,
+          "title": "GatewayType : ",
+          "class_name": "Static",
+          "rect": [
+            -1475,
+            244,
+            -1369,
+            260
+          ]
+        },
+        {
+          "hwnd": 1180552,
+          "id": 1275,
+          "title": "OTA-estimatedRuntime",
+          "class_name": "Button",
+          "rect": [
+            -713,
+            466,
+            -537,
+            486
+          ]
+        },
+        {
+          "hwnd": 591616,
+          "id": -1,
+          "title": "Procedure Model Type :",
+          "class_name": "Static",
+          "rect": [
+            -941,
+            244,
+            -779,
+            260
+          ]
+        },
+        {
+          "hwnd": 198864,
+          "id": 1250,
+          "title": "",
+          "class_name": "ComboBox",
+          "rect": [
+            -777,
+            238,
+            -541,
+            262
+          ]
+        },
+        {
+          "hwnd": 198868,
+          "id": 1281,
+          "title": "DLC : ",
+          "class_name": "Static",
+          "rect": [
+            -483,
+            244,
+            -443,
+            260
+          ]
+        },
+        {
+          "hwnd": 198852,
+          "id": 1235,
+          "title": "",
+          "class_name": "ComboBox",
+          "rect": [
+            -437,
+            238,
+            -341,
+            262
+          ]
+        },
+        {
+          "hwnd": 328292,
+          "id": -1,
+          "title": "",
+          "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+          "rect": [
+            -1516,
+            153,
+            0,
+            1008
+          ]
+        },
+        {
+          "hwnd": 198836,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -1516,
+            153,
+            -1516,
+            153
+          ]
+        },
+        {
+          "hwnd": 198860,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -22,
+            157,
+            -7,
+            172
+          ]
+        },
+        {
+          "hwnd": 198858,
+          "id": -1,
+          "title": "",
+          "class_name": "Button",
+          "rect": [
+            -1516,
+            153,
+            -1516,
+            153
+          ]
+        }
+      ]
+    }
+  ],
+  "output_windows": [
+    {
+      "hwnd": 264308,
+      "title": "Output",
+      "class_name": "BCGPMiniFrame:2d0000:8:10003:10",
+      "rect": [
+        -1917,
+        588,
+        -1517,
+        1017
+      ],
+      "children": [
+        {
+          "hwnd": 788380,
+          "id": 32803,
+          "title": "Output",
+          "class_name": "BCGPControlBar:2d0000:8:10003:10",
+          "rect": [
+            -1913,
+            619,
+            -1521,
+            1013
+          ]
+        },
+        {
+          "hwnd": 262304,
+          "id": 1,
+          "title": "",
+          "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+          "rect": [
+            -1913,
+            643,
+            -1521,
+            1037
+          ]
+        },
+        {
+          "hwnd": 263888,
+          "id": 2,
+          "title": "",
+          "class_name": "ListBox",
+          "rect": [
+            -1910,
+            646,
+            -1524,
+            1015
+          ]
+        },
+        {
+          "hwnd": 198382,
+          "id": 59392,
+          "title": "",
+          "class_name": "BCGPToolBar:2d0000:8:10003:10",
+          "rect": [
+            -1913,
+            619,
+            -205,
+            643
+          ]
+        },
+        {
+          "hwnd": 459620,
+          "id": 65535,
+          "title": "Log Path :",
+          "class_name": "Static",
+          "rect": [
+            -1912,
+            622,
+            -204,
+            646
+          ]
+        },
+        {
+          "hwnd": 198498,
+          "id": 33001,
+          "title": "",
+          "class_name": "Edit",
+          "rect": [
+            -1832,
+            623,
+            -224,
+            638
+          ]
+        }
+      ]
+    }
+  ]
+}

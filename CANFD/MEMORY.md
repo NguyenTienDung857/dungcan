@@ -111,6 +111,40 @@ YYYY-MM-DD | category | short title
 
 ## context
 
+2026-05-18 | context | H-OTA UI documentation and scan artifacts
+- Facts: H-OTA Studio runtime and installed-file documentation now lives under
+  `Auto/OTA/hota_docs`. The latest successful elevated runtime scan is
+  `Auto/OTA/hota_docs/scan_20260518_105845`; the latest disconnected exhaustive
+  click probe is `Auto/OTA/hota_docs/exhaustive_probe_20260518_111521`.
+- Evidence: `scan_hota_ui.py` loaded
+  `Auto/OTA/0/ReprogramConfig_0_1_1_114.hcfg-r`, clicked `TesterMode`, dumped
+  UI trees/screenshots, expanded visible combo boxes, and invoked 11 safe
+  utility/dialog buttons. `exhaustive_hota_probe.py` clicked Manual, Technical
+  Support, EditMode, TesterMode, option/report/help dialogs, rule checkboxes,
+  radio buttons, Apply buttons, and the enabled Testcase Rule Start button in a
+  disconnected session. Testcase Rule Start opened the expected no-selected-
+  testcase popup, while Action Rule Start and Stop were disabled; `SAVE` and
+  `Logout` were skipped. `build_hota_docs.py` generated Markdown/JSON docs plus
+  `hota_full_ui_dump.txt` and `hota_exhaustive_click_dump.txt`.
+- Use next time: Start H-OTA automation work by reading
+  `Auto/OTA/hota_docs/README.md`, `automation_selectors.md`, and
+  `runtime_ui_scan.md`, then use `hota_full_ui_dump.txt` for the combined
+  selector/layout/click evidence before adding coordinate clicks.
+
+2026-05-18 | context | H-OTA scanner needs elevated Python
+- Facts: H-OTA Studio runs as a 32-bit elevated GUI app in this workspace.
+  Non-admin Python can see only limited UIA data and cannot reliably send
+  Ctrl+O/clicks. Elevated Python completed the scanner, though pywinauto still
+  warns that 32-bit Python is preferred for full Win32 automation.
+- Evidence: Non-admin `scan_hota_ui.py` failed to open the file dialog; the
+  elevated run created `scan_20260518_105845` with `load_config`,
+  `click TesterMode`, and four ComboBox probes in `action_log.json`.
+- Use next time: Run UI discovery from an Administrator shell and prefer
+  selector-based UIA/Win32 access. Do not click `Start` during normal discovery;
+  only use the exhaustive click probe when the user explicitly confirms a
+  disconnected/safe session. Keep `SAVE` and `Logout` skipped unless the user
+  explicitly asks to change config or login/session state.
+
 2026-05-16 | context | BAS 2.0 runs should be fully prompt-free
 - Facts: `BAS_016`, `BAS_017`, and `BAS_018` 2.0 automation should not ask for
   recorded-file deletion confirmation, ACC/IGN confirmation, test ID, or

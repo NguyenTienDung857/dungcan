@@ -1,0 +1,71 @@
+[
+  {
+    "action": "reuse_existing_hota_window",
+    "hwnd": 395308
+  },
+  {
+    "action": "dump_ui_tree",
+    "state": "initial",
+    "nodes": 171,
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\ui_tree_initial.json"
+  },
+  {
+    "action": "capture_window",
+    "state": "initial",
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\screenshots\\initial.png",
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ]
+  },
+  {
+    "action": "load_config",
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\0\\ReprogramConfig_0_1_1_114.hcfg-r"
+  },
+  {
+    "action": "dump_ui_tree",
+    "state": "after_config_load",
+    "nodes": 171,
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\ui_tree_after_config_load.json"
+  },
+  {
+    "action": "capture_window",
+    "state": "after_config_load",
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\screenshots\\after_config_load.png",
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ]
+  },
+  {
+    "action": "click",
+    "target": "TesterMode",
+    "status": "ok"
+  },
+  {
+    "action": "dump_ui_tree",
+    "state": "after_tester_mode",
+    "nodes": 171,
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\ui_tree_after_tester_mode.json"
+  },
+  {
+    "action": "capture_window",
+    "state": "after_tester_mode",
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\screenshots\\after_tester_mode.png",
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ]
+  },
+  {
+    "action": "collect_combo_options",
+    "count": 4,
+    "file": "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\hota_docs\\scan_20260518_105447\\combo_options.json"
+  }
+]

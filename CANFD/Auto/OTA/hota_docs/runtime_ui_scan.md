@@ -1,0 +1,137 @@
+# Runtime UI Scan
+
+## Top-level H-OTA windows
+
+- hwnd=395308 title=`ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r` class=`Afx:002D0000:8:00010003:00000000:00B1048F` rect=[-1928, -8, 8, 1040]
+  - child hwnd=460918 id=-1 class=`BCGPSlider:2d0000:8:10003:10` title=`` rect=[-1522, 153, -1516, 1008]
+  - child hwnd=329626 id=32860 class=`BCGPControlBar:2d0000:8:10003:10` title=`Properties` rect=[-1920, 153, -1522, 1008]
+  - child hwnd=263904 id=2 class=`BCGPPropList:2d0000:8:10003:10` title=`` rect=[-1920, 213, -1522, 1008]
+  - child hwnd=198354 id=59392 class=`BCGPToolBar:2d0000:8:10003:10` title=`PropertyListToolbar` rect=[-1916, 215, -1867, 241]
+  - child hwnd=460714 id=4 class=`Edit` title=`` rect=[-1863, 215, -1526, 239]
+  - child hwnd=657288 id=1 class=`SysHeader32` title=`` rect=[-1920, 243, -1920, 264]
+  - child hwnd=526056 id=2 class=`ScrollBar` title=`` rect=[-1539, 243, -1522, 864]
+  - child hwnd=393390 id=160 class=`BCGPToolBar:2d0000:8:10003:10` title=`` rect=[-1920, 188, -1522, 213]
+  - child hwnd=1179666 id=-1 class=`BCGPTabWnd:2d0000:8:10003:10` title=`` rect=[-1920, 0, -1920, 0]
+  - child hwnd=1114756 id=-1 class=`Button` title=`` rect=[-1920, 0, -1920, 0]
+  - child hwnd=525988 id=-1 class=`Button` title=`` rect=[-1920, 0, -1920, 0]
+  - child hwnd=460120 id=-1 class=`Button` title=`` rect=[-1920, 0, -1920, 0]
+  - child hwnd=263498 id=59398 class=`BCGPRibbonBar:2d0000:8:10003:10` title=`ReprogramEditor` rect=[-1920, 0, 0, 153]
+  - child hwnd=460568 id=59393 class=`BCGPRibbonStatusBar:2d0000:8:10003:10` title=`Ready` rect=[-1920, 1008, 0, 1032]
+  - child hwnd=264328 id=59419 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 153, 0, 153]
+  - child hwnd=197112 id=59419 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 153, 0, 153]
+  - child hwnd=722684 id=59422 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 1008, 0, 1008]
+  - child hwnd=786648 id=59422 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 1008, 0, 1008]
+  - child hwnd=263866 id=59420 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 153, -1920, 1008]
+  - child hwnd=198574 id=59420 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[-1920, 153, -1920, 1008]
+  - child hwnd=329632 id=59421 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[0, 153, 0, 1008]
+  - child hwnd=460576 id=59421 class=`BCGPDockBar:2d0000:8:10003:10` title=`` rect=[0, 153, 0, 1008]
+  - child hwnd=590028 id=1 class=`BCGPSlider:2d0000:8:10003:10` title=`` rect=[-1920, 575, -1522, 581]
+  - child hwnd=460860 id=59648 class=`MDIClient` title=`` rect=[-1516, 153, 0, 1008]
+  - child hwnd=329724 id=65280 class=`Afx:002D0000:b:00010003:00000006:00160233` title=`ReprogramConfig_0_1_1_114.hcfg-r` rect=[-1511, 180, -5, 1003]
+  - child hwnd=327756 id=59648 class=`AfxFrameOrView140u` title=`` rect=[-1511, 180, -5, 1003]
+  - child hwnd=657538 id=66191504 class=`VSFlexGrid8U` title=`` rect=[-1511, 180, -5, 1003]
+  - child hwnd=460966 id=320 class=`#32770` title=`` rect=[-1511, 180, -5, 1003]
+  - child hwnd=328456 id=1219 class=`Button` title=`Stop` rect=[-1333, 344, -1248, 369]
+  - child hwnd=1050340 id=1218 class=`Button` title=`Start` rect=[-1467, 344, -1382, 369]
+  - child hwnd=393954 id=1231 class=`Button` title=`Stop` rect=[-953, 344, -868, 369]
+  - child hwnd=394012 id=1232 class=`Button` title=`Start` rect=[-1081, 344, -996, 369]
+  - child hwnd=720962 id=1222 class=`SysListView32` title=`` rect=[-1081, 436, -799, 954]
+  - child hwnd=328464 id=0 class=`SysHeader32` title=`` rect=[-1079, 438, -801, 462]
+  - child hwnd=328410 id=1239 class=`Button` title=`Action Rule` rect=[-1103, 310, -351, 968]
+  - child hwnd=526468 id=1221 class=`SysListView32` title=`` rect=[-1467, 436, -1161, 954]
+  - child hwnd=395170 id=0 class=`SysHeader32` title=`` rect=[-1465, 438, -1163, 462]
+  - child hwnd=394092 id=1238 class=`Button` title=`Testcase Rule` rect=[-1483, 310, -1143, 968]
+  - child hwnd=395196 id=1234 class=`Button` title=`For Cooperative ECU` rect=[-329, 238, -171, 264]
+  - child hwnd=852190 id=1236 class=`Button` title=`Add Pre Procedure` rect=[-713, 674, -479, 702]
+  - child hwnd=262932 id=1233 class=`ComboBox` title=`` rect=[-1137, 238, -975, 262]
+  - child hwnd=328430 id=1269 class=`Static` title=`SourceAddr : ` rect=[-1231, 244, -1139, 260]
+  - child hwnd=262326 id=1220 class=`msctls_progress32` title=`` rect=[-1467, 396, -1231, 424]
+  - child hwnd=459200 id=1223 class=`msctls_progress32` title=`` rect=[-1081, 396, -855, 424]
+  - child hwnd=723092 id=1260 class=`Button` title=`Add Background-Transfer` rect=[-713, 588, -461, 604]
+  - child hwnd=395072 id=1261 class=`Button` title=`Add Processing-Preperation(OBD EMS)` rect=[-713, 632, -419, 648]
+  - child hwnd=198764 id=1262 class=`Button` title=`Add Processing` rect=[-713, 726, -419, 742]
+  - child hwnd=262280 id=1263 class=`Button` title=`Add Activation` rect=[-713, 770, -419, 786]
+  - child hwnd=262268 id=1264 class=`Button` title=`Add Rollback` rect=[-713, 814, -419, 830]
+  - child hwnd=263042 id=1270 class=`Button` title=`Apply` rect=[-611, 906, -479, 942]
+  - child hwnd=196904 id=1271 class=`Button` title=`Add Rule Units` rect=[-743, 556, -379, 954]
+  - child hwnd=197150 id=1272 class=`Button` title=`Use Options` rect=[-1483, 198, 35, 288]
+  - child hwnd=263934 id=1276 class=`Button` title=`Add Scenario Units` rect=[-743, 338, -379, 542]
+  - child hwnd=198848 id=1273 class=`Button` title=`Wired-Rules` rect=[-713, 382, -599, 404]
+  - child hwnd=198850 id=1274 class=`Button` title=`Wireless-Rules` rect=[-713, 426, -579, 446]
+  - child hwnd=589864 id=1277 class=`Button` title=`Apply` rect=[-611, 494, -479, 528]
+  - child hwnd=591774 id=1278 class=`Static` title=`0.00%` rect=[-841, 400, -785, 416]
+  - child hwnd=788392 id=1279 class=`Static` title=`0.00%` rect=[-1219, 402, -1161, 418]
+  - child hwnd=1247238 id=1240 class=`Button` title=`Add Post Procedure` rect=[-713, 854, -479, 882]
+  - child hwnd=197320 id=1224 class=`Button` title=`OEUK Vehicle` rect=[-161, 242, -47, 262]
+  - child hwnd=524486 id=1225 class=`Button` title=`NFS` rect=[-35, 242, 21, 262]
+  - child hwnd=1114874 id=1241 class=`ComboBox` title=`` rect=[-1361, 238, -1237, 262]
+  - child hwnd=393284 id=1280 class=`Static` title=`GatewayType : ` rect=[-1475, 244, -1369, 260]
+  - child hwnd=1180552 id=1275 class=`Button` title=`OTA-estimatedRuntime` rect=[-713, 466, -537, 486]
+  - child hwnd=591616 id=-1 class=`Static` title=`Procedure Model Type :` rect=[-941, 244, -779, 260]
+  - child hwnd=198864 id=1250 class=`ComboBox` title=`` rect=[-777, 238, -541, 262]
+  - child hwnd=198868 id=1281 class=`Static` title=`DLC : ` rect=[-483, 244, -443, 260]
+  - child hwnd=198852 id=1235 class=`ComboBox` title=`` rect=[-437, 238, -341, 262]
+  - child hwnd=328292 id=-1 class=`BCGPTabWnd:2d0000:8:10003:10` title=`` rect=[-1516, 153, 0, 1008]
+  - child hwnd=198836 id=-1 class=`Button` title=`` rect=[-1516, 153, -1516, 153]
+  - child hwnd=198860 id=-1 class=`Button` title=`` rect=[-22, 157, -7, 172]
+  - child hwnd=198858 id=-1 class=`Button` title=`` rect=[-1516, 153, -1516, 153]
+
+## Output window
+
+- hwnd=264308 title=`Output` class=`BCGPMiniFrame:2d0000:8:10003:10` rect=[-1917, 588, -1517, 1017]
+  - child hwnd=788380 id=32803 class=`BCGPControlBar:2d0000:8:10003:10` title=`Output` rect=[-1913, 619, -1521, 1013]
+  - child hwnd=262304 id=1 class=`BCGPTabWnd:2d0000:8:10003:10` title=`` rect=[-1913, 643, -1521, 1037]
+  - child hwnd=263888 id=2 class=`ListBox` title=`` rect=[-1910, 646, -1524, 1015]
+  - child hwnd=198382 id=59392 class=`BCGPToolBar:2d0000:8:10003:10` title=`` rect=[-1913, 619, -205, 643]
+  - child hwnd=459620 id=65535 class=`Static` title=`Log Path :` rect=[-1912, 622, -204, 646]
+  - child hwnd=198498 id=33001 class=`Edit` title=`` rect=[-1832, 623, -224, 638]
+
+## Scan folders
+
+- `D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_104210`
+  - `shortcut.json`
+  - `top_windows_before.json`
+  - `ui_tree_initial.json`
+- `D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_104336`
+  - `shortcut.json`
+  - `top_windows_before.json`
+  - `ui_tree_initial.json`
+- `D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_105330`
+  - `action_log.json`
+  - `combo_options.json`
+  - `control_inventory.json`
+  - `README.md`
+  - `shortcut.json`
+  - `static_script_selectors.json`
+  - `top_windows_after.json`
+  - `top_windows_before.json`
+  - `ui_tree_after_config_load.json`
+  - `ui_tree_after_tester_mode.json`
+  - `ui_tree_initial.json`
+- `D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_105447`
+  - `action_log.json`
+  - `combo_options.json`
+  - `control_inventory.json`
+  - `README.md`
+  - `shortcut.json`
+  - `static_script_selectors.json`
+  - `top_windows_after.json`
+  - `top_windows_before.json`
+  - `ui_tree_after_config_load.json`
+  - `ui_tree_after_tester_mode.json`
+  - `ui_tree_initial.json`
+- `D:\project\CANoe\CANFD\Auto\OTA\hota_docs\scan_20260518_105845`
+  - `action_log.json`
+  - `combo_options.json`
+  - `control_inventory.json`
+  - `README.md`
+  - `safe_button_probes.json`
+  - `shortcut.json`
+  - `static_script_selectors.json`
+  - `top_windows_after.json`
+  - `top_windows_before.json`
+  - `ui_tree_after_config_load.json`
+  - `ui_tree_after_tester_mode.json`
+  - `ui_tree_initial.json`
+
+Raw data: `runtime_ui_scan.json`.

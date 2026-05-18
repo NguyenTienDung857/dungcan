@@ -1,0 +1,1257 @@
+[
+  {
+    "index": 0,
+    "depth": 0,
+    "name": "H-OTA Studio (Last signed in : 2026-05-15)",
+    "automation_id": "",
+    "control_type": "Window",
+    "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+    "framework_id": "Win32",
+    "handle": 395308,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1928,
+      -8,
+      8,
+      1040
+    ],
+    "texts": [
+      "H-OTA Studio (Last signed in : 2026-05-15)"
+    ]
+  },
+  {
+    "index": 1,
+    "depth": 1,
+    "name": "Output",
+    "automation_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPMiniFrame:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 264308,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1917,
+      588,
+      -1517,
+      1017
+    ],
+    "texts": [
+      "Output"
+    ]
+  },
+  {
+    "index": 2,
+    "depth": 2,
+    "name": "",
+    "automation_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "framework_id": "Win32",
+    "handle": 656068,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1923,
+      1017,
+      -1511,
+      1023
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 3,
+    "depth": 2,
+    "name": "",
+    "automation_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "framework_id": "Win32",
+    "handle": 589888,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1517,
+      588,
+      -1511,
+      1017
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 4,
+    "depth": 2,
+    "name": "",
+    "automation_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "framework_id": "Win32",
+    "handle": 656070,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1923,
+      582,
+      -1511,
+      588
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 5,
+    "depth": 2,
+    "name": "",
+    "automation_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "framework_id": "Win32",
+    "handle": 262332,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1923,
+      588,
+      -1917,
+      1017
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 6,
+    "depth": 2,
+    "name": "Output",
+    "automation_id": "32803",
+    "control_type": "Pane",
+    "class_name": "BCGPControlBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 788380,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1913,
+      619,
+      -1521,
+      1013
+    ],
+    "texts": [
+      "Output"
+    ]
+  },
+  {
+    "index": 7,
+    "depth": 3,
+    "name": "",
+    "automation_id": "1",
+    "control_type": "Tab",
+    "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 262304,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1913,
+      643,
+      -1521,
+      1037
+    ],
+    "texts": [
+      "",
+      "Log"
+    ]
+  },
+  {
+    "index": 8,
+    "depth": 4,
+    "name": "",
+    "automation_id": "2",
+    "control_type": "List",
+    "class_name": "ListBox",
+    "framework_id": "Win32",
+    "handle": 263888,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1910,
+      646,
+      -1524,
+      1015
+    ]
+  },
+  {
+    "index": 9,
+    "depth": 4,
+    "name": "Log",
+    "automation_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1913,
+      1017,
+      -1882,
+      1035
+    ],
+    "texts": [
+      "Log"
+    ]
+  },
+  {
+    "index": 10,
+    "depth": 3,
+    "name": "",
+    "automation_id": "59392",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 198382,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1913,
+      619,
+      -205,
+      643
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 11,
+    "depth": 4,
+    "name": "Log Path :",
+    "automation_id": "65535",
+    "control_type": "Text",
+    "class_name": "Static",
+    "framework_id": "Win32",
+    "handle": 459620,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1912,
+      622,
+      -204,
+      646
+    ],
+    "texts": [
+      "Log Path :"
+    ]
+  },
+  {
+    "index": 12,
+    "depth": 4,
+    "name": "Log Path :",
+    "automation_id": "33001",
+    "control_type": "Edit",
+    "class_name": "Edit",
+    "framework_id": "Win32",
+    "handle": 198498,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1832,
+      623,
+      -224,
+      638
+    ],
+    "texts": [
+      "Log Path :"
+    ]
+  },
+  {
+    "index": 13,
+    "depth": 1,
+    "name": "",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "BCGPSlider:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 460918,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1522,
+      153,
+      -1516,
+      1008
+    ]
+  },
+  {
+    "index": 14,
+    "depth": 1,
+    "name": "Properties",
+    "automation_id": "32860",
+    "control_type": "Pane",
+    "class_name": "BCGPControlBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 329626,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      153,
+      -1522,
+      1008
+    ],
+    "texts": [
+      "Properties"
+    ]
+  },
+  {
+    "index": 15,
+    "depth": 2,
+    "name": "PropertyList",
+    "automation_id": "2",
+    "control_type": "Table",
+    "class_name": "BCGPPropList:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 263904,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      213,
+      -1522,
+      1008
+    ],
+    "texts": [
+      [
+        "PropertyListToolbar"
+      ],
+      [
+        ""
+      ]
+    ]
+  },
+  {
+    "index": 16,
+    "depth": 3,
+    "name": "PropertyListToolbar",
+    "automation_id": "59392",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 198354,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1916,
+      215,
+      -1867,
+      241
+    ],
+    "texts": [
+      "PropertyListToolbar"
+    ]
+  },
+  {
+    "index": 17,
+    "depth": 4,
+    "name": "Categorized",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1914,
+      216,
+      -1892,
+      238
+    ],
+    "texts": [
+      "Categorized"
+    ]
+  },
+  {
+    "index": 18,
+    "depth": 4,
+    "name": "Alphabetical",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1892,
+      216,
+      -1870,
+      238
+    ],
+    "texts": [
+      "Alphabetical"
+    ]
+  },
+  {
+    "index": 19,
+    "depth": 3,
+    "name": "",
+    "automation_id": "4",
+    "control_type": "Edit",
+    "class_name": "Edit",
+    "framework_id": "Win32",
+    "handle": 460714,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1863,
+      215,
+      -1526,
+      239
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 20,
+    "depth": 2,
+    "name": "",
+    "automation_id": "160",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 393390,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      188,
+      -1522,
+      213
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 21,
+    "depth": 1,
+    "name": " ",
+    "automation_id": "59398",
+    "control_type": "ToolBar",
+    "class_name": "BCGPRibbonBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 263498,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      0,
+      0,
+      153
+    ],
+    "texts": [
+      "Application menu",
+      "Quick Access Toolbar",
+      "Ribbon Tabs",
+      "Home",
+      "About"
+    ]
+  },
+  {
+    "index": 22,
+    "depth": 2,
+    "name": "Application menu",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      33,
+      -1861,
+      60
+    ],
+    "texts": [
+      "Application menu"
+    ]
+  },
+  {
+    "index": 23,
+    "depth": 2,
+    "name": "Quick Access Toolbar",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1912,
+      0,
+      -1871,
+      33
+    ],
+    "texts": [
+      "SAVE",
+      "Customize Quick Access Toolbar"
+    ]
+  },
+  {
+    "index": 24,
+    "depth": 3,
+    "name": "SAVE",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": false,
+    "visible": true,
+    "rectangle": [
+      -1910,
+      0,
+      -1888,
+      28
+    ],
+    "texts": [
+      "SAVE"
+    ]
+  },
+  {
+    "index": 25,
+    "depth": 3,
+    "name": "Customize Quick Access Toolbar",
+    "automation_id": "",
+    "control_type": "SplitButton",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1886,
+      0,
+      -1873,
+      27
+    ],
+    "texts": [
+      "Customize Quick Access Toolbar"
+    ]
+  },
+  {
+    "index": 26,
+    "depth": 2,
+    "name": "Ribbon Tabs",
+    "automation_id": "",
+    "control_type": "Group",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1860,
+      33,
+      -88,
+      60
+    ],
+    "texts": [
+      "Ribbon Tabs"
+    ]
+  },
+  {
+    "index": 27,
+    "depth": 3,
+    "name": "Home",
+    "automation_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1860,
+      33,
+      -1802,
+      60
+    ],
+    "texts": [
+      "Home"
+    ]
+  },
+  {
+    "index": 28,
+    "depth": 3,
+    "name": "Edit",
+    "automation_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1802,
+      33,
+      -1754,
+      60
+    ],
+    "texts": [
+      "Edit"
+    ]
+  },
+  {
+    "index": 29,
+    "depth": 3,
+    "name": "Window",
+    "automation_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1754,
+      33,
+      -1680,
+      60
+    ],
+    "texts": [
+      "Window"
+    ]
+  },
+  {
+    "index": 30,
+    "depth": 2,
+    "name": "Home",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      60,
+      0,
+      153
+    ],
+    "texts": [
+      "Tools",
+      "Mode",
+      "Help",
+      "Support"
+    ]
+  },
+  {
+    "index": 31,
+    "depth": 3,
+    "name": "Tools",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1916,
+      63,
+      -1475,
+      149
+    ],
+    "texts": [
+      "Hex2Binary",
+      "RomPakage",
+      "XML Conversion",
+      "LogView",
+      "Generator",
+      "RFS",
+      "Bi-Authenticaiton"
+    ]
+  },
+  {
+    "index": 32,
+    "depth": 4,
+    "name": "Hex2Binary",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1912,
+      65,
+      -1851,
+      131
+    ],
+    "texts": [
+      "Hex2Binary"
+    ]
+  },
+  {
+    "index": 33,
+    "depth": 4,
+    "name": "RomPakage",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1851,
+      65,
+      -1786,
+      131
+    ],
+    "texts": [
+      "RomPakage"
+    ]
+  },
+  {
+    "index": 34,
+    "depth": 4,
+    "name": "XML Conversion",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1786,
+      65,
+      -1723,
+      131
+    ],
+    "texts": [
+      "XML Conversion"
+    ]
+  },
+  {
+    "index": 35,
+    "depth": 4,
+    "name": "LogView",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1723,
+      65,
+      -1674,
+      131
+    ],
+    "texts": [
+      "LogView"
+    ]
+  },
+  {
+    "index": 36,
+    "depth": 4,
+    "name": "Generator",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1674,
+      65,
+      -1617,
+      131
+    ],
+    "texts": [
+      "Generator"
+    ]
+  },
+  {
+    "index": 37,
+    "depth": 4,
+    "name": "RFS",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1617,
+      65,
+      -1575,
+      131
+    ],
+    "texts": [
+      "RFS"
+    ]
+  },
+  {
+    "index": 38,
+    "depth": 4,
+    "name": "Bi-Authenticaiton",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1575,
+      65,
+      -1480,
+      131
+    ],
+    "texts": [
+      "Bi-Authenticaiton"
+    ]
+  },
+  {
+    "index": 39,
+    "depth": 3,
+    "name": "Mode",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1473,
+      63,
+      -1344,
+      149
+    ],
+    "texts": [
+      "TesterMode",
+      "EditMode"
+    ]
+  },
+  {
+    "index": 40,
+    "depth": 4,
+    "name": "TesterMode",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": false,
+    "visible": true,
+    "rectangle": [
+      -1469,
+      65,
+      -1404,
+      131
+    ],
+    "texts": [
+      "TesterMode"
+    ]
+  },
+  {
+    "index": 41,
+    "depth": 4,
+    "name": "EditMode",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": false,
+    "visible": true,
+    "rectangle": [
+      -1404,
+      65,
+      -1349,
+      131
+    ],
+    "texts": [
+      "EditMode"
+    ]
+  },
+  {
+    "index": 42,
+    "depth": 3,
+    "name": "Help",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1342,
+      63,
+      -1164,
+      149
+    ],
+    "texts": [
+      "Option",
+      "Error Lookup",
+      "Report Config",
+      "Logout"
+    ]
+  },
+  {
+    "index": 43,
+    "depth": 4,
+    "name": "Option",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1338,
+      65,
+      -1296,
+      131
+    ],
+    "texts": [
+      "Option"
+    ]
+  },
+  {
+    "index": 44,
+    "depth": 4,
+    "name": "Error Lookup",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1296,
+      65,
+      -1253,
+      131
+    ],
+    "texts": [
+      "Error Lookup"
+    ]
+  },
+  {
+    "index": 45,
+    "depth": 4,
+    "name": "Report Config",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1253,
+      65,
+      -1211,
+      131
+    ],
+    "texts": [
+      "Report Config"
+    ]
+  },
+  {
+    "index": 46,
+    "depth": 4,
+    "name": "Logout",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1211,
+      65,
+      -1169,
+      131
+    ],
+    "texts": [
+      "Logout"
+    ]
+  },
+  {
+    "index": 47,
+    "depth": 3,
+    "name": "Support",
+    "automation_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1162,
+      63,
+      -1059,
+      149
+    ],
+    "texts": [
+      "Manual",
+      "Technical Support"
+    ]
+  },
+  {
+    "index": 48,
+    "depth": 4,
+    "name": "Manual",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1158,
+      65,
+      -1115,
+      131
+    ],
+    "texts": [
+      "Manual"
+    ]
+  },
+  {
+    "index": 49,
+    "depth": 4,
+    "name": "Technical Support",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1115,
+      65,
+      -1064,
+      131
+    ],
+    "texts": [
+      "Technical Support"
+    ]
+  },
+  {
+    "index": 50,
+    "depth": 2,
+    "name": "About",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -25,
+      35,
+      -1,
+      57
+    ],
+    "texts": [
+      "About"
+    ]
+  },
+  {
+    "index": 51,
+    "depth": 1,
+    "name": " ",
+    "automation_id": "59393",
+    "control_type": "ToolBar",
+    "class_name": "BCGPRibbonStatusBar:2d0000:8:10003:10",
+    "framework_id": "Win32",
+    "handle": 460568,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      1008,
+      0,
+      1032
+    ]
+  },
+  {
+    "index": 52,
+    "depth": 1,
+    "name": "Workspace",
+    "automation_id": "59648",
+    "control_type": "Pane",
+    "class_name": "MDIClient",
+    "framework_id": "Win32",
+    "handle": 460860,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1516,
+      153,
+      0,
+      1008
+    ],
+    "texts": [
+      "Workspace"
+    ]
+  },
+  {
+    "index": 53,
+    "depth": 1,
+    "name": "",
+    "automation_id": "",
+    "control_type": "TitleBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1898,
+      0,
+      0,
+      23
+    ],
+    "texts": [
+      ""
+    ]
+  },
+  {
+    "index": 54,
+    "depth": 2,
+    "name": "System",
+    "automation_id": "MenuBar",
+    "control_type": "MenuBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      0,
+      -1898,
+      22
+    ],
+    "texts": [
+      "System"
+    ]
+  },
+  {
+    "index": 55,
+    "depth": 3,
+    "name": "System",
+    "automation_id": "",
+    "control_type": "MenuItem",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1920,
+      0,
+      -1898,
+      22
+    ],
+    "texts": [
+      "System"
+    ]
+  },
+  {
+    "index": 56,
+    "depth": 2,
+    "name": "Minimize",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -67,
+      -1,
+      -43,
+      23
+    ],
+    "texts": [
+      "Minimize"
+    ]
+  },
+  {
+    "index": 57,
+    "depth": 2,
+    "name": "Restore",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -45,
+      -1,
+      -21,
+      23
+    ],
+    "texts": [
+      "Restore"
+    ]
+  },
+  {
+    "index": 58,
+    "depth": 2,
+    "name": "Close",
+    "automation_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -23,
+      -1,
+      1,
+      23
+    ],
+    "texts": [
+      "Close"
+    ]
+  }
+]

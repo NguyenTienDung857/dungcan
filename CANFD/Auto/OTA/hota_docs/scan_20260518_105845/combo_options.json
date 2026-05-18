@@ -1,0 +1,116 @@
+[
+  {
+    "combo": {
+      "index": 0,
+      "depth": 0,
+      "name": "",
+      "automation_id": "1233",
+      "control_type": "ComboBox",
+      "class_name": "ComboBox",
+      "framework_id": "Win32",
+      "handle": 262932,
+      "enabled": true,
+      "visible": true,
+      "rectangle": [
+        -1137,
+        238,
+        -975,
+        262
+      ],
+      "texts": [
+        "",
+        "",
+        "Close"
+      ]
+    },
+    "options": [
+      "CCU/CWC : 0x0F00",
+      "ERT : 0x0E81",
+      "HPVC : 0x0F10"
+    ],
+    "status": "expanded"
+  },
+  {
+    "combo": {
+      "index": 1,
+      "depth": 0,
+      "name": "",
+      "automation_id": "1241",
+      "control_type": "ComboBox",
+      "class_name": "ComboBox",
+      "framework_id": "Win32",
+      "handle": 1114874,
+      "enabled": true,
+      "visible": true,
+      "rectangle": [
+        -1361,
+        238,
+        -1237,
+        262
+      ],
+      "texts": [
+        "",
+        "",
+        "Close"
+      ]
+    },
+    "options": [
+      "CCU2 : DoIP",
+      "CCU1 : EthDiag"
+    ],
+    "status": "expanded"
+  },
+  {
+    "combo": {
+      "index": 2,
+      "depth": 0,
+      "name": "Procedure Model Type :",
+      "automation_id": "1250",
+      "control_type": "ComboBox",
+      "class_name": "ComboBox",
+      "framework_id": "Win32",
+      "handle": 198864,
+      "enabled": true,
+      "visible": true,
+      "rectangle": [
+        -777,
+        238,
+        -541,
+        262
+      ],
+      "texts": [
+        "Procedure Model Type :",
+        "Procedure Model Type :",
+        "Close"
+      ]
+    },
+    "options": [
+      "GroupA(LX3,SW1,LQ2,JG1)",
+      "GroupB(GN7PE~)"
+    ],
+    "status": "expanded"
+  },
+  {
+    "combo": {
+      "index": 3,
+      "depth": 0,
+      "name": "DLC : ",
+      "automation_id": "1235",
+      "control_type": "ComboBox",
+      "class_name": "ComboBox",
+      "framework_id": "Win32",
+      "handle": 198852,
+      "enabled": false,
+      "visible": true,
+      "rectangle": [
+        -437,
+        238,
+        -341,
+        262
+      ]
+    },
+    "options": [],
+    "status": "failed",
+    "error": "(-2147220992, None, (None, None, None, 0, None))"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "index": 0,
+    "depth": 0,
+    "name": "H-OTA Studio (Last signed in : 2026-05-15)",
+    "automation_id": "",
+    "control_type": "Window",
+    "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+    "framework_id": "Win32",
+    "handle": 395308,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1928,
+      -8,
+      8,
+      1040
+    ],
+    "texts": [
+      "H-OTA Studio (Last signed in : 2026-05-15)"
+    ]
+  },
+  {
+    "index": 1,
+    "depth": 1,
+    "name": "",
+    "automation_id": "",
+    "control_type": "TitleBar",
+    "class_name": "",
+    "framework_id": "",
+    "handle": null,
+    "enabled": true,
+    "visible": true,
+    "rectangle": [
+      -1898,
+      0,
+      0,
+      23
+    ],
+    "texts": [
+      ""
+    ]
+  }
+]

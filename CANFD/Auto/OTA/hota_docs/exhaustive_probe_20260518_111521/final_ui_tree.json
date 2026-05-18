@@ -1,0 +1,2672 @@
+[
+  {
+    "name": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r",
+    "auto_id": "",
+    "control_type": "Window",
+    "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ],
+    "depth": 0
+  },
+  {
+    "name": "H-OTA Studio",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "#32770",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1095,
+      431,
+      -825,
+      601
+    ],
+    "depth": 1
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1101,
+      601,
+      -819,
+      607
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -825,
+      431,
+      -819,
+      601
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1101,
+      425,
+      -819,
+      431
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1101,
+      431,
+      -1095,
+      601
+    ],
+    "depth": 2
+  },
+  {
+    "name": "OK",
+    "auto_id": "1",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -928,
+      559,
+      -840,
+      585
+    ],
+    "depth": 2
+  },
+  {
+    "name": "There is no selected testcase.\r\nPlease check the Properties window.",
+    "auto_id": "65535",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1032,
+      491,
+      -843,
+      523
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Output",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPMiniFrame:2d0000:8:10003:10",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1917,
+      588,
+      -1517,
+      1017
+    ],
+    "depth": 1
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1923,
+      1017,
+      -1511,
+      1023
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1517,
+      588,
+      -1511,
+      1017
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1923,
+      582,
+      -1511,
+      588
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Pane",
+    "class_name": "BCGPShadowSideWnd",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1923,
+      588,
+      -1917,
+      1017
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Output",
+    "auto_id": "32803",
+    "control_type": "Pane",
+    "class_name": "BCGPControlBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1913,
+      619,
+      -1521,
+      1013
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "1",
+    "control_type": "Tab",
+    "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1913,
+      643,
+      -1521,
+      1037
+    ],
+    "depth": 3
+  },
+  {
+    "name": "",
+    "auto_id": "2",
+    "control_type": "List",
+    "class_name": "ListBox",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1910,
+      646,
+      -1524,
+      1015
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Log",
+    "auto_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1913,
+      1017,
+      -1882,
+      1035
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "59392",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1913,
+      619,
+      -205,
+      643
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Log Path :",
+    "auto_id": "65535",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1912,
+      622,
+      -204,
+      646
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Log Path :",
+    "auto_id": "33001",
+    "control_type": "Edit",
+    "class_name": "Edit",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1832,
+      623,
+      -224,
+      638
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "BCGPSlider:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1522,
+      153,
+      -1516,
+      1008
+    ],
+    "depth": 1
+  },
+  {
+    "name": "Properties",
+    "auto_id": "32860",
+    "control_type": "Pane",
+    "class_name": "BCGPControlBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      153,
+      -1522,
+      1008
+    ],
+    "depth": 1
+  },
+  {
+    "name": "PropertyList",
+    "auto_id": "2",
+    "control_type": "Table",
+    "class_name": "BCGPPropList:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      213,
+      -1522,
+      1008
+    ],
+    "depth": 2
+  },
+  {
+    "name": "PropertyListToolbar",
+    "auto_id": "59392",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1916,
+      215,
+      -1867,
+      241
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Categorized",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1914,
+      216,
+      -1892,
+      238
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Alphabetical",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1892,
+      216,
+      -1870,
+      238
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "4",
+    "control_type": "Edit",
+    "class_name": "Edit",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1863,
+      215,
+      -1526,
+      239
+    ],
+    "depth": 3
+  },
+  {
+    "name": "",
+    "auto_id": "2",
+    "control_type": "ScrollBar",
+    "class_name": "ScrollBar",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1539,
+      243,
+      -1522,
+      864
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Line up",
+    "auto_id": "UpButton",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Page up",
+    "auto_id": "UpPageButton",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Position",
+    "auto_id": "ScrollbarThumb",
+    "control_type": "Thumb",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Page down",
+    "auto_id": "DownPageButton",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Line down",
+    "auto_id": "DownButton",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Wired",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      242,
+      -1539,
+      259
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_03010",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      259,
+      -1539,
+      276
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_03020",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      276,
+      -1539,
+      293
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TransferData_Invert_area",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      293,
+      -1539,
+      310
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_03030",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      310,
+      -1539,
+      327
+    ],
+    "depth": 3
+  },
+  {
+    "name": "softwareInformation",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      327,
+      -1539,
+      344
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_02010",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      344,
+      -1539,
+      361
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Background-Transfer",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      361,
+      -1539,
+      378
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01010",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      378,
+      -1539,
+      395
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01011",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      395,
+      -1539,
+      412
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TransferData_Invert_area",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      412,
+      -1539,
+      429
+    ],
+    "depth": 3
+  },
+  {
+    "name": "OTAReady",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      429,
+      -1539,
+      446
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_02020-02050",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      446,
+      -1539,
+      463
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_02020-02051",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      463,
+      -1539,
+      480
+    ],
+    "depth": 3
+  },
+  {
+    "name": "VehicleType",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      480,
+      -1539,
+      497
+    ],
+    "depth": 3
+  },
+  {
+    "name": "NMMessage_Type",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      497,
+      -1539,
+      514
+    ],
+    "depth": 3
+  },
+  {
+    "name": "NMMessage_Time",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      514,
+      -1539,
+      531
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TestECU",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      531,
+      -1539,
+      548
+    ],
+    "depth": 3
+  },
+  {
+    "name": "UpdateAndFinish",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      548,
+      -1539,
+      565
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01020",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      565,
+      -1539,
+      582
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01021",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      582,
+      -1539,
+      599
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01022",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      599,
+      -1539,
+      616
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TransferData_Invert_area",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      616,
+      -1539,
+      633
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01023",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      633,
+      -1539,
+      650
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Reset",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      650,
+      -1539,
+      667
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01030",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      667,
+      -1539,
+      684
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01035",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      684,
+      -1539,
+      701
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TransferData_Invert_area",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      701,
+      -1539,
+      718
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Rollback",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      718,
+      -1539,
+      735
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01040",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      735,
+      -1539,
+      752
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01045",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      752,
+      -1539,
+      769
+    ],
+    "depth": 3
+  },
+  {
+    "name": "R-ROM Path",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      769,
+      -1539,
+      786
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01050",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      786,
+      -1539,
+      803
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01053",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      803,
+      -1539,
+      820
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01055",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      820,
+      -1539,
+      837
+    ],
+    "depth": 3
+  },
+  {
+    "name": "General",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      837,
+      -1539,
+      854
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01060",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      854,
+      -1539,
+      871
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01070",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      871,
+      -1539,
+      888
+    ],
+    "depth": 3
+  },
+  {
+    "name": "R-ROM Path",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      888,
+      -1539,
+      905
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_02060",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      905,
+      -1539,
+      922
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_02070",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      922,
+      -1539,
+      939
+    ],
+    "depth": 3
+  },
+  {
+    "name": "OTAFunctionSafety",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      939,
+      -1539,
+      956
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01080",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      956,
+      -1539,
+      973
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01081",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      973,
+      -1539,
+      990
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01082_01084",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      990,
+      -1539,
+      1007
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01083_01084",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1903,
+      1007,
+      -1539,
+      1024
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01082_01085",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      -1903,
+      1024,
+      -1539,
+      1041
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TC_TAR_01083_01085",
+    "auto_id": "",
+    "control_type": "Custom",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      -1903,
+      1041,
+      -1539,
+      1058
+    ],
+    "depth": 3
+  },
+  {
+    "name": "",
+    "auto_id": "160",
+    "control_type": "Pane",
+    "class_name": "BCGPToolBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      188,
+      -1522,
+      213
+    ],
+    "depth": 2
+  },
+  {
+    "name": " ",
+    "auto_id": "59398",
+    "control_type": "ToolBar",
+    "class_name": "BCGPRibbonBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      0,
+      0,
+      153
+    ],
+    "depth": 1
+  },
+  {
+    "name": "Application menu",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      33,
+      -1861,
+      60
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Quick Access Toolbar",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1912,
+      0,
+      -1871,
+      33
+    ],
+    "depth": 2
+  },
+  {
+    "name": "SAVE",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1910,
+      0,
+      -1888,
+      28
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Customize Quick Access Toolbar",
+    "auto_id": "",
+    "control_type": "SplitButton",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1886,
+      0,
+      -1873,
+      27
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Ribbon Tabs",
+    "auto_id": "",
+    "control_type": "Group",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1860,
+      33,
+      -88,
+      60
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Home",
+    "auto_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1860,
+      33,
+      -1802,
+      60
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Edit",
+    "auto_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1802,
+      33,
+      -1754,
+      60
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Window",
+    "auto_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1754,
+      33,
+      -1680,
+      60
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Home",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      60,
+      0,
+      153
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Tools",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1916,
+      63,
+      -1475,
+      149
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Hex2Binary",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1912,
+      65,
+      -1851,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "RomPakage",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1851,
+      65,
+      -1786,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "XML Conversion",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1786,
+      65,
+      -1723,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "LogView",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1723,
+      65,
+      -1674,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Generator",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1674,
+      65,
+      -1617,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "RFS",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1617,
+      65,
+      -1575,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Bi-Authenticaiton",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1575,
+      65,
+      -1480,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Mode",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1473,
+      63,
+      -1344,
+      149
+    ],
+    "depth": 3
+  },
+  {
+    "name": "TesterMode",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1469,
+      65,
+      -1404,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "EditMode",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1404,
+      65,
+      -1349,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Help",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1342,
+      63,
+      -1164,
+      149
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Option",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1338,
+      65,
+      -1296,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Error Lookup",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1296,
+      65,
+      -1253,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Report Config",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1253,
+      65,
+      -1211,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Logout",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1211,
+      65,
+      -1169,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Support",
+    "auto_id": "",
+    "control_type": "ToolBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1162,
+      63,
+      -1059,
+      149
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Manual",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1158,
+      65,
+      -1115,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Technical Support",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1115,
+      65,
+      -1064,
+      131
+    ],
+    "depth": 4
+  },
+  {
+    "name": "About",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -25,
+      35,
+      -1,
+      57
+    ],
+    "depth": 2
+  },
+  {
+    "name": " ",
+    "auto_id": "59393",
+    "control_type": "ToolBar",
+    "class_name": "BCGPRibbonStatusBar:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      1008,
+      0,
+      1032
+    ],
+    "depth": 1
+  },
+  {
+    "name": "Workspace",
+    "auto_id": "59648",
+    "control_type": "Pane",
+    "class_name": "MDIClient",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1516,
+      153,
+      0,
+      1008
+    ],
+    "depth": 1
+  },
+  {
+    "name": "ReprogramConfig_0_1_1_114.hcfg-r",
+    "auto_id": "65280",
+    "control_type": "Window",
+    "class_name": "Afx:002D0000:b:00010003:00000006:00160233",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1511,
+      180,
+      -5,
+      1003
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "59648",
+    "control_type": "Pane",
+    "class_name": "AfxFrameOrView140u",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1511,
+      180,
+      -5,
+      1003
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Stop",
+    "auto_id": "1219",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1333,
+      344,
+      -1248,
+      369
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Start",
+    "auto_id": "1218",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1467,
+      344,
+      -1382,
+      369
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Stop",
+    "auto_id": "1231",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -953,
+      344,
+      -868,
+      369
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Start",
+    "auto_id": "1232",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -1081,
+      344,
+      -996,
+      369
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "1222",
+    "control_type": "List",
+    "class_name": "SysListView32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1081,
+      436,
+      -799,
+      954
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Header Control",
+    "auto_id": "Header",
+    "control_type": "Header",
+    "class_name": "SysHeader32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1079,
+      438,
+      -801,
+      462
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Stauts",
+    "auto_id": "HeaderItem 0",
+    "control_type": "HeaderItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1079,
+      438,
+      -1020,
+      462
+    ],
+    "depth": 6
+  },
+  {
+    "name": "Description",
+    "auto_id": "HeaderItem 1",
+    "control_type": "HeaderItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1020,
+      438,
+      -801,
+      462
+    ],
+    "depth": 6
+  },
+  {
+    "name": "Action Rule",
+    "auto_id": "1239",
+    "control_type": "Group",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1103,
+      310,
+      -351,
+      968
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Action Rule",
+    "auto_id": "1221",
+    "control_type": "List",
+    "class_name": "SysListView32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1467,
+      436,
+      -1161,
+      954
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Header Control",
+    "auto_id": "Header",
+    "control_type": "Header",
+    "class_name": "SysHeader32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1465,
+      438,
+      -1163,
+      462
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Stauts",
+    "auto_id": "HeaderItem 0",
+    "control_type": "HeaderItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1465,
+      438,
+      -1402,
+      462
+    ],
+    "depth": 6
+  },
+  {
+    "name": "Description",
+    "auto_id": "HeaderItem 1",
+    "control_type": "HeaderItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1402,
+      438,
+      -1163,
+      462
+    ],
+    "depth": 6
+  },
+  {
+    "name": "Testcase Rule",
+    "auto_id": "1238",
+    "control_type": "Group",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1483,
+      310,
+      -1143,
+      968
+    ],
+    "depth": 4
+  },
+  {
+    "name": "For Cooperative ECU",
+    "auto_id": "1234",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -329,
+      238,
+      -171,
+      264
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Pre Procedure",
+    "auto_id": "1236",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      674,
+      -479,
+      702
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "1233",
+    "control_type": "ComboBox",
+    "class_name": "ComboBox",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1137,
+      238,
+      -975,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Text",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      3,
+      3,
+      142,
+      21
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Open",
+    "auto_id": "DropDown",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -991,
+      239,
+      -976,
+      261
+    ],
+    "depth": 5
+  },
+  {
+    "name": "SourceAddr : ",
+    "auto_id": "1269",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1231,
+      244,
+      -1139,
+      260
+    ],
+    "depth": 4
+  },
+  {
+    "name": "SourceAddr : ",
+    "auto_id": "1220",
+    "control_type": "ProgressBar",
+    "class_name": "msctls_progress32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1467,
+      396,
+      -1231,
+      424
+    ],
+    "depth": 4
+  },
+  {
+    "name": "SourceAddr : ",
+    "auto_id": "1223",
+    "control_type": "ProgressBar",
+    "class_name": "msctls_progress32",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1081,
+      396,
+      -855,
+      424
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Background-Transfer",
+    "auto_id": "1260",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      588,
+      -461,
+      604
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Processing-Preperation(OBD EMS)",
+    "auto_id": "1261",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -713,
+      632,
+      -419,
+      648
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Processing",
+    "auto_id": "1262",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -713,
+      726,
+      -419,
+      742
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Activation",
+    "auto_id": "1263",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      770,
+      -419,
+      786
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Rollback",
+    "auto_id": "1264",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      814,
+      -419,
+      830
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Apply",
+    "auto_id": "1270",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -611,
+      906,
+      -479,
+      942
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Rule Units",
+    "auto_id": "1271",
+    "control_type": "Group",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -743,
+      556,
+      -379,
+      954
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Use Options",
+    "auto_id": "1272",
+    "control_type": "Group",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1483,
+      198,
+      35,
+      288
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Scenario Units",
+    "auto_id": "1276",
+    "control_type": "Group",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -743,
+      338,
+      -379,
+      542
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Wired-Rules",
+    "auto_id": "1273",
+    "control_type": "RadioButton",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      382,
+      -599,
+      404
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Wireless-Rules",
+    "auto_id": "1274",
+    "control_type": "RadioButton",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      426,
+      -579,
+      446
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Apply",
+    "auto_id": "1277",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -611,
+      494,
+      -479,
+      528
+    ],
+    "depth": 4
+  },
+  {
+    "name": "0.00%",
+    "auto_id": "1278",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -841,
+      400,
+      -785,
+      416
+    ],
+    "depth": 4
+  },
+  {
+    "name": "0.00%",
+    "auto_id": "1279",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1219,
+      402,
+      -1161,
+      418
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Add Post Procedure",
+    "auto_id": "1240",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      854,
+      -479,
+      882
+    ],
+    "depth": 4
+  },
+  {
+    "name": "OEUK Vehicle",
+    "auto_id": "1224",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -161,
+      242,
+      -47,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "NFS",
+    "auto_id": "1225",
+    "control_type": "CheckBox",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -35,
+      242,
+      21,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "1241",
+    "control_type": "ComboBox",
+    "class_name": "ComboBox",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1361,
+      238,
+      -1237,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Text",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      3,
+      3,
+      104,
+      21
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Open",
+    "auto_id": "DropDown",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1253,
+      239,
+      -1238,
+      261
+    ],
+    "depth": 5
+  },
+  {
+    "name": "GatewayType : ",
+    "auto_id": "1280",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1475,
+      244,
+      -1369,
+      260
+    ],
+    "depth": 4
+  },
+  {
+    "name": "OTA-estimatedRuntime",
+    "auto_id": "1275",
+    "control_type": "RadioButton",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -713,
+      466,
+      -537,
+      486
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Procedure Model Type :",
+    "auto_id": "",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -941,
+      244,
+      -779,
+      260
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Procedure Model Type :",
+    "auto_id": "1250",
+    "control_type": "ComboBox",
+    "class_name": "ComboBox",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -777,
+      238,
+      -541,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "Procedure Model Type :",
+    "auto_id": "",
+    "control_type": "Text",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      3,
+      3,
+      216,
+      21
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Open",
+    "auto_id": "DropDown",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -557,
+      239,
+      -542,
+      261
+    ],
+    "depth": 5
+  },
+  {
+    "name": "DLC : ",
+    "auto_id": "1281",
+    "control_type": "Text",
+    "class_name": "Static",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -483,
+      244,
+      -443,
+      260
+    ],
+    "depth": 4
+  },
+  {
+    "name": "DLC : ",
+    "auto_id": "1235",
+    "control_type": "ComboBox",
+    "class_name": "ComboBox",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -437,
+      238,
+      -341,
+      262
+    ],
+    "depth": 4
+  },
+  {
+    "name": "DLC : ",
+    "auto_id": "",
+    "control_type": "Text",
+    "class_name": "",
+    "enabled": true,
+    "visible": false,
+    "rect": [
+      3,
+      3,
+      76,
+      21
+    ],
+    "depth": 5
+  },
+  {
+    "name": "Open",
+    "auto_id": "DropDown",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -357,
+      239,
+      -342,
+      261
+    ],
+    "depth": 5
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Thumb",
+    "class_name": "",
+    "enabled": false,
+    "visible": true,
+    "rect": [
+      -22,
+      986,
+      -5,
+      1003
+    ],
+    "depth": 4
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Tab",
+    "class_name": "BCGPTabWnd:2d0000:8:10003:10",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1516,
+      153,
+      0,
+      1008
+    ],
+    "depth": 2
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "Button",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -22,
+      157,
+      -7,
+      172
+    ],
+    "depth": 3
+  },
+  {
+    "name": "ReprogramConfig_0_1_1_114.hcfg-r",
+    "auto_id": "",
+    "control_type": "TabItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1511,
+      155,
+      -1279,
+      176
+    ],
+    "depth": 3
+  },
+  {
+    "name": "",
+    "auto_id": "",
+    "control_type": "TitleBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1898,
+      0,
+      0,
+      23
+    ],
+    "depth": 1
+  },
+  {
+    "name": "System",
+    "auto_id": "MenuBar",
+    "control_type": "MenuBar",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      0,
+      -1898,
+      22
+    ],
+    "depth": 2
+  },
+  {
+    "name": "System",
+    "auto_id": "",
+    "control_type": "MenuItem",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -1920,
+      0,
+      -1898,
+      22
+    ],
+    "depth": 3
+  },
+  {
+    "name": "Minimize",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -67,
+      -1,
+      -43,
+      23
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Restore",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -45,
+      -1,
+      -21,
+      23
+    ],
+    "depth": 2
+  },
+  {
+    "name": "Close",
+    "auto_id": "",
+    "control_type": "Button",
+    "class_name": "",
+    "enabled": true,
+    "visible": true,
+    "rect": [
+      -23,
+      -1,
+      1,
+      23
+    ],
+    "depth": 2
+  }
+]

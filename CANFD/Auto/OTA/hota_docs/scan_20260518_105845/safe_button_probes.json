@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Hex2Binary",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 329918,
+        "title": "Hex2Binary - Hex2Binary1",
+        "class_name": "Afx:00490000:8:00010003:00000000:07B308C1",
+        "rect": [
+          52,
+          52,
+          1492,
+          805
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "RomPakage",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 330022,
+        "title": "ROM PACKAGE(CCU2)",
+        "class_name": "#32770",
+        "rect": [
+          -1166,
+          316,
+          -754,
+          717
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "XML Conversion",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 592060,
+        "title": "XML Conversion",
+        "class_name": "#32770",
+        "rect": [
+          -1181,
+          411,
+          -739,
+          621
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "LogView",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 263478,
+        "title": "LogView",
+        "class_name": "#32770",
+        "rect": [
+          456,
+          271,
+          1464,
+          762
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "Generator",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 395528,
+        "title": "Generator",
+        "class_name": "#32770",
+        "rect": [
+          -1410,
+          126,
+          -510,
+          906
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "RFS",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 1704760,
+        "title": "RFS - File transfer",
+        "class_name": "#32770",
+        "rect": [
+          -1173,
+          408,
+          -747,
+          624
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "Bi-Authenticaiton",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 461120,
+        "title": "Bidir Authentication",
+        "class_name": "#32770",
+        "rect": [
+          -1200,
+          371,
+          -720,
+          662
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "Option",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 657728,
+        "title": "Option",
+        "class_name": "#32770",
+        "rect": [
+          -1273,
+          275,
+          -646,
+          758
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "Error Lookup",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 1575146,
+        "title": "H-OTA Error Lookup",
+        "class_name": "#32770",
+        "rect": [
+          729,
+          396,
+          1191,
+          637
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "Report Config",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 657658,
+        "title": "Report Configuration",
+        "class_name": "#32770",
+        "rect": [
+          -1168,
+          353,
+          -751,
+          680
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  },
+  {
+    "name": "About",
+    "status": "invoked",
+    "new_windows": [
+      {
+        "hwnd": 1966116,
+        "title": "About H-OTA Studio",
+        "class_name": "#32770",
+        "rect": [
+          -1144,
+          452,
+          -775,
+          580
+        ]
+      }
+    ],
+    "invoke_method": "invoke"
+  }
+]

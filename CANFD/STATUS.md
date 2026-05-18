@@ -1,11 +1,11 @@
 # Project Status - CANFD Built-in Cam
 
-Last updated: 2026-05-16
+Last updated: 2026-05-18
 
 ## Current Goal
 
 Implement and maintain requested Auto CAPL/OTA automated test flows, currently
-the OTA `.can` COM/capture instrumentation cleanup.
+including OTA Python/H-OTA automation documentation and CAPL runner cleanup.
 
 Primary implementation target for future work:
 
@@ -81,6 +81,61 @@ No CAPL test implementation was changed during initialization.
 - CANoe compile/run was not attempted during initialization.
 
 ## Recent Work
+
+2026-05-18:
+
+- Created H-OTA Studio documentation under `Auto/OTA/hota_docs`.
+  - Added `scan_hota_ui.py` for runtime H-OTA UI scanning:
+    launch/reuse H-OTA through `H-OTA Studio.lnk`, load the folder `0`
+    `*.hcfg-r`, click `TesterMode`, dump UIA trees, expand visible combo
+    boxes, capture screenshots, and parse existing OTA Python selectors.
+  - Added `build_hota_docs.py` to build stable Markdown/JSON docs from:
+    runtime Win32/UIA controls, installed H-OTA files, INI state,
+    `property.xml` / `property2.xml`, XSD schema summaries,
+    `vehicle_controller_info.json`, and existing `Auto/OTA/*.py` flows.
+  - Latest successful elevated scan:
+    `Auto/OTA/hota_docs/scan_20260518_105845`.
+  - Main generated docs:
+    `README.md`, `runtime_ui_scan.md`, `automation_selectors.md`,
+    `installed_structure.md`, `config_and_schema.md`, `limitations.md`,
+    `hota_full_ui_dump.txt`, and `hota_exhaustive_click_dump.txt`.
+  - Runtime scan confirmed H-OTA window title
+    `ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r`, Output window,
+    ribbon buttons, Start/Stop controls, rule unit controls, checkboxes, and
+    combo boxes.
+  - Safe probe invoked 11 non-update utility/dialog buttons and recorded opened
+    windows: `Hex2Binary`, `RomPakage`, `XML Conversion`, `LogView`,
+    `Generator`, `RFS`, `Bi-Authenticaiton`, `Option`, `Error Lookup`,
+    `Report Config`, and `About`.
+  - Added and ran `exhaustive_hota_probe.py` for the disconnected H-OTA
+    session. Latest output:
+    `Auto/OTA/hota_docs/exhaustive_probe_20260518_111521`.
+  - Exhaustive probe clicked additional visible utility/help/mode controls:
+    `Manual`, `Technical Support`, `EditMode`, `TesterMode`, option/report/help
+    dialogs, rule checkboxes, radio buttons, and Apply buttons. Toggle-style
+    checkboxes were clicked twice to restore their original state.
+  - Exhaustive probe attempted Start/Stop coverage where possible. Testcase
+    Rule `Start` (`auto_id=1218`) opened the H-OTA popup
+    `There is no selected testcase. Please check the Properties window.`;
+    Testcase Rule `Stop` (`auto_id=1219`) was disabled. Action Rule `Start`
+    (`auto_id=1232`) was disabled. Output line count remained 0.
+  - `SAVE` and `Logout` were intentionally skipped because they can change the
+    loaded `.hcfg-r` config or user/session state.
+  - Regenerated `hota_full_ui_dump.txt` as the root full text dump. It now
+    includes Win32/UIA layout, combo options, safe probes, exhaustive click
+    report, skipped/disabled controls, final UI tree evidence, and runner
+    selectors.
+  - Captured combo options:
+    SourceAddr `CCU/CWC : 0x0F00`, `ERT : 0x0E81`, `HPVC : 0x0F10`;
+    GatewayType `CCU2 : DoIP`, `CCU1 : EthDiag`;
+    Procedure Model Type `GroupA(LX3,SW1,LQ2,JG1)`, `GroupB(GN7PE~)`.
+  - Important constraint:
+    H-OTA is a 32-bit elevated app. Non-admin Python could read only limited
+    data and could not send Ctrl+O/clicks. Elevated scanner succeeded; pywinauto
+    still warns that 32-bit Python is preferred for full Win32 automation.
+  - `Start` is still avoided during normal discovery. It was clicked only in
+    the disconnected exhaustive probe requested by the user, and the resulting
+    no-selected-testcase popup was recorded and then closed.
 
 2026-05-16:
 

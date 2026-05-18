@@ -1,0 +1,906 @@
+[
+  {
+    "kind": "window",
+    "title": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r",
+    "hwnd": 395308
+  },
+  {
+    "kind": "button",
+    "name": "Hex2Binary",
+    "status": "clicked",
+    "meta": {
+      "name": "Hex2Binary",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1912,
+        65,
+        -1851,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1116496,
+        "title": "Hex2Binary - Hex2Binary1",
+        "class_name": "Afx:00490000:8:00010003:00000000:0F9007FF",
+        "rect": [
+          156,
+          156,
+          1596,
+          909
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "RomPakage",
+    "status": "clicked",
+    "meta": {
+      "name": "RomPakage",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1851,
+        65,
+        -1786,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1182032,
+        "title": "ROM PACKAGE(CCU2)",
+        "class_name": "#32770",
+        "rect": [
+          -1166,
+          316,
+          -754,
+          717
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "XML Conversion",
+    "status": "clicked",
+    "meta": {
+      "name": "XML Conversion",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1786,
+        65,
+        -1723,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1639146,
+        "title": "XML Conversion",
+        "class_name": "#32770",
+        "rect": [
+          -1181,
+          411,
+          -739,
+          621
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "LogView",
+    "status": "clicked",
+    "meta": {
+      "name": "LogView",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1723,
+        65,
+        -1674,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 263478,
+        "title": "LogView",
+        "class_name": "#32770",
+        "rect": [
+          456,
+          271,
+          1464,
+          762
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Generator",
+    "status": "clicked",
+    "meta": {
+      "name": "Generator",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1674,
+        65,
+        -1617,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 592116,
+        "title": "Generator",
+        "class_name": "#32770",
+        "rect": [
+          -1410,
+          126,
+          -510,
+          906
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "RFS",
+    "status": "clicked",
+    "meta": {
+      "name": "RFS",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1617,
+        65,
+        -1575,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1706292,
+        "title": "RFS - File transfer",
+        "class_name": "#32770",
+        "rect": [
+          -1173,
+          408,
+          -747,
+          624
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Bi-Authenticaiton",
+    "status": "clicked",
+    "meta": {
+      "name": "Bi-Authenticaiton",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1575,
+        65,
+        -1480,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1640612,
+        "title": "Bidir Authentication",
+        "class_name": "#32770",
+        "rect": [
+          -1200,
+          371,
+          -720,
+          662
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "EditMode",
+    "status": "clicked",
+    "meta": {
+      "name": "EditMode",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1404,
+        65,
+        -1349,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": []
+  },
+  {
+    "kind": "button",
+    "name": "TesterMode",
+    "status": "clicked",
+    "meta": {
+      "name": "TesterMode",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1469,
+        65,
+        -1404,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": []
+  },
+  {
+    "kind": "button",
+    "name": "Option",
+    "status": "clicked",
+    "meta": {
+      "name": "Option",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1338,
+        65,
+        -1296,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1835166,
+        "title": "Option",
+        "class_name": "#32770",
+        "rect": [
+          -1273,
+          275,
+          -646,
+          758
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Error Lookup",
+    "status": "clicked",
+    "meta": {
+      "name": "Error Lookup",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1296,
+        65,
+        -1253,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1247500,
+        "title": "H-OTA Error Lookup",
+        "class_name": "#32770",
+        "rect": [
+          729,
+          396,
+          1191,
+          637
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Report Config",
+    "status": "clicked",
+    "meta": {
+      "name": "Report Config",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1253,
+        65,
+        -1211,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1313036,
+        "title": "Report Configuration",
+        "class_name": "#32770",
+        "rect": [
+          -1168,
+          353,
+          -751,
+          680
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Manual",
+    "status": "clicked",
+    "meta": {
+      "name": "Manual",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1158,
+        65,
+        -1115,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 721604,
+        "title": "H-OTA Studio Manual",
+        "class_name": "#32770",
+        "rect": [
+          -1191,
+          375,
+          -729,
+          690
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "Technical Support",
+    "status": "clicked",
+    "meta": {
+      "name": "Technical Support",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1115,
+        65,
+        -1064,
+        131
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1640638,
+        "title": "Technical Support (Q&A)",
+        "class_name": "#32770",
+        "rect": [
+          -1296,
+          220,
+          -624,
+          812
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "button",
+    "name": "About",
+    "status": "clicked",
+    "meta": {
+      "name": "About",
+      "auto_id": "",
+      "control_type": "Button",
+      "class_name": "",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -25,
+        35,
+        -1,
+        57
+      ]
+    },
+    "method": "invoke",
+    "new_windows": [
+      {
+        "hwnd": 1508654,
+        "title": "About H-OTA Studio",
+        "class_name": "#32770",
+        "rect": [
+          -1144,
+          452,
+          -775,
+          580
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "toggle",
+    "label": "For Cooperative ECU",
+    "auto_id": "1234",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "For Cooperative ECU",
+      "auto_id": "1234",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -329,
+        238,
+        -171,
+        264
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Pre Procedure",
+    "auto_id": "1236",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "Add Pre Procedure",
+      "auto_id": "1236",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        674,
+        -479,
+        702
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Background-Transfer",
+    "auto_id": "1260",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "Add Background-Transfer",
+      "auto_id": "1260",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        588,
+        -461,
+        604
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Processing-Preperation(OBD EMS)",
+    "auto_id": "1261",
+    "status": "disabled",
+    "meta": {
+      "name": "Add Processing-Preperation(OBD EMS)",
+      "auto_id": "1261",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": false,
+      "visible": true,
+      "rect": [
+        -713,
+        632,
+        -419,
+        648
+      ]
+    }
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Processing",
+    "auto_id": "1262",
+    "status": "disabled",
+    "meta": {
+      "name": "Add Processing",
+      "auto_id": "1262",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": false,
+      "visible": true,
+      "rect": [
+        -713,
+        726,
+        -419,
+        742
+      ]
+    }
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Activation",
+    "auto_id": "1263",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "Add Activation",
+      "auto_id": "1263",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        770,
+        -419,
+        786
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Rollback",
+    "auto_id": "1264",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "Add Rollback",
+      "auto_id": "1264",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        814,
+        -419,
+        830
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "Add Post Procedure",
+    "auto_id": "1240",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "Add Post Procedure",
+      "auto_id": "1240",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        854,
+        -479,
+        882
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "OEUK Vehicle",
+    "auto_id": "1224",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "OEUK Vehicle",
+      "auto_id": "1224",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -161,
+        242,
+        -47,
+        262
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "toggle",
+    "label": "NFS",
+    "auto_id": "1225",
+    "status": "toggled_twice_restore_attempted",
+    "meta": {
+      "name": "NFS",
+      "auto_id": "1225",
+      "control_type": "CheckBox",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -35,
+        242,
+        21,
+        262
+      ]
+    },
+    "toggle_1": "click_input",
+    "toggle_2": "click_input"
+  },
+  {
+    "kind": "RadioButton",
+    "label": "Wired-Rules",
+    "auto_id": "1273",
+    "status": "clicked",
+    "meta": {
+      "name": "Wired-Rules",
+      "auto_id": "1273",
+      "control_type": "RadioButton",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        382,
+        -599,
+        404
+      ]
+    },
+    "method": "click_input"
+  },
+  {
+    "kind": "RadioButton",
+    "label": "Wireless-Rules",
+    "auto_id": "1274",
+    "status": "clicked",
+    "meta": {
+      "name": "Wireless-Rules",
+      "auto_id": "1274",
+      "control_type": "RadioButton",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        426,
+        -579,
+        446
+      ]
+    },
+    "method": "invoke"
+  },
+  {
+    "kind": "RadioButton",
+    "label": "OTA-estimatedRuntime",
+    "auto_id": "1275",
+    "status": "clicked",
+    "meta": {
+      "name": "OTA-estimatedRuntime",
+      "auto_id": "1275",
+      "control_type": "RadioButton",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        466,
+        -537,
+        486
+      ]
+    },
+    "method": "invoke"
+  },
+  {
+    "kind": "RadioButton",
+    "label": "Wireless-Rules restore",
+    "auto_id": "1274",
+    "status": "clicked",
+    "meta": {
+      "name": "Wireless-Rules",
+      "auto_id": "1274",
+      "control_type": "RadioButton",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -713,
+        426,
+        -579,
+        446
+      ]
+    },
+    "method": "invoke"
+  },
+  {
+    "kind": "Button",
+    "label": "Apply Scenario Units",
+    "auto_id": "1277",
+    "status": "clicked",
+    "meta": {
+      "name": "Apply",
+      "auto_id": "1277",
+      "control_type": "Button",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -611,
+        494,
+        -479,
+        528
+      ]
+    },
+    "method": "invoke"
+  },
+  {
+    "kind": "Button",
+    "label": "Apply Rule Units",
+    "auto_id": "1270",
+    "status": "clicked",
+    "meta": {
+      "name": "Apply",
+      "auto_id": "1270",
+      "control_type": "Button",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -611,
+        906,
+        -479,
+        942
+      ]
+    },
+    "method": "invoke"
+  },
+  {
+    "kind": "start_stop",
+    "label": "Testcase Rule Start/Stop",
+    "start_id": "1218",
+    "stop_id": "1219",
+    "start_meta": {
+      "name": "Start",
+      "auto_id": "1218",
+      "control_type": "Button",
+      "class_name": "Button",
+      "enabled": true,
+      "visible": true,
+      "rect": [
+        -1467,
+        344,
+        -1382,
+        369
+      ]
+    },
+    "start_method": "invoke",
+    "status": "start_clicked",
+    "stop_meta": {
+      "name": "Stop",
+      "auto_id": "1219",
+      "control_type": "Button",
+      "class_name": "Button",
+      "enabled": false,
+      "visible": true,
+      "rect": [
+        -1333,
+        344,
+        -1248,
+        369
+      ]
+    },
+    "new_windows": [
+      {
+        "hwnd": 5048170,
+        "title": "H-OTA Studio",
+        "class_name": "#32770",
+        "rect": [
+          -1095,
+          431,
+          -825,
+          601
+        ]
+      }
+    ],
+    "output_before_count": 0,
+    "output_after_count": 0,
+    "new_output_lines": []
+  },
+  {
+    "kind": "start_stop",
+    "label": "Action Rule Start/Stop",
+    "start_id": "1232",
+    "stop_id": "1231",
+    "start_meta": {
+      "name": "Start",
+      "auto_id": "1232",
+      "control_type": "Button",
+      "class_name": "Button",
+      "enabled": false,
+      "visible": true,
+      "rect": [
+        -1081,
+        344,
+        -996,
+        369
+      ]
+    },
+    "status": "start_disabled",
+    "output_before_count": 0,
+    "output_after_count": 0,
+    "new_output_lines": []
+  },
+  {
+    "kind": "skipped",
+    "name": "SAVE",
+    "reason": "Would write the loaded H-OTA config file."
+  },
+  {
+    "kind": "skipped",
+    "name": "Logout",
+    "reason": "Would change the user's H-OTA login/session state."
+  }
+]

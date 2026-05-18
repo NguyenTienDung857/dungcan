@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-05-18T11:27:37",
+  "files": [
+    "README.md",
+    "automation_selectors.json",
+    "automation_selectors.md",
+    "build_hota_docs.py",
+    "config_and_schema.json",
+    "config_and_schema.md",
+    "exhaustive_hota_probe.py",
+    "exhaustive_probe_20260518_111521",
+    "hota_exhaustive_click_dump.txt",
+    "hota_full_ui_dump.txt",
+    "installed_structure.json",
+    "installed_structure.md",
+    "limitations.md",
+    "runtime_ui_scan.json",
+    "runtime_ui_scan.md",
+    "scan_20260518_104210",
+    "scan_20260518_104336",
+    "scan_20260518_105330",
+    "scan_20260518_105447",
+    "scan_20260518_105845",
+    "scan_hota_ui.py",
+    "scan_manifest.json"
+  ]
+}

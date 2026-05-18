@@ -1,0 +1,1818 @@
+{
+  "top_level": [
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_asyncio.pyd",
+      "relative_path": "_internal\\_asyncio.pyd",
+      "size": 60920,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_bz2.pyd",
+      "relative_path": "_internal\\_bz2.pyd",
+      "size": 80376,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_ctypes.pyd",
+      "relative_path": "_internal\\_ctypes.pyd",
+      "size": 118776,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_decimal.pyd",
+      "relative_path": "_internal\\_decimal.pyd",
+      "size": 232440,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_elementtree.pyd",
+      "relative_path": "_internal\\_elementtree.pyd",
+      "size": 194040,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_hashlib.pyd",
+      "relative_path": "_internal\\_hashlib.pyd",
+      "size": 54776,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_lzma.pyd",
+      "relative_path": "_internal\\_lzma.pyd",
+      "size": 164856,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_multiprocessing.pyd",
+      "relative_path": "_internal\\_multiprocessing.pyd",
+      "size": 29176,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_overlapped.pyd",
+      "relative_path": "_internal\\_overlapped.pyd",
+      "size": 40952,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_queue.pyd",
+      "relative_path": "_internal\\_queue.pyd",
+      "size": 28152,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_socket.pyd",
+      "relative_path": "_internal\\_socket.pyd",
+      "size": 73208,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_ssl.pyd",
+      "relative_path": "_internal\\_ssl.pyd",
+      "size": 144888,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\_zoneinfo.pyd",
+      "relative_path": "_internal\\_zoneinfo.pyd",
+      "size": 41976,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\base_library.zi",
+      "relative_path": "_internal\\base_library.zi",
+      "size": 849163,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\base_library.zip",
+      "relative_path": "_internal\\base_library.zip",
+      "size": 849163,
+      "modified": "2025-05-07T15:56:34"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\_elementpath.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\_elementpath.cp39-win32.pyd",
+      "size": 128512,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\builder.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\builder.cp39-win32.pyd",
+      "size": 71168,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\etree.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\etree.cp39-win32.pyd",
+      "size": 3468288,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\html\\diff.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\html\\diff.cp39-win32.pyd",
+      "size": 253440,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\rng\\iso-schematron.rng",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\rng\\iso-schematron.rng",
+      "size": 19046,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_abstract_expand.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_abstract_expand.xsl",
+      "size": 12015,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_dsdl_include.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_dsdl_include.xsl",
+      "size": 41116,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_schematron_message.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_schematron_message.xsl",
+      "size": 2069,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_schematron_skeleton_for_xslt1.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_schematron_skeleton_for_xslt1.xsl",
+      "size": 73560,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_svrl_for_xslt1.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\iso_svrl_for_xslt1.xsl",
+      "size": 20970,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\readme.txt",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\iso-schematron-xslt1\\readme.txt",
+      "size": 3310,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\RNG2Schtrn.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\RNG2Schtrn.xsl",
+      "size": 3247,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\isoschematron\\resources\\xsl\\XSD2Schtrn.xsl",
+      "relative_path": "_internal\\lxml\\isoschematron\\resources\\xsl\\XSD2Schtrn.xsl",
+      "size": 4563,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\objectify.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\objectify.cp39-win32.pyd",
+      "size": 1575936,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\lxml\\sax.cp39-win32.pyd",
+      "relative_path": "_internal\\lxml\\sax.cp39-win32.pyd",
+      "size": 111616,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\pyexpat.pyd",
+      "relative_path": "_internal\\pyexpat.pyd",
+      "size": 184312,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\python39.dll",
+      "relative_path": "_internal\\python39.dll",
+      "size": 4478456,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\select.pyd",
+      "relative_path": "_internal\\select.pyd",
+      "size": 27128,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\unicodedata.pyd",
+      "relative_path": "_internal\\unicodedata.pyd",
+      "size": 1117688,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\VC\\XMLSchema-versioning.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\VC\\XMLSchema-versioning.xsd",
+      "size": 1014,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XML\\xml_minimal.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XML\\xml_minimal.xsd",
+      "size": 1322,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSD_1.0\\datatypes.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSD_1.0\\datatypes.xsd",
+      "size": 45418,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSD_1.0\\XMLSchema.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSD_1.0\\XMLSchema.xsd",
+      "size": 90577,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSD_1.1\\datatypes.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSD_1.1\\datatypes.xsd",
+      "size": 17987,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSD_1.1\\XMLSchema.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSD_1.1\\XMLSchema.xsd",
+      "size": 69524,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSD_1.1\\xsd11-extra.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSD_1.1\\xsd11-extra.xsd",
+      "size": 3875,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\_internal\\xmlschema\\schemas\\XSI\\XMLSchema-instance_minimal.xsd",
+      "relative_path": "_internal\\xmlschema\\schemas\\XSI\\XMLSchema-instance_minimal.xsd",
+      "size": 395,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\AddxFmConfig.xml",
+      "relative_path": "AddxFmConfig.xml",
+      "size": 5663,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\BCGCBPRO3020u142.dll",
+      "relative_path": "BCGCBPRO3020u142.dll",
+      "size": 10596352,
+      "modified": "2025-05-07T15:56:32"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\bz2.dll",
+      "relative_path": "bz2.dll",
+      "size": 64000,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\configuration.ini",
+      "relative_path": "configuration.ini",
+      "size": 395,
+      "modified": "2026-05-18T11:15:56"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[en]H-OTA Studio GEN2 Manual.pdf",
+      "relative_path": "doc\\[en]H-OTA Studio GEN2 Manual.pdf",
+      "size": 17183409,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[kor]H-OTA Studio GEN2 Manual.pdf",
+      "relative_path": "doc\\[kor]H-OTA Studio GEN2 Manual.pdf",
+      "size": 12316555,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[kor]Sums_upload_Manual.pptx",
+      "relative_path": "doc\\[kor]Sums_upload_Manual.pptx",
+      "size": 796006,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\CCU 2.0 Xfrm Specification.xlsx",
+      "relative_path": "doc\\CCU 2.0 Xfrm Specification.xlsx",
+      "size": 156369,
+      "modified": "2025-05-07T15:56:40"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\CCU 2.0 Xfrm Specification.zi",
+      "relative_path": "doc\\CCU 2.0 Xfrm Specification.zi",
+      "size": 156369,
+      "modified": "2024-08-21T17:38:16"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\ecucodeInformation.xml",
+      "relative_path": "ecucodeInformation.xml",
+      "size": 713,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\EditorConfig.ini",
+      "relative_path": "EditorConfig.ini",
+      "size": 559,
+      "modified": "2026-05-18T11:15:28"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Error.xml",
+      "relative_path": "Error.xml",
+      "size": 1036,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Garrnet.dll",
+      "relative_path": "Garrnet.dll",
+      "size": 2087936,
+      "modified": "2026-05-11T13:21:12"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\H-OTA Error Lookup.exe",
+      "relative_path": "H-OTA Error Lookup.exe",
+      "size": 123392,
+      "modified": "2026-03-31T13:21:32"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\H-OTA Studio Updater.exe",
+      "relative_path": "H-OTA Studio Updater.exe",
+      "size": 2400768,
+      "modified": "2026-05-12T14:59:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\H-OTA Studio.exe",
+      "relative_path": "H-OTA Studio.exe",
+      "size": 4333056,
+      "modified": "2026-05-12T15:17:20"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\HAEWBCdll.dll",
+      "relative_path": "HAEWBCdll.dll",
+      "size": 24064,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\HelioPause.dll",
+      "relative_path": "HelioPause.dll",
+      "size": 2038272,
+      "modified": "2026-05-11T13:21:08"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\addressmap.dll",
+      "relative_path": "Hex2Binary\\addressmap.dll",
+      "size": 291840,
+      "modified": "2025-07-01T16:46:22"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\BCGCBPRO3020u142.dll",
+      "relative_path": "Hex2Binary\\BCGCBPRO3020u142.dll",
+      "size": 10596352,
+      "modified": "2024-09-30T09:00:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\binaryinfo.dll",
+      "relative_path": "Hex2Binary\\binaryinfo.dll",
+      "size": 162304,
+      "modified": "2025-06-26T09:18:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\comment.dll",
+      "relative_path": "Hex2Binary\\comment.dll",
+      "size": 165888,
+      "modified": "2025-06-26T09:18:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\hex2binary.bat",
+      "relative_path": "Hex2Binary\\hex2binary.bat",
+      "size": 182,
+      "modified": "2024-09-30T09:00:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\Hex2Binary.exe",
+      "relative_path": "Hex2Binary\\Hex2Binary.exe",
+      "size": 812544,
+      "modified": "2025-07-01T16:46:28"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\Hex2BinaryCRL.exe",
+      "relative_path": "Hex2Binary\\Hex2BinaryCRL.exe",
+      "size": 316928,
+      "modified": "2024-09-30T09:00:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\hexparser.dll",
+      "relative_path": "Hex2Binary\\hexparser.dll",
+      "size": 117248,
+      "modified": "2025-06-26T09:18:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\message.dll",
+      "relative_path": "Hex2Binary\\message.dll",
+      "size": 156160,
+      "modified": "2025-06-26T09:18:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\preview.dll",
+      "relative_path": "Hex2Binary\\preview.dll",
+      "size": 162816,
+      "modified": "2025-06-26T09:18:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\releasenote.txt",
+      "relative_path": "Hex2Binary\\releasenote.txt",
+      "size": 2934,
+      "modified": "2024-09-30T09:00:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Hex2Binary\\UserImages.bmp",
+      "relative_path": "Hex2Binary\\UserImages.bmp",
+      "size": 0,
+      "modified": "2026-05-15T09:34:23"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\HKMC_ASK_Master.dll",
+      "relative_path": "HKMC_ASK_Master.dll",
+      "size": 11776,
+      "modified": "2026-04-08T13:12:42"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\HKMC_SACM_Win10.dll",
+      "relative_path": "HKMC_SACM_Win10.dll",
+      "size": 7384064,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\HKMC_SACM_Win7.dll",
+      "relative_path": "HKMC_SACM_Win7.dll",
+      "size": 4368384,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Instance.xml",
+      "relative_path": "Instance.xml",
+      "size": 601,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Lazarus.dll",
+      "relative_path": "Lazarus.dll",
+      "size": 91136,
+      "modified": "2026-05-11T13:21:06"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\LIB_UMT.dll",
+      "relative_path": "LIB_UMT.dll",
+      "size": 606208,
+      "modified": "2026-05-12T15:08:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\libcrypto-1_1.dll",
+      "relative_path": "libcrypto-1_1.dll",
+      "size": 2548328,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\libgitunknown1.dll",
+      "relative_path": "libgitunknown1.dll",
+      "size": 10240,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\liblzma.dll",
+      "relative_path": "liblzma.dll",
+      "size": 160768,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Logo.png",
+      "relative_path": "Logo.png",
+      "size": 3903,
+      "modified": "2025-05-07T15:56:38"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\masteruser.hota-res",
+      "relative_path": "masteruser.hota-res",
+      "size": 416,
+      "modified": "2025-05-07T15:56:34"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\oeuk_model_table.xml",
+      "relative_path": "oeuk_model_table.xml",
+      "size": 1463,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\oeuk_model_table_cv.xml",
+      "relative_path": "oeuk_model_table_cv.xml",
+      "size": 584,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_bidir.hota-res",
+      "relative_path": "procedure\\procedure_bidir.hota-res",
+      "size": 2128,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC2_SESSION_KEEP_CAN.hota-res",
+      "relative_path": "procedure\\procedure_CSAC2_SESSION_KEEP_CAN.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC2_SESSION_KEEP_ETHERNET.hota-res",
+      "relative_path": "procedure\\procedure_CSAC2_SESSION_KEEP_ETHERNET.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC_SESSION_KEEP_CAN.hota-res",
+      "relative_path": "procedure\\procedure_CSAC_SESSION_KEEP_CAN.hota-res",
+      "size": 1456,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC_SESSION_KEEP_ETHERNET.hota-res",
+      "relative_path": "procedure\\procedure_CSAC_SESSION_KEEP_ETHERNET.hota-res",
+      "size": 1488,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_DTC.hota-res",
+      "relative_path": "procedure\\procedure_DTC.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_DTC_ota2.hota-res",
+      "relative_path": "procedure\\procedure_DTC_ota2.hota-res",
+      "size": 1472,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548500.hota-res",
+      "relative_path": "procedure\\procedure_post_ES9548500.hota-res",
+      "size": 1104,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548600.hota-res",
+      "relative_path": "procedure\\procedure_post_ES9548600.hota-res",
+      "size": 1104,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548602.hota-res",
+      "relative_path": "procedure\\procedure_post_ES9548602.hota-res",
+      "size": 1136,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9876501.hota-res",
+      "relative_path": "procedure\\procedure_post_ES9876501.hota-res",
+      "size": 1552,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9876502.hota-res",
+      "relative_path": "procedure\\procedure_post_ES9876502.hota-res",
+      "size": 2496,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ota1_5_ES9876502.hota-res",
+      "relative_path": "procedure\\procedure_post_ota1_5_ES9876502.hota-res",
+      "size": 2320,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ota2_vec.hota-res",
+      "relative_path": "procedure\\procedure_post_ota2_vec.hota-res",
+      "size": 3040,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_vec.hota-res",
+      "relative_path": "procedure\\procedure_post_vec.hota-res",
+      "size": 2432,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_vec_icu.hota-res",
+      "relative_path": "procedure\\procedure_post_vec_icu.hota-res",
+      "size": 1632,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548500.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9548500.hota-res",
+      "size": 1456,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548600.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9548600.hota-res",
+      "size": 1616,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548602.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9548602.hota-res",
+      "size": 1616,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876501.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9876501.hota-res",
+      "size": 1536,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876501_cooper.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9876501_cooper.hota-res",
+      "size": 1712,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9876502.hota-res",
+      "size": 1728,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502_cooper.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9876502_cooper.hota-res",
+      "size": 1936,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502_ucm.hota-res",
+      "relative_path": "procedure\\procedure_pre_ES9876502_ucm.hota-res",
+      "size": 1936,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota1_5_ES9876502.hota-res",
+      "relative_path": "procedure\\procedure_pre_ota1_5_ES9876502.hota-res",
+      "size": 1584,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec.hota-res",
+      "relative_path": "procedure\\procedure_pre_ota2_vec.hota-res",
+      "size": 2608,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec_NCSAC.hota-res",
+      "relative_path": "procedure\\procedure_pre_ota2_vec_NCSAC.hota-res",
+      "size": 1952,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec_ucm.hota-res",
+      "relative_path": "procedure\\procedure_pre_ota2_vec_ucm.hota-res",
+      "size": 2816,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_NCSAC.hota-res",
+      "relative_path": "procedure\\procedure_pre_vec_NCSAC.hota-res",
+      "size": 2080,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_YCSAC.hota-res",
+      "relative_path": "procedure\\procedure_pre_vec_YCSAC.hota-res",
+      "size": 2544,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_YCSAC_icu.hota-res",
+      "relative_path": "procedure\\procedure_pre_vec_YCSAC_icu.hota-res",
+      "size": 2240,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_service_mode_dis.hota-res",
+      "relative_path": "procedure\\procedure_service_mode_dis.hota-res",
+      "size": 1712,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_service_mode_en.hota-res",
+      "relative_path": "procedure\\procedure_service_mode_en.hota-res",
+      "size": 1600,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_trans_dev_cert.hota-res",
+      "relative_path": "procedure\\procedure_trans_dev_cert.hota-res",
+      "size": 1760,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_Version.hota-res",
+      "relative_path": "procedure\\procedure_Version.hota-res",
+      "size": 1616,
+      "modified": "2026-05-07T15:32:06"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\property.xml",
+      "relative_path": "property.xml",
+      "size": 25666,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\property2.xml",
+      "relative_path": "property2.xml",
+      "size": 27462,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\_collapse.jpg",
+      "relative_path": "resource\\_collapse.jpg",
+      "size": 764,
+      "modified": "2025-05-07T15:56:38"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\_expand.jpg",
+      "relative_path": "resource\\_expand.jpg",
+      "size": 754,
+      "modified": "2025-05-07T15:56:34"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\_move.jpg",
+      "relative_path": "resource\\_move.jpg",
+      "size": 1381,
+      "modified": "2025-05-07T15:56:34"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\_move_sel.jpg",
+      "relative_path": "resource\\_move_sel.jpg",
+      "size": 1483,
+      "modified": "2025-05-07T15:56:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\ReprogramEditor.ico",
+      "relative_path": "resource\\ReprogramEditor.ico",
+      "size": 16958,
+      "modified": "2025-05-07T15:56:34"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\resource\\Uranus.ico",
+      "relative_path": "resource\\Uranus.ico",
+      "size": 16958,
+      "modified": "2025-05-07T15:56:40"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\build.xsd",
+      "relative_path": "Schema\\Config\\build.xsd",
+      "size": 474,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\build.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\build.xsd",
+      "size": 474,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\errorRule.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\errorRule.xsd",
+      "size": 2541,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\information.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\information.xsd",
+      "size": 3477,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\NonOTACANFDSchema.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\NonOTACANFDSchema.xsd",
+      "size": 32230,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\NonOTASchema.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\NonOTASchema.xsd",
+      "size": 32108,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\OTASchema.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\OTASchema.xsd",
+      "size": 35516,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU1\\software.xsd",
+      "relative_path": "Schema\\Config\\CCU1\\software.xsd",
+      "size": 469,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\build.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\build.xsd",
+      "size": 541,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\information.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\information.xsd",
+      "size": 11423,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_APP_Rev_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_APP_Rev_Schema.xsd",
+      "size": 39339,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_APP_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_APP_Schema.xsd",
+      "size": 38579,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_Rev_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_Rev_Schema.xsd",
+      "size": 37740,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_Schema.xsd",
+      "size": 36980,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_UCM_Rev_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_UCM_Rev_Schema.xsd",
+      "size": 38724,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Background_UCM_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Background_UCM_Schema.xsd",
+      "size": 37964,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Basic_APP_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Basic_APP_Schema.xsd",
+      "size": 34852,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Basic_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Basic_Schema.xsd",
+      "size": 32966,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Basic_UCM_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Basic_UCM_Schema.xsd",
+      "size": 33546,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Normal_APP_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Normal_APP_Schema.xsd",
+      "size": 35534,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Normal_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Normal_Schema.xsd",
+      "size": 32950,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\CCU2\\OTA_Normal_UCM_Schema.xsd",
+      "relative_path": "Schema\\Config\\CCU2\\OTA_Normal_UCM_Schema.xsd",
+      "size": 34219,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\errorRule.xsd",
+      "relative_path": "Schema\\Config\\errorRule.xsd",
+      "size": 2541,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\information.xsd",
+      "relative_path": "Schema\\Config\\information.xsd",
+      "size": 2998,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\NonOTACANFDSchema.xsd",
+      "relative_path": "Schema\\Config\\NonOTACANFDSchema.xsd",
+      "size": 32230,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\NonOTASchema.xsd",
+      "relative_path": "Schema\\Config\\NonOTASchema.xsd",
+      "size": 32108,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\OTASchema.xsd",
+      "relative_path": "Schema\\Config\\OTASchema.xsd",
+      "size": 35519,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Config\\software.xsd",
+      "relative_path": "Schema\\Config\\software.xsd",
+      "size": 469,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\NonOTARompackSchema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\NonOTARompackSchema.xsd",
+      "size": 29214,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\RompackBuild.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\RompackBuild.xsd",
+      "size": 645,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\RompackError.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\RompackError.xsd",
+      "size": 2367,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\RompackInformation.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\RompackInformation.xsd",
+      "size": 3843,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\RompackSchema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\RompackSchema.xsd",
+      "size": 31584,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU1\\RompackSoftware.xsd",
+      "relative_path": "Schema\\Rompack\\CCU1\\RompackSoftware.xsd",
+      "size": 432,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\build.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\build.xsd",
+      "size": 541,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\information.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\information.xsd",
+      "size": 12001,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_APP_Rev_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_APP_Rev_Schema.xsd",
+      "size": 39838,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_APP_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_APP_Schema.xsd",
+      "size": 38631,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_Rev_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_Rev_Schema.xsd",
+      "size": 38240,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_Schema.xsd",
+      "size": 37033,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_UCM_Rev_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_UCM_Rev_Schema.xsd",
+      "size": 39223,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Background_UCM_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Background_UCM_Schema.xsd",
+      "size": 37325,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Basic_APP_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Basic_APP_Schema.xsd",
+      "size": 34905,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Basic_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Basic_Schema.xsd",
+      "size": 33019,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Basic_UCM_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Basic_UCM_Schema.xsd",
+      "size": 33599,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Normal_APP_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Normal_APP_Schema.xsd",
+      "size": 35587,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Normal_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Normal_Schema.xsd",
+      "size": 33003,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\CCU2\\OTA_Normal_UCM_Schema.xsd",
+      "relative_path": "Schema\\Rompack\\CCU2\\OTA_Normal_UCM_Schema.xsd",
+      "size": 34272,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\NonOTARompackSchema.xsd",
+      "relative_path": "Schema\\Rompack\\NonOTARompackSchema.xsd",
+      "size": 29235,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\RompackBuild.xsd",
+      "relative_path": "Schema\\Rompack\\RompackBuild.xsd",
+      "size": 645,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\RompackError.xsd",
+      "relative_path": "Schema\\Rompack\\RompackError.xsd",
+      "size": 2367,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\RompackInformation.xsd",
+      "relative_path": "Schema\\Rompack\\RompackInformation.xsd",
+      "size": 3436,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\RompackSchema.xsd",
+      "relative_path": "Schema\\Rompack\\RompackSchema.xsd",
+      "size": 31587,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Schema\\Rompack\\RompackSoftware.xsd",
+      "relative_path": "Schema\\Rompack\\RompackSoftware.xsd",
+      "size": 432,
+      "modified": "2026-03-09T10:41:36"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\Basic.hota-res",
+      "relative_path": "Templates\\Basic.hota-res",
+      "size": 8592,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_basic.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_basic.hota-res",
+      "size": 5808,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_basic_ucm.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_basic_ucm.hota-res",
+      "size": 5712,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_background.hota-res",
+      "size": 6304,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_rev.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_background_rev.hota-res",
+      "size": 6464,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_ucm.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_background_ucm.hota-res",
+      "size": 7488,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_ucm_rev.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_background_ucm_rev.hota-res",
+      "size": 6368,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_normal.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_normal.hota-res",
+      "size": 6096,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_normal_ucm.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_mmuswap_normal_ucm.hota-res",
+      "size": 6000,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_background.hota-res",
+      "size": 8304,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_rev.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_background_rev.hota-res",
+      "size": 7088,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_ucm.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_background_ucm.hota-res",
+      "size": 8112,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_ucm_rev.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_background_ucm_rev.hota-res",
+      "size": 6992,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_normal.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_normal.hota-res",
+      "size": 8048,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_normal_ucm.hota-res",
+      "relative_path": "Templates\\ccu2_standard_ota_non_mmuswap_normal_ucm.hota-res",
+      "size": 7616,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\Delta.hota-res",
+      "relative_path": "Templates\\Delta.hota-res",
+      "size": 9648,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DeltaSwap.hota-res",
+      "relative_path": "Templates\\DeltaSwap.hota-res",
+      "size": 11504,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES95485.hota-res",
+      "relative_path": "Templates\\DiagnosisES95485.hota-res",
+      "size": 5744,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES9548600.hota-res",
+      "relative_path": "Templates\\DiagnosisES9548600.hota-res",
+      "size": 5824,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES9548602.hota-res",
+      "relative_path": "Templates\\DiagnosisES9548602.hota-res",
+      "size": 5824,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\SwapMMU.hota-res",
+      "relative_path": "Templates\\SwapMMU.hota-res",
+      "size": 11008,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\SwapNonMMU.hota-res",
+      "relative_path": "Templates\\SwapNonMMU.hota-res",
+      "size": 12672,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\test_property.xml",
+      "relative_path": "test_property.xml",
+      "size": 10582,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\NM_DataTable.xml",
+      "relative_path": "TestCase\\NM_DataTable.xml",
+      "size": 15180,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\NM_DataTable_cv.xml",
+      "relative_path": "TestCase\\NM_DataTable_cv.xml",
+      "size": 1643,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_001.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_001.hota-res",
+      "size": 1120,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_002.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002_01.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_002_01.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002_02.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_002_02.hota-res",
+      "size": 1280,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_003.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_003.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_003_cooper.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_003_cooper.hota-res",
+      "size": 2192,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_203.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_203.hota-res",
+      "size": 2080,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_203_cooper.hota-res",
+      "relative_path": "TestCase\\Testprocedure_TC_TAR_203_cooper.hota-res",
+      "size": 2256,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Testcase2.ini",
+      "relative_path": "Testcase2.ini",
+      "size": 982,
+      "modified": "2026-05-18T11:15:56"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Update Manager.exe",
+      "relative_path": "Update Manager.exe",
+      "size": 269824,
+      "modified": "2026-05-15T09:33:38"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\vehicle_controller_info.json",
+      "relative_path": "vehicle_controller_info.json",
+      "size": 24096,
+      "modified": "2026-05-15T11:46:15"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\version.ini",
+      "relative_path": "version.ini",
+      "size": 111,
+      "modified": "2026-05-18T11:16:56"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\vsflex8u.ocx",
+      "relative_path": "vsflex8u.ocx",
+      "size": 833552,
+      "modified": "2025-05-07T15:56:40"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\vxlapi.dll",
+      "relative_path": "vxlapi.dll",
+      "size": 292352,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\wbc_clear.bat",
+      "relative_path": "wbc_clear.bat",
+      "size": 104,
+      "modified": "2024-06-25T13:39:20"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\wbcore.dll",
+      "relative_path": "wbcore.dll",
+      "size": 65024,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\WebView2Loader.dll",
+      "relative_path": "WebView2Loader.dll",
+      "size": 119888,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Wnd_Lib2.dll",
+      "relative_path": "Wnd_Lib2.dll",
+      "size": 733696,
+      "modified": "2026-05-12T18:16:16"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\WrapperUMT.exe",
+      "relative_path": "WrapperUMT.exe",
+      "size": 681472,
+      "modified": "2026-05-11T14:15:06"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\XMLSchemaValidation.exe",
+      "relative_path": "XMLSchemaValidation.exe",
+      "size": 2686686,
+      "modified": "2025-07-03T09:49:08"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\zlib1.dll",
+      "relative_path": "zlib1.dll",
+      "size": 78336,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\zstd.dll",
+      "relative_path": "zstd.dll",
+      "size": 541696,
+      "modified": "2026-04-06T13:49:46"
+    }
+  ],
+  "templates": [
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\Basic.hota-res",
+      "relative_path": "Basic.hota-res",
+      "size": 8592,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_basic.hota-res",
+      "relative_path": "ccu2_standard_ota_basic.hota-res",
+      "size": 5808,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_basic_ucm.hota-res",
+      "relative_path": "ccu2_standard_ota_basic_ucm.hota-res",
+      "size": 5712,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_background.hota-res",
+      "size": 6304,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_rev.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_background_rev.hota-res",
+      "size": 6464,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_ucm.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_background_ucm.hota-res",
+      "size": 7488,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_background_ucm_rev.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_background_ucm_rev.hota-res",
+      "size": 6368,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_normal.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_normal.hota-res",
+      "size": 6096,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_mmuswap_normal_ucm.hota-res",
+      "relative_path": "ccu2_standard_ota_mmuswap_normal_ucm.hota-res",
+      "size": 6000,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_background.hota-res",
+      "size": 8304,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_rev.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_background_rev.hota-res",
+      "size": 7088,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_ucm.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_background_ucm.hota-res",
+      "size": 8112,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_background_ucm_rev.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_background_ucm_rev.hota-res",
+      "size": 6992,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_normal.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_normal.hota-res",
+      "size": 8048,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\ccu2_standard_ota_non_mmuswap_normal_ucm.hota-res",
+      "relative_path": "ccu2_standard_ota_non_mmuswap_normal_ucm.hota-res",
+      "size": 7616,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\Delta.hota-res",
+      "relative_path": "Delta.hota-res",
+      "size": 9648,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DeltaSwap.hota-res",
+      "relative_path": "DeltaSwap.hota-res",
+      "size": 11504,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES95485.hota-res",
+      "relative_path": "DiagnosisES95485.hota-res",
+      "size": 5744,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES9548600.hota-res",
+      "relative_path": "DiagnosisES9548600.hota-res",
+      "size": 5824,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\DiagnosisES9548602.hota-res",
+      "relative_path": "DiagnosisES9548602.hota-res",
+      "size": 5824,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\SwapMMU.hota-res",
+      "relative_path": "SwapMMU.hota-res",
+      "size": 11008,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\Templates\\SwapNonMMU.hota-res",
+      "relative_path": "SwapNonMMU.hota-res",
+      "size": 12672,
+      "modified": "2026-04-06T13:49:44"
+    }
+  ],
+  "procedures": [
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_bidir.hota-res",
+      "relative_path": "procedure_bidir.hota-res",
+      "size": 2128,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC2_SESSION_KEEP_CAN.hota-res",
+      "relative_path": "procedure_CSAC2_SESSION_KEEP_CAN.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC2_SESSION_KEEP_ETHERNET.hota-res",
+      "relative_path": "procedure_CSAC2_SESSION_KEEP_ETHERNET.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC_SESSION_KEEP_CAN.hota-res",
+      "relative_path": "procedure_CSAC_SESSION_KEEP_CAN.hota-res",
+      "size": 1456,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_CSAC_SESSION_KEEP_ETHERNET.hota-res",
+      "relative_path": "procedure_CSAC_SESSION_KEEP_ETHERNET.hota-res",
+      "size": 1488,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_DTC.hota-res",
+      "relative_path": "procedure_DTC.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_DTC_ota2.hota-res",
+      "relative_path": "procedure_DTC_ota2.hota-res",
+      "size": 1472,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548500.hota-res",
+      "relative_path": "procedure_post_ES9548500.hota-res",
+      "size": 1104,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548600.hota-res",
+      "relative_path": "procedure_post_ES9548600.hota-res",
+      "size": 1104,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9548602.hota-res",
+      "relative_path": "procedure_post_ES9548602.hota-res",
+      "size": 1136,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9876501.hota-res",
+      "relative_path": "procedure_post_ES9876501.hota-res",
+      "size": 1552,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ES9876502.hota-res",
+      "relative_path": "procedure_post_ES9876502.hota-res",
+      "size": 2496,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ota1_5_ES9876502.hota-res",
+      "relative_path": "procedure_post_ota1_5_ES9876502.hota-res",
+      "size": 2320,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_ota2_vec.hota-res",
+      "relative_path": "procedure_post_ota2_vec.hota-res",
+      "size": 3040,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_vec.hota-res",
+      "relative_path": "procedure_post_vec.hota-res",
+      "size": 2432,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_post_vec_icu.hota-res",
+      "relative_path": "procedure_post_vec_icu.hota-res",
+      "size": 1632,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548500.hota-res",
+      "relative_path": "procedure_pre_ES9548500.hota-res",
+      "size": 1456,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548600.hota-res",
+      "relative_path": "procedure_pre_ES9548600.hota-res",
+      "size": 1616,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9548602.hota-res",
+      "relative_path": "procedure_pre_ES9548602.hota-res",
+      "size": 1616,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876501.hota-res",
+      "relative_path": "procedure_pre_ES9876501.hota-res",
+      "size": 1536,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876501_cooper.hota-res",
+      "relative_path": "procedure_pre_ES9876501_cooper.hota-res",
+      "size": 1712,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502.hota-res",
+      "relative_path": "procedure_pre_ES9876502.hota-res",
+      "size": 1728,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502_cooper.hota-res",
+      "relative_path": "procedure_pre_ES9876502_cooper.hota-res",
+      "size": 1936,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ES9876502_ucm.hota-res",
+      "relative_path": "procedure_pre_ES9876502_ucm.hota-res",
+      "size": 1936,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota1_5_ES9876502.hota-res",
+      "relative_path": "procedure_pre_ota1_5_ES9876502.hota-res",
+      "size": 1584,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec.hota-res",
+      "relative_path": "procedure_pre_ota2_vec.hota-res",
+      "size": 2608,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec_NCSAC.hota-res",
+      "relative_path": "procedure_pre_ota2_vec_NCSAC.hota-res",
+      "size": 1952,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_ota2_vec_ucm.hota-res",
+      "relative_path": "procedure_pre_ota2_vec_ucm.hota-res",
+      "size": 2816,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_NCSAC.hota-res",
+      "relative_path": "procedure_pre_vec_NCSAC.hota-res",
+      "size": 2080,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_YCSAC.hota-res",
+      "relative_path": "procedure_pre_vec_YCSAC.hota-res",
+      "size": 2544,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_pre_vec_YCSAC_icu.hota-res",
+      "relative_path": "procedure_pre_vec_YCSAC_icu.hota-res",
+      "size": 2240,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_service_mode_dis.hota-res",
+      "relative_path": "procedure_service_mode_dis.hota-res",
+      "size": 1712,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_service_mode_en.hota-res",
+      "relative_path": "procedure_service_mode_en.hota-res",
+      "size": 1600,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_trans_dev_cert.hota-res",
+      "relative_path": "procedure_trans_dev_cert.hota-res",
+      "size": 1760,
+      "modified": "2026-04-06T13:49:46"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\procedure\\procedure_Version.hota-res",
+      "relative_path": "procedure_Version.hota-res",
+      "size": 1616,
+      "modified": "2026-05-07T15:32:06"
+    }
+  ],
+  "testcases": [
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\NM_DataTable.xml",
+      "relative_path": "NM_DataTable.xml",
+      "size": 15180,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\NM_DataTable_cv.xml",
+      "relative_path": "NM_DataTable_cv.xml",
+      "size": 1643,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_001.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_001.hota-res",
+      "size": 1120,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_002.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002_01.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_002_01.hota-res",
+      "size": 1264,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_002_02.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_002_02.hota-res",
+      "size": 1280,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_003.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_003.hota-res",
+      "size": 2016,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_003_cooper.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_003_cooper.hota-res",
+      "size": 2192,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_203.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_203.hota-res",
+      "size": 2080,
+      "modified": "2026-04-06T13:49:44"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\TestCase\\Testprocedure_TC_TAR_203_cooper.hota-res",
+      "relative_path": "Testprocedure_TC_TAR_203_cooper.hota-res",
+      "size": 2256,
+      "modified": "2026-04-06T13:49:44"
+    }
+  ],
+  "docs": [
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[en]H-OTA Studio GEN2 Manual.pdf",
+      "relative_path": "[en]H-OTA Studio GEN2 Manual.pdf",
+      "size": 17183409,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[kor]H-OTA Studio GEN2 Manual.pdf",
+      "relative_path": "[kor]H-OTA Studio GEN2 Manual.pdf",
+      "size": 12316555,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\[kor]Sums_upload_Manual.pptx",
+      "relative_path": "[kor]Sums_upload_Manual.pptx",
+      "size": 796006,
+      "modified": "2026-05-18T11:16:55"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\CCU 2.0 Xfrm Specification.xlsx",
+      "relative_path": "CCU 2.0 Xfrm Specification.xlsx",
+      "size": 156369,
+      "modified": "2025-05-07T15:56:40"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\GIT\\H-OTA Studio GEN2\\doc\\CCU 2.0 Xfrm Specification.zi",
+      "relative_path": "CCU 2.0 Xfrm Specification.zi",
+      "size": 156369,
+      "modified": "2024-08-21T17:38:16"
+    }
+  ]
+}

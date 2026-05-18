@@ -1,0 +1,123 @@
+[
+  {
+    "hwnd": 264308,
+    "title": "Output",
+    "class_name": "BCGPMiniFrame:2d0000:8:10003:10",
+    "rect": [
+      -1917,
+      588,
+      -1517,
+      1017
+    ]
+  },
+  {
+    "hwnd": 395308,
+    "title": "ReprogramEditor - ReprogramConfig_0_1_1_114.hcfg-r",
+    "class_name": "Afx:002D0000:8:00010003:00000000:00B1048F",
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ]
+  },
+  {
+    "hwnd": 395414,
+    "title": "⠧ CANFD",
+    "class_name": "ConsoleWindowClass",
+    "rect": [
+      -8,
+      -8,
+      1928,
+      1040
+    ]
+  },
+  {
+    "hwnd": 459546,
+    "title": "Documents - File Explorer",
+    "class_name": "CabinetWClass",
+    "rect": [
+      -1928,
+      -8,
+      8,
+      1040
+    ]
+  },
+  {
+    "hwnd": 264224,
+    "title": "C:\\Windows\\System32\\cmd.exe",
+    "class_name": "ConsoleWindowClass",
+    "rect": [
+      156,
+      156,
+      1149,
+      675
+    ]
+  },
+  {
+    "hwnd": 720934,
+    "title": "New tab and 1 more page - Personal - Microsoft​ Edge",
+    "class_name": "Chrome_WidgetWin_1",
+    "rect": [
+      -8,
+      -8,
+      1928,
+      1040
+    ]
+  },
+  {
+    "hwnd": 394530,
+    "title": "Settings",
+    "class_name": "Windows.UI.Core.CoreWindow",
+    "rect": [
+      0,
+      8,
+      1920,
+      1040
+    ]
+  },
+  {
+    "hwnd": 133280,
+    "title": "Settings",
+    "class_name": "ApplicationFrameWindow",
+    "rect": [
+      -8,
+      -8,
+      1928,
+      1040
+    ]
+  },
+  {
+    "hwnd": 132086,
+    "title": "Windows Input Experience",
+    "class_name": "Windows.UI.Core.CoreWindow",
+    "rect": [
+      0,
+      0,
+      1920,
+      1080
+    ]
+  },
+  {
+    "hwnd": 133058,
+    "title": "Form1",
+    "class_name": "WindowsForms10.Window.8.app.0.33c0d9d_r3_ad1",
+    "rect": [
+      -32000,
+      -32000,
+      -31840,
+      -31972
+    ]
+  },
+  {
+    "hwnd": 65814,
+    "title": "Program Manager",
+    "class_name": "Progman",
+    "rect": [
+      -1920,
+      0,
+      1920,
+      1080
+    ]
+  }
+]

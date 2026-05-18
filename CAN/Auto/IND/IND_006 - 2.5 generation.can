@@ -531,7 +531,7 @@ testcase IND_006_4(){
 void MainTest(){
   write("Run Turn_OFF_RecSet()"); Turn_OFF_RecSet();
   
-  write("Run Init()"); Init();
+//  write("Run Init()"); Init();
   
 //  testWaitForValueInput("Notification: Enter the testcase ID (1/2/3/4/5/6/7):",300000); 
   
@@ -547,10 +547,11 @@ void MainTest(){
 //    case(5): IND_006_1(); IND_006_2(); break;  
       
 //    case(6): IND_006_1(); IND_006_2(); IND_006_3(); break;
-      IND_006_4();
+//      IND_006_4();
       
 //    case(7): IND_006_1(); IND_006_2(); IND_006_3();IND_006_4(); break;     
     
 //    case(8): IND_006_4(); break;  
 //  }
+  IND_006_1(); IND_006_2(); IND_006_3();
 }

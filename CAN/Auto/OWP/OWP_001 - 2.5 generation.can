@@ -1,0 +1,373 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWP_001 - 2.5 (OWP_001)
+  Title: [OWP Initial Value Check after Factory->Customer mode & PEV Sensitivity/PrkTime Verification]
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+    - ICUPowerAutoCutModSta = 0x0 (Factory mode)
+
+  Step 1: KEY ON (IGN), USM Reset, Rec Reset, change Factory->Customer mode,
+          log event notifications, capture screenshot of related signals
+  Step 2: Log notification - manual reset required
+  Step 3: Check BLTN_CAM_SenSet_PEV = 0x3 (Lv.3), capture screenshot
+  Step 4: Check BLTN_CAM_Set_PrkTime = 0xC (20Hr), range 0x1~0x14 (1Hr~20Hr) is OK
+  Step 5: KEY OFF, check BLTN_CAM_RecSta_OWD = 0x0 (OFF)
+  Step 6: Log notification - LED blinking verification (manual)
+  Step 7: Log notification - LED blinking verification (manual)
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Global Variable Declaration
+  long max_wait_time = 180000; // 180 seconds = 3 minutes max wait
+
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+
+   // Message Declaration for CAN FD
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_001_Init()
+{
+  Send_Value_To_COM(20100);
+  write("========================================");
+  write("=== START TEST OWP_001 - 2.5 ===");
+  write("========================================");
+  testStep("Notification", "Start test OWP_001 - 2.5");
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_1(){
+  Send_Value_To_COM(20101);
+  SetTestStep("Bước 1 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 1: KEY ON (IGN), USM Reset, Rec Reset,
+  //         Factory mode -> Customer mode, log event notifications, capture screenshot
+  //============================================================================
+  write("");
+  write("=== STEP 1: KEY ON (IGN), USM Reset, Rec Reset, Factory->Customer mode ===");
+  testStep("Step1", "KEY ON (IGN) + USM Reset + Rec Reset, change Factory->Customer mode, check ICU_PowerAutoCutModSta = 0x2");
+
+  // 1.1: Set SMK to IGN
+  write("");
+  write("Step 1.1: Setting SMK_Signal to IGN...");
+  Set_SMK_IGN();
+
+  // 1.2: Click USM Reset
+  write("");
+  write("Step 1.2: Clicking USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("");
+  write("Step 1.3: Clicking Rec Reset...");
+  Click_Rec_Reset();
+
+  // 1.4: Set to Factory mode (0x0)
+  write("");
+  write("Step 1.4: Setting to Factory mode (0x0)...");
+  if(Set_PowerAutoCut_Mode(0x0, 30000) == 0){
+    write(">>> FAILED to set Factory mode <<<");
+    Log_Error_Details();
+    testStepFail("Step1.4", "Failed to set Factory mode");
+  }
+  else{
+    testStepPass("Step1.4", "Factory mode set successfully");
+  }
+  testWaitForTimeout(3000);
+
+  // 1.5: Set to Customer mode (0x2)
+  write("");
+  write("Step 1.5: Setting to Customer mode (0x2)...");
+  if(Set_PowerAutoCut_Mode(0x2, 30000) == 0){
+    write(">>> FAILED to set Customer mode <<<");
+    Log_Error_Details();
+    testStepFail("Step1.5", "Failed to set Customer mode");
+  }
+  else{
+    testStepPass("Step1.5", "Customer mode set successfully");
+  }
+  testWaitForTimeout(3000);
+
+  // 1.6: Verify Customer mode
+  write("");
+  write("Step 1.6: Verifying Customer mode...");
+  if(Verify_PowerAutoCut_Mode(0x2) == 0){
+    Log_Error_Details();
+    testStepFail("Step1.6", "PowerAutoCutMode verification failed");
+  }
+  else{
+    testStepPass("Step1.6", "PowerAutoCutMode = Customer mode (0x2)");
+  }
+
+  testWaitForTimeout(3000);
+
+  // 1.7: Log event notification values
+  write("");
+  write("Step 1.7: Logging event notification values...");
+
+  // 1.8: Capture screenshot of related signals
+  write("");
+  write("Step 1.8: Capturing screenshot of related signals...");
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;CF_AVN_BLTN_CAM_RecReset;ICU_PowerAutoCutModSta;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_State");
+
+  step1_passed = 1;
+  testStepPass("Step1", "KEY ON, USM/Rec Reset, Factory->Customer mode - PASS");
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_2(){
+  Send_Value_To_COM(20102);
+  SetTestStep("Bước 2 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 2: Log notification - manual reset required
+  //============================================================================
+  write("");
+  write("=== STEP 2: Manual Reset Required ===");
+  testStep("Step2", "Log notification - FRS manual reset required: [ccNC Settings]-[General]-[Reset]-[Delete Guest Profile]");
+
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED - MANUAL RESET] ***");
+  write("*** Please perform manual reset on the device. ***");
+  write("*** Perform FRS reset: ***");
+  write("*** [ccNC Settings] - [General] - [Reset] ***");
+  write("*** - [Delete Guest Profile/Reset Entire System] ***");
+  write("*** Then press Continue in CANoe Test Module ***");
+  write("*************************************************************");
+  write("");
+
+  // Wait for user to perform manual reset
+  testWaitForTimeout(5000);
+
+  write(">>> Waiting for manual reset confirmation... <<<");
+  write(">>> Current signal values after reset: <<<");
+
+  CaptureGraphics("OWP", "ICU_PowerAutoCutModSta;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_SenSet_PEV;BLTN_CAM_Set_PrkTime;BLTN_CAM_State");
+
+  step2_passed = 1;
+  testStepPass("Step2", "Manual reset notification logged - PASS");
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_3(){
+  Send_Value_To_COM(20103);
+  SetTestStep("Bước 3 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 3: Check BLTN_CAM_SenSet_PEV = 0x3 (Lv.3), capture screenshot
+  //============================================================================
+  write("");
+  write("=== STEP 3: Check BLTN_CAM_SenSet_PEV = 0x3 (Lv.3) ===");
+  testStep("Step3", "Check BLTN_CAM_SenSet_PEV = 0x3 (Lv.3) default value after Factory->Customer mode reset");
+
+  testWaitForTimeout(3000);
+
+  write("Reading BLTN_CAM_SenSet_PEV...");
+  write("BLTN_CAM_SenSet_PEV = 0x%X", $BLTN_CAM_SenSet_PEV);
+
+  CaptureGraphics("OWP", "BLTN_CAM_SenSet_PEV;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if($BLTN_CAM_SenSet_PEV == 0x3){
+    write(">>> PASS: BLTN_CAM_SenSet_PEV = 0x3 (Lv.3) <<<");
+    step3_passed = 1;
+    testStepPass("Step3", "BLTN_CAM_SenSet_PEV = 0x3 (Lv.3) - PASS");
+  }
+  else{
+    write(">>> FAIL: BLTN_CAM_SenSet_PEV = 0x%X, expected 0x3 (Lv.3) <<<", $BLTN_CAM_SenSet_PEV);
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "BLTN_CAM_SenSet_PEV = 0x%X, expected 0x3 - FAIL", $BLTN_CAM_SenSet_PEV);
+  }
+
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_4(){
+  Send_Value_To_COM(20104);
+  SetTestStep("Bước 4 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 4: Check BLTN_CAM_Set_PrkTime = 0xC (20Hr)
+  //         Valid range: 0x1 ~ 0x14 (1Hr ~ 20Hr)
+  //============================================================================
+  write("");
+  write("=== STEP 4: Check BLTN_CAM_Set_PrkTime = 0xC (20Hr) ===");
+  testStep("Step4", "Check BLTN_CAM_Set_PrkTime = 0xC (20Hr), valid range 0x1~0x14 (1Hr~20Hr) is OK");
+
+  testWaitForTimeout(3000);
+
+  write("Reading BLTN_CAM_Set_PrkTime...");
+  write("BLTN_CAM_Set_PrkTime = 0x%X", $BLTN_CAM_Set_PrkTime);
+
+  CaptureGraphics("OWP", "BLTN_CAM_Set_PrkTime;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  // Check if PrkTime = 0xC (20Hr)
+  if($BLTN_CAM_Set_PrkTime == 0xC){
+    write(">>> PASS: BLTN_CAM_Set_PrkTime = 0xC (20Hr) <<<");
+  }
+  else{
+    write(">>> INFO: BLTN_CAM_Set_PrkTime = 0x%X (expected 0xC for 20Hr) <<<", $BLTN_CAM_Set_PrkTime);
+  }
+
+  // Check if PrkTime is in valid range 0x1 ~ 0x14 (1Hr ~ 20Hr)
+  if($BLTN_CAM_Set_PrkTime >= 0x1 && $BLTN_CAM_Set_PrkTime <= 0x14){
+    write(">>> PASS: BLTN_CAM_Set_PrkTime = 0x%X is in valid range 0x1~0x14 (1Hr~20Hr) <<<", $BLTN_CAM_Set_PrkTime);
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_Set_PrkTime = 0x%X in range 0x1~0x14 - PASS", $BLTN_CAM_Set_PrkTime);
+  }
+  else{
+    write(">>> FAIL: BLTN_CAM_Set_PrkTime = 0x%X is OUT of valid range 0x1~0x14 <<<", $BLTN_CAM_Set_PrkTime);
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_Set_PrkTime = 0x%X out of range - FAIL", $BLTN_CAM_Set_PrkTime);
+  }
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_5(){
+  Send_Value_To_COM(20105);
+  SetTestStep("Bước 5 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 5: KEY OFF, check BLTN_CAM_RecSta_OWD = 0x0 (OFF)
+  //============================================================================
+  write("");
+  write("=== STEP 5: KEY OFF, check BLTN_CAM_RecSta_OWD = 0x0 (OFF) ===");
+  testStep("Step5", "KEY OFF, check BLTN_CAM_RecSta_OWD = 0x0 (OFF) - OWD recording stops when engine off");
+
+  write("Setting KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("Reading BLTN_CAM_RecSta_OWD...");
+  write("BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if($BLTN_CAM_RecSta_OWD == 0x0){
+    write(">>> PASS: BLTN_CAM_RecSta_OWD = 0x0 (OFF) <<<");
+    step5_passed = 1;
+    testStepPass("Step5", "BLTN_CAM_RecSta_OWD = 0x0 (OFF) - PASS");
+  }
+  else{
+    write(">>> FAIL: BLTN_CAM_RecSta_OWD = 0x%X, expected 0x0 (OFF) <<<", $BLTN_CAM_RecSta_OWD);
+    step5_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5", "BLTN_CAM_RecSta_OWD = 0x%X, expected 0x0 - FAIL", $BLTN_CAM_RecSta_OWD);
+  }
+
+  write("=== FINISH STEP 5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_6(){
+  Send_Value_To_COM(20106);
+  SetTestStep("Bước 6 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 6: Log notification - LED blinking verification (manual)
+  //============================================================================
+  write("");
+  write("=== STEP 6: LED Blinking Verification (Manual) ===");
+  testStep("Step6", "Log notification - LED blinking verification (manual): check LED indicator status on device");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED] ***");
+  write("*** Please check if the LED is blinking on the device. ***");
+  write("*** Verify LED behavior visually. ***");
+  write("*************************************************************");
+  write("");
+
+
+  step6_passed = 1;
+  testStepPass("Step6", "LED blinking verification logged - PASS");
+  write("=== FINISH STEP 6 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_001_7(){
+  Send_Value_To_COM(20107);
+  SetTestStep("Bước 7 - OWP_001");
+  StartTestTimer();
+  //============================================================================
+  // STEP 7: Log notification - LED blinking verification (manual)
+  //============================================================================
+  write("");
+  write("=== STEP 7: LED Blinking Verification (Manual) ===");
+  testStep("Step7", "Log notification - LED blinking verification (manual): check LED indicator status on device");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED] ***");
+  write("*** Please check if the LED is blinking on the device. ***");
+  write("*** Verify LED behavior visually. ***");
+  write("*************************************************************");
+  write("");
+
+
+  step7_passed = 1;
+  testStepPass("Step7", "LED blinking verification logged - PASS");
+  write("=== FINISH STEP 7 ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest(){
+  testReportFileName("TestReports\\OWP_001 - 2.5 generation_report");
+
+   Send_Value_To_COM(8);
+  OWP_001_Init();
+  OWP_001_1();
+  OWP_001_2();
+  OWP_001_3();
+  OWP_001_4();
+  OWP_001_5();
+  OWP_001_6();
+  OWP_001_7();
+}

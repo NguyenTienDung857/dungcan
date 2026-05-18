@@ -1,11 +1,11 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_006.can
  *
  * Muc tieu test:
  * - Setup dieu kien OTA voi OWD ON.
  * - Neu version khong phai 0 thi chay update_to_00.py de dua ve ban 0.
- * - Chay update_to_02.py va lang nghe AppState toi da 30 phut.
+ * - Chay case_006.py va lang nghe AppState toi da 30 phut.
  * - Case nay kiem tra loi update, nen logic ket qua duoc dao nguoc:
  *   + AppState = 3 (update thanh cong) -> FAIL
  *   + AppState = 4 (update loi) -> PASS neu version van = 0 va OWD Recording OK
@@ -19,7 +19,7 @@ variables
 {
   char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
   char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
-  char gUpdateTo02Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_02.py\"";
+  char gCase006Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_006.py\"";
 
   int gAppStatePrev = -1;
 }
@@ -75,6 +75,7 @@ testcase OTA_006()
   int appStateResult;
   int owdRecordingOk;
 
+  Send_Value_To_COM(10606);
   write("===========================================================");
   write("[OTA_006] Start test case OTA_006");
   write("===========================================================");
@@ -139,7 +140,8 @@ testcase OTA_006()
             $BLTN_CAM_RecSta_OWD,
             $BLTN_CAM_SWVerMinor3,
             @PythonCom::AppState);
-      CaptureGraphics("OTA", "BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3;SMK_TrmnlCtrlGrpStaBDC");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -150,13 +152,13 @@ testcase OTA_006()
     testStepPass("Version", "Da la ban 0 ngay tu dau");
   }
 
-  testStep("Step 3", "Chay update_to_02.py");
+  testStep("Step 3", "Chay case_006.py");
   OTA_Reset_AppStateWaitContext();
   gAppStatePrev = gOTA_AppStateWaitStart;
 
-  write("[OTA_006] AppState truoc khi chay update_to_02.py = %d", gOTA_AppStateWaitStart);
+  write("[OTA_006] AppState truoc khi chay case_006.py = %d", gOTA_AppStateWaitStart);
 
-  Run_Python_Update(gUpdateTo02Cmd, "Chay update_to_02.py");
+  Run_Python_Update(gCase006Cmd, "Chay case_006.py");
 
   testStep("Step 4", "Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4");
   appStateResult = Wait_AppState_3_Or_4_Changed(1800000);
@@ -174,7 +176,7 @@ testcase OTA_006()
         $BLTN_CAM_RecSta_OWD,
         $BLTN_CAM_SWVerMinor3,
         @PythonCom::AppState);
-      CaptureGraphics("OTA", "BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3;SMK_TrmnlCtrlGrpStaBDC");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
 
       if (swVerIsZeroAfter == 1 && owdRecordingOk == 1)
       {
@@ -193,7 +195,7 @@ testcase OTA_006()
         $BLTN_CAM_RecSta_OWD,
         $BLTN_CAM_SWVerMinor3,
         @PythonCom::AppState);
-      CaptureGraphics("OTA", "BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3;SMK_TrmnlCtrlGrpStaBDC");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
 
       if (swVerIsZeroAfter == 1 && owdRecordingOk == 1)
       {
@@ -213,11 +215,12 @@ testcase OTA_006()
           $BLTN_CAM_RecSta_OWD,
           $BLTN_CAM_SWVerMinor3,
           @PythonCom::AppState);
-    CaptureGraphics("OTA", "BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3;SMK_TrmnlCtrlGrpStaBDC");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
     testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
   }
 
   write("[OTA_006] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

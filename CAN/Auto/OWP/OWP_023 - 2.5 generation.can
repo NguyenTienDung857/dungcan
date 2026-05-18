@@ -1,0 +1,947 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWP_023 - 2.5 generation
+  Title: PMD/PEV recovery across network sleep, NM wake, camera angle, camera detach,
+         SD card, SOC stop, and BLTN_CAM UI re-entry
+
+  Step details:
+    - Step 1: KEY ON, SMK IGN, USM/Rec reset, Turn_ON_PMD, KEY OFF, wait PMD
+      OFF, wait network sleep, NM ON for 30s, NM OFF, wait PEV Recording, then capture.
+    - Step 2: KEY ON/OFF, wait PMD OFF and network sleep, wait PMD Recording,
+      wait 10s, wait PMD OFF, wait PEV Recording immediately, then capture.
+    - Step 4: Repeat Step 2 flow for PMD OFF/sleep/PMD Recording/PEV evidence.
+    - Step 6: KEY ON/OFF, wait PMD OFF, wait 5s, wait PMD Recording, wait 2min,
+      wait network sleep up to 8min, wait 5s, wait PEV Recording, then capture.
+    - Step 9: KEY ON, wait OWD Recording, set FR/RR display angle to -5/-5,
+      KEY OFF, wait PMD Recording, wait PEV Recording, KEY ON, check OWD ON.
+    - Step 11: KEY ON/OFF, wait PMD OFF, network sleep, wait PMD Recording,
+      wait 5s, KEY ON, then capture.
+    - Step 15: KEY ON/OFF, wait PMD Recording, wait 5s, wait PEV Recording,
+      wait 10s, KEY ON, then capture.
+    - Step 16: KEY ON/OFF, wait PMD Recording, wait PEV Recording, detach front,
+      wait network sleep up to 8min, attach front, wait PMD Recording and PEV.
+    - Step 17: KEY ON/OFF, wait PMD Recording and PEV, detach front, wait sleep,
+      SET_NM_ON, check/capture BLTN_CAM_RecSta_PMD.
+    - Step 19: KEY ON/OFF, wait PMD Recording and PEV, Set_SDcard, wait PMD
+      Recording again, wait DEV Recording, then capture.
+    - Step 20: KEY ON/OFF, wait PMD/PEV, set SOC 0%, KEY ON, set SOC 100%,
+      KEY OFF, wait PMD/PEV, wait PMD/PEV OFF, KEY ON, enter BLTN_CAM, capture.
+
+  NOTE:
+    - Requested actions are written sequentially inside each testcase.
+    - Network sleep waits use 8 minutes maximum.
+    - Signal waits use several minutes maximum.
+    - PMD Recording waits use WaitFor_RecSta_PMD_Recording() from the shared
+      header. That helper intentionally triggers PEV first, then waits PMD.
+    - This file intentionally avoids raw CAPL signal-range wait calls.
+    - Each step waits 5 seconds before final screenshot capture.
+*/
+
+variables
+{
+  char failReason[512];
+
+  long max_signal_wait_ms = 240000;
+  int max_signal_wait_s = 240;
+  int max_network_sleep_s = 480;
+
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step4_passed = 0;
+  int step6_passed = 0;
+  int step9_passed = 0;
+  int step11_passed = 0;
+  int step15_passed = 0;
+  int step16_passed = 0;
+  int step17_passed = 0;
+  int step19_passed = 0;
+  int step20_passed = 0;
+}
+
+testcase OWP_023_Init()
+{
+  Send_Value_To_COM(22300);
+  write("========================================");
+  write("=== START TEST OWP_023 - 2.5 ===");
+  write("========================================");
+  testStep("Notification", "Start test OWP_023 - 2.5");
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_1()
+{
+  int pmd_set_ok;
+  int pmd_off_ok;
+  int sleep_ok;
+  int nm_on_ok;
+  int nm_off_ok;
+  int pev_ok;
+
+  Send_Value_To_COM(22301);
+  SetTestStep("Buoc 1 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: Setup PMD, sleep, NM cycle, PEV trigger           ===");
+  write("=================================================================");
+  testStep("Step1", "KEY ON, SMK IGN, reset, Turn_ON_PMD, KEY OFF, PMD OFF, network sleep, NM ON/OFF, PEV");
+
+  write("[1.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[1.2] Set_SMK_IGN");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  write("[1.3] Click_USM_Reset");
+  Click_USM_Reset();
+  testWaitForTimeout(3000);
+
+  write("[1.4] Click_Rec_Reset");
+  Click_Rec_Reset();
+  testWaitForTimeout(5000);
+
+  write("[1.5] Turn_ON_PMD");
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+  pmd_set_ok = Check_Set_PMD_ON();
+
+  write("[1.6] KEY OFF before PMD wait");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[1.7] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[1.8] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[1.9] SET_NM_ON");
+  SET_NM_ON();
+  nm_on_ok = Check_NM();
+
+  write("[1.10] Wait 30 seconds");
+  testWaitForTimeout(30000);
+
+  write("[1.11] SET_NM_OFF");
+  SET_NM_OFF();
+  nm_off_ok = (Check_NM() == 0);
+
+  write("[1.12] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[1.13] Wait 20 seconds");
+  testWaitForTimeout(20000);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_set_ok == 1 && pmd_off_ok == 1 && sleep_ok == 1 && nm_on_ok == 1 && nm_off_ok == 1 && pev_ok == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "Step 1 PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 1 FAIL: pmd_set=%d, pmd_off=%d, sleep=%d, nm_on=%d, nm_off=%d, pev=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_set_ok, pmd_off_ok, sleep_ok, nm_on_ok, nm_off_ok, pev_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step1", failReason);
+  }
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_2()
+{
+  int pmd_off_before_ok;
+  int sleep_ok;
+  int pmd_rec_ok;
+  int pmd_off_after_ok;
+  int pev_ok;
+
+  Send_Value_To_COM(22302);
+  SetTestStep("Buoc 2 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: Sleep, PMD recording, PMD off, immediate PEV       ===");
+  write("=================================================================");
+  testStep("Step2", "KEY ON/OFF, PMD OFF, network sleep, PMD Recording, 10s, PMD OFF, immediate PEV");
+
+  write("[2.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[2.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[2.3] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_before_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[2.4] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[2.5] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[2.6] Wait 10 seconds");
+  testWaitForTimeout(10000);
+
+  write("[2.7] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_after_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[2.8] WaitFor_RecSta_PEV_Recording immediately, max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_off_before_ok == 1 && sleep_ok == 1 && pmd_rec_ok == 1 && pmd_off_after_ok == 1 && pev_ok == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "Step 2 PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 2 FAIL: pmd_off_before=%d, sleep=%d, pmd_rec=%d, pmd_off_after=%d, pev=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_off_before_ok, sleep_ok, pmd_rec_ok, pmd_off_after_ok, pev_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step2", failReason);
+  }
+
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_4()
+{
+  int pmd_off_before_ok;
+  int sleep_ok;
+  int pmd_rec_ok;
+  int pmd_off_after_ok;
+  int pev_ok;
+
+  Send_Value_To_COM(22304);
+  SetTestStep("Buoc 4 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: Repeat sleep, PMD recording, immediate PEV         ===");
+  write("=================================================================");
+  testStep("Step4", "KEY ON/OFF, PMD OFF, network sleep, PMD Recording, 10s, PMD OFF, immediate PEV");
+
+  write("[4.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[4.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[4.3] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_before_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[4.4] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[4.5] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[4.6] Wait 10 seconds");
+  testWaitForTimeout(10000);
+
+  write("[4.7] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_after_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[4.8] WaitFor_RecSta_PEV_Recording immediately, max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_off_before_ok == 1 && sleep_ok == 1 && pmd_rec_ok == 1 && pmd_off_after_ok == 1 && pev_ok == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "Step 4 PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 4 FAIL: pmd_off_before=%d, sleep=%d, pmd_rec=%d, pmd_off_after=%d, pev=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_off_before_ok, sleep_ok, pmd_rec_ok, pmd_off_after_ok, pev_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step4", failReason);
+  }
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_6()
+{
+  int pmd_off_ok;
+  int pmd_rec_ok;
+  int sleep_ok;
+  int pev_ok;
+
+  Send_Value_To_COM(22306);
+  SetTestStep("Buoc 6 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: PMD recording, 2 min wait, sleep, PEV              ===");
+  write("=================================================================");
+  testStep("Step6", "KEY ON/OFF, PMD OFF, 5s, PMD Recording, 2min, network sleep, 5s, PEV");
+
+  write("[6.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[6.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[6.3] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[6.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[6.5] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[6.6] Wait 2 minutes");
+  testWaitForTimeout(120000);
+
+  write("[6.7] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[6.8] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[6.9] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_off_ok == 1 && pmd_rec_ok == 1 && sleep_ok == 1 && pev_ok == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "Step 6 PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 6 FAIL: pmd_off=%d, pmd_rec=%d, sleep=%d, pev=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_off_ok, pmd_rec_ok, sleep_ok, pev_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step6", failReason);
+  }
+
+  write("=== FINISH STEP 6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_9()
+{
+  int owd_ok;
+  int fr_pos_ok;
+  int rr_pos_ok;
+  int pmd_rec_ok;
+  int pev_ok;
+  int owd_check_ok;
+
+  Send_Value_To_COM(22309);
+  SetTestStep("Buoc 9 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: OWD, camera angle -5/-5, PMD/PEV, OWD check       ===");
+  write("=================================================================");
+  testStep("Step9", "KEY ON, OWD Recording, set FR/RR camera angle -5/-5, KEY OFF, PMD/PEV, KEY ON, check OWD ON");
+
+  write("[9.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[9.2] WaitFor_RecSta_OWD_Recording max 4 minutes");
+  owd_ok = WaitFor_RecSta_OWD_Recording(max_signal_wait_ms);
+
+  write("[9.3] Change Display Viewing Angle to -5/-5");
+  write("      Header mapping uses trackbar 1 for -5.");
+  fr_pos_ok = Set_FR_Cam_VerPos(1);
+  rr_pos_ok = Set_RR_Cam_VerPos(1);
+  testWaitForTimeout(3000);
+
+  write("[9.4] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[9.5] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[9.6] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[9.7] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[9.8] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[9.9] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[9.10] Wait 15 seconds");
+  testWaitForTimeout(15000);
+
+  write("[9.11] Check_RecSta_OWD_Recording");
+  owd_check_ok = Check_RecSta_OWD_Recording();
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_Set_FR_Ver_Pos;BLTN_CAM_Set_RR_Ver_Pos;BLTN_CAM_State");
+
+  if (owd_ok == 1 && fr_pos_ok == 1 && rr_pos_ok == 1 && pmd_rec_ok == 1 && pev_ok == 1 && owd_check_ok == 1)
+  {
+    step9_passed = 1;
+    testStepPass("Step9", "Step 9 PASS");
+  }
+  else
+  {
+    step9_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 9 FAIL: owd_wait=%d, fr=%d, rr=%d, pmd=%d, pev=%d, owd_check=%d, OWD=0x%X, PMD=0x%X, PEV=0x%X.",
+             owd_ok, fr_pos_ok, rr_pos_ok, pmd_rec_ok, pev_ok, owd_check_ok,
+             $BLTN_CAM_RecSta_OWD, Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step9", failReason);
+  }
+
+  write("=== FINISH STEP 9 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_11()
+{
+  int pmd_off_ok;
+  int sleep_ok;
+  int pmd_rec_ok;
+
+  Send_Value_To_COM(22311);
+  SetTestStep("Buoc 11 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 11: PMD OFF, sleep, PMD recording, KEY ON             ===");
+  write("=================================================================");
+  testStep("Step11", "KEY ON/OFF, PMD OFF, network sleep, PMD Recording, wait 5s, KEY ON");
+
+  write("[11.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[11.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[11.3] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[11.4] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[11.5] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[11.6] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[11.7] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_off_ok == 1 && sleep_ok == 1 && pmd_rec_ok == 1)
+  {
+    step11_passed = 1;
+    testStepPass("Step11", "Step 11 PASS");
+  }
+  else
+  {
+    step11_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 11 FAIL: pmd_off=%d, sleep=%d, pmd_rec=%d, PMD=0x%X.",
+             pmd_off_ok, sleep_ok, pmd_rec_ok, Gen20_PMD_RecSta_Value());
+    Log_Error_Details();
+    testStepFail("Step11", failReason);
+  }
+
+  write("=== FINISH STEP 11 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_15()
+{
+  int pmd_rec_ok;
+  int pev_ok;
+
+  Send_Value_To_COM(22315);
+  SetTestStep("Buoc 15 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 15: PMD recording, PEV, KEY ON                        ===");
+  write("=================================================================");
+  testStep("Step15", "KEY ON/OFF, PMD Recording, wait 5s, PEV, wait 10s, KEY ON");
+
+  write("[15.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[15.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[15.3] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[15.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[15.5] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[15.6] Wait 10 seconds");
+  testWaitForTimeout(10000);
+
+  write("[15.7] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_rec_ok == 1 && pev_ok == 1)
+  {
+    step15_passed = 1;
+    testStepPass("Step15", "Step 15 PASS");
+  }
+  else
+  {
+    step15_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 15 FAIL: pmd_rec=%d, pev=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_rec_ok, pev_ok, Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step15", failReason);
+  }
+
+  write("=== FINISH STEP 15 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_16()
+{
+  int pmd_rec_first_ok;
+  int pev_first_ok;
+  int sleep_ok;
+  int pmd_rec_second_ok;
+  int pev_second_ok;
+
+  Send_Value_To_COM(22316);
+  SetTestStep("Buoc 16 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 16: Front detach, sleep, attach, PMD/PEV recovery     ===");
+  write("=================================================================");
+  testStep("Step16", "KEY ON/OFF, PMD Recording, PEV, detach front, sleep, attach front, PMD Recording, PEV");
+
+  write("[16.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[16.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[16.3] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_first_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[16.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[16.5] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_first_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[16.6] Set_Detach_Font");
+  Set_Detach_Font();
+
+  write("[16.7] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[16.8] Set_Attach_Font");
+  Set_Attach_Font();
+
+  write("[16.9] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_second_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[16.10] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[16.11] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_second_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  if (pmd_rec_first_ok == 1 && pev_first_ok == 1 && sleep_ok == 1 && pmd_rec_second_ok == 1 && pev_second_ok == 1)
+  {
+    step16_passed = 1;
+    testStepPass("Step16", "Step 16 PASS");
+  }
+  else
+  {
+    step16_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 16 FAIL: pmd1=%d, pev1=%d, sleep=%d, pmd2=%d, pev2=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_rec_first_ok, pev_first_ok, sleep_ok, pmd_rec_second_ok, pev_second_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step16", failReason);
+  }
+
+  write("=== FINISH STEP 16 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_17()
+{
+  int pmd_rec_ok;
+  int pev_ok;
+  int sleep_ok;
+  int nm_on_ok;
+
+  Send_Value_To_COM(22317);
+  SetTestStep("Buoc 17 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 17: Front detach, sleep, NM ON, PMD evidence          ===");
+  write("=================================================================");
+  testStep("Step17", "KEY ON/OFF, PMD Recording, PEV, detach front, sleep, SET_NM_ON, check and capture PMD");
+
+  write("[17.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[17.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[17.3] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[17.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[17.5] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[17.6] Set_Detach_Font");
+  Set_Detach_Font();
+
+  write("[17.7] WaitForNetworkSleep max 8 minutes");
+  sleep_ok = WaitForNetworkSleep(max_network_sleep_s);
+
+  write("[17.8] SET_NM_ON");
+  SET_NM_ON();
+  nm_on_ok = Check_NM();
+
+  write("[17.9] Check BLTN_CAM_RecSta_PMD before screenshot");
+  Check_RecSta_PMD_Recording();
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_Set_PMD;SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_State");
+
+  if (pmd_rec_ok == 1 && pev_ok == 1 && sleep_ok == 1 && nm_on_ok == 1)
+  {
+    step17_passed = 1;
+    testStepPass("Step17", "Step 17 PASS");
+  }
+  else
+  {
+    step17_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 17 FAIL: pmd=%d, pev=%d, sleep=%d, nm_on=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_rec_ok, pev_ok, sleep_ok, nm_on_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step17", failReason);
+  }
+
+  write("=== FINISH STEP 17 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_19()
+{
+  int pmd_rec_first_ok;
+  int pev_ok;
+  int pmd_rec_second_ok;
+  int dev_ok;
+
+  Send_Value_To_COM(22319);
+  SetTestStep("Buoc 19 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 19: SD card action, PMD recovery, DEV trigger         ===");
+  write("=================================================================");
+  testStep("Step19", "KEY ON/OFF, PMD Recording, PEV, Set_SDcard, PMD Recording, DEV");
+
+  write("[19.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[19.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[19.3] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_first_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[19.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[19.5] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[19.6] Set_SDcard");
+  Set_SDcard();
+
+  write("[19.7] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_second_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[19.8] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[19.9] WaitFor_RecSta_DEV_Recording max 4 minutes");
+  dev_ok = WaitFor_RecSta_DEV_Recording(max_signal_wait_s);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_SD_Card_State;BLTN_CAM_State");
+
+  if (pmd_rec_first_ok == 1 && pev_ok == 1 && pmd_rec_second_ok == 1 && dev_ok == 1)
+  {
+    step19_passed = 1;
+    testStepPass("Step19", "Step 19 PASS");
+  }
+  else
+  {
+    step19_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 19 FAIL: pmd1=%d, pev=%d, pmd2=%d, dev=%d, PMD=0x%X, PEV=0x%X, DEV=0x%X.",
+             pmd_rec_first_ok, pev_ok, pmd_rec_second_ok, dev_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV, $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step19", failReason);
+  }
+
+  write("=== FINISH STEP 19 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWP_023_20()
+{
+  int pmd_rec_first_ok;
+  int pev_first_ok;
+  int pmd_rec_second_ok;
+  int pev_second_ok;
+  int pmd_off_ok;
+  int pev_off_ok;
+
+  Send_Value_To_COM(22320);
+  SetTestStep("Buoc 20 - OWP_023");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 20: SOC stop, restore SOC, PMD/PEV off, BLTN_CAM UI   ===");
+  write("=================================================================");
+  testStep("Step20", "KEY ON/OFF, PMD/PEV, SOC 0, KEY ON, SOC 100, KEY OFF, PMD/PEV, PMD/PEV OFF, KEY ON, BLTN_CAM");
+
+  write("[20.1] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[20.2] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[20.3] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_first_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[20.4] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[20.5] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_first_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[20.6] Wait 10 seconds");
+  testWaitForTimeout(10000);
+
+  write("[20.7] Stop Motion/Impact Recording by Activating SOC = 0 percent");
+  setSignal(ICU_BS2SoC, 0x00);
+  setSignal(BAT_SOC_for_BLTN_CAM, 0x00);
+  testWaitForTimeout(5000);
+  write("  ICU_BS2SoC = 0x%X", $ICU_BS2SoC);
+  write("  BAT_SOC_for_BLTN_CAM = 0x%X", $BAT_SOC_for_BLTN_CAM);
+
+  write("[20.8] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[20.9] SOC = 100 percent");
+  setSignal(ICU_BS2SoC, 0x64);
+  setSignal(BAT_SOC_for_BLTN_CAM, 0x64);
+  testWaitForTimeout(5000);
+  write("  ICU_BS2SoC = 0x%X", $ICU_BS2SoC);
+  write("  BAT_SOC_for_BLTN_CAM = 0x%X", $BAT_SOC_for_BLTN_CAM);
+
+  write("[20.10] KEY OFF");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  write("[20.11] WaitFor_RecSta_PMD_Recording max 4 minutes");
+  pmd_rec_second_ok = WaitFor_RecSta_PMD_Recording(max_signal_wait_ms);
+  write("  BLTN_CAM_RecSta_PMD = 0x%X", Gen20_PMD_RecSta_Value());
+
+  write("[20.12] Wait 5 seconds");
+  testWaitForTimeout(5000);
+
+  write("[20.13] WaitFor_RecSta_PEV_Recording max 4 minutes");
+  pev_second_ok = WaitFor_RecSta_PEV_Recording(max_signal_wait_s);
+
+  write("[20.14] WaitFor_RecSta_PMD_OFF max 4 minutes");
+  pmd_off_ok = WaitFor_RecSta_PMD_OFF(max_signal_wait_ms);
+
+  write("[20.15] WaitFor_RecSta_PEV_OFF max 4 minutes");
+  pev_off_ok = WaitFor_RecSta_PEV_OFF(max_signal_wait_s);
+
+  write("[20.16] KEY ON");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  write("[20.17] Enter_BLTN_CAM");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(5000);
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;ICU_BS2SoC;BAT_SOC_for_BLTN_CAM;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_State");
+
+  if (pmd_rec_first_ok == 1 && pev_first_ok == 1 && pmd_rec_second_ok == 1 && pev_second_ok == 1 && pmd_off_ok == 1 && pev_off_ok == 1)
+  {
+    step20_passed = 1;
+    testStepPass("Step20", "Step 20 PASS");
+  }
+  else
+  {
+    step20_passed = 0;
+    snprintf(failReason, elcount(failReason),
+             "Step 20 FAIL: pmd1=%d, pev1=%d, pmd2=%d, pev2=%d, pmd_off=%d, pev_off=%d, PMD=0x%X, PEV=0x%X.",
+             pmd_rec_first_ok, pev_first_ok, pmd_rec_second_ok, pev_second_ok, pmd_off_ok, pev_off_ok,
+             Gen20_PMD_RecSta_Value(), $BLTN_CAM_RecSta_PEV);
+    Log_Error_Details();
+    testStepFail("Step20", failReason);
+  }
+
+  write("=== FINISH STEP 20 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_023 - 2.5 generation_report");
+
+  OWP_023_Init();
+  OWP_023_1();
+  OWP_023_2();
+  OWP_023_4();
+  OWP_023_6();
+  OWP_023_9();
+  OWP_023_11();
+  OWP_023_15();
+  OWP_023_16();
+  OWP_023_17();
+  OWP_023_19();
+  OWP_023_20();
+}

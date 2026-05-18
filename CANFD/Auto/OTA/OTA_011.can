@@ -5,7 +5,7 @@
  * Muc tieu test:
  * - Setup: KEY OFF -> KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset.
  * - Dam bao SW version ve ban 0 (neu chua la ban 0 thi chay update_to_00.py).
- * - Chay case_11.py de kich hoat OTA flow.
+ * - Chay case_011.py de kich hoat OTA flow.
  * - Neu bat duoc AppState = 11 thi KEY ON/OFF 5 lan nhanh trong 3 giay.
  * - Doi toi da 30 phut de nhan AppState ket qua:
  *   + AppState = 3 -> PASS neu SW version = 1.
@@ -25,9 +25,9 @@ variables
 {
   char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
   char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
-  char gCase11Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_11.py\"";
+  char gCase011Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_011.py\"";
   char gCaptureWindow[16] = "OTA";
-  char gCaptureSignals[128] = "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3";
+  char gCaptureSignals[256] = "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState";
 
   int gAppStatePrev = -1;
   int gTriggerAppState11 = 0;
@@ -103,7 +103,7 @@ void Run_Key_On_Off_5x_Fast()
           @PythonCom::AppState);
     testWaitForTimeout(300);
   }
-
+  KEY_ON(); // Ket thuc bang KEY ON de dam bao xe o trang thai ON sau khi kich hoat AppState 11.
   write("[OTA_011][ACTION] Hoan tat KEY ON/OFF 5 lan nhanh trong 3 giay");
 }
 
@@ -119,6 +119,7 @@ testcase OTA_011()
   int remainingWaitMs;
   int keyOnOffDone;
 
+  Send_Value_To_COM(11111);
   write("===========================================================");
   write("[OTA_011] Start test case OTA_011");
   write("===========================================================");
@@ -178,6 +179,7 @@ testcase OTA_011()
       write("[OTA_011][SNAPSHOT] Setup fail: sau update_to_00.py version van khong phai ban 0");
       CaptureGraphics(gCaptureWindow, gCaptureSignals);
       testStepFail("Step 2", "Sau update_to_00.py version van khong phai ban 0");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -188,13 +190,13 @@ testcase OTA_011()
     testStepPass("Step 2", "Da la ban 0 ngay tu dau");
   }
 
-  testStep("Step 3", "Luong chinh: chay case_11.py, bat AppState=11, roi doi AppState=3/4 toi da 30 phut");
+  testStep("Step 3", "Luong chinh: chay case_011.py, bat AppState=11, roi doi AppState=3/4 toi da 30 phut");
   OTA_Reset_AppStateWaitContext();
   gAppStatePrev = gOTA_AppStateWaitStart;
   gTriggerAppState11 = 0;
 
-  write("[OTA_011][STEP3] AppState truoc khi chay case_11.py = %d", gOTA_AppStateWaitStart);
-  Run_Python_Update(gCase11Cmd, "Luong chinh - case_11.py");
+  write("[OTA_011][STEP3] AppState truoc khi chay case_011.py = %d", gOTA_AppStateWaitStart);
+  Run_Python_Update(gCase011Cmd, "Luong chinh - case_011.py");
 
   appStateResult = 0;
   keyOnOffDone = 0;
@@ -282,6 +284,7 @@ testcase OTA_011()
   }
 
   write("[OTA_011] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

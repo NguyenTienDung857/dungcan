@@ -74,7 +74,7 @@ testcase BAT_011_1_to_21(){
 }
 
 
-void Maintest(){
+void MainTest(){
   write("===START TEST===");
   InitSignal();
   

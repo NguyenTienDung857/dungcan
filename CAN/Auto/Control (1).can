@@ -12,12 +12,14 @@ variables
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   msTimer timer1;
   message BDC_FD_04_200ms _BDC_FD_04_200ms;
+  
 }
 
 void Enter_BLTN_CAM(){
-  // CAN
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode=0x1;
-  output(_HU_BLTN_CAM_02_200ms); //Enter BLTN_CAM mode  
+  write(">>> Enter BLTN_CAM mode <<<");
+  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
+  output(_HU_BLTN_CAM_02_200ms);
+  
 }
 
 on key '1' {

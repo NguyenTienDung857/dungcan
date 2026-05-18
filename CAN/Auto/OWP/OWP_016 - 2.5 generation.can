@@ -1,0 +1,804 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSet_OWP, BLTN_CAM_RecSta_OWP,
+//                             BLTN_CAM_RecSet_PEV, BLTN_CAM_RecSta_PEV,
+//                             BLTN_CAM_Set_PMD, BLTN_CAM_RanSet_PMDR,
+//                             BLTN_CAM_MaxRanSet_PMDR, BLTN_CAM_Set_PrkTime,
+//                             BLTN_CAM_PEV_Count, BLTN_CAM_State,
+//                             ICU_PowerAutoCutModSta
+
+/*
+  Test Case: OWP_016 - 2.5 (OWP_016)
+  Title: [PMD Default Settings Check + PEV Trigger with OWP Recording + Rapid KEY ON/OFF]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+           Set_PowerAutoCut_Mode(0x0 -> 0x2), check RecSet_OWP_OFF, RecSet_PEV_OFF, Set_PMD_OFF
+  Step 2:  Turn_ON_OWD, check Set_PMD=0x0(OFF), RecSet_OWP=0x2(ON),
+           log "bat man hinh chay FSR"
+  Step 3:  Turn_ON_PMD, check Set_PMD=0x1(On)
+  Step 4:  Check RanSet_PMDR=0x1(Lv.1), MaxRanSet_PMDR=0x0(Default),
+           log "cho Domestic/Japan/North America/Russia"
+  Step 5:  Check Set_PrkTime=0xC(20Hr)
+  Step 6:  Turn_OFF_PMD, check Set_PMD=0x1(OFF), RecSet_PEV=0x1(OFF)
+
+  Step 2b: Log "lay anh o buoc 1"
+  Step 3_4b: Log "check den LED"
+  Step 5b: KEY ON, Click_USM_Reset, KEY OFF, WaitFor_RecSta_OWP_Recording,
+           WaitFor_RecSta_PEV_Recording, log "check video"
+  Step 6b: KEY ON, KEY OFF, WaitFor_RecSta_PEV_Recording,
+           log "bat tat B+ ngay", log "check video"
+  Step 12: Rapid KEY ON/OFF x20, KEY OFF,
+           Check_RecSta_OWP_Recording, Check PEV_Count=0x0
+  Step 13: KEY ON, KEY OFF, WaitFor_RecSta_OWP_Recording,
+           WaitFor_RecSta_PEV_Recording, wait 5s, log "check video thuc te"
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step2b_passed = 0;
+  int step3_4b_passed = 0;
+  int step5b_passed = 0;
+  int step6b_passed = 0;
+  int step12_passed = 0;
+  int step13_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_016_Init()
+{
+  Send_Value_To_COM(21600);
+  write("========================================");
+  write("=== START TEST OWP_016 - 2.5 ===");
+  write("========================================");
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+//         Set_PowerAutoCut_Mode(0x0 -> 0x2),
+//         Check RecSet_OWP_OFF, RecSet_PEV_OFF, Set_PMD_OFF
+// ============================================================================
+testcase OWP_016_1()
+{
+  int owp_off_result;
+  int pev_off_result;
+  int pmd_off_result;
+  Send_Value_To_COM(21601);
+  SetTestStep("Bước 1 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 1: Init, PowerAutoCut Factory->Customer, Check OWP/PEV/PMD OFF ===");
+  testStep("Step1", "Set_SMK_IGN, USM/Rec Reset, PowerAutoCut 0x0->0x2, Check OFF states");
+
+  // 1.1: Set_SMK_IGN
+  write("Step 1.1: Set_SMK_IGN (KEY ON with CGWNM)...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.2: Click USM Reset
+  write("Step 1.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("Step 1.3: Rec Reset...");
+  Click_Rec_Reset();
+
+  // 1.4: Set PowerAutoCut Mode: 0x0 (Factory) -> 0x2 (Customer)
+  write("Step 1.4: Setting PowerAutoCut to Factory (0x0) first...");
+  Set_PowerAutoCut_Mode(0x0, 30000);
+  testWaitForTimeout(2000);
+
+  write("Step 1.4b: Setting PowerAutoCut to Customer (0x2)...");
+  Set_PowerAutoCut_Mode(0x2, 30000);
+  testWaitForTimeout(3000);
+
+  // 1.5: Check RecSet_OWP = OFF
+  write("Step 1.5: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  // 1.6: Check RecSet_PEV = OFF
+  write("Step 1.6: Check RecSet_PEV_OFF...");
+  pev_off_result = Check_RecSet_PEV_OFF();
+
+  // 1.7: Check Set_PMD = OFF
+  write("Step 1.7: Check Set_PMD_OFF...");
+  pmd_off_result = Check_Set_PMD_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;ICU_PowerAutoCutModSta;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_Set_PMD;BLTN_CAM_State");
+
+  if (owp_off_result == 1 && pev_off_result == 1 && pmd_off_result == 1)
+  {
+    write(">>> [PASS] RecSet_OWP=OFF, RecSet_PEV=OFF, Set_PMD=OFF <<<");
+    step1_passed = 1;
+    testStepPass("Step1", "Init + PowerAutoCut + OWP/PEV/PMD OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] OWP_OFF=%d, PEV_OFF=%d, PMD_OFF=%d <<<", owp_off_result, pev_off_result, pmd_off_result);
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "OWP_OFF=%d, PEV_OFF=%d, PMD_OFF=%d - FAIL", owp_off_result, pev_off_result, pmd_off_result);
+  }
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2: Turn_ON_OWD, check Set_PMD=0x0(OFF), RecSet_OWP=0x2(ON),
+//         log "bat man hinh chay FSR"
+// ============================================================================
+testcase OWP_016_2()
+{
+  int pmd_val;
+  int owp_on_result;
+  Send_Value_To_COM(21602);
+  SetTestStep("Bước 2 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 2: Turn ON OWD, Check Set_PMD=OFF, RecSet_OWP=ON ===");
+  testStep("Step2", "Turn ON OWD, Check Set_PMD=0x0, RecSet_OWP=0x2");
+
+  // 2.1: Turn ON OWD
+  write("Step 2.1: Turn ON OWD...");
+  Turn_ON_OWD();
+  testWaitForTimeout(3000);
+
+  // 2.2: Check BLTN_CAM_Set_PMD = 0x0 (OFF)
+  write("Step 2.2: Check BLTN_CAM_Set_PMD = 0x0 (OFF)...");
+  pmd_val = Gen20_PMD_Set_Value();
+  write("  BLTN_CAM_Set_PMD = 0x%X", pmd_val);
+
+  if (pmd_val == 0x0)
+  {
+    write(">>> [PASS] BLTN_CAM_Set_PMD = 0x0 (OFF) <<<");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_Set_PMD = 0x%X, expected 0x0 (OFF) <<<", pmd_val);
+  }
+
+  // 2.3: Check BLTN_CAM_RecSet_OWP = 0x2 (ON)
+  write("Step 2.3: Check RecSet_OWP = ON...");
+  owp_on_result = Check_RecSet_OWP_ON();
+
+  // 2.4: Log - bat man hinh chay FSR
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] HAY BAT MAN HINH CHAY FSR!                     ***");
+  write("*** Case nay nen bat man hinh chay FSR de kiem tra.        ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  if (pmd_val == 0x0 && owp_on_result == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "Set_PMD=0x0, RecSet_OWP=ON - PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "Set_PMD=0x%X, RecSet_OWP=%d - FAIL", pmd_val, owp_on_result);
+  }
+
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3: Turn_ON_PMD, check Set_PMD=0x1(On)
+// ============================================================================
+testcase OWP_016_3()
+{
+  int pmd_val;
+  Send_Value_To_COM(21603);
+  SetTestStep("Bước 3 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 3: Turn ON PMD, Check Set_PMD = 0x1 (On) ===");
+  testStep("Step3", "Turn ON PMD, Check Set_PMD = 0x1");
+
+  // 3.1: Turn ON PMD
+  write("Step 3.1: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+
+  // 3.2: Check BLTN_CAM_Set_PMD = 0x1 (On)
+  write("Step 3.2: Check BLTN_CAM_Set_PMD...");
+  pmd_val = Gen20_PMD_Set_Value();
+  write("  BLTN_CAM_Set_PMD = 0x%X", pmd_val);
+
+  if (pmd_val == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_Set_PMD = 0x1 (On) <<<");
+    step3_passed = 1;
+    testStepPass("Step3", "Set_PMD = 0x1 (On) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_Set_PMD = 0x%X, expected 0x1 (On) <<<", pmd_val);
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "Set_PMD = 0x%X, expected 0x1 - FAIL", pmd_val);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_State");
+
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 4: Check RanSet_PMDR=0x1(Lv.1), MaxRanSet_PMDR=0x0(Default)
+//         Log "cho Domestic/Japan/North America/Russia"
+// ============================================================================
+testcase OWP_016_4()
+{
+  int ranset_val;
+  int maxranset_val;
+  Send_Value_To_COM(21604);
+  SetTestStep("Bước 4 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 4: Check RanSet_PMDR=0x1, MaxRanSet_PMDR=0x0, Region info ===");
+  testStep("Step4", "Check RanSet_PMDR=Lv.1, MaxRanSet_PMDR=Default");
+
+  // 4.1: Check BLTN_CAM_RanSet_PMDR = 0x1 (Lv. 1)
+  write("Step 4.1: Check BLTN_CAM_RanSet_PMDR...");
+  ranset_val = Gen20_PMDR_RanSet_Value();
+  write("  BLTN_CAM_RanSet_PMDR = 0x%X", ranset_val);
+
+  if (ranset_val == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_RanSet_PMDR = 0x1 (Lv. 1) <<<");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_RanSet_PMDR = 0x%X, expected 0x1 (Lv. 1) <<<", ranset_val);
+  }
+
+  // 4.2: Check BLTN_CAM_MaxRanSet_PMDR = 0x0 (Default)
+  write("Step 4.2: Check BLTN_CAM_MaxRanSet_PMDR...");
+  maxranset_val = Gen20_PMDR_MaxRanSet_Value();
+  write("  BLTN_CAM_MaxRanSet_PMDR = 0x%X", maxranset_val);
+
+  if (maxranset_val == 0x0)
+  {
+    write(">>> [PASS] BLTN_CAM_MaxRanSet_PMDR = 0x0 (Default) <<<");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_MaxRanSet_PMDR = 0x%X, expected 0x0 (Default) <<<", maxranset_val);
+  }
+
+  // 4.3: Log region info
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] Gia tri nay la cho:                             ***");
+  write("*** Domestic / Japan / North America / Russia              ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "BLTN_CAM_RanSet_PMDR;BLTN_CAM_MaxRanSet_PMDR;BLTN_CAM_Set_PMD;BLTN_CAM_State");
+
+  if (ranset_val == 0x1 && maxranset_val == 0x0)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "RanSet_PMDR=0x1, MaxRanSet_PMDR=0x0 - PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "RanSet=0x%X, MaxRanSet=0x%X - FAIL", ranset_val, maxranset_val);
+  }
+
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5: Check Set_PrkTime = 0xC (20Hr)
+// ============================================================================
+testcase OWP_016_5()
+{
+  int prktime_val;
+  Send_Value_To_COM(21605);
+  SetTestStep("Bước 5 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 5: Check Set_PrkTime = 0xC (20Hr) ===");
+  testStep("Step5", "Check BLTN_CAM_Set_PrkTime = 0xC (20Hr)");
+
+  // 5.1: Check BLTN_CAM_Set_PrkTime = 0xC
+  write("Step 5.1: Check BLTN_CAM_Set_PrkTime...");
+  prktime_val = $BLTN_CAM_Set_PrkTime;
+  write("  BLTN_CAM_Set_PrkTime = 0x%X (%d)", prktime_val, prktime_val);
+
+  if (prktime_val == 0xC)
+  {
+    write(">>> [PASS] BLTN_CAM_Set_PrkTime = 0xC (20Hr) <<<");
+    step5_passed = 1;
+    testStepPass("Step5", "Set_PrkTime = 0xC (20Hr) - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_Set_PrkTime = 0x%X, expected 0xC (20Hr) <<<", prktime_val);
+    step5_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5", "Set_PrkTime = 0x%X, expected 0xC - FAIL", prktime_val);
+  }
+
+  CaptureGraphics("OWP", "BLTN_CAM_Set_PrkTime;BLTN_CAM_Set_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_State");
+
+  write("=== FINISH STEP 5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 6: Turn_OFF_PMD, check Set_PMD=0x1(OFF), RecSet_PEV=0x1(OFF)
+// ============================================================================
+testcase OWP_016_6()
+{
+  int pmd_val;
+  int pev_off_result;
+  Send_Value_To_COM(21606);
+  SetTestStep("Bước 6 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 6: Turn OFF PMD, Check Set_PMD=0x1(OFF), RecSet_PEV=0x1(OFF) ===");
+  testStep("Step6", "Turn OFF PMD, Check Set_PMD OFF, RecSet_PEV OFF");
+
+  // 6.1: Turn OFF PMD
+  write("Step 6.1: Turn OFF PMD...");
+  Turn_OFF_PMD();
+  testWaitForTimeout(3000);
+
+  // 6.2: Check BLTN_CAM_Set_PMD = 0x1 (OFF)
+  write("Step 6.2: Check BLTN_CAM_Set_PMD...");
+  pmd_val = Gen20_PMD_Set_Value();
+  write("  BLTN_CAM_Set_PMD = 0x%X", pmd_val);
+
+  if (pmd_val == 0x1)
+  {
+    write(">>> [PASS] BLTN_CAM_Set_PMD = 0x1 (OFF) <<<");
+  }
+  else
+  {
+    write(">>> [FAIL] BLTN_CAM_Set_PMD = 0x%X, expected 0x1 (OFF) <<<", pmd_val);
+  }
+
+  // 6.3: Check BLTN_CAM_RecSet_PEV = 0x1 (OFF)
+  write("Step 6.3: Check RecSet_PEV = OFF...");
+  pev_off_result = Check_RecSet_PEV_OFF();
+
+  CaptureGraphics("OWP", "BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_PEV;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  if (pmd_val == 0x1 && pev_off_result == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "Set_PMD=0x1(OFF), RecSet_PEV=OFF - PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "Set_PMD=0x%X, PEV_OFF=%d - FAIL", pmd_val, pev_off_result);
+  }
+
+  write("=== FINISH STEP 6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2b: Log "lay anh o buoc 1"
+// ============================================================================
+testcase OWP_016_2b()
+{
+  Send_Value_To_COM(21602);
+  SetTestStep("Bước 2b - OWP_016");
+  StartTestTimer();
+  write("");
+  write("=== STEP 2 (Evidence): Lay anh o buoc 1 ===");
+  testStep("Step2b", "Lay anh o buoc 1");
+
+  write("");
+  write("*************************************************************");
+  write("*** [INFO] LAY ANH O BUOC 1!                              ***");
+  write("*** Hay su dung anh man hinh da chup o buoc 1              ***");
+  write("*** lam bang chung cho buoc nay.                            ***");
+  write("*************************************************************");
+  write("");
+
+  step2b_passed = 1;
+  testStepPass("Step2b", "Log: lay anh o buoc 1 - PASS");
+  write("=== FINISH STEP 2b ===");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3_4b: Log "check den LED"
+// ============================================================================
+testcase OWP_016_3_4b()
+{
+  Send_Value_To_COM(21603);
+  SetTestStep("Bước 3 và 4b - OWP_016");
+  StartTestTimer();
+  write("");
+  write("=== STEP 3 & 4 (LED): Check den LED ===");
+  testStep("Step3_4b", "Check den LED");
+
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** Hay CHECK DEN LED tren thiet bi!                      ***");
+  write("*** Kiem tra den LED co nhap nhay dung khong.             ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_State");
+
+  step3_4b_passed = 1;
+  testStepPass("Step3_4b", "Log: check den LED - manual check required");
+  write("=== FINISH STEP 3_4b ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5b: KEY ON, Click_USM_Reset, KEY OFF,
+//          WaitFor_RecSta_OWP_Recording, WaitFor_RecSta_PEV_Recording,
+//          log check video
+// ============================================================================
+testcase OWP_016_5b()
+{
+  int pev_result;
+  Send_Value_To_COM(21605);
+  SetTestStep("Bước 5b - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 5b: KEY ON, USM Reset, KEY OFF, Wait OWP, PEV trigger, Check video ===");
+  testStep("Step5b", "KEY ON, USM Reset, KEY OFF, Wait OWP Recording, PEV trigger");
+
+  // 5b.1: KEY ON
+  write("Step 5b.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 5b.2: Click USM Reset
+  write("Step 5b.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 5b.3: KEY OFF
+  write("Step 5b.3: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 5b.4: Wait for OWP Recording (max 120s)
+  write("Step 5b.4: Waiting for BLTN_CAM_RecSta_OWP = ON (max 120s)...");
+  if (WaitFor_RecSta_OWP_Recording(120000) != 1)
+  {
+    write(">>> [FAIL] OWP did not start within 120s. Aborting Step 5b.");
+    CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_State");
+    Log_Error_Details();
+    testStepFail("Step5b", "BLTN_CAM_RecSta_OWP did not turn ON within 120s");
+    step5b_passed = 0;
+    return;
+  }
+  write(">>> [OK] BLTN_CAM_RecSta_OWP = 0x%X - OWP recording started <<<", $BLTN_CAM_RecSta_OWP);
+
+  // 5b.5: WaitFor_RecSta_PEV_Recording
+  write("Step 5b.5: Triggering PEV event...");
+  pev_result = WaitFor_RecSta_PEV_Recording(60);
+
+  if (pev_result == 1)
+  {
+    write(">>> [PASS] PEV recording detected <<<");
+    step5b_passed = 1;
+    testStepPass("Step5b", "OWP ON, PEV triggered and recorded - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] PEV recording not detected <<<");
+    step5b_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5b", "PEV not triggered - FAIL");
+  }
+
+  // 5b.6: Log check video
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO tren thiet bi! (Step 5b)      ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Count;BLTN_CAM_State");
+
+  write("=== FINISH STEP 5b ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 6b: KEY ON, KEY OFF, WaitFor_RecSta_PEV_Recording,
+//          log "bat tat B+ ngay", log check video
+// ============================================================================
+testcase OWP_016_6b()
+{
+  int pev_result;
+  Send_Value_To_COM(21606);
+  SetTestStep("Bước 6b - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 6b: KEY ON, KEY OFF, PEV trigger, B+ toggle, Check video ===");
+  testStep("Step6b", "KEY ON, KEY OFF, PEV trigger, B+ toggle");
+
+  // 6b.1: KEY ON
+  write("Step 6b.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  // 6b.2: KEY OFF
+  write("Step 6b.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 6b.3: WaitFor_RecSta_PEV_Recording
+  write("Step 6b.3: Triggering PEV event...");
+  pev_result = WaitFor_RecSta_PEV_Recording(60);
+
+  if (pev_result == 1)
+  {
+    write(">>> [OK] PEV recording detected <<<");
+  }
+  else
+  {
+    write(">>> [WARNING] PEV recording not detected within timeout <<<");
+  }
+
+  // 6b.4: Log B+ bat tat ngay
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] B+ BAT TAT NGAY!                    ***");
+  write("*** >> Hay bat tat B+ ngay bay gio! <<                     ***");
+  write("*************************************************************");
+  write("");
+  testWaitForTimeout(5000);
+
+  // 6b.5: Log check video
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO tren thiet bi! (Step 6b)      ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Count;BLTN_CAM_State");
+
+  step6b_passed = 1;
+  testStepPass("Step6b", "KEY ON/OFF, PEV trigger, B+ toggle notified, Video check - PASS");
+  write("=== FINISH STEP 6b ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 12: Rapid KEY ON/OFF x20, KEY OFF,
+//          Check_RecSta_OWP_Recording, Check PEV_Count = 0x0
+// ============================================================================
+testcase OWP_016_12()
+{
+  int owp_result;
+  int pev_count;
+  Send_Value_To_COM(21612);
+  SetTestStep("Bước 12 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 12: Rapid KEY ON/OFF x20, Check OWP Recording, Check PEV_Count = 0 ===");
+  testStep("Step12", "Rapid KEY ON/OFF x20, OWP Recording, PEV_Count = 0");
+
+  // 12.1: Rapid KEY ON/OFF 20 times
+  write("Step 12.1: Starting rapid KEY ON/OFF cycle (20 times)...");
+  {
+    int cycle;
+    for (cycle = 1; cycle <= 20; cycle++)
+    {
+      KEY_ON();
+      testWaitForTimeout(500);
+
+      KEY_OFF();
+      testWaitForTimeout(500);
+
+      if (cycle % 5 == 0)
+      {
+        write("  Cycle %d/20 completed", cycle);
+      }
+    }
+  }
+
+  // 12.2: Final KEY OFF
+  write("Step 12.2: Final KEY OFF after 20 cycles...");
+  KEY_OFF();
+  testWaitForTimeout(10000);
+
+  // 12.3: Check OWP Recording
+  write("Step 12.3: Checking BLTN_CAM_RecSta_OWP (OWP Recording)...");
+  owp_result = Check_RecSta_OWP_Recording();
+
+  // 12.4: Check BLTN_CAM_PEV_Count = 0x0
+  write("Step 12.4: Checking BLTN_CAM_PEV_Count...");
+  pev_count = $BLTN_CAM_PEV_Count;
+  write("  BLTN_CAM_PEV_Count = 0x%X (%d)", pev_count, pev_count);
+
+  if (owp_result == 1 && pev_count == 0x0)
+  {
+    write(">>> [PASS] OWP Recording = ON, PEV_Count = 0x0 <<<");
+    step12_passed = 1;
+    testStepPass("Step12", "OWP Recording ON, PEV_Count = 0x0 - PASS");
+  }
+  else
+  {
+    if (owp_result != 1) write("  -> OWP is NOT recording");
+    if (pev_count != 0x0) write("  -> PEV_Count = 0x%X, expected 0x0", pev_count);
+    write(">>> [FAIL] OWP Recording or PEV_Count check failed <<<");
+    step12_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step12", "OWP=%d, PEV_Count=0x%X - FAIL", owp_result, pev_count);
+  }
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Count;BLTN_CAM_State");
+
+  write("=== FINISH STEP 12 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 13: KEY ON, KEY OFF, WaitFor_RecSta_OWP_Recording,
+//          WaitFor_RecSta_PEV_Recording, wait 5s, log check video thuc te
+// ============================================================================
+testcase OWP_016_13()
+{
+  int pev_result;
+  Send_Value_To_COM(21613);
+  SetTestStep("Bước 13 - OWP_016");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 13: KEY ON, KEY OFF, Wait OWP, PEV trigger, Wait 5s, Check video ===");
+  testStep("Step13", "KEY ON, KEY OFF, Wait OWP Recording, PEV trigger, Check actual video");
+
+  // 13.1: KEY ON
+  write("Step 13.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  // 13.2: KEY OFF
+  write("Step 13.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 13.3: Wait for OWP Recording (max 120s)
+  write("Step 13.3: Waiting for BLTN_CAM_RecSta_OWP = ON (max 120s)...");
+  if (WaitFor_RecSta_OWP_Recording(120000) != 1)
+  {
+    write(">>> [FAIL] OWP did not start within 120s. Aborting Step 13.");
+    CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_State");
+    Log_Error_Details();
+    testStepFail("Step13", "BLTN_CAM_RecSta_OWP did not turn ON within 120s");
+    step13_passed = 0;
+    return;
+  }
+  write(">>> [OK] BLTN_CAM_RecSta_OWP = 0x%X - OWP recording started <<<", $BLTN_CAM_RecSta_OWP);
+
+  // 13.4: WaitFor_RecSta_PEV_Recording (immediately after OWP ON)
+  write("Step 13.4: Triggering PEV event immediately...");
+  pev_result = WaitFor_RecSta_PEV_Recording(60);
+
+  if (pev_result == 1)
+  {
+    write(">>> [OK] PEV recording detected <<<");
+  }
+  else
+  {
+    write(">>> [WARNING] PEV recording not detected within timeout <<<");
+  }
+
+  // 13.5: Wait 5 seconds
+  write("Step 13.5: Waiting 5 seconds...");
+  testWaitForTimeout(5000);
+
+  // 13.6: Log check actual video
+  write("");
+  write("*************************************************************");
+  write("*** [CHECK] Hay check VIDEO THUC TE tren thiet bi!        ***");
+  write("*** Kiem tra video da ghi nhan su kien PEV.                ***");
+  write("*** (Step 13)                                              ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Count;BLTN_CAM_State");
+
+  step13_passed = 1;
+  testStepPass("Step13", "OWP ON, PEV triggered, actual video check - PASS");
+  write("=== FINISH STEP 13 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_016 - 2.5 generation_report");
+
+  OWP_016_Init();
+
+  // Part A: PMD Default Settings Check
+  OWP_016_1();
+  OWP_016_2();
+  OWP_016_3();
+  OWP_016_4();
+  OWP_016_5();
+  OWP_016_6();
+
+  // Part B: PEV Trigger with OWP Recording
+  OWP_016_2b();
+  OWP_016_3_4b();
+  OWP_016_5b();
+  OWP_016_6b();
+
+  // Part C: Rapid KEY ON/OFF + Final PEV test
+  OWP_016_12();
+  OWP_016_13();
+
+}

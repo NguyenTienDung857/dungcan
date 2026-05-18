@@ -1,11 +1,11 @@
 # Project Status - CANFD Built-in Cam
 
-Last updated: 2026-05-12
+Last updated: 2026-05-16
 
 ## Current Goal
 
-Implement and maintain requested Auto CAPL automated test flows, currently
-shared helper behavior in `Auto/DeclarationFunction_Gen2.5.h`.
+Implement and maintain requested Auto CAPL/OTA automated test flows, currently
+the OTA `.can` COM/capture instrumentation cleanup.
 
 Primary implementation target for future work:
 
@@ -81,6 +81,521 @@ No CAPL test implementation was changed during initialization.
 - CANoe compile/run was not attempted during initialization.
 
 ## Recent Work
+
+2026-05-16:
+
+- Fixed `OTA_004.can` AppState event wait handling.
+  - Removed blocking wait logic from `on sysvar_update PythonCom::AppState`;
+    the event now only latches AppState 12 and performs `KEY_OFF()`.
+  - Added testcase-side AppState 12 wait and PEV check flow.
+  - After AppState 12, the testcase waits 5 seconds, then calls
+    `WaitFor_RecSta_PEV_Recording(10)` up to 5 times with a 12-second delay
+    between calls. The helper sends COM8 internally.
+  - This avoids CANoe runtime warning `09-0020 Wait call ignored, because this
+    procedure cannot be suspended`.
+  - Static verification only:
+    - Confirmed no `testWaitForTimeout(...)` remains in the AppState sysvar
+      event procedure.
+    - Confirmed no direct `Send_Value_To_COM(8)` remains in `OTA_004.can`.
+    - Ran `git diff --check -- Auto/OTA/OTA_004.can`; no whitespace errors,
+      only the repo's usual LF-to-CRLF warning.
+  - CANoe compile/run was not attempted from terminal.
+
+- Removed `NM_State_BLTN_CAM_FD` from OTA CAPL screenshot signal lists.
+  - Updated `Auto/OTA/OTA_002.can`, `Auto/OTA/OTA_003.can`,
+    `Auto/OTA/OTA_004.can`, `Auto/OTA/OTA_005.can`,
+    `Auto/OTA/OTA_007.can`, and `Auto/OTA/OTA_008.can`.
+  - Preserved the remaining capture context signals, including
+    `PythonCom::AppState`.
+  - Static verification only:
+    - Confirmed `NM_State_BLTN_CAM_FD` no longer appears in
+      `Auto/OTA/*.can`.
+    - Confirmed OTA `CaptureGraphics(...)` calls and local
+      `gCaptureSignals` definitions still include `PythonCom::AppState`.
+    - Ran `git diff --check` on the touched OTA `.can` files; no whitespace
+      errors, only the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+- Removed `ICU_PowerAutoCutModSta` from OTA CAPL screenshot signal lists.
+  - Updated shared `gCaptureSignals` in `Auto/OTA/OTA_009.can` and
+    `Auto/OTA/OTA_010.can`.
+  - In `Auto/OTA`, this signal was only present in those shared capture
+    lists, not in OTA pass/fail logic.
+  - Static verification only:
+    - Confirmed `ICU_PowerAutoCutModSta` no longer appears in
+      `Auto/OTA/*.can`.
+    - Confirmed the edited shared capture lists still include
+      `PythonCom::AppState`.
+  - CANoe compile/run was not attempted from terminal.
+
+- Removed manual user prompts from the BAS 2.0 automated flows.
+  - Updated `Auto/BAS/BAS_016 - 2.0 generation.can`,
+    `Auto/BAS/BAS_017 - 2.0 generation.can`, and
+    `Auto/BAS/BAS_018 - 2.0 generation.can`.
+  - Removed recorded-file deletion/retention message-box confirmations from
+    pass/fail logic.
+  - BAS_016/BAS_017 now pass on CAN-visible parking recording and
+    setting-reset/setting-retention checks only.
+  - BAS_018 now replaces file confirmation prompts with automatic
+    default/Guest setting comparisons and replaces ACC/IGN prompts with
+    direct key/ACC signal control.
+  - Updated `Auto/BAS/DeclarationFunction_Gen2.h` `Set_Battery()` so BAS 2.0
+    uses automatic eAGM/SOC setup (`ICU_BS2SoC = 0x50`) instead of asking for
+    PLBM/EAGM input.
+  - BAS 2.0 `CaptureGraphics("BAS", ...)` calls now include the related
+    battery signal `ICU_BS2SoC`.
+  - Static verification only:
+    - Confirmed no `testWaitForMessageBox`, `testWaitForStringInput`,
+      `testGetStringInput`, `TestWaitForValueInput`, or `TestGetValueInput`
+      remains in the three BAS 2.0 files or `DeclarationFunction_Gen2.h`.
+    - Confirmed all BAS 2.0 captures include `ICU_BS2SoC`.
+    - Checked brace counts for the three files and Gen2 header.
+    - Ran `git diff --check` on touched BAS files; no whitespace errors, only
+      the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+2026-05-15:
+
+- Updated OTA Python AppState handoff timing in `Auto/OTA/case_010.py` and
+  `Auto/OTA/case_012.py`.
+  - Changed the post-`activate-rule` trigger from waiting for a later
+    `routineControl` / `routine control` line to waiting for a later
+    `securityAccess` / `security access` line.
+  - Added a 5-second delay after `securityAccess` detection before sending
+    `PythonCom::AppState = 10` or `PythonCom::AppState = 12`.
+  - Updated top TEST FLOW comments and runtime logs to match the new trigger.
+  - Static verification only:
+    - Parsed both edited Python files with Python `ast.parse`; no syntax
+      errors.
+    - Confirmed no `routineControl` wait wording remains in the two files.
+    - Checked both edited Python files for trailing whitespace; no matches.
+    - Ran `git diff --check -- STATUS.md MEMORY.md`; no whitespace errors,
+      only the repo's usual LF-to-CRLF warnings.
+  - H-OTA/CANoe execution was not attempted from terminal.
+
+- Added `PythonCom::AppState` to OTA CAPL screenshot signal lists.
+  - Updated every direct `CaptureGraphics("OTA", "...")` signal list in
+    `Auto/OTA/OTA_001.can` through `OTA_024.can` where an OTA `.can` file
+    exists.
+  - Updated shared `gCaptureSignals` values in `Auto/OTA/OTA_009.can`,
+    `Auto/OTA/OTA_010.can`, and `Auto/OTA/OTA_011.can`.
+  - Static verification only:
+    - Confirmed no direct OTA `CaptureGraphics(...)` line is missing
+      `PythonCom::AppState`.
+    - Confirmed no OTA `gCaptureSignals` definition is missing
+      `PythonCom::AppState`.
+    - Ran `git diff --check -- Auto/OTA/*.can`; no whitespace errors, only
+      the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+- Added immediate half-time OTA screenshots after AppState handoff in
+  `Auto/OTA/case_009.py`, `case_010.py`, `case_011.py`, and `case_012.py`.
+  - Extended each script's existing `capture_hota_and_monitor_screenshots(...)`
+    helper with an optional filename suffix.
+  - After successfully sending `PythonCom::AppState` values `9`, `10`, `11`,
+    or `12`, each script now immediately captures the same H-OTA/window monitor
+    evidence into `Auto/OTA/Report`.
+  - Half-time capture names now insert `_half` immediately after the timestamp,
+    for example `<script_name>_YYYYMMDD_HHMMSS_half_hota.png` and
+    `<script_name>_YYYYMMDD_HHMMSS_half_screen1.png`.
+  - Static verification only:
+    - Parsed the four edited Python files with Python `ast.parse`; no syntax
+      errors.
+    - Checked the four edited files for trailing whitespace; no matches.
+  - H-OTA/CANoe execution was not attempted from terminal.
+
+- Added OTA Python run logging to `Auto/OTA/Log_python`.
+  - Added shared helper `Auto/OTA/python_run_log.py`.
+  - Created `Auto/OTA/Log_python` as the log destination.
+  - Updated all 31 OTA Python runner scripts to import
+    `start_python_log(...)` and call it at the start of
+    `open_hota_and_file()`.
+  - Each run now creates a log file named
+    `<script_name>_YYYYMMDD_HHMMSS.log` under `Auto/OTA/Log_python`.
+  - The logger tees both `stdout` and `stderr`, so console/popup output remains
+    visible while the same output and Python tracebacks are written to disk.
+  - Static verification only:
+    - Parsed all 33 `Auto/OTA/*.py` files with Python `ast.parse`; no syntax
+      errors.
+    - Confirmed all 31 OTA runner files have the `start_python_log(...)`
+      import and startup call.
+    - Checked `Auto/OTA/*.py` for trailing whitespace with `Select-String`; no
+      matches.
+  - H-OTA/CANoe execution was not attempted from terminal.
+
+- Updated `Auto/OTA/case_012.py` AppState handoff timing.
+  - Changed the Output-pane wait logic so `PythonCom::AppState = 12` is sent
+    only after an `activate-rule` line has been detected and a later
+    `routineControl` / `routine control` line appears.
+  - Added explicit logs for the two-stage detection:
+    `activate-rule` detected, then `routineControl` detected before the COM
+    notification is sent.
+  - Static verification only:
+    - Parsed `Auto/OTA/case_012.py` with Python `ast.parse`; no syntax errors.
+    - Checked edited files for trailing whitespace with `Select-String`; no
+      matches.
+    - Ran `git diff --check -- STATUS.md`; no whitespace errors, only the
+      repo's usual LF-to-CRLF warning.
+  - H-OTA/CANoe execution was not attempted from terminal.
+
+- Updated `Auto/OTA/case_010.py` AppState handoff timing with the same
+  two-stage detection.
+  - Changed the early-return path so `PythonCom::AppState = 10` is sent only
+    after an `activate-rule` line has been detected and a later
+    `routineControl` / `routine control` line appears.
+  - Preserved the original `case_010.py` behavior after the handoff: close
+    H-OTA Studio and return immediately.
+  - Static verification only:
+    - Parsed `Auto/OTA/case_010.py` with Python `ast.parse`; no syntax errors.
+    - Checked `Auto/OTA/case_010.py` for trailing whitespace with
+      `Select-String`; no matches.
+  - H-OTA/CANoe execution was not attempted from terminal.
+
+- Reworked OTA Python H-OTA config selection to avoid hardcoding the
+  `.hcfg-r` filename.
+  - Added shared helper `Auto/OTA/hota_config.py`.
+  - The helper searches the requested config folder for files ending in
+    `.hcfg-r` and returns the path only when exactly one match exists.
+  - Updated all 31 OTA Python runner scripts to import
+    `find_hota_config_file(...)` and call it with the existing folder number
+    (`0`, `1`, `2`, or `3`) instead of embedding
+    `ReprogramConfig_0_1_1_114.hcfg-r`.
+  - Updated the top TEST FLOW comment in each runner so it describes loading
+    the only `*.hcfg-r` file from the selected config folder.
+  - Static verification only:
+    - Confirmed no hardcoded `ReprogramConfig_0_1_1_*` filename remains in
+      `Auto/OTA/*.py`.
+    - Confirmed 31 imports of `find_hota_config_file(...)` and 31
+      `file_path = find_hota_config_file(script_dir, "...")` call sites.
+    - Confirmed the helper resolves the current `.hcfg-r` file in folders
+      `Auto/OTA/0`, `Auto/OTA/1`, `Auto/OTA/2`, and `Auto/OTA/3`.
+    - Parsed all 32 `Auto/OTA/*.py` files with Python `ast.parse`; no syntax
+      errors.
+    - Ran `git diff --check -- Auto/OTA/*.py`; no whitespace errors, only
+      the repo's usual LF-to-CRLF warnings.
+  - H-OTA execution was not attempted from terminal.
+
+- Updated OTA Python H-OTA config references across all 31 `Auto/OTA/*.py`
+  scripts.
+  - Changed every `ReprogramConfig_0_1_1_113.hcfg-r` reference to
+    `ReprogramConfig_0_1_1_114.hcfg-r`.
+  - Updated both visible step comments and `file_path` assignments.
+  - Confirmed the new config exists under `Auto/OTA/0`, `Auto/OTA/1`,
+    `Auto/OTA/2`, and `Auto/OTA/3`.
+  - Static verification only:
+    - Confirmed no `ReprogramConfig_0_1_1_113.hcfg-r` reference remains in
+      `Auto/OTA/*.py`.
+    - Confirmed 62 references to `ReprogramConfig_0_1_1_114.hcfg-r`
+      remain, matching 31 scripts with 2 references each.
+    - Parsed all 31 `Auto/OTA/*.py` files with Python `ast.parse`; no syntax
+      errors.
+    - Ran `git diff --check -- Auto/OTA/*.py`; no whitespace errors, only
+      the repo's usual LF-to-CRLF warnings.
+  - H-OTA execution was not attempted from terminal.
+
+- Narrowed OTA CAPL screenshot capture signal lists per user request.
+  - Removed these signals from every `CaptureGraphics(...)` list in
+    `Auto/OTA/OTA_*.can`: `BLTN_CAM_HU_UI_Mode`, `BLTN_CAM_RecSet_OWD`,
+    `BLTN_CAM_RecSet_OWP`, `BLTN_CAM_RecSet_PEV`,
+    `BLTN_CAM_Set_PEV_AppNoti`, `BLTN_CAM_Set_PMD`, and
+    `BLTN_CAM_State`.
+  - Remaining OTA capture signals are now focused on key/version/result/NM
+    evidence: `SMK_TrmnlCtrlGrpStaBDC`, `BLTN_CAM_SWVerMinor3`,
+    `BLTN_CAM_RecSta_OWD`, `BLTN_CAM_RecSta_OWP`,
+    `BLTN_CAM_RecSta_PEV`, `BLTN_CAM_RecSta_PMD`,
+    `BLTN_CAM_PEV_Recorded`, `NM_State_BLTN_CAM_FD`, and
+    `ICU_PowerAutoCutModSta`.
+  - Static verification only:
+    - Confirmed none of the removed signals remains in OTA capture lists.
+    - Ran `git diff --check -- Auto\OTA\*.can STATUS.md MEMORY.md`; no
+      whitespace errors, only the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+- Expanded OTA CAPL screenshot capture signal lists across all 20
+  `Auto/OTA/OTA_*.can` test files.
+  - Each `CaptureGraphics("OTA", ...)` now captures common context signals:
+    `SMK_TrmnlCtrlGrpStaBDC`, `BLTN_CAM_SWVerMinor3`, `BLTN_CAM_State`, and
+    `BLTN_CAM_HU_UI_Mode`.
+  - OWD-related files also capture `BLTN_CAM_RecSet_OWD` and
+    `BLTN_CAM_RecSta_OWD`.
+  - OWP-related files also capture `BLTN_CAM_RecSet_OWP`,
+    `BLTN_CAM_RecSta_OWP`, and `NM_State_BLTN_CAM_FD`.
+  - PMD-related files also capture `BLTN_CAM_Set_PMD`,
+    `BLTN_CAM_RecSta_PMD`, and where network sleep is part of the flow,
+    `NM_State_BLTN_CAM_FD`.
+  - `OTA_004.can` captures its OWP, PEV, PEV recorded, AppNoti, and NM
+    evidence signals.
+  - `OTA_009.can` and `OTA_010.can` also capture
+    `ICU_PowerAutoCutModSta` as power-cut context for their B+ flows.
+  - Static verification only:
+    - Listed every OTA `.can` capture list and confirmed no old
+      three-signal `CaptureGraphics` list remains.
+    - Ran `git diff --check -- Auto\OTA\*.can STATUS.md MEMORY.md`; no
+      whitespace errors, only the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+- Updated OTA CAPL COM markers across all 20 `Auto/OTA/OTA_*.can` test files.
+  - Added one test-start marker in each primary OTA flow using the requested
+    formula `Send_Value_To_COM(1xx00)`, where `xx` is the OTA file number:
+    `OTA_008` -> `10800`, `OTA_021` -> `12100`.
+  - `OTA_012.can` has no `testcase OTA_012()`, so its start/end markers were
+    added in `MainTest()`.
+  - Added `Send_Value_To_COM(44)` before every early `return;` in the primary
+    OTA flow and at the final end of the flow.
+  - Capture signal inventory for all OTA `.can` `CaptureGraphics(...)` calls:
+    `SMK_TrmnlCtrlGrpStaBDC`, `BLTN_CAM_RecSta_OWD`,
+    `BLTN_CAM_SWVerMinor3`.
+  - Static verification only:
+    - Confirmed each of the 20 OTA `.can` files has exactly one matching
+      `1xx00` start marker.
+    - Confirmed no `return;` in `Auto/OTA/*.can` is missing an immediately
+      preceding `Send_Value_To_COM(44);`.
+    - Confirmed brace counts are balanced in all 20 OTA `.can` files.
+    - Ran `git diff --check -- Auto\OTA\*.can`; no whitespace errors, only
+      the repo's usual LF-to-CRLF warnings.
+  - CANoe compile/run was not attempted from terminal.
+
+- Updated OTA Python final artifact flow across all 31 `Auto/OTA/*.py` scripts.
+  - Added/reused `terminate_current_hota_process()` in every OTA Python
+    runner.
+  - After final popup result handling and screenshot capture, each script now
+    closes H-OTA Studio before calling `rename_recent_asc_files(...)`.
+  - The close call is outside the popup/screenshot `try` block, so H-OTA is
+    still closed before ASC processing if popup text parsing or screenshot
+    capture raises an exception.
+  - The intended order is now:
+    `capture screenshot` -> `close H-OTA Studio` -> `wait 30s` ->
+    `scan/rename current-run LOGASC/*.asc`.
+  - Static verification only:
+    - Parsed all 31 `Auto/OTA/*.py` files with Python `ast.parse`; no syntax
+      errors.
+    - Confirmed each script has one post-popup close message and still uses
+      `wait_seconds=30` for ASC scanning.
+    - Confirmed close order check passes for all scripts: capture path before
+      close, and ASC rename call after close.
+    - Ran `git diff --check` on `Auto/OTA/*.py`, `STATUS.md`, and `MEMORY.md`;
+      no whitespace errors, only the repo's usual LF-to-CRLF warnings.
+  - CANoe/H-OTA execution was not attempted from terminal.
+
+- Updated OTA Python artifact naming and LOGASC rename behavior across 31
+  scripts in `Auto/OTA/*.py`.
+  - Screenshot filenames already used the running Python script stem through
+    `script_name`; this pattern is now documented in each script header.
+  - Replaced `rename_recent_baocao_file(...)` with
+    `rename_recent_asc_files(...)`.
+  - The LOGASC logic now waits 30 seconds after screenshot capture before
+    scanning.
+  - It scans all current-run `LOGASC/*.asc` files instead of only
+    `LOGASC/baocao.asc`.
+  - Current-run detection accepts `.asc` files whose create time or modified
+    time is after the run start, with the existing 5-second tolerance.
+  - Renamed `.asc` files now preserve the original base name and include the
+    running script stem:
+    `<original>_<script_name>_YYYYMMDD_HHMMSS.asc`.
+  - Static verification only:
+    - Parsed all 31 `Auto/OTA/*.py` files with Python `ast.parse`; no syntax
+      errors.
+    - Confirmed all 31 scripts contain `rename_recent_asc_files(...)` with
+      `wait_seconds=30`.
+    - Confirmed no `rename_recent_baocao_file`, `baocao`, or old
+      `wait_seconds=3` rename call remains in `Auto/OTA/*.py`.
+    - Confirmed screenshot filename templates still include
+      `script_name` and `screenshot_ts`.
+    - Ran `git diff --check` on `Auto/OTA/*.py`, `STATUS.md`, and `MEMORY.md`;
+      no whitespace errors, only the repo's usual LF-to-CRLF warnings.
+  - CANoe/H-OTA execution was not attempted from terminal.
+
+- Standardized OTA Python case filenames to three-digit numbering:
+  - Renamed:
+    - `Auto/OTA/case_9.py` -> `Auto/OTA/case_009.py`.
+    - `Auto/OTA/case_9_2.py` -> `Auto/OTA/case_009_2.py`.
+    - `Auto/OTA/case_10.py` -> `Auto/OTA/case_010.py`.
+    - `Auto/OTA/case_10_2.py` -> `Auto/OTA/case_010_2.py`.
+    - `Auto/OTA/case_11.py` -> `Auto/OTA/case_011.py`.
+    - `Auto/OTA/case_12.py` -> `Auto/OTA/case_012.py`.
+    - `Auto/OTA/case_15.py` -> `Auto/OTA/case_015.py`.
+    - `Auto/OTA/case_19.py` -> `Auto/OTA/case_019.py`.
+  - Updated call sites and visible log/comment strings in
+    `Auto/OTA/OTA_009.can`, `OTA_010.can`, `OTA_011.can`, `OTA_012.can`,
+    `OTA_015.can`, and `OTA_019.can`.
+  - Updated the top filename comments inside the renamed Python scripts.
+  - Static verification only:
+    - Listed all `Auto/OTA/case_*.py` files and confirmed the Python case names
+      now use three-digit numbering.
+    - Scanned `Auto/OTA/*.can` and `Auto/OTA/*.py`; no unpadded
+      `case_<1-2 digit>.py` references remain in source files.
+    - CANoe compile/run was not available from terminal.
+
+- Updated OTA_021-OTA_024 main ERT Python call split:
+  - Created exact copies:
+    - `Auto/OTA/case_021.py` from `Auto/OTA/update_to_00_ERT.py`.
+    - `Auto/OTA/case_022.py` from `Auto/OTA/update_to_01_ERT.py`.
+    - `Auto/OTA/case_023.py` from `Auto/OTA/update_to_02_ERT.py`.
+    - `Auto/OTA/case_024.py` from `Auto/OTA/update_to_03_ERT.py`.
+  - Updated `Auto/OTA/OTA_021.can` through `Auto/OTA/OTA_024.can` so their
+    main Step 3 Python syscall uses `case_021.py` through `case_024.py`.
+  - Static verification only:
+    - Compared SHA-256 hashes for each original ERT script and new case script;
+      all four pairs match.
+    - Confirmed the four `.can` files now reference only the new `case_02x.py`
+      scripts for the main ERT flow and no longer reference the old
+      `update_to_0x_ERT.py` names.
+    - CANoe compile/run was not available from terminal.
+
+- Updated OTA Python top-of-file flow comments:
+  - Replaced stale copied header comments in `Auto/OTA/*.py` with ASCII flow
+    summaries that match each script's current logic.
+  - Covered wireless, wired ERT, activation, rollback, OEUK Vehicle, and
+    AppState marker variants:
+    - `case_9.py`: CommunicationControl/Activate-Rule -> AppState 9, close
+      H-OTA, return.
+    - `case_10.py`: activate-rule -> AppState 10, close H-OTA, return.
+    - `case_11.py`: CommunicationControl/Activate-Rule -> AppState 11, keep
+      waiting for popup.
+    - `case_12.py` and `case_002`-`case_005`: AppState 12 marker handling.
+    - `case_15.py` and `case_19.py`: OEUK Vehicle selection.
+  - Static verification only:
+    - Scanned headers against actual code markers for OEUK, ERT SourceAddr,
+      Add Activation/Rollback, and AppState 9/10/11/12; no mismatches found.
+    - Compared tracked script bodies from `import subprocess` onward against
+      `HEAD`; only top comments changed.
+    - Ran `git diff --check -- Auto\OTA\*.py`; no whitespace errors, only the
+      repo's usual LF-to-CRLF warnings.
+
+- Updated OTA_020 main Python call split:
+  - Created `Auto/OTA/case_020.py` as an exact copy of
+    `Auto/OTA/update_to_00.py`.
+  - Updated `Auto/OTA/OTA_020.can` so the setup flow still uses
+    `update_to_01.py` when it needs to bring SW version to 1, while the main
+    version-1-to-0 testcase run now calls `case_020.py`.
+  - Static verification only:
+    - Compared SHA-256 hashes for `update_to_00.py` and `case_020.py`; they
+      match.
+    - Confirmed `OTA_020.can` uses `gCase020Cmd` and no longer references
+      `update_to_00.py`.
+    - CANoe compile/run was not available from terminal.
+
+- Updated OTA_016 main Python call split:
+  - Created `Auto/OTA/case_016.py` as an exact copy of
+    `Auto/OTA/Rollback_to_00.py`.
+  - Updated `Auto/OTA/OTA_016.can` so setup still uses
+    `update_to_00.py` and `update_to_01.py`, while the main rollback flow now
+    calls `case_016.py`.
+  - Static verification only:
+    - Compared SHA-256 hashes for `Rollback_to_00.py` and `case_016.py`; they
+      match.
+    - Confirmed `OTA_016.can` uses `gCase016Cmd` and no longer references
+      `Rollback_to_00.py`.
+    - CANoe compile/run was not available from terminal.
+
+- Updated OTA_006 main Python call split:
+  - Created `Auto/OTA/case_006.py` as an exact copy of
+    `Auto/OTA/update_to_02.py`.
+  - Updated `Auto/OTA/OTA_006.can` so the setup flow still uses
+    `update_to_00.py` when it needs to bring SW version back to 0, while the
+    main testcase run now calls `case_006.py`.
+  - Static verification only:
+    - Compared SHA-256 hashes for `update_to_02.py` and `case_006.py`; they
+      match.
+    - Confirmed `OTA_006.can` uses `gCase006Cmd` and no longer references
+      `update_to_02.py` in the main run.
+    - CANoe compile/run was not available from terminal.
+
+- Updated OTA_001 main Python call split:
+  - Created `Auto/OTA/case_001.py` as an exact copy of
+    `Auto/OTA/update_to_00.py`.
+  - Updated `Auto/OTA/OTA_001.can` so the setup flow still calls
+    `update_to_00.py` when it needs to bring SW version back to 0, while the
+    main testcase run now calls `case_001.py`.
+  - Static verification only:
+    - Compared SHA-256 hashes for `update_to_00.py` and `case_001.py`; they
+      match.
+    - Confirmed `Run_UpdateTo00_Python(...)` is still used for setup and
+      `Run_Case001_Python(...)` is used for the main run.
+    - CANoe compile/run was not available from terminal.
+
+- Created `Auto/OTA/OTA_010.can` from the `Auto/OTA/OTA_009.can` logic.
+  - Updated testcase/log/report names from `OTA_009` to `OTA_010`.
+  - Updated the intermediate trigger from `AppState=9` to `AppState=10`.
+  - Updated Python command calls from `case_9.py` / `case_9_2.py` to
+    `case_10.py` / `case_10_2.py`.
+  - Kept the final result logic unchanged: wait for AppState 3/4 and pass only
+    when AppState is 3 and `Check_SWVerMinor3(1)` passes.
+  - Static verification only:
+    - Confirmed no `OTA_009`, `case_9`, or `AppState=9` references remain in
+      `OTA_010.can`.
+    - CANoe compile/run was not available from terminal.
+
+- Created `Auto/OTA/case_10_2.py` as an exact copy of
+  `Auto/OTA/case_9_2.py`.
+- Static verification only:
+  - Compared SHA-256 hashes for both files; they match.
+  - No CANoe compile/run was attempted because this was a file copy request.
+
+2026-05-13:
+
+- Updated BAS 2.0 CAPL files to capture signal evidence and run sequentially:
+  - `Auto/BAS/BAS_016 - 2.0 generation.can`
+  - `Auto/BAS/BAS_017 - 2.0 generation.can`
+  - `Auto/BAS/BAS_018 - 2.0 generation.can`
+  - Removed `TestWaitForValueInput(...)` / `TestGetValueInput()` case
+    selection from all three `MainTest()` functions.
+  - `MainTest()` now runs all testcases in order:
+    - BAS_016: `BAS_016_1()` -> `BAS_016_2()` -> `BAS_016_3()`.
+    - BAS_017: `BAS_017_1()` -> `BAS_017_4()` -> `BAS_017_7()` ->
+      `BAS_017_8()` -> `BAS_017_11()` -> `BAS_017_14()`.
+    - BAS_018: `BAS_018_1()` through `BAS_018_8()`.
+  - Added `CaptureGraphics("BAS", "...")` evidence captures for related BAS
+    signals, including `BLTN_CAM_RecSta_OWP`, `ICU_PowerAutoCutModSta`,
+    `SMK_TrmnlCtrlGrpStaBDC`, recording setting signals, profile signal, and
+    `ICU_BS2SoC` where BAS_017 uses the battery timer.
+  - Updated `Auto/BAS/DeclarationFunction_Gen2.h` with the same
+    `CaptureGraphics(char window[], char signalList[])` helper shape as
+    `Auto/DeclarationFunction_Gen2.5.h`; BAS 2.0 files include this local
+    header and cannot safely include the Gen2.5 header directly because common
+    functions such as `KEY_ON`, `KEY_OFF`, and `Init` overlap.
+  - Updated BAS local `Init()` to reset `flag`, `flag_RecSet_error`, and
+    `OWP_memvar`, which is needed now that the files run multiple testcases in
+    one sequence.
+  - Static verification only:
+    - Confirmed no `TestWaitForValueInput`, `TestGetValueInput`, or Graphics 2
+      capture calls remain in the three BAS files.
+    - Confirmed all signal evidence captures use window name `BAS`.
+    - Ran `git diff --check` on the touched BAS files and header; no
+      whitespace errors, only the repo's usual LF-to-CRLF warning.
+  - CANoe compile/run was not available from terminal.
+
+2026-05-13:
+
+- Added detailed flow comments at the top of BAS 2.0 CAPL files:
+  - `Auto/BAS/BAS_016 - 2.0 generation.can`
+  - `Auto/BAS/BAS_017 - 2.0 generation.can`
+  - `Auto/BAS/BAS_018 - 2.0 generation.can`
+  - The comments describe each file's purpose, common setup, testcase mapping,
+    Factory/Dealer/Customer mode paths, expected setting/file behavior, and
+    `MainTest()` selection flow.
+  - No testcase logic was changed.
+  - Used ASCII Vietnamese-without-diacritics comments because these files
+    declare `/*@!Encoding:1252*/`.
+  - Static verification only:
+    - Inspected the new top-of-file comments.
+    - Ran `git diff --check` on the three BAS `.can` files; no whitespace
+      errors, only the repo's usual LF-to-CRLF warning.
+  - CANoe compile/run was not available from terminal.
+
+2026-05-13:
+
+- Updated `Auto/DeclarationFunction_Gen2.5.h`.
+  - Added shared helper `Set_Dealer_Mode()`.
+  - The helper sets `ICU_PowerAutoCutModSta` to Dealer Mode by calling
+    `Set_PowerAutoCut_Mode(0x1, 30000)`, matching the existing
+    `Set_Factory_Mode()` / `Set_Customer_Mode()` shortcut style.
+  - Static verification only:
+    - Confirmed `Set_Dealer_Mode()` and
+      `Set_PowerAutoCut_Mode(0x1, 30000)` are present in the header.
+    - Ran `git diff --check -- Auto/DeclarationFunction_Gen2.5.h`; no
+      whitespace errors, only the repo's usual LF-to-CRLF warning.
+  - CANoe compile/run was not available from terminal.
 
 2026-05-12:
 

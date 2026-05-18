@@ -15,9 +15,9 @@ variables
   byte check_DisplayMonth_value;
   byte check_DisplayDay_value;
   // Message Declaration for CAN FD
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
-  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
-  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
 }
 
 void Check_time(){
@@ -37,14 +37,14 @@ void KEY_OFF(){
 
 void Enter_BLTN_CAM(){
   // CAN FD
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode
-  output(_HU_BLTN_CAM_02_200ms);
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode
+  output(_HU_BLTN_CAM_PE_00_200ms);
 }
 
 void Exit_BLTN_CAM(){
   // CAN FD 
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-  output(_HU_BLTN_CAM_02_200ms); 
+  _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
+  output(_HU_BLTN_CAM_PE_00_200ms); 
 }
 
 void CaptureGraphics(){
@@ -74,20 +74,20 @@ void Set_Time(){
   @panel::Switch_Clock = 0;  
 
   // CAN FD
-  _HU_CLOCK_01_1000ms.HU_TimeFormat=0x2; 
-  _HU_CLOCK_01_1000ms.HU_Status= 0x1; 
-  _HU_CLOCK_01_1000ms.HU_TimeSetting= 0x1; 
-  _HU_CLOCK_01_1000ms.HU_DisplayHour= time_Hour_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplayMinute= time_Minute_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplaySecond= time_Second_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplayYear1= check_DisplayYear1_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplayYear2= check_DisplayYear2_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplayMonth= check_DisplayMonth_value; 
-  _HU_CLOCK_01_1000ms.HU_DisplayDay= check_DisplayDay_value;
-  _HU_CLOCK_01_1000ms.HU_ClockInfo = 0x1; //ACLOCK Refresh
-  _HU_CLOCK_01_1000ms.HU_ComRefresh = 0x2; //Internal Clock Exist
-  _HU_CLOCK_01_1000ms.HU_AM_PM_INFO = 0x0; //Not used   
-  output(_HU_CLOCK_01_1000ms);
+  _HU_CLOCK_PE_02.HU_TimeFormat=0x2; 
+  _HU_CLOCK_PE_02.HU_Status= 0x1; 
+  _HU_CLOCK_PE_02.HU_TimeSetting= 0x1; 
+  _HU_CLOCK_PE_02.HU_DisplayHour= time_Hour_value; 
+  _HU_CLOCK_PE_02.HU_DisplayMinute= time_Minute_value; 
+  _HU_CLOCK_PE_02.HU_DisplaySecond= time_Second_value; 
+  _HU_CLOCK_PE_02.HU_DisplayYear1= check_DisplayYear1_value; 
+  _HU_CLOCK_PE_02.HU_DisplayYear2= check_DisplayYear2_value; 
+  _HU_CLOCK_PE_02.HU_DisplayMonth= check_DisplayMonth_value; 
+  _HU_CLOCK_PE_02.HU_DisplayDay= check_DisplayDay_value;
+  _HU_CLOCK_PE_02.HU_ClockInfo = 0x1; //ACLOCK Refresh
+  _HU_CLOCK_PE_02.HU_ComRefresh = 0x2; //Internal Clock Exist
+  _HU_CLOCK_PE_02.HU_AM_PM_INFO = 0x0; //Not used   
+  output(_HU_CLOCK_PE_02);
 }
 
 void Turn_OFF_RecSet(){  // dọn sạch chế độ ghi hình để đảm bảo test độc lập, không bị nhiễu trạng thái cũ

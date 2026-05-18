@@ -1,0 +1,290 @@
+﻿/*@!Encoding:65001*/
+/*
+ * FILE OVERVIEW: OTA_004.can
+ *
+ * Muc tieu test:
+ * - Test luong OTA cho OWP + PEV voi case_004.py.
+ * - Dam bao setup version ve ban 0 neu can (update_to_00.py).
+ * - Trong luong chinh, neu AppState len 12 thi KEY_OFF ngay,
+ *   sau do goi WaitFor_RecSta_PEV_Recording() 5 lan.
+ * - Ket qua cuoi:
+ *   + AppState = 3
+ *   + SW version = 1
+ *   + BLTN_CAM_RecSta_OWP = 0x1
+ *   + BLTN_CAM_PEV_Recorded = 0x2
+ *   + WaitForNetworkSleep(360) = 1
+ *   => PASS
+ */
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
+  char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
+  char gCase004Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_004.py\"";
+
+  int gAppStatePrev = -1;
+
+  int gOTA004_EnableKeyOffOnAppState12 = 0;
+  int gOTA004_KeyOffDone = 0;
+  int gOTA004_AppState12Seen = 0;
+  int gOTA004_PEVWaitLoopDone = 0;
+  int gOTA004_PEVWaitSuccessCount = 0;
+}
+
+on sysvar_update PythonCom::AppState
+{
+  int i;
+  int waitResult;
+
+  write("[OTA_004][EVENT] AppState cu=%d, moi=%d", gAppStatePrev, @PythonCom::AppState);
+
+  if (@PythonCom::AppState == 12 && gAppStatePrev != 12)
+  {
+    if (gOTA004_EnableKeyOffOnAppState12 == 1)
+    {
+      gOTA004_AppState12Seen = 1;
+      write("[OTA_004][EVENT] Bat duoc AppState = 12");
+
+      if (gOTA004_KeyOffDone == 0)
+      {
+        write("[OTA_004][EVENT] AppState = 12 -> KEY_OFF ngay");
+        KEY_OFF();
+        gOTA004_KeyOffDone = 1;
+
+        gOTA004_PEVWaitSuccessCount = 0;
+        for (i = 1; i <= 5; i++)
+        {
+          write("[OTA_004][EVENT] WaitFor_RecSta_PEV_Recording lan %d/5", i);
+          waitResult = WaitFor_RecSta_PEV_Recording(60);
+          testWaitForTimeout(10000);
+          if (waitResult == 1)
+          {
+            gOTA004_PEVWaitSuccessCount++;
+          }
+          else
+          {
+            write("[OTA_004][EVENT] Lan %d/5 khong bat duoc RecSta_PEV", i);
+          }
+        }
+
+        gOTA004_PEVWaitLoopDone = 1;
+        write("[OTA_004][EVENT] Hoan tat wait PEV 5 lan, so lan OK=%d/5",
+              gOTA004_PEVWaitSuccessCount);
+      }
+    }
+    else
+    {
+      write("[OTA_004][EVENT][SETUP] AppState = 12 nhung dang setup ve ban 0 -> bo qua KEY_OFF");
+    }
+  }
+
+  OTA_Update_AppStateTrigger_FromValue(gAppStatePrev, @PythonCom::AppState);
+
+  if (@PythonCom::AppState == 3 && gAppStatePrev != 3)
+  {
+    write("[OTA_004][EVENT] Bat duoc AppState = 3");
+  }
+  else if (@PythonCom::AppState == 4 && gAppStatePrev != 4)
+  {
+    write("[OTA_004][EVENT] Bat duoc AppState = 4");
+  }
+
+  gAppStatePrev = @PythonCom::AppState;
+}
+
+int Run_Python_Update(char cmd[], char reason[])
+{
+  long result;
+
+  write("[OTA_004][PY] %s", reason);
+  write("[OTA_004][PY] WorkingDir = %s", gWorkingDir);
+  write("[OTA_004][PY] Command    = %s", cmd);
+  write("[OTA_004][PY] Reset AppState ve 0 truoc khi goi python");
+  @PythonCom::AppState = 0;
+
+  testStep("Python", "%s", reason);
+  testWaitForTimeout(10000);
+  result = TestWaitForSyscall(gWorkingDir, cmd, 0, 30000);
+  write("[OTA_004][PY] Syscall ret = %d", result);
+  // LUU Y: Khong dung ret de ket luan luong OTA. Ket qua OTA duoc xac nhan bang AppState (3/4).
+
+  if (result != 1)
+  {
+    write("[OTA_004][PY][WARN] ret=%d nhung van tiep tuc luong test", result);
+  }
+
+  testStepPass("Python", "Da goi python (%s), ret=%d", reason, result);
+  return 1;
+}
+testcase OTA_004()
+{
+  int swVerIsZero;
+  int setupAppStateResult;
+  int appStateResult;
+  int swVerIsOne;
+  int owpRecordingOk;
+  int pevRecordedOk;
+  long networkSleepOk;
+
+  write("===========================================================");
+  write("[OTA_004] Start test case OTA_004");
+  write("===========================================================");
+
+  testStep("Step 1", "KEY OFF -> KEY ON -> Set_SMK_IGN -> Click_USM_Reset -> Click_Rec_Reset -> Turn_ON_OWP -> Turn_ON_PEV -> Set_PEV_AppNoti ON");
+
+  write("[OTA_004] KEY_OFF");
+  KEY_OFF();
+  testWaitForTimeout(2000);
+
+  write("[OTA_004] KEY_ON");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[OTA_004] Set_SMK_IGN");
+  Set_SMK_IGN();
+
+  write("[OTA_004] Click_USM_Reset");
+  Click_USM_Reset();
+
+  write("[OTA_004] Click_Rec_Reset");
+  Click_Rec_Reset();
+
+  write("[OTA_004] Turn_ON_OWP");
+  Turn_ON_OWP();
+
+  write("[OTA_004] Turn_ON_PEV");
+  Turn_ON_PEV();
+
+  write("[OTA_004] Set_PEV_AppNoti ON (0x2)");
+  if (Set_PEV_AppNoti(0x2) != 1 || Check_PEV_AppNoti(0x2) != 1)
+  {
+    testStepFail("Setup", "Khong set duoc PEV_AppNoti = ON (0x2)");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    return;
+  }
+  testStepPass("Setup", "PEV_AppNoti da ON (0x2)");
+
+  testStep("Step 2", "Kiem tra SW version co phai ban 0 khong");
+  swVerIsZero = Check_SWVerMinor3(0);
+
+  if (swVerIsZero != 1)
+  {
+    write("[OTA_004] Version khong phai ban 0 -> chay update_to_00.py de dua ve ban 0");
+
+    OTA_Reset_AppStateWaitContext();
+    gAppStatePrev = gOTA_AppStateWaitStart;
+    gOTA004_EnableKeyOffOnAppState12 = 0;
+    write("[OTA_004][SETUP] AppState truoc khi chay update_to_00.py = %d", gOTA_AppStateWaitStart);
+
+    Run_Python_Update(gUpdateTo00Cmd, "Dua version ve ban 0 - update_to_00.py");
+
+    // BAT BUOC: Sau update_to_00.py phai doi AppState = 3 hoac 4 truoc khi check version va chuyen sang luong chinh.
+    setupAppStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+    if (setupAppStateResult == 3)
+    {
+      write("[OTA_004][SETUP] update_to_00.py bao AppState=3 (OK setup), tiep tuc");
+    }
+    else if (setupAppStateResult == 4)
+    {
+      testStepFail("Setup", "update_to_00.py tra ve AppState=4 (NG setup)");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      return;
+    }
+    else
+    {
+      testStepFail("Setup", "Timeout 30 phut khi doi AppState 3/4 o buoc update_to_00.py");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      return;
+    }
+
+    testWaitForTimeout(3000);
+    swVerIsZero = Check_SWVerMinor3(0);
+    if (swVerIsZero != 1)
+    {
+      testStepFail("Version", "Sau update_to_00.py van chua ve ban 0");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      return;
+    }
+
+    testStepPass("Version", "Da ve ban 0");
+  }
+  else
+  {
+    testStepPass("Version", "Da la ban 0 ngay tu dau");
+  }
+
+  testStep("Step 3", "Chay case_004.py va lang nghe AppState");
+  OTA_Reset_AppStateWaitContext();
+  gAppStatePrev = gOTA_AppStateWaitStart;
+  gOTA004_EnableKeyOffOnAppState12 = 1;
+  gOTA004_KeyOffDone = 0;
+  gOTA004_AppState12Seen = 0;
+  gOTA004_PEVWaitLoopDone = 0;
+  gOTA004_PEVWaitSuccessCount = 0;
+
+  write("[OTA_004] AppState truoc khi chay case_004.py = %d", gOTA_AppStateWaitStart);
+
+  Run_Python_Update(gCase004Cmd, "Chay case_004.py");
+
+  testStep("Step 4", "Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4");
+  appStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+
+  if (appStateResult == 3)
+  {
+    write("[OTA_004] AppState = 3");
+    if (gOTA004_AppState12Seen == 1)
+    {
+      write("[OTA_004] Da bat duoc AppState=12, KEY_OFF da chay=%d, PEV wait loop done=%d, so lan OK=%d/5",
+            gOTA004_KeyOffDone,
+            gOTA004_PEVWaitLoopDone,
+            gOTA004_PEVWaitSuccessCount);
+    }
+    else
+    {
+      write("[OTA_004] Khong bat duoc AppState=12 trong qua trinh cho");
+    }
+
+    swVerIsOne = Check_SWVerMinor3(1);
+    owpRecordingOk = Check_RecSta_OWP_Recording();
+    pevRecordedOk = WaitFor_PEV_Recorded_Value(0x2, 15000);
+    networkSleepOk = WaitForNetworkSleep(360);
+
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    
+
+    if (swVerIsOne == 1 && owpRecordingOk == 1 && pevRecordedOk == 1 && networkSleepOk == 1)
+    {
+      testStepPass("Result", "AppState=3, version=1, OWP Recording OK, PEV_Recorded=0x2, Network Sleep 6 phut OK -> PASS");
+    }
+    else
+    {
+      testStepFail("Result", "AppState=3 nhung version/OWP/PEV_Recorded/NetworkSleep khong dat");
+    }
+  }
+  else if (appStateResult == 4)
+  {
+    write("[OTA_004] AppState = 4 -> FAIL");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+   
+    testStepFail("Result", "AppState = 4 -> FAIL");
+  }
+  else
+  {
+    write("[OTA_004] Timeout 30 phut, khong thay AppState doi sang 3/4");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+   
+    testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
+  }
+
+  write("[OTA_004] Ket thuc testcase");
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OTA_004_report");
+  OTA_004();
+}

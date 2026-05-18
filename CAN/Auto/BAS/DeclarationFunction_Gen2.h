@@ -509,10 +509,9 @@ void Set_Battery(){
       
       testWaitForTimeout(10000);
   
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,10000) == 1){
-        write("DEV recording is started"); closePanel("Note");    
+        write("DEV recording is started");     
         
         @panel::Button_Timelaps_Stop = 1;
         testWaitForTimeout(500);
@@ -581,10 +580,9 @@ void Set_Battery(){
       write("OWP recording is started");
       testWaitForTimeout(10000);
       
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_PEV,10000) == 1){
-        write("PEV recording is started"); closePanel("Note");
+        write("PEV recording is started"); 
         
         @panel::Button_SwitchEvt = 0;
         testWaitForTimeout(500);
@@ -643,10 +641,9 @@ void Set_Battery(){
       
       testWaitForTimeout(10000);
   
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,10000) == 1){
-        write("DEV recording is started"); closePanel("Note");    
+        write("DEV recording is started");     
         
         @panel::Button_Timelaps_Stop = 1;
         testWaitForTimeout(500);
@@ -715,10 +712,9 @@ void Set_Battery(){
       write("OWP recording is started");
       testWaitForTimeout(10000);
       
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_PEV,10000) == 1){
-        write("PEV recording is started"); closePanel("Note");
+        write("PEV recording is started"); 
         
         @panel::Button_SwitchEvt = 0;
         testWaitForTimeout(500);
@@ -768,3 +764,4 @@ void Set_Battery(){
     send_ICU_BS2SoC_timer.cancel();
 
   }  
+

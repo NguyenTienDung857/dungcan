@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root dll_hash="9285BD49E055A2BB2D3048912EED3F89" so_hash="00000000000000000000000000000000">
+	<master name="git_gdsm">
+		<ecucode>0x44</ecucode>
+		<ecucode>0x8B</ecucode>
+		<ecucode>0x5D</ecucode>
+		<ecucode>0x70</ecucode>
+		<ecucode>0xCA</ecucode>
+		<ecucode>0x0D</ecucode>
+		<ecucode>0x00</ecucode>
+		<ecucode>0x38</ecucode>
+	</master>
+	<master name="git_hotaStudio">
+		<ecucode>0x0C</ecucode>
+		<ecucode>0xDB</ecucode>
+		<ecucode>0xF5</ecucode>
+		<ecucode>0xE6</ecucode>
+		<ecucode>0x6F</ecucode>
+		<ecucode>0xDA</ecucode>
+		<ecucode>0xF0</ecucode>
+		<ecucode>0x99</ecucode>
+	</master>
+	<master name="hae_vdms">
+		<ecucode>0x75</ecucode>
+		<ecucode>0xB1</ecucode>
+		<ecucode>0x0C</ecucode>
+		<ecucode>0x11</ecucode>
+		<ecucode>0xE0</ecucode>
+		<ecucode>0xB0</ecucode>
+		<ecucode>0xB3</ecucode>
+		<ecucode>0xA2</ecucode>
+	</master>
+	<master name="mobis_ccu">
+		<ecucode>0xB5</ecucode>
+		<ecucode>0xE0</ecucode>
+		<ecucode>0x0D</ecucode>
+		<ecucode>0x8B</ecucode>
+		<ecucode>0x05</ecucode>
+		<ecucode>0x67</ecucode>
+		<ecucode>0x5F</ecucode>
+		<ecucode>0x60</ecucode>
+	</master>
+	<master name="ccNC">
+		<ecucode>0xB9</ecucode>
+		<ecucode>0xE1</ecucode>
+		<ecucode>0x8E</ecucode>
+		<ecucode>0x4D</ecucode>
+		<ecucode>0x8B</ecucode>
+		<ecucode>0xE3</ecucode>
+		<ecucode>0xF0</ecucode>
+		<ecucode>0xD1</ecucode>
+	</master>
+	<master name="LGE_ccIC">
+		<ecucode>0x0F</ecucode>
+		<ecucode>0x8A</ecucode>
+		<ecucode>0x67</ecucode>
+		<ecucode>0x4F</ecucode>
+		<ecucode>0x5E</ecucode>
+		<ecucode>0x8A</ecucode>
+		<ecucode>0x97</ecucode>
+		<ecucode>0x9A</ecucode>
+	</master>
+	<master name="LGE_CCU2">
+		<ecucode>0x85</ecucode>
+		<ecucode>0x72</ecucode>
+		<ecucode>0xC4</ecucode>
+		<ecucode>0xE1</ecucode>
+		<ecucode>0xEC</ecucode>
+		<ecucode>0xED</ecucode>
+		<ecucode>0xC1</ecucode>
+		<ecucode>0x8C</ecucode>
+	</master>
+</root>

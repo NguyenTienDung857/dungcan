@@ -10,82 +10,82 @@ void KEY_ON(){
     
   void Enter_BLTN_CAM(){
     // CAN FD
-    _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode  
-    output(_HU_BLTN_CAM_02_200ms);
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode  
+    output(_HU_BLTN_CAM_PE_00_200ms);
   }
   
   void Exit_BLTN_CAM(){
     // CAN FD
-    _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-    output(_HU_BLTN_CAM_02_200ms);  
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
+    output(_HU_BLTN_CAM_PE_00_200ms);  
   }
   
   void BLTN_CAM_Settings(){
-    // CAN FD  
+    // CAN
     // Recording Settings
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Rec_OWD_NvalueSet = arr_random_setting[0];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Rec_OWP_NvalueSet = arr_random_setting[1];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Rec_DEV_NvalueSet = arr_random_setting[2];
-    output(_HU_BLTN_CAM_01_00ms);
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWD_NvalueSet = arr_random_setting[0];
+    output(_HU_BLTN_CAM_E_00);
     testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Rec_PEV_NvalueSet = arr_random_setting[3];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_EV_RecMaxTime_NvalueSet = arr_random_setting[4];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_OWP_NvalueSet = arr_random_setting[1];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_DEV_NvalueSet = arr_random_setting[2];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Rec_PEV_NvalueSet = arr_random_setting[3];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_EV_RecMaxTime_NvalueSet = arr_random_setting[4];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
     // Time Settings
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_PrkTime_NvalueSet = arr_random_setting[5];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);    
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_TML_Int_NvalueSet = arr_random_setting[6];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);    
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_EV_BfrTime_NvalueSet = arr_random_setting[7];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_EV_AftTime_NvalueSet = arr_random_setting[8];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
+    _HU_BLTN_CAM_E_00.BLTN_CAM_PrkTime_NvalueSet = arr_random_setting[5];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_TML_Int_NvalueSet = arr_random_setting[6];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_EV_BfrTime_NvalueSet = arr_random_setting[7];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_EV_AftTime_NvalueSet = arr_random_setting[8];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
     // Stamp Information Settings 
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_EVSen_Stm_NvalueSet = arr_random_setting[9];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_GearPos_Stm_NvalueSet = arr_random_setting[10];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Locatn_Stm_NvalueSet = arr_random_setting[11];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Spd_Stm_NvalueSet = arr_random_setting[12];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Time_Stm_NvalueSet = arr_random_setting[13];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_TrnSig_Stm_NvalueSet = arr_random_setting[14];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_AudRec_NvalueSet = arr_random_setting[15];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
+    _HU_BLTN_CAM_E_00.BLTN_CAM_EVSen_Stm_NvalueSet = arr_random_setting[9];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_GearPos_Stm_NvalueSet = arr_random_setting[10];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Locatn_Stm_NvalueSet = arr_random_setting[11];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Spd_Stm_NvalueSet = arr_random_setting[12];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Time_Stm_NvalueSet = arr_random_setting[13];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_TrnSig_Stm_NvalueSet = arr_random_setting[14];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_00.BLTN_CAM_AudRec_NvalueSet = arr_random_setting[15];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);   
     // ETC Settings
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_FR_VerPos_NvalueSet = arr_random_setting[16];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_RR_VerPos_NvalueSet = arr_random_setting[17];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Sen_DEV_NvalueSet = arr_random_setting[18];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
-    _HU_BLTN_CAM_01_00ms.BLTN_CAM_Sen_PEV_NvalueSet = arr_random_setting[19];
-    output(_HU_BLTN_CAM_01_00ms);
-    testWaitForTimeout(200);  
+    _HU_BLTN_CAM_E_01.BLTN_CAM_FR_VerPos_NvalueSet = arr_random_setting[16];
+    output(_HU_BLTN_CAM_E_01);
+    testWaitForTimeout(200);   
+    _HU_BLTN_CAM_E_01.BLTN_CAM_RR_VerPos_NvalueSet = arr_random_setting[17];
+    output(_HU_BLTN_CAM_E_01);
+    testWaitForTimeout(200);     
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Sen_DEV_NvalueSet = arr_random_setting[18];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);    
+    _HU_BLTN_CAM_E_00.BLTN_CAM_Sen_PEV_NvalueSet = arr_random_setting[19];
+    output(_HU_BLTN_CAM_E_00);
+    testWaitForTimeout(200);    
     //App Notification
     if ((arr_random_setting[20] == 0x2 && getSignal(BLTN_CAM_Set_PEV_AppNoti) == 0x1) || (arr_random_setting[20] == 0x1 && getSignal(BLTN_CAM_Set_PEV_AppNoti) == 0x2)){
       @panel::Button_AppNoti_PEV = 1;
@@ -512,10 +512,9 @@ void Set_Battery(){
       
       testWaitForTimeout(10000);
   
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,10000) == 1){
-        write("DEV recording is started"); closePanel("Note");    
+        write("DEV recording is started");     
         
         @panel::Button_Timelaps_Stop = 1;
         testWaitForTimeout(500);
@@ -572,10 +571,9 @@ void Set_Battery(){
       
       testWaitForTimeout(10000);
   
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,20000) == 1){
-        write("DEV recording is started"); closePanel("Note");    
+        write("DEV recording is started");     
         
         @panel::Button_Timelaps_Stop = 1;
         testWaitForTimeout(500);
@@ -634,10 +632,9 @@ void Set_Battery(){
       write("OWP recording is started");
       testWaitForTimeout(10000);
       
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_PEV,10000) == 1){
-        write("PEV recording is started"); closePanel("Note");
+        write("PEV recording is started"); 
         
         @panel::Button_SwitchEvt = 0;
         testWaitForTimeout(500);
@@ -688,10 +685,9 @@ void Set_Battery(){
       write("OWP recording is started");
       testWaitForTimeout(10000);
       
-      openPanel("Note");
       
       if (testWaitForSignalChange(BLTN_CAM_RecSta_PEV,20000) == 1) {
-        write("PEV recording is started"); closePanel("Note");
+        write("PEV recording is started"); 
         
         @panel::Button_SwitchEvt = 0;
         testWaitForTimeout(500);

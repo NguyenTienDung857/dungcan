@@ -1,0 +1,1066 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_007
+  Title: Camera detach/attach stress while OWD/TML/DEV recording
+
+  Verification items:
+    - Step 1: KEY OFF/ON setup, reset, OWD/TML/DEV, detach/attach front camera.
+    - Step 2: OWD/TML/DEV, detach/attach rear camera.
+    - Step 3: OWD/TML/DEV, detach/attach rear and front cameras.
+    - Step 4: OWD recording, detach rear and front cameras, wait 10s.
+    - Step 5: Attach rear/front, stress detach/attach front camera, wait 30s.
+    - Step 6: Check BLTN_CAM_State = 0x0 (Normal operation), capture.
+    - Step 8: OWD recording, detach rear camera, check BLTN_CAM_State = 0x2 within 60s.
+    - Step 9: Attach front/rear, stress detach/attach rear camera, wait 30s.
+    - Step 10: Check BLTN_CAM_State = 0x0 within 60s, capture.
+    - Step 12: OWD recording, detach/attach front camera, wait DEV recording.
+    - Step 13: Repeat Step 12 ten times.
+    - Step 14: KEY OFF -> OWP, detach front, KEY ON, attach front, OWD/DEV.
+    - Step 15: Repeat Step 14 ten times.
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode.
+    - Helper functions from DeclarationFunction_Gen2.5.h are used first.
+*/
+
+variables
+{
+  long wait_owd_timeout_ms = 60000;
+  long wait_owp_timeout_ms = 60000;
+  long wait_state_timeout_ms = 60000;
+  int wait_dev_timeout_s = 60;
+  int front_toggle_count = 11;
+  int rear_toggle_count = 10;
+  int repeat_count = 10;
+
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+  int step10_passed = 0;
+  int step12_passed = 0;
+  int step13_passed = 0;
+  int step14_passed = 0;
+  int step15_passed = 0;
+
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01  _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02   _HU_CLOCK_PE_02;
+}
+
+void Log_OWD_007_Signals()
+{
+  write("  BLTN_CAM_State      = 0x%X", $BLTN_CAM_State);
+  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
+  write("  BLTN_CAM_RecSta_OWP = 0x%X", $BLTN_CAM_RecSta_OWP);
+  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+}
+
+int Wait_For_BLTN_CAM_State_Value(byte expected_state, long timeout_ms, char state_name[])
+{
+  long elapsed = 0;
+
+  write("Waiting BLTN_CAM_State = 0x%X (%s) for max %d s...",
+        expected_state, state_name, timeout_ms / 1000);
+
+  while(elapsed < timeout_ms)
+  {
+    if($BLTN_CAM_State == expected_state)
+    {
+      write(">>> PASS: BLTN_CAM_State = 0x%X (%s) after %d s <<<",
+            expected_state, state_name, elapsed / 1000);
+      return 1;
+    }
+
+    if(elapsed == 0 || elapsed % 5000 == 0)
+    {
+      write("  [%d s] BLTN_CAM_State = 0x%X, expected 0x%X",
+            elapsed / 1000, $BLTN_CAM_State, expected_state);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  write(">>> FAIL: BLTN_CAM_State = 0x%X, expected 0x%X (%s) within %d s <<<",
+        $BLTN_CAM_State, expected_state, state_name, timeout_ms / 1000);
+  return 0;
+}
+
+// ============================================================================
+// Main Test Case
+// ============================================================================
+
+testcase OWD_007_Init()
+{
+  Send_Value_To_COM(10700);
+  write("========================================");
+  write("=== START TEST OWD_007 ===");
+  write("=== Camera detach/attach stress ===");
+  write("========================================");
+  testStep("Notification", "Start test OWD_007");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_1()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10701);
+  SetTestStep("Buoc 1 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: Setup + OWD/TML/DEV + front detach/attach       ===");
+  write("=================================================================");
+  testStep("Step1", "KEY OFF/ON + SMK IGN + reset + OWD/TML/DEV + front detach/attach");
+
+  write("[1.0] KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  write("[1.0b] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("[1.0c] Setting SMK IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  write("[1.0d] Clicking USM Reset...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.0e] Clicking Rec Reset...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd == 1)
+  {
+    write("[1.2] Clicking TML Start...");
+    Click_TML_Start();
+    testWaitForTimeout(1000);
+
+    write("[1.3] Clicking Evt Switch...");
+    Click_Evt_Switch();
+    testWaitForTimeout(1000);
+
+    write("[1.4] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...");
+    result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+    if(result_dev != 1)
+    {
+      write(">>> FAIL REASON: DEV recording not detected in Step 1 <<<");
+    }
+
+    write("[1.5] Waiting 30 seconds before front camera detach...");
+    testWaitForTimeout(30000);
+
+    write("[1.6] Detaching front camera...");
+    Set_Detach_Font();
+
+    write("[1.7] Waiting 20 seconds with front camera detached...");
+    testWaitForTimeout(20000);
+
+    write("[1.8] Attaching front camera...");
+    Set_Attach_Font();
+
+    write("[1.9] Waiting 30 seconds after front camera attach...");
+    testWaitForTimeout(30000);
+  }
+  else
+  {
+    write(">>> FAIL REASON: OWD recording not detected in Step 1 <<<");
+  }
+
+  Log_OWD_007_Signals();
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "Step 1 complete - OWD/TML/DEV and front detach/attach PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "Step 1 failed - OWD or DEV recording did not reach expected state");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_2()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10702);
+  SetTestStep("Buoc 2 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: OWD/TML/DEV + rear detach/attach                ===");
+  write("=================================================================");
+  testStep("Step2", "OWD/TML/DEV + rear detach/attach");
+
+  write("[2.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd == 1)
+  {
+    write("[2.2] Clicking TML Start...");
+    Click_TML_Start();
+    testWaitForTimeout(1000);
+
+    write("[2.3] Clicking Evt Switch...");
+    Click_Evt_Switch();
+    testWaitForTimeout(1000);
+
+    write("[2.4] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...");
+    result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+    if(result_dev != 1)
+    {
+      write(">>> FAIL REASON: DEV recording not detected in Step 2 <<<");
+    }
+
+    write("[2.5] Waiting 30 seconds before rear camera detach...");
+    testWaitForTimeout(30000);
+
+    write("[2.6] Detaching rear camera...");
+    Set_Detach_Rear();
+
+    write("[2.7] Waiting 20 seconds with rear camera detached...");
+    testWaitForTimeout(20000);
+
+    write("[2.8] Attaching rear camera...");
+    Set_Attach_Rear();
+
+    write("[2.9] Waiting 30 seconds after rear camera attach...");
+    testWaitForTimeout(30000);
+  }
+  else
+  {
+    write(">>> FAIL REASON: OWD recording not detected in Step 2 <<<");
+  }
+
+  Log_OWD_007_Signals();
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "Step 2 complete - rear detach/attach PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "Step 2 failed - OWD or DEV recording did not reach expected state");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_3()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10703);
+  SetTestStep("Buoc 3 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: OWD/TML/DEV + rear/front detach/attach          ===");
+  write("=================================================================");
+  testStep("Step3", "OWD/TML/DEV + rear/front detach/attach");
+
+  write("[3.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd == 1)
+  {
+    write("[3.2] Clicking TML Start...");
+    Click_TML_Start();
+    testWaitForTimeout(1000);
+
+    write("[3.3] Clicking Evt Switch...");
+    Click_Evt_Switch();
+    testWaitForTimeout(1000);
+
+    write("[3.4] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...");
+    result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+    if(result_dev != 1)
+    {
+      write(">>> FAIL REASON: DEV recording not detected in Step 3 <<<");
+    }
+
+    write("[3.5] Waiting 30 seconds before camera detach...");
+    testWaitForTimeout(30000);
+
+    write("[3.6] Detaching rear camera...");
+    Set_Detach_Rear();
+
+    write("[3.7] Detaching front camera...");
+    Set_Detach_Font();
+
+    write("[3.8] Waiting 20 seconds with rear and front cameras detached...");
+    testWaitForTimeout(20000);
+
+    write("[3.9] Attaching rear camera...");
+    Set_Attach_Rear();
+
+    write("[3.10] Attaching front camera...");
+    Set_Attach_Font();
+
+    write("[3.11] Waiting 30 seconds after camera attach...");
+    testWaitForTimeout(30000);
+  }
+  else
+  {
+    write(">>> FAIL REASON: OWD recording not detected in Step 3 <<<");
+  }
+
+  Log_OWD_007_Signals();
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "Step 3 complete - rear/front detach/attach PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "Step 3 failed - OWD or DEV recording did not reach expected state");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_4()
+{
+  int result = 0;
+
+  Send_Value_To_COM(10704);
+  SetTestStep("Buoc 4 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: OWD + detach rear/front + wait 10s              ===");
+  write("=================================================================");
+  testStep("Step4", "Wait OWD recording, detach rear/front, wait 10s");
+
+  write("[4.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+
+  if(result == 1)
+  {
+    write("[4.2] Detaching rear camera...");
+    Set_Detach_Rear();
+    write("[4.3] Detaching front camera...");
+    Set_Detach_Font();
+    write("[4.4] Waiting 10 seconds...");
+    testWaitForTimeout(10000);
+    Log_OWD_007_Signals();
+
+    step4_passed = 1;
+    testStepPass("Step4", "Step 4 complete - OWD and rear/front detach PASS");
+  }
+  else
+  {
+    step4_passed = 0;
+    write(">>> FAIL REASON: OWD recording not detected in Step 4 <<<");
+    Log_OWD_007_Signals();
+    Log_Error_Details();
+    testStepFail("Step4", "Step 4 failed - OWD recording not detected");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_5()
+{
+  int i = 0;
+
+  Send_Value_To_COM(10705);
+  SetTestStep("Buoc 5 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: Attach rear/front + stress front toggle          ===");
+  write("=================================================================");
+  testStep("Step5", "Attach rear/front, detach/attach front camera repeatedly, wait 30s");
+
+  write("[5.1] Attaching rear camera...");
+  Set_Attach_Rear();
+  write("[5.2] Attaching front camera...");
+  Set_Attach_Font();
+
+  for(i = 1; i <= front_toggle_count; i++)
+  {
+    write("[5.3] Front camera toggle loop %d of %d: detach...", i, front_toggle_count);
+    Set_Detach_Font();
+    write("[5.4] Front camera toggle loop %d of %d: attach...", i, front_toggle_count);
+    Set_Attach_Font();
+  }
+
+  write("[5.5] Waiting 30 seconds after front camera stress...");
+  testWaitForTimeout(30000);
+  Log_OWD_007_Signals();
+
+  step5_passed = 1;
+  testStepPass("Step5", "Step 5 complete - front camera toggle stress PASS");
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_6()
+{
+  int result = 0;
+
+  Send_Value_To_COM(10706);
+  SetTestStep("Buoc 6 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: Check BLTN_CAM_State = 0x0 and capture          ===");
+  write("=================================================================");
+  testStep("Step6", "Check BLTN_CAM_State = 0x0 (Normal operation), capture");
+
+  result = Wait_For_BLTN_CAM_State_Value(0x0, 30000, "Normal operation");
+
+  write("[6.1] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "BLTN_CAM_State = 0x0 (Normal operation) - PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "BLTN_CAM_State did not become 0x0 - FAIL");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_7()
+{
+  Send_Value_To_COM(10707);
+  SetTestStep("Buoc 7 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 7: Not defined in current user flow                 ===");
+  write("=================================================================");
+  testStep("Step7", "Step 7 is reserved; current OWD_007 flow jumps from Step 6 to Step 8");
+  testStepPass("Step7", "Reserved step - no action");
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_8()
+{
+  int result_owd = 0;
+  int result_state = 0;
+
+  Send_Value_To_COM(10708);
+  SetTestStep("Buoc 8 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 8: Detach rear + check BLTN_CAM_State = 0x2        ===");
+  write("=================================================================");
+  testStep("Step8", "Wait OWD, detach rear, check BLTN_CAM_State = 0x2 within 60s");
+
+  write("[8.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd == 1)
+  {
+    write("[8.2] Detaching rear camera...");
+    Set_Detach_Rear();
+
+    write("[8.3] Checking BLTN_CAM_State = 0x2 within 60 seconds...");
+    result_state = Wait_For_BLTN_CAM_State_Value(0x2, wait_state_timeout_ms,
+                                                 "Rear camera recording disabled");
+  }
+  else
+  {
+    write(">>> FAIL REASON: OWD recording not detected before rear detach <<<");
+  }
+
+  Log_OWD_007_Signals();
+  if(result_owd == 1 && result_state == 1)
+  {
+    step8_passed = 1;
+    testStepPass("Step8", "BLTN_CAM_State = 0x2 after rear detach - PASS");
+  }
+  else
+  {
+    step8_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step8", "Step 8 failed - BLTN_CAM_State did not become 0x2");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_9()
+{
+  int i = 0;
+
+  Send_Value_To_COM(10709);
+  SetTestStep("Buoc 9 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 9: Attach front/rear + stress rear toggle           ===");
+  write("=================================================================");
+  testStep("Step9", "Attach front/rear, detach/attach rear camera repeatedly, wait 30s");
+
+  write("[9.1] Attaching front camera...");
+  Set_Attach_Font();
+  write("[9.2] Attaching rear camera...");
+  Set_Attach_Rear();
+
+  for(i = 1; i <= rear_toggle_count; i++)
+  {
+    write("[9.3] Rear camera toggle loop %d of %d: detach...", i, rear_toggle_count);
+    Set_Detach_Rear();
+    write("[9.4] Rear camera toggle loop %d of %d: attach...", i, rear_toggle_count);
+    Set_Attach_Rear();
+  }
+
+  write("[9.5] Waiting 30 seconds after rear camera stress...");
+  testWaitForTimeout(30000);
+  Log_OWD_007_Signals();
+
+  step9_passed = 1;
+  testStepPass("Step9", "Step 9 complete - rear camera toggle stress PASS");
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_10()
+{
+  int result = 0;
+
+  Send_Value_To_COM(10710);
+  SetTestStep("Buoc 10 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 10: Check BLTN_CAM_State = 0x0 and capture         ===");
+  write("=================================================================");
+  testStep("Step10", "Check BLTN_CAM_State = 0x0 within 60s, capture");
+
+  result = Wait_For_BLTN_CAM_State_Value(0x0, wait_state_timeout_ms,
+                                         "Normal operation");
+
+  write("[10.1] Capturing screenshot...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_DEV;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step10_passed = 1;
+    testStepPass("Step10", "BLTN_CAM_State = 0x0 (Normal operation) - PASS");
+  }
+  else
+  {
+    step10_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step10", "BLTN_CAM_State did not become 0x0 within 60s - FAIL");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_11()
+{
+  Send_Value_To_COM(10711);
+  SetTestStep("Buoc 11 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 11: Not defined in current user flow                ===");
+  write("=================================================================");
+  testStep("Step11", "Step 11 is reserved; current OWD_007 flow jumps from Step 10 to Step 12");
+  testStepPass("Step11", "Reserved step - no action");
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_12()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10712);
+  SetTestStep("Buoc 12 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 12: OWD + front detach/attach + DEV wait           ===");
+  write("=================================================================");
+  testStep("Step12", "Wait OWD, wait 30s, detach front 20s, attach front, wait DEV, wait 10s");
+
+  write("[12.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd == 1)
+  {
+    write("[12.2] Waiting 30 seconds while OWD is recording...");
+    testWaitForTimeout(30000);
+
+    write("[12.3] Detaching front camera...");
+    Set_Detach_Font();
+
+    write("[12.4] Waiting 20 seconds with front camera detached...");
+    testWaitForTimeout(20000);
+
+    write("[12.5] Attaching front camera...");
+    Set_Attach_Font();
+
+    write("[12.6] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...");
+    result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+    if(result_dev != 1)
+    {
+      write(">>> FAIL REASON: DEV recording not detected in Step 12 <<<");
+    }
+
+    write("[12.7] Waiting 10 seconds after DEV wait...");
+    testWaitForTimeout(10000);
+  }
+  else
+  {
+    write(">>> FAIL REASON: OWD recording not detected in Step 12 <<<");
+  }
+
+  Log_OWD_007_Signals();
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step12_passed = 1;
+    testStepPass("Step12", "Step 12 complete - OWD and DEV detected PASS");
+  }
+  else
+  {
+    step12_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step12", "Step 12 failed - OWD or DEV recording did not reach expected state");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_13()
+{
+  int i = 0;
+  int passed_loops = 0;
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10713);
+  SetTestStep("Buoc 13 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 13: Repeat STEP 12 ten times                       ===");
+  write("=================================================================");
+  testStep("Step13", "Repeat Step 12 flow ten times");
+
+  for(i = 1; i <= repeat_count; i++)
+  {
+    result_owd = 0;
+    result_dev = 0;
+
+    write("");
+    write("--- Step 13 loop %d of %d: repeat Step 12 flow ---", i, repeat_count);
+
+    write("[13.%d.1] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...", i);
+    result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+    if(result_owd == 1)
+    {
+      write("[13.%d.2] Waiting 30 seconds while OWD is recording...", i);
+      testWaitForTimeout(30000);
+
+      write("[13.%d.3] Detaching front camera...", i);
+      Set_Detach_Font();
+
+      write("[13.%d.4] Waiting 20 seconds with front camera detached...", i);
+      testWaitForTimeout(20000);
+
+      write("[13.%d.5] Attaching front camera...", i);
+      Set_Attach_Font();
+
+      write("[13.%d.6] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...", i);
+      result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+      if(result_dev != 1)
+      {
+        write(">>> FAIL REASON: DEV recording not detected in Step 13 loop %d <<<", i);
+      }
+
+      write("[13.%d.7] Waiting 10 seconds after DEV wait...", i);
+      testWaitForTimeout(10000);
+    }
+    else
+    {
+      write(">>> FAIL REASON: OWD recording not detected in Step 13 loop %d <<<", i);
+    }
+
+    Log_OWD_007_Signals();
+    if(result_owd == 1 && result_dev == 1)
+    {
+      passed_loops++;
+    }
+    else
+    {
+      write(">>> Step 13 loop %d failed; continuing remaining loops <<<", i);
+    }
+  }
+
+  write("Step 13 loop result: %d/%d loops passed", passed_loops, repeat_count);
+  if(passed_loops == repeat_count)
+  {
+    step13_passed = 1;
+    testStepPass("Step13", "All ten Step 12 repeat loops passed");
+  }
+  else
+  {
+    step13_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step13", "One or more Step 12 repeat loops failed");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_State;AIN");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_14()
+{
+  int result_owp = 0;
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10714);
+  SetTestStep("Buoc 14 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 14: KEY OFF/OWP + front detach + KEY ON/OWD/DEV    ===");
+  write("=================================================================");
+  testStep("Step14", "KEY OFF, wait OWP, detach front, KEY ON, attach front, wait OWD, Evt, DEV, wait 60s");
+
+  write("[14.1] KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(3000);
+
+  write("[14.2] Waiting for BLTN_CAM_RecSta_OWP = 0x1 (Recording)...");
+  result_owp = WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms);
+  if(result_owp != 1)
+  {
+    write(">>> FAIL REASON: OWP recording not detected after KEY OFF in Step 14 <<<");
+  }
+
+  write("[14.3] Detaching front camera...");
+  Set_Detach_Font();
+
+  write("[14.4] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  write("[14.5] Attaching front camera...");
+  Set_Attach_Font();
+
+  write("[14.6] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  if(result_owd != 1)
+  {
+    write(">>> FAIL REASON: OWD recording not detected after KEY ON in Step 14 <<<");
+  }
+
+  write("[14.7] Clicking Evt Switch...");
+  Click_Evt_Switch();
+  testWaitForTimeout(1000);
+
+  write("[14.8] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...");
+  result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+  if(result_dev != 1)
+  {
+    write(">>> FAIL REASON: DEV recording not detected in Step 14 <<<");
+  }
+
+  write("[14.9] Waiting 60 seconds after DEV wait...");
+  testWaitForTimeout(60000);
+
+  Log_OWD_007_Signals();
+
+  if(result_owp == 1 && result_owd == 1 && result_dev == 1)
+  {
+    step14_passed = 1;
+    testStepPass("Step14", "Step 14 complete - OWP/OWD/DEV detected PASS");
+  }
+  else
+  {
+    step14_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step14", "Step 14 failed - OWP, OWD, or DEV recording did not reach expected state");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_State");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_007_15()
+{
+  int i = 0;
+  int passed_loops = 0;
+  int result_owp = 0;
+  int result_owd = 0;
+  int result_dev = 0;
+
+  Send_Value_To_COM(10715);
+  SetTestStep("Buoc 15 - OWD_007");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 15: Repeat STEP 14 ten times                       ===");
+  write("=================================================================");
+  testStep("Step15", "Repeat Step 14 flow ten times");
+
+  for(i = 1; i <= repeat_count; i++)
+  {
+    result_owp = 0;
+    result_owd = 0;
+    result_dev = 0;
+
+    write("");
+    write("--- Step 15 loop %d of %d: repeat Step 14 flow ---", i, repeat_count);
+
+    write("[15.%d.1] KEY OFF...", i);
+    KEY_OFF();
+    testWaitForTimeout(3000);
+
+    write("[15.%d.2] Waiting for BLTN_CAM_RecSta_OWP = 0x1 (Recording)...", i);
+    result_owp = WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms);
+    if(result_owp != 1)
+    {
+      write(">>> FAIL REASON: OWP recording not detected after KEY OFF in Step 15 loop %d <<<", i);
+    }
+
+    write("[15.%d.3] Detaching front camera...", i);
+    Set_Detach_Font();
+
+    write("[15.%d.4] KEY ON...", i);
+    KEY_ON();
+    testWaitForTimeout(3000);
+
+    write("[15.%d.5] Attaching front camera...", i);
+    Set_Attach_Font();
+
+    write("[15.%d.6] Waiting for BLTN_CAM_RecSta_OWD = 0x1 (Recording)...", i);
+    result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+    if(result_owd != 1)
+    {
+      write(">>> FAIL REASON: OWD recording not detected after KEY ON in Step 15 loop %d <<<", i);
+    }
+
+    write("[15.%d.7] Clicking Evt Switch...", i);
+    Click_Evt_Switch();
+    testWaitForTimeout(1000);
+
+    write("[15.%d.8] Waiting for BLTN_CAM_RecSta_DEV = 0x1 (Recording)...", i);
+    result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+    if(result_dev != 1)
+    {
+      write(">>> FAIL REASON: DEV recording not detected in Step 15 loop %d <<<", i);
+    }
+
+    write("[15.%d.9] Waiting 60 seconds after DEV wait...", i);
+    testWaitForTimeout(60000);
+
+    Log_OWD_007_Signals();
+    if(result_owp == 1 && result_owd == 1 && result_dev == 1)
+    {
+      passed_loops++;
+    }
+    else
+    {
+      write(">>> Step 15 loop %d failed; continuing remaining loops <<<", i);
+    }
+  }
+
+  write("Step 15 loop result: %d/%d loops passed", passed_loops, repeat_count);
+  if(passed_loops == repeat_count)
+  {
+    step15_passed = 1;
+    testStepPass("Step15", "All ten Step 14 repeat loops passed");
+  }
+  else
+  {
+    step15_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step15", "One or more Step 14 repeat loops failed");
+  }
+
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_State;AIN");
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_007 - 2.5 generation_report");
+
+  OWD_007_Init();
+  OWD_007_1();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+  OWD_007_2();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+  OWD_007_3();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_4();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_5();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_6();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_8();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_9();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_10();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  OWD_007_12();
+  KEY_OFF();
+
+  // OWD_007_13();
+
+  OWD_007_14();
+  Enter_BLTN_CAM();
+  Exit_BLTN_CAM();
+
+  // OWD_007_15();
+}

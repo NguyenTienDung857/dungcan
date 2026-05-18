@@ -1,0 +1,543 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_RecSta_PMD, BLTN_CAM_RanSet_PMDR,
+//                             BLTN_CAM_Ran_PMDR_NvalueSet, SMK_TrmnlCtrlGrpStaBDC
+
+/*
+  Test Case: OWP_021 - 2.5 (OWP_021)
+  Title: [PMD Range Set & Recording Check (Level 1 / 2 / 3)]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+           Set_PMD_RanSet(1), Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x1,
+           Check BLTN_CAM_RanSet_PMDR = 0x1
+  Step 2:  KEY ON, KEY OFF, motion trigger log,
+           WaitFor_RecSta_PMD_Recording, timestamp,
+           WaitFor_RecSta_PMD_OFF, check duration < 15s,
+           wait 15s, screenshot
+  Step 3:  KEY ON, Set_PMD_RanSet(2),
+           Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x2, screenshot
+  Step 4:  KEY ON, KEY OFF, motion trigger log,
+           WaitFor_RecSta_PMD_Recording, timestamp,
+           WaitFor_RecSta_PMD_OFF, check duration < 15s,
+           wait 15s, screenshot
+  Step 5:  KEY ON, Set_PMD_RanSet(3),
+           Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x3, screenshot
+  Step 6:  KEY ON, KEY OFF, motion trigger log,
+           WaitFor_RecSta_PMD_Recording, timestamp,
+           WaitFor_RecSta_PMD_OFF, check duration < 15s,
+           wait 15s, screenshot
+
+  NOTE: Uses 2-5s delay for signal propagation after each state transition.
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01  _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02   _HU_CLOCK_PE_02;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_021_Init()
+{
+  Send_Value_To_COM(22100);
+  write("========================================");
+  write("=== START TEST OWP_021 - 2.5 ===");
+  write("========================================");
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+//         Set_PMD_RanSet(1), Check signals
+// ============================================================================
+testcase OWP_021_1()
+{
+  Send_Value_To_COM(22101);
+  SetTestStep("Bước 1 - OWP_021");
+  StartTestTimer();
+  write("");
+  write("=== STEP 1: Setup + Set PMD Range to Level 1 ===");
+  testStep("Step1", "Setup + Set PMD Range = Level 1, check signals");
+
+  // 1.1: Set_SMK_IGN
+  write("Step 1.1: Set_SMK_IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  // 1.2: USM Reset
+  write("Step 1.2: Click_USM_Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Rec Reset
+  write("Step 1.3: Click_Rec_Reset...");
+  Click_Rec_Reset();
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+  // 1.4: Set PMD Range = Level 1
+  write("Step 1.4: Set_PMD_RanSet(1)...");
+  if (Set_PMD_RanSet(1) == 1)
+    write(">>> [OK] Set_PMD_RanSet(1) success <<<");
+  else
+    write(">>> [NG] Set_PMD_RanSet(1) failed <<<");
+
+  // 1.5: Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x1
+  write("Step 1.5: Check BLTN_CAM_Ran_PMDR_NvalueSet...");
+  write("  BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X", Gen20_PMDR_NvalueSet_Value());
+  if (Gen20_PMDR_NvalueSet_Value() == 0x1)
+    write(">>> [PASS] BLTN_CAM_Ran_PMDR_NvalueSet = 0x1 (Level 1) <<<");
+  else
+    write(">>> [FAIL] BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X, expected 0x1 <<<", Gen20_PMDR_NvalueSet_Value());
+
+  // 1.6: Check BLTN_CAM_RanSet_PMDR = 0x1
+  write("Step 1.6: Check BLTN_CAM_RanSet_PMDR...");
+  Check_PMD_RanSet(1);
+
+  CaptureGraphics("OWP", "BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (Gen20_PMDR_RanSet_Value() == 0x1 && Gen20_PMDR_NvalueSet_Value() == 0x1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "PMD Range Level 1: PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "PMD Range Level 1: FAIL");
+  }
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2: KEY ON/OFF, motion trigger, PMD Recording duration < 15s, screenshot
+// ============================================================================
+testcase OWP_021_2()
+{
+  long t_start;
+  long t_end;
+  long duration_ms;
+  Send_Value_To_COM(22102);
+  SetTestStep("Bước 2 - OWP_021");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 2: PMD Recording at Range 1 (motion, check duration < 15s) ===");
+  testStep("Step2", "PMD Recording Range 1 - duration < 15s");
+
+  // 2.1: KEY ON
+  write("Step 2.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 2.2: KEY OFF
+  write("Step 2.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 2.3: Log motion trigger
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] DI CHUYEN / MOTION TRUOC CAMERA!    ***");
+  write("*** Hay tao chuyen dong truoc camera PMD ngay bay gio.     ***");
+  write("*************************************************************");
+  write("");
+
+  // 2.4: Wait for PMD Recording
+  write("Step 2.4: Waiting for PMD Recording (max 120s)...");
+  if (WaitFor_RecSta_PMD_Recording(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording NOT detected! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "PMD Recording not detected at Range 1");
+    write("=== FINISH STEP 2 ===");
+    return;
+  }
+
+  // 2.5: Record start timestamp
+  t_start = timeNow() / 100;
+  write("  PMD Recording started. Timestamp: %d ms", t_start);
+
+  // 2.6: Wait for PMD OFF
+  write("Step 2.6: Waiting for PMD Recording OFF (max 120s)...");
+  if (WaitFor_RecSta_PMD_OFF(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording did not stop! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "PMD Recording did not stop at Range 1");
+    write("=== FINISH STEP 2 ===");
+    return;
+  }
+
+  // 2.7: Calculate duration
+  t_end = timeNow() / 100;
+  duration_ms = t_end - t_start;
+  write("  PMD Recording duration: %d ms (%d s)", duration_ms, duration_ms / 1000);
+
+  if (duration_ms < 15000)
+    write(">>> [PASS] PMD Recording duration = %d s (< 15s) <<<", duration_ms / 1000);
+  else
+    write(">>> [FAIL] PMD Recording duration = %d s (>= 15s) <<<", duration_ms / 1000);
+
+  // 2.8: Wait 15s then screenshot
+  write("Step 2.8: Waiting 15s before screenshot...");
+  testWaitForTimeout(15000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (duration_ms < 15000)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "PMD Recording Range 1: duration OK");
+  }
+  else
+  {
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "PMD Recording Range 1: duration >= 15s");
+  }
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3: KEY ON, Set_PMD_RanSet(2), check signals, screenshot
+// ============================================================================
+testcase OWP_021_3()
+{
+  Send_Value_To_COM(22103);
+  SetTestStep("Bước 3 - OWP_021");
+  StartTestTimer();
+  write("");
+  write("=== STEP 3: Set PMD Range to Level 2 ===");
+  testStep("Step3", "Set PMD Range = Level 2, check signals");
+
+  // 3.1: KEY ON
+  write("Step 3.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 3.2: Set PMD Range = Level 2
+  write("Step 3.2: Set_PMD_RanSet(2)...");
+  if (Set_PMD_RanSet(2) == 1)
+    write(">>> [OK] Set_PMD_RanSet(2) success <<<");
+  else
+    write(">>> [NG] Set_PMD_RanSet(2) failed <<<");
+
+  // 3.3: Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x2
+  write("Step 3.3: Check BLTN_CAM_Ran_PMDR_NvalueSet...");
+  write("  BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X", Gen20_PMDR_NvalueSet_Value());
+  if (Gen20_PMDR_NvalueSet_Value() == 0x2)
+    write(">>> [PASS] BLTN_CAM_Ran_PMDR_NvalueSet = 0x2 (Level 2) <<<");
+  else
+    write(">>> [FAIL] BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X, expected 0x2 <<<", Gen20_PMDR_NvalueSet_Value());
+
+  // 3.4: Check BLTN_CAM_RanSet_PMDR
+  write("Step 3.4: Check BLTN_CAM_RanSet_PMDR...");
+  Check_PMD_RanSet(2);
+
+  CaptureGraphics("OWP", "BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (Gen20_PMDR_RanSet_Value() == 0x2 && Gen20_PMDR_NvalueSet_Value() == 0x2)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "PMD Range Level 2: PASS");
+  }
+  else
+  {
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "PMD Range Level 2: FAIL");
+  }
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 4: KEY ON/OFF, motion trigger, PMD Recording duration < 15s, screenshot
+// ============================================================================
+testcase OWP_021_4()
+{
+  long t_start;
+  long t_end;
+  long duration_ms;
+  Send_Value_To_COM(22104);
+  SetTestStep("Bước 4 - OWP_021");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 4: PMD Recording at Range 2 (motion, check duration < 15s) ===");
+  testStep("Step4", "PMD Recording Range 2 - duration < 15s");
+
+  // 4.1: KEY ON
+  write("Step 4.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 4.2: KEY OFF
+  write("Step 4.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 4.3: Log motion trigger
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] DI CHUYEN / MOTION TRUOC CAMERA!    ***");
+  write("*** Hay tao chuyen dong truoc camera PMD ngay bay gio.     ***");
+  write("*************************************************************");
+  write("");
+
+  // 4.4: Wait for PMD Recording
+  write("Step 4.4: Waiting for PMD Recording (max 120s)...");
+  if (WaitFor_RecSta_PMD_Recording(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording NOT detected! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "PMD Recording not detected at Range 2");
+    write("=== FINISH STEP 4 ===");
+    return;
+  }
+
+  // 4.5: Record start timestamp
+  t_start = timeNow() / 100;
+  write("  PMD Recording started. Timestamp: %d ms", t_start);
+
+  // 4.6: Wait for PMD OFF
+  write("Step 4.6: Waiting for PMD Recording OFF (max 120s)...");
+  if (WaitFor_RecSta_PMD_OFF(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording did not stop! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "PMD Recording did not stop at Range 2");
+    write("=== FINISH STEP 4 ===");
+    return;
+  }
+
+  // 4.7: Calculate duration
+  t_end = timeNow() / 100;
+  duration_ms = t_end - t_start;
+  write("  PMD Recording duration: %d ms (%d s)", duration_ms, duration_ms / 1000);
+
+  if (duration_ms < 15000)
+    write(">>> [PASS] PMD Recording duration = %d s (< 15s) <<<", duration_ms / 1000);
+  else
+    write(">>> [FAIL] PMD Recording duration = %d s (>= 15s) <<<", duration_ms / 1000);
+
+  // 4.8: Wait 15s then screenshot
+  write("Step 4.8: Waiting 15s before screenshot...");
+  testWaitForTimeout(15000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (duration_ms < 15000)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "PMD Recording Range 2: duration OK");
+  }
+  else
+  {
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "PMD Recording Range 2: duration >= 15s");
+  }
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5: KEY ON, Set_PMD_RanSet(3), check signals, screenshot
+// ============================================================================
+testcase OWP_021_5()
+{
+  Send_Value_To_COM(22105);
+  SetTestStep("Bước 5 - OWP_021");
+  StartTestTimer();
+  write("");
+  write("=== STEP 5: Set PMD Range to Level 3 ===");
+  testStep("Step5", "Set PMD Range = Level 3, check signals");
+
+  // 5.1: KEY ON
+  write("Step 5.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 5.2: Set PMD Range = Level 3
+  write("Step 5.2: Set_PMD_RanSet(3)...");
+  if (Set_PMD_RanSet(3) == 1)
+    write(">>> [OK] Set_PMD_RanSet(3) success <<<");
+  else
+    write(">>> [NG] Set_PMD_RanSet(3) failed <<<");
+
+  // 5.3: Check BLTN_CAM_Ran_PMDR_NvalueSet = 0x3
+  write("Step 5.3: Check BLTN_CAM_Ran_PMDR_NvalueSet...");
+  write("  BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X", Gen20_PMDR_NvalueSet_Value());
+  if (Gen20_PMDR_NvalueSet_Value() == 0x3)
+    write(">>> [PASS] BLTN_CAM_Ran_PMDR_NvalueSet = 0x3 (Level 3) <<<");
+  else
+    write(">>> [FAIL] BLTN_CAM_Ran_PMDR_NvalueSet = 0x%X, expected 0x3 <<<", Gen20_PMDR_NvalueSet_Value());
+
+  // 5.4: Check BLTN_CAM_RanSet_PMDR
+  write("Step 5.4: Check BLTN_CAM_RanSet_PMDR...");
+  Check_PMD_RanSet(3);
+
+  CaptureGraphics("OWP", "BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (Gen20_PMDR_RanSet_Value() == 0x3 && Gen20_PMDR_NvalueSet_Value() == 0x3)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "PMD Range Level 3: PASS");
+  }
+  else
+  {
+    step5_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5", "PMD Range Level 3: FAIL");
+  }
+  write("=== FINISH STEP 5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 6: KEY ON/OFF, motion trigger, PMD Recording duration < 15s, screenshot
+// ============================================================================
+testcase OWP_021_6()
+{
+  long t_start;
+  long t_end;
+  long duration_ms;
+  Send_Value_To_COM(22106);
+  SetTestStep("Bước 6 - OWP_021");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 6: PMD Recording at Range 3 (motion, check duration < 15s) ===");
+  testStep("Step6", "PMD Recording Range 3 - duration < 15s");
+
+  // 6.1: KEY ON
+  write("Step 6.1: KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+
+  // 6.2: KEY OFF
+  write("Step 6.2: KEY OFF...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 6.3: Log motion trigger
+  write("");
+  write("*************************************************************");
+  write("*** [ACTION REQUIRED] DI CHUYEN / MOTION TRUOC CAMERA!    ***");
+  write("*** Hay tao chuyen dong truoc camera PMD ngay bay gio.     ***");
+  write("*************************************************************");
+  write("");
+
+  // 6.4: Wait for PMD Recording
+  write("Step 6.4: Waiting for PMD Recording (max 120s)...");
+  if (WaitFor_RecSta_PMD_Recording(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording NOT detected! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "PMD Recording not detected at Range 3");
+    write("=== FINISH STEP 6 ===");
+    return;
+  }
+
+  // 6.5: Record start timestamp
+  t_start = timeNow() / 100;
+  write("  PMD Recording started. Timestamp: %d ms", t_start);
+
+  // 6.6: Wait for PMD OFF
+  write("Step 6.6: Waiting for PMD Recording OFF (max 120s)...");
+  if (WaitFor_RecSta_PMD_OFF(120000) != 1)
+  {
+    write(">>> [FAIL] PMD Recording did not stop! <<<");
+    CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "PMD Recording did not stop at Range 3");
+    write("=== FINISH STEP 6 ===");
+    return;
+  }
+
+  // 6.7: Calculate duration
+  t_end = timeNow() / 100;
+  duration_ms = t_end - t_start;
+  write("  PMD Recording duration: %d ms (%d s)", duration_ms, duration_ms / 1000);
+
+  if (duration_ms < 15000)
+    write(">>> [PASS] PMD Recording duration = %d s (< 15s) <<<", duration_ms / 1000);
+  else
+    write(">>> [FAIL] PMD Recording duration = %d s (>= 15s) <<<", duration_ms / 1000);
+
+  // 6.8: Wait 15s then screenshot
+  write("Step 6.8: Waiting 15s before screenshot...");
+  testWaitForTimeout(15000);
+  CaptureGraphics("OWP", "BLTN_CAM_RecSta_PMD;BLTN_CAM_RanSet_PMDR;BLTN_CAM_Ran_PMDR_NvalueSet");
+
+  if (duration_ms < 15000)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "PMD Recording Range 3: duration OK");
+  }
+  else
+  {
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "PMD Recording Range 3: duration >= 15s");
+  }
+  write("=== FINISH STEP 6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_021 - 2.5 generation_report");
+
+  OWP_021_Init();
+
+  OWP_021_1();
+  OWP_021_2();
+  OWP_021_3();
+  OWP_021_4();
+  OWP_021_5();
+  OWP_021_6();
+
+}

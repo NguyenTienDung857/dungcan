@@ -1,0 +1,212 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables
+{
+  // Required CAN FD messages for helper functions in DeclarationFunction_Gen2.5.h
+  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
+  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+}
+
+// ============================================================================
+// STEP 1
+// Set_SMK_IGN, Click_USM_Reset, key on, Turn_ON_OWP, Click_TML_Start,
+// 4 rounds: Click_Evt_Switch -> wait OWD/DEV recording -> wait 30s,
+// then Click_TML_Stop.
+// ============================================================================
+testcase MEM_LAM_DAY_VIDEO_1()
+{
+  int round;
+  int result_owd;
+  int result_dev;
+
+  SetTestStep("Buoc 1 - MEM_LAM_DAY_VIDEO");
+  StartTestTimer();
+  testStep("Step 1", "Set_SMK_IGN, USM reset, key on, OWP ON, TML start, 4 rounds Evt + wait OWD/DEV + 30s, then TML stop");
+
+  write("=== START STEP 1 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  KEY_ON();
+  Turn_ON_OWP();
+  Click_TML_Start();
+
+  for (round = 1; round <= 4; round++)
+  {
+    write("--- Step 1 / Round %d ---", round);
+
+    Click_Evt_Switch();
+
+    result_owd = WaitFor_RecSta_OWD_Recording(60000);
+    if (result_owd == 1)
+      testStepPass("Step1_OWD", "Round %d: OWD recording detected", round);
+    else
+      testStepFail("Step1_OWD", "Round %d: Timeout waiting OWD recording", round);
+
+    result_dev = WaitFor_RecSta_DEV_Recording(60);
+    if (result_dev == 1)
+      testStepPass("Step1_DEV", "Round %d: DEV recording detected", round);
+    else
+      testStepFail("Step1_DEV", "Round %d: Timeout waiting DEV recording", round);
+
+    testWaitForTimeout(30000);
+  }
+
+  Click_TML_Stop();
+
+  testStepPass("Step 1", "Completed Step 1 flow");
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+}
+
+// ============================================================================
+// STEP 2
+// key off, Click_TML_Start,
+// 4 rounds: Click_Evt_Switch -> wait OWP/PEV recording -> wait 30s,
+// then Click_TML_Stop.
+// ============================================================================
+testcase MEM_LAM_DAY_VIDEO_2()
+{
+  int round;
+  int result_owp;
+  int result_pev;
+
+  SetTestStep("Buoc 2 - MEM_LAM_DAY_VIDEO");
+  StartTestTimer();
+  testStep("Step 2", "Key off, TML start, 4 rounds Evt + wait OWP/PEV + 30s, then TML stop");
+
+  write("=== START STEP 2 ===");
+
+  KEY_OFF();
+  testWaitForTimeout(2000);
+  Click_TML_Start();
+
+  for (round = 1; round <= 4; round++)
+  {
+    write("--- Step 2 / Round %d ---", round);
+
+    Click_Evt_Switch();
+
+    result_owp = WaitFor_RecSta_OWP_Recording(60000);
+    if (result_owp == 1)
+      testStepPass("Step2_OWP", "Round %d: OWP recording detected", round);
+    else
+      testStepFail("Step2_OWP", "Round %d: Timeout waiting OWP recording", round);
+
+    result_pev = WaitFor_RecSta_PEV_Recording(60);
+    if (result_pev == 1)
+      testStepPass("Step2_PEV", "Round %d: PEV recording detected", round);
+    else
+      testStepFail("Step2_PEV", "Round %d: Timeout waiting PEV recording", round);
+
+    testWaitForTimeout(30000);
+  }
+
+  Click_TML_Stop();
+
+  testStepPass("Step 2", "Completed Step 2 flow");
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+}
+
+// ============================================================================
+// STEP 3
+// key on, Turn_ON_PMD,
+// 4 rounds: key off -> wait 3s -> Click_Evt_Switch -> wait 12s -> key on.
+// ============================================================================
+testcase MEM_LAM_DAY_VIDEO_3()
+{
+  int round;
+
+  SetTestStep("Buoc 3 - MEM_LAM_DAY_VIDEO");
+  StartTestTimer();
+  testStep("Step 3", "Key on, PMD ON, 4 rounds: key off + 3s + Evt + 12s + key on");
+
+  write("=== START STEP 3 ===");
+
+  Set_SMK_IGN();
+  Turn_ON_PMD();
+
+  for (round = 1; round <= 4; round++)
+  {
+    write("--- Step 3 / Round %d ---", round);
+
+    KEY_OFF();
+    testWaitForTimeout(3000);
+
+    Click_Evt_Switch();
+    testWaitForTimeout(12000);
+
+    KEY_ON();
+    testWaitForTimeout(1000);
+  }
+
+  // Keep final state at KEY ON as requested
+  KEY_ON();
+
+  testStepPass("Step 3", "Completed Step 3 flow");
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\MEM_LAM_DAY_VIDEO_report");
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+
+
+  MEM_LAM_DAY_VIDEO_1();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_2();
+  testWaitForTimeout(2000);
+
+  MEM_LAM_DAY_VIDEO_3();
+}
+                                                                                                                                                   

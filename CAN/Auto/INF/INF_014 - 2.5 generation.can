@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 //Precondition: Simulation Setup -> Block CGW_CCU; ccNC/ccIC switch OFF; All recording setting OFF; Enter AVN mode
 //Add signal: BLTN_CAM_RecSta_OWD; HTCU_GearSlctrDis
 //Note: Set the time range in graphic to 12s
@@ -9,7 +9,7 @@ includes
 variables
 { // Global Variable Declaration
   byte i;
-  int flag_RecSet_error = 0;
+
   byte KEY_STATE;
   byte GearPos_value = 0x0;
   byte Mode_state = 0x2;
@@ -22,7 +22,7 @@ variables
   char arr_EV_modeType[2] = {'E','V'};  
   char answer[3]; 
   // Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   message TCU_01_10ms _TCU_01_10ms;
   message HTCU_05_10ms _HTCU_05_10ms;

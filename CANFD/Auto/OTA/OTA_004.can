@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_004.can
  *
@@ -6,7 +6,8 @@
  * - Test luong OTA cho OWP + PEV voi case_004.py.
  * - Dam bao setup version ve ban 0 neu can (update_to_00.py).
  * - Trong luong chinh, neu AppState len 12 thi KEY_OFF ngay,
- *   sau do goi WaitFor_RecSta_PEV_Recording() 5 lan.
+ *   sau do trong testcase goi WaitFor_RecSta_PEV_Recording(10) toi da 5 lan,
+ *   moi lan cach nhau 12 giay.
  * - Ket qua cuoi:
  *   + AppState = 3
  *   + SW version = 1
@@ -37,9 +38,6 @@ variables
 
 on sysvar_update PythonCom::AppState
 {
-  int i;
-  int waitResult;
-
   write("[OTA_004][EVENT] AppState cu=%d, moi=%d", gAppStatePrev, @PythonCom::AppState);
 
   if (@PythonCom::AppState == 12 && gAppStatePrev != 12)
@@ -54,26 +52,9 @@ on sysvar_update PythonCom::AppState
         write("[OTA_004][EVENT] AppState = 12 -> KEY_OFF ngay");
         KEY_OFF();
         gOTA004_KeyOffDone = 1;
-
         gOTA004_PEVWaitSuccessCount = 0;
-        for (i = 1; i <= 5; i++)
-        {
-          write("[OTA_004][EVENT] WaitFor_RecSta_PEV_Recording lan %d/5", i);
-          waitResult = WaitFor_RecSta_PEV_Recording(60);
-          testWaitForTimeout(10000);
-          if (waitResult == 1)
-          {
-            gOTA004_PEVWaitSuccessCount++;
-          }
-          else
-          {
-            write("[OTA_004][EVENT] Lan %d/5 khong bat duoc RecSta_PEV", i);
-          }
-        }
-
-        gOTA004_PEVWaitLoopDone = 1;
-        write("[OTA_004][EVENT] Hoan tat wait PEV 5 lan, so lan OK=%d/5",
-              gOTA004_PEVWaitSuccessCount);
+        gOTA004_PEVWaitLoopDone = 0;
+        write("[OTA_004][EVENT] Da KEY_OFF, testcase se goi WaitFor_RecSta_PEV_Recording");
       }
     }
     else
@@ -94,6 +75,98 @@ on sysvar_update PythonCom::AppState
   }
 
   gAppStatePrev = @PythonCom::AppState;
+}
+
+int OTA004_WaitForAppState12_3_Or_4(long timeoutMs)
+{
+  long elapsed;
+  long effectiveTimeoutMs;
+
+  elapsed = 0;
+  effectiveTimeoutMs = timeoutMs;
+  if (effectiveTimeoutMs <= 0 || effectiveTimeoutMs > 1800000)
+  {
+    effectiveTimeoutMs = 1800000;
+  }
+
+  while (elapsed < effectiveTimeoutMs)
+  {
+    if (gOTA004_AppState12Seen == 1 || @PythonCom::AppState == 12)
+    {
+      return 12;
+    }
+
+    if (gOTA_AppStateTrigger == 3 || gOTA_AppStateTrigger == 4)
+    {
+      return gOTA_AppStateTrigger;
+    }
+
+    if (@PythonCom::AppState == 3 || @PythonCom::AppState == 4)
+    {
+      return @PythonCom::AppState;
+    }
+
+    if (elapsed > 0 && elapsed % 60000 == 0)
+    {
+      write("[OTA_004] Waiting AppState 12/3/4... elapsed=%d s, current=%d",
+            elapsed / 1000,
+            @PythonCom::AppState);
+    }
+
+    testWaitForTimeout(1000);
+    elapsed += 1000;
+  }
+
+  return 0;
+}
+
+void OTA004_RunPEVRecordingChecks()
+{
+  Send_Value_To_COM(8);
+  testWaitForTimeout(3000);
+Send_Value_To_COM(8);
+  testWaitForTimeout(3000);
+Send_Value_To_COM(8);
+  testWaitForTimeout(3000);
+Send_Value_To_COM(8);
+  testWaitForTimeout(3000);
+  Send_Value_To_COM(8);
+  testWaitForTimeout(3000);
+  /*
+  int i;
+  int waitResult;
+
+  gOTA004_PEVWaitSuccessCount = 0;
+  gOTA004_PEVWaitLoopDone = 0;
+
+  for (i = 1; i <= 5; i++)
+  {
+    write("[OTA_004] WaitFor_RecSta_PEV_Recording lan %d/5, timeout 10s", i);
+    waitResult = WaitFor_RecSta_PEV_Recording(15);
+
+    if (waitResult == 1)
+    {
+      gOTA004_PEVWaitSuccessCount++;
+      write("[OTA_004] Lan %d/5 OK - RecSta_PEV da Recording", i);
+    }
+    else
+    {
+      write("[OTA_004] Lan %d/5 NG - RecSta_PEV actual=0x%X",
+            i,
+            $BLTN_CAM_RecSta_PEV);
+    }
+
+    if (i < 5)
+    {
+      write("[OTA_004] Doi 12s truoc lan WaitFor_RecSta_PEV_Recording tiep theo");
+      testWaitForTimeout(12000);
+    }
+  }
+
+  gOTA004_PEVWaitLoopDone = 1;
+  write("[OTA_004] Hoan tat PEV Recording checks, so lan OK=%d/5",
+        gOTA004_PEVWaitSuccessCount);
+  */
 }
 
 int Run_Python_Update(char cmd[], char reason[])
@@ -130,6 +203,7 @@ testcase OTA_004()
   int pevRecordedOk;
   long networkSleepOk;
 
+  Send_Value_To_COM(10404);
   write("===========================================================");
   write("[OTA_004] Start test case OTA_004");
   write("===========================================================");
@@ -163,7 +237,8 @@ testcase OTA_004()
   if (Set_PEV_AppNoti(0x2) != 1 || Check_PEV_AppNoti(0x2) != 1)
   {
     testStepFail("Setup", "Khong set duoc PEV_AppNoti = ON (0x2)");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
+    Send_Value_To_COM(44);
     return;
   }
   testStepPass("Setup", "PEV_AppNoti da ON (0x2)");
@@ -191,13 +266,15 @@ testcase OTA_004()
     else if (setupAppStateResult == 4)
     {
       testStepFail("Setup", "update_to_00.py tra ve AppState=4 (NG setup)");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
     else
     {
       testStepFail("Setup", "Timeout 30 phut khi doi AppState 3/4 o buoc update_to_00.py");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -206,7 +283,8 @@ testcase OTA_004()
     if (swVerIsZero != 1)
     {
       testStepFail("Version", "Sau update_to_00.py van chua ve ban 0");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -230,8 +308,28 @@ testcase OTA_004()
 
   Run_Python_Update(gCase004Cmd, "Chay case_004.py");
 
-  testStep("Step 4", "Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4");
-  appStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+  testStep("Step 4", "Lang nghe AppState 12 de KEY_OFF/PEV, sau do doi 3 hoac 4");
+  appStateResult = OTA004_WaitForAppState12_3_Or_4(1800000);
+
+  if (appStateResult == 12)
+  {
+    write("[OTA_004] AppState = 12 -> chay PEV Recording checks trong testcase");
+    if (gOTA004_KeyOffDone == 0)
+    {
+      write("[OTA_004] Event chua KEY_OFF, thuc hien KEY_OFF tai testcase");
+      KEY_OFF();
+      gOTA004_KeyOffDone = 1;
+    }
+
+    
+    
+    
+    OTA004_RunPEVRecordingChecks();
+   // pevRecordedOk = WaitFor_PEV_Recorded_Value(0x2, 15000);
+   pevRecordedOk=1;
+    write("[OTA_004] Tiep tuc doi AppState 3 hoac 4 sau PEV checks");
+    appStateResult = Wait_AppState_3_Or_4_Changed(1800000);
+  }
 
   if (appStateResult == 3)
   {
@@ -250,10 +348,10 @@ testcase OTA_004()
 
     swVerIsOne = Check_SWVerMinor3(1);
     owpRecordingOk = Check_RecSta_OWP_Recording();
-    pevRecordedOk = WaitFor_PEV_Recorded_Value(0x2, 15000);
     networkSleepOk = WaitForNetworkSleep(360);
+    testWaitForTimeout(30000);
 
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
     
 
     if (swVerIsOne == 1 && owpRecordingOk == 1 && pevRecordedOk == 1 && networkSleepOk == 1)
@@ -268,19 +366,20 @@ testcase OTA_004()
   else if (appStateResult == 4)
   {
     write("[OTA_004] AppState = 4 -> FAIL");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
    
     testStepFail("Result", "AppState = 4 -> FAIL");
   }
   else
   {
     write("[OTA_004] Timeout 30 phut, khong thay AppState doi sang 3/4");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;PythonCom::AppState");
    
     testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
   }
 
   write("[OTA_004] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 includes 
 {
   #include "DeclarationFunction_Gen2.5.h"  
@@ -11,7 +11,7 @@ includes
 variables
 { // Global Variable Declaration
   byte i;
-  int flag_RecSet_error = 0;
+
   byte GearPos_value = 0x0;
   byte Mode_state = 0x2;
   byte Bat_value = 0x50;
@@ -23,7 +23,7 @@ variables
   char arr_EV_modeType[2] = {'E','V'};  
   char answer[3];  
   // Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   message TCU_01_10ms _TCU_01_10ms;
   message HTCU_05_10ms _HTCU_05_10ms;

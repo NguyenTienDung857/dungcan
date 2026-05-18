@@ -1,0 +1,534 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: Warn_DrvDrSwSta, Warn_AsstDrSwSta,
+//                             Warn_RrLftDrSwSta, Warn_RrRtDrSwSta,
+//                             Trunk_TrnkTlgtSwSta,
+//                             BLTN_CAM_RecSta_PEV, BLTN_CAM_RecSet_PEV,
+//                             BLTN_CAM_State
+
+/*
+  Test Case: OWP_012 - 2.5 (OWP_012)
+  Title: [PEV Door/Trunk Signal Change - RecSta_PEV & RecSet_PEV Check]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+           KEY OFF, wait 5s, Warn_DrvDrSwSta 0x1->0x0, wait 10s, capture
+  Step 2:  KEY OFF, wait 5s, Warn_DrvDrSwSta 0x0->0x1, wait 10s, capture
+  Step 3:  KEY OFF, wait 5s, Warn_AsstDrSwSta 0x1->0x0, wait 10s, capture
+  Step 4:  KEY OFF, wait 5s, Warn_AsstDrSwSta 0x0->0x1, wait 10s, capture
+  Step 5:  KEY OFF, wait 5s, Warn_RrLftDrSwSta 0x1->0x0, wait 10s, capture
+  Step 6:  KEY OFF, wait 5s, Warn_RrLftDrSwSta 0x0->0x1, wait 10s, capture
+  Step 7:  KEY OFF, wait 5s, Warn_RrRtDrSwSta 0x1->0x0, wait 10s, capture
+  Step 8:  KEY OFF, wait 5s, Warn_RrRtDrSwSta 0x0->0x1, wait 10s, capture
+  Step 9:  KEY OFF, wait 5s, Trunk_TrnkTlgtSwSta 0x1->0x0, wait 10s, capture
+
+  NOTE: "0x1->0x0" means: set=1, wait 10s, set=0, wait 1s, set back=1
+        "0x0->0x1" means: set=0, wait 10s, set=1, wait 1s, set back=0
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_012_Init()
+{
+  Send_Value_To_COM(21200);
+  write("========================================");
+  write("=== START TEST OWP_012 - 2.5 ===");
+  write("========================================");
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+//         KEY OFF, wait 5s, Warn_DrvDrSwSta 0x1->0x0, wait 10s, capture
+// ============================================================================
+testcase OWP_012_1()
+{
+  Send_Value_To_COM(21201);
+  SetTestStep("Bước 1 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 1: Init + Warn_DrvDrSwSta 0x1 -> 0x0 ===");
+  testStep("Step1", "SMK IGN + USM/Rec Reset + KEY OFF + set Warn_DrvDrSwSta 0x1 (10s) -> 0x0 (1s) -> 0x1 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 1.1: Set_SMK_IGN (full init with CGWNM)
+  write("Step 1.1: Set_SMK_IGN (KEY ON with CGWNM)...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.2: Click USM Reset
+  write("Step 1.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("Step 1.3: Rec Reset...");
+  Click_Rec_Reset();
+
+  // 1.4: KEY OFF, wait 5s
+  write("Step 1.4: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 1.5: Warn_DrvDrSwSta 0x1 -> 0x0
+  //   set=1, wait 10s, set=0, wait 1s, set back=1
+  write("Step 1.5: Warn_DrvDrSwSta 0x1 -> 0x0...");
+  $Warn_DrvDrSwSta = 0x1;
+  write("  Set Warn_DrvDrSwSta = 0x1");
+  testWaitForTimeout(10000);
+
+  $Warn_DrvDrSwSta = 0x0;
+  write("  Set Warn_DrvDrSwSta = 0x0");
+  testWaitForTimeout(1000);
+
+  $Warn_DrvDrSwSta = 0x1;
+  write("  Set Warn_DrvDrSwSta = 0x1 (restore)");
+
+  // 1.6: Wait 10s then capture
+  write("Step 1.6: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_DrvDrSwSta = 0x%X", $Warn_DrvDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_DrvDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step1_passed = 1;
+  testStepPass("Step1", "Warn_DrvDrSwSta 0x1->0x0 captured - PASS");
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2: KEY OFF, wait 5s, Warn_DrvDrSwSta 0x0->0x1, wait 10s, capture
+// ============================================================================
+testcase OWP_012_2()
+{
+  Send_Value_To_COM(21202);
+  SetTestStep("Bước 2 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 2: Warn_DrvDrSwSta 0x0 -> 0x1 ===");
+  testStep("Step2", "KEY OFF + set Warn_DrvDrSwSta 0x0 (10s) -> 0x1 (1s) -> 0x0 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 2.1: KEY OFF, wait 5s
+  write("Step 2.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 2.2: Warn_DrvDrSwSta 0x0 -> 0x1
+  //   set=0, wait 10s, set=1, wait 1s, set back=0
+  write("Step 2.2: Warn_DrvDrSwSta 0x0 -> 0x1...");
+  $Warn_DrvDrSwSta = 0x0;
+  write("  Set Warn_DrvDrSwSta = 0x0");
+  testWaitForTimeout(10000);
+
+  $Warn_DrvDrSwSta = 0x1;
+  write("  Set Warn_DrvDrSwSta = 0x1");
+  testWaitForTimeout(1000);
+
+  $Warn_DrvDrSwSta = 0x0;
+  write("  Set Warn_DrvDrSwSta = 0x0 (restore)");
+
+  // 2.3: Wait 10s then capture
+  write("Step 2.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_DrvDrSwSta = 0x%X", $Warn_DrvDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_DrvDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step2_passed = 1;
+  testStepPass("Step2", "Warn_DrvDrSwSta 0x0->0x1 captured - PASS");
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3: KEY OFF, wait 5s, Warn_AsstDrSwSta 0x1->0x0, wait 10s, capture
+// ============================================================================
+testcase OWP_012_3()
+{
+  Send_Value_To_COM(21203);
+  SetTestStep("Bước 3 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 3: Warn_AsstDrSwSta 0x1 -> 0x0 ===");
+  testStep("Step3", "KEY OFF + set Warn_AsstDrSwSta 0x1 (10s) -> 0x0 (1s) -> 0x1 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 3.1: KEY OFF, wait 5s
+  write("Step 3.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 3.2: Warn_AsstDrSwSta 0x1 -> 0x0
+  //   set=1, wait 10s, set=0, wait 1s, set back=1
+  write("Step 3.2: Warn_AsstDrSwSta 0x1 -> 0x0...");
+  $Warn_AsstDrSwSta = 0x1;
+  write("  Set Warn_AsstDrSwSta = 0x1");
+  testWaitForTimeout(10000);
+
+  $Warn_AsstDrSwSta = 0x0;
+  write("  Set Warn_AsstDrSwSta = 0x0");
+  testWaitForTimeout(1000);
+
+  $Warn_AsstDrSwSta = 0x1;
+  write("  Set Warn_AsstDrSwSta = 0x1 (restore)");
+
+  // 3.3: Wait 10s then capture
+  write("Step 3.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_AsstDrSwSta = 0x%X", $Warn_AsstDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_AsstDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step3_passed = 1;
+  testStepPass("Step3", "Warn_AsstDrSwSta 0x1->0x0 captured - PASS");
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 4: KEY OFF, wait 5s, Warn_AsstDrSwSta 0x0->0x1, wait 10s, capture
+// ============================================================================
+testcase OWP_012_4()
+{
+  Send_Value_To_COM(21204);
+  SetTestStep("Bước 4 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 4: Warn_AsstDrSwSta 0x0 -> 0x1 ===");
+  testStep("Step4", "KEY OFF + set Warn_AsstDrSwSta 0x0 (10s) -> 0x1 (1s) -> 0x0 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 4.1: KEY OFF, wait 5s
+  write("Step 4.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 4.2: Warn_AsstDrSwSta 0x0 -> 0x1
+  //   set=0, wait 10s, set=1, wait 1s, set back=0
+  write("Step 4.2: Warn_AsstDrSwSta 0x0 -> 0x1...");
+  $Warn_AsstDrSwSta = 0x0;
+  write("  Set Warn_AsstDrSwSta = 0x0");
+  testWaitForTimeout(10000);
+
+  $Warn_AsstDrSwSta = 0x1;
+  write("  Set Warn_AsstDrSwSta = 0x1");
+  testWaitForTimeout(1000);
+
+  $Warn_AsstDrSwSta = 0x0;
+  write("  Set Warn_AsstDrSwSta = 0x0 (restore)");
+
+  // 4.3: Wait 10s then capture
+  write("Step 4.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_AsstDrSwSta = 0x%X", $Warn_AsstDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_AsstDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step4_passed = 1;
+  testStepPass("Step4", "Warn_AsstDrSwSta 0x0->0x1 captured - PASS");
+  write("=== FINISH STEP 4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 5: KEY OFF, wait 5s, Warn_RrLftDrSwSta 0x1->0x0, wait 10s, capture
+// ============================================================================
+testcase OWP_012_5()
+{
+  Send_Value_To_COM(21205);
+  SetTestStep("Bước 5 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 5: Warn_RrLftDrSwSta 0x1 -> 0x0 ===");
+  testStep("Step5", "KEY OFF + set Warn_RrLftDrSwSta 0x1 (10s) -> 0x0 (1s) -> 0x1 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 5.1: KEY OFF, wait 5s
+  write("Step 5.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 5.2: Warn_RrLftDrSwSta 0x1 -> 0x0
+  //   set=1, wait 10s, set=0, wait 1s, set back=1
+  write("Step 5.2: Warn_RrLftDrSwSta 0x1 -> 0x0...");
+  $Warn_RrLftDrSwSta = 0x1;
+  write("  Set Warn_RrLftDrSwSta = 0x1");
+  testWaitForTimeout(10000);
+
+  $Warn_RrLftDrSwSta = 0x0;
+  write("  Set Warn_RrLftDrSwSta = 0x0");
+  testWaitForTimeout(1000);
+
+  $Warn_RrLftDrSwSta = 0x1;
+  write("  Set Warn_RrLftDrSwSta = 0x1 (restore)");
+
+  // 5.3: Wait 10s then capture
+  write("Step 5.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_RrLftDrSwSta = 0x%X", $Warn_RrLftDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_RrLftDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step5_passed = 1;
+  testStepPass("Step5", "Warn_RrLftDrSwSta 0x1->0x0 captured - PASS");
+  write("=== FINISH STEP 5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 6: KEY OFF, wait 5s, Warn_RrLftDrSwSta 0x0->0x1, wait 10s, capture
+// ============================================================================
+testcase OWP_012_6()
+{
+  Send_Value_To_COM(21206);
+  SetTestStep("Bước 6 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 6: Warn_RrLftDrSwSta 0x0 -> 0x1 ===");
+  testStep("Step6", "KEY OFF + set Warn_RrLftDrSwSta 0x0 (10s) -> 0x1 (1s) -> 0x0 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 6.1: KEY OFF, wait 5s
+  write("Step 6.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 6.2: Warn_RrLftDrSwSta 0x0 -> 0x1
+  //   set=0, wait 10s, set=1, wait 1s, set back=0
+  write("Step 6.2: Warn_RrLftDrSwSta 0x0 -> 0x1...");
+  $Warn_RrLftDrSwSta = 0x0;
+  write("  Set Warn_RrLftDrSwSta = 0x0");
+  testWaitForTimeout(10000);
+
+  $Warn_RrLftDrSwSta = 0x1;
+  write("  Set Warn_RrLftDrSwSta = 0x1");
+  testWaitForTimeout(1000);
+
+  $Warn_RrLftDrSwSta = 0x0;
+  write("  Set Warn_RrLftDrSwSta = 0x0 (restore)");
+
+  // 6.3: Wait 10s then capture
+  write("Step 6.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_RrLftDrSwSta = 0x%X", $Warn_RrLftDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_RrLftDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step6_passed = 1;
+  testStepPass("Step6", "Warn_RrLftDrSwSta 0x0->0x1 captured - PASS");
+  write("=== FINISH STEP 6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 7: KEY OFF, wait 5s, Warn_RrRtDrSwSta 0x1->0x0, wait 10s, capture
+// ============================================================================
+testcase OWP_012_7()
+{
+  Send_Value_To_COM(21207);
+  SetTestStep("Bước 7 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 7: Warn_RrRtDrSwSta 0x1 -> 0x0 ===");
+  testStep("Step7", "KEY OFF + set Warn_RrRtDrSwSta 0x1 (10s) -> 0x0 (1s) -> 0x1 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 7.1: KEY OFF, wait 5s
+  write("Step 7.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 7.2: Warn_RrRtDrSwSta 0x1 -> 0x0
+  //   set=1, wait 10s, set=0, wait 1s, set back=1
+  write("Step 7.2: Warn_RrRtDrSwSta 0x1 -> 0x0...");
+  $Warn_RrRtDrSwSta = 0x1;
+  write("  Set Warn_RrRtDrSwSta = 0x1");
+  testWaitForTimeout(10000);
+
+  $Warn_RrRtDrSwSta = 0x0;
+  write("  Set Warn_RrRtDrSwSta = 0x0");
+  testWaitForTimeout(1000);
+
+  $Warn_RrRtDrSwSta = 0x1;
+  write("  Set Warn_RrRtDrSwSta = 0x1 (restore)");
+
+  // 7.3: Wait 10s then capture
+  write("Step 7.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_RrRtDrSwSta = 0x%X", $Warn_RrRtDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_RrRtDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step7_passed = 1;
+  testStepPass("Step7", "Warn_RrRtDrSwSta 0x1->0x0 captured - PASS");
+  write("=== FINISH STEP 7 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 8: KEY OFF, wait 5s, Warn_RrRtDrSwSta 0x0->0x1, wait 10s, capture
+// ============================================================================
+testcase OWP_012_8()
+{
+  Send_Value_To_COM(21208);
+  SetTestStep("Bước 8 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 8: Warn_RrRtDrSwSta 0x0 -> 0x1 ===");
+  testStep("Step8", "KEY OFF + set Warn_RrRtDrSwSta 0x0 (10s) -> 0x1 (1s) -> 0x0 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 8.1: KEY OFF, wait 5s
+  write("Step 8.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 8.2: Warn_RrRtDrSwSta 0x0 -> 0x1
+  //   set=0, wait 10s, set=1, wait 1s, set back=0
+  write("Step 8.2: Warn_RrRtDrSwSta 0x0 -> 0x1...");
+  $Warn_RrRtDrSwSta = 0x0;
+  write("  Set Warn_RrRtDrSwSta = 0x0");
+  testWaitForTimeout(10000);
+
+  $Warn_RrRtDrSwSta = 0x1;
+  write("  Set Warn_RrRtDrSwSta = 0x1");
+  testWaitForTimeout(1000);
+
+  $Warn_RrRtDrSwSta = 0x0;
+  write("  Set Warn_RrRtDrSwSta = 0x0 (restore)");
+
+  // 8.3: Wait 10s then capture
+  write("Step 8.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Warn_RrRtDrSwSta = 0x%X", $Warn_RrRtDrSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Warn_RrRtDrSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step8_passed = 1;
+  testStepPass("Step8", "Warn_RrRtDrSwSta 0x0->0x1 captured - PASS");
+  write("=== FINISH STEP 8 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 9: KEY OFF, wait 5s, Trunk_TrnkTlgtSwSta 0x1->0x0, wait 10s, capture
+// ============================================================================
+testcase OWP_012_9()
+{
+  Send_Value_To_COM(21209);
+  SetTestStep("Bước 9 - OWP_012");
+  StartTestTimer();
+  write("");
+  write("=== STEP 9: Trunk_TrnkTlgtSwSta 0x1 -> 0x0 ===");
+  testStep("Step9", "KEY OFF + set Trunk_TrnkTlgtSwSta 0x1 (10s) -> 0x0 (1s) -> 0x1 restore, wait 10s -> capture BLTN_CAM_RecSta_PEV & RecSet_PEV");
+
+  // 9.1: KEY OFF, wait 5s
+  write("Step 9.1: KEY OFF, waiting 5s...");
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  // 9.2: Trunk_TrnkTlgtSwSta 0x1 -> 0x0
+  //   set=1, wait 10s, set=0, wait 1s, set back=1
+  write("Step 9.2: Trunk_TrnkTlgtSwSta 0x1 -> 0x0...");
+  $Trunk_TrnkTlgtSwSta = 0x1;
+  write("  Set Trunk_TrnkTlgtSwSta = 0x1");
+  testWaitForTimeout(10000);
+
+  $Trunk_TrnkTlgtSwSta = 0x0;
+  write("  Set Trunk_TrnkTlgtSwSta = 0x0");
+  testWaitForTimeout(1000);
+
+  $Trunk_TrnkTlgtSwSta = 0x1;
+  write("  Set Trunk_TrnkTlgtSwSta = 0x1 (restore)");
+
+  // 9.3: Wait 10s then capture
+  write("Step 9.3: Waiting 10s before capture...");
+  testWaitForTimeout(10000);
+
+  write("  Trunk_TrnkTlgtSwSta = 0x%X", $Trunk_TrnkTlgtSwSta);
+  write("  BLTN_CAM_RecSta_PEV = 0x%X", $BLTN_CAM_RecSta_PEV);
+  write("  BLTN_CAM_RecSet_PEV = 0x%X", $BLTN_CAM_RecSet_PEV);
+
+  CaptureGraphics("OWP", "Trunk_TrnkTlgtSwSta;BLTN_CAM_RecSta_PEV;BLTN_CAM_RecSet_PEV");
+
+  step9_passed = 1;
+  testStepPass("Step9", "Trunk_TrnkTlgtSwSta 0x1->0x0 captured - PASS");
+  write("=== FINISH STEP 9 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_012 - 2.5 generation_report");
+
+  OWP_012_Init();
+
+  OWP_012_1();
+  OWP_012_2();
+  OWP_012_3();
+  OWP_012_4();
+  OWP_012_5();
+  OWP_012_6();
+  OWP_012_7();
+  OWP_012_8();
+  OWP_012_9();
+
+}

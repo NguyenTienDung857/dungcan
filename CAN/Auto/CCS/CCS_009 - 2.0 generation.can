@@ -41,7 +41,7 @@ variables
 
 void Capture_Graphics() {
   testWaitForTimeout(3000);
-  testReportAddWindowCapture("Graphics 2","","BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrm_CurrentSta","./envidence.jpg");  
+  testReportAddWindowCapture("Graphics 2","","BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BAlarm_BglrAlrmCurrentSta","./envidence.jpg");  
 }
 
 on timer send_BAlarm_BglrAlrmCurrentSta_timer {

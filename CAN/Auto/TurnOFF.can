@@ -1,0 +1,146 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: TurnOFF
+  Title: KEY ON and turn OFF OWD, OWP, DEV, PEV, PMD settings
+
+  Verification items:
+    - Step 1: KEY_ON(), Turn_OFF_OWD(), Turn_OFF_OWP(), Turn_OFF_DEV(),
+              Turn_OFF_PEV(), Turn_OFF_PMD().
+    - Step 1 expected: SMK = IGN, OWD/OWP/DEV/PEV/PMD settings are OFF.
+
+  Preconditions:
+    - CANoe simulation and Built-in Cam panels are available.
+
+  NOTE: Uses shared helpers from DeclarationFunction_Gen2.5.h.
+*/
+
+variables
+{
+  char failReason[512];
+
+  int step1_passed = 0;
+
+  int actualSMK = 0;
+  int actualOWD = 0;
+  int actualOWP = 0;
+  int actualDEV = 0;
+  int actualPEV = 0;
+  int actualPMD = 0;
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase TurnOFF_Init()
+{
+  Send_Value_To_COM(9100);
+  write("========================================");
+  write("=== START TEST TurnOFF ===");
+  write("=== KEY ON + Turn OFF recording sets ===");
+  write("========================================");
+  testStep("Notification", "Start test TurnOFF");
+  Send_Value_To_COM(44);
+}
+
+testcase TurnOFF_1()
+{
+  int smkOn = 0;
+  int owdOff = 0;
+  int owpOff = 0;
+  int devOff = 0;
+  int pevOff = 0;
+  int pmdOff = 0;
+
+  //============================================================================
+  // STEP 1: KEY ON, turn OFF OWD/OWP/DEV/PEV/PMD, then verify setting signals.
+  //============================================================================
+  Send_Value_To_COM(9101);
+  SetTestStep("Buoc 1 - TurnOFF");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: KEY ON + Turn OFF OWD/OWP/DEV/PEV/PMD          ===");
+  write("=================================================================");
+  testStep("Step1", "KEY ON, then Turn_OFF_OWD/OWP/DEV/PEV/PMD and verify OFF settings");
+
+  write("[1.1] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  actualSMK = $SMK_TrmnlCtrlGrpStaBDC;
+  write("      SMK_TrmnlCtrlGrpStaBDC = 0x%X, expected 0x2 (IGN)", actualSMK);
+
+  write("[1.2] Running Turn_OFF_OWD()...");
+  Turn_OFF_OWD();
+
+  write("[1.3] Running Turn_OFF_OWP()...");
+  Turn_OFF_OWP();
+
+  write("[1.4] Running Turn_OFF_DEV()...");
+  Turn_OFF_DEV();
+
+  write("[1.5] Running Turn_OFF_PEV()...");
+  Turn_OFF_PEV();
+
+  write("[1.6] Running Turn_OFF_PMD()...");
+  Turn_OFF_PMD();
+
+  write("[1.7] Reading actual recording setting signals...");
+  actualOWD = $BLTN_CAM_RecSet_OWD;
+  actualOWP = $BLTN_CAM_RecSet_OWP;
+  actualDEV = $BLTN_CAM_RecSet_DEV;
+  actualPEV = $BLTN_CAM_RecSet_PEV;
+  actualPMD = Gen20_PMD_Set_Value();
+
+  smkOn = (actualSMK == 0x2);
+  owdOff = Check_RecSet_OWD_OFF();
+  owpOff = Check_RecSet_OWP_OFF();
+  devOff = Check_RecSet_DEV_OFF();
+  pevOff = Check_RecSet_PEV_OFF();
+  pmdOff = Check_Set_PMD_OFF();
+
+  write("      BLTN_CAM_RecSet_OWD = 0x%X, expected 0x1 (OFF)", actualOWD);
+  write("      BLTN_CAM_RecSet_OWP = 0x%X, expected 0x1 (OFF)", actualOWP);
+  write("      BLTN_CAM_RecSet_DEV = 0x%X, expected 0x1 (OFF)", actualDEV);
+  write("      BLTN_CAM_RecSet_PEV = 0x%X, expected 0x1 (OFF)", actualPEV);
+  write("      BLTN_CAM_Set_PMD    = 0x%X, expected 0x1 (OFF)", actualPMD);
+
+  write("[1.8] Capturing evidence...");
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSet_PEV;BLTN_CAM_Set_PMD;BLTN_CAM_State");
+
+  if (smkOn == 1 && owdOff == 1 && owpOff == 1 && devOff == 1 && pevOff == 1 && pmdOff == 1)
+  {
+    step1_passed = 1;
+    write(">>> Step 1: PASS - all requested settings are OFF after KEY ON <<<");
+    testStepPass("Step1", "TurnOFF PASS: OWD/OWP/DEV/PEV/PMD are OFF");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> Step 1: FAIL - one or more requested settings are not OFF <<<");
+    snprintf(failReason, elcount(failReason),
+             "TurnOFF FAIL: SMK=0x%X expected 0x2, OWD=0x%X OWP=0x%X DEV=0x%X PEV=0x%X PMD=0x%X expected OFF 0x1.",
+             actualSMK, actualOWD, actualOWP, actualDEV, actualPEV, actualPMD);
+    Log_Error_Details();
+    testStepFail("Step1", failReason);
+  }
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\TurnOFF_report");
+
+  TurnOFF_Init();
+  TurnOFF_1();
+}

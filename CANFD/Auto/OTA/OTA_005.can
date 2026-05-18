@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_005.can
  *
@@ -101,6 +101,7 @@ testcase OTA_005()
   int swVerIsOne;
   long networkSleepOk;
 
+  Send_Value_To_COM(10505);
   write("===========================================================");
   write("[OTA_005] Start test case OTA_005");
   write("===========================================================");
@@ -161,7 +162,8 @@ testcase OTA_005()
     if (swVerIsZero != 1)
     {
       testStepFail("Version", "Sau update_to_00.py van chua ve ban 0");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -196,8 +198,9 @@ testcase OTA_005()
 
     swVerIsOne = Check_SWVerMinor3(1);
     networkSleepOk = WaitForNetworkSleep(360);
+    testWaitForTimeout(30000);
 
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;PythonCom::AppState");
    
 
     if (swVerIsOne == 1 && networkSleepOk == 1)
@@ -212,19 +215,20 @@ testcase OTA_005()
   else if (appStateResult == 4)
   {
     write("[OTA_005] AppState = 4 -> FAIL");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;PythonCom::AppState");
    
     testStepFail("Result", "AppState = 4 -> FAIL");
   }
   else
   {
     write("[OTA_005] Timeout 30 phut, khong thay AppState doi sang 3/4");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWP;PythonCom::AppState");
    
     testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
   }
 
   write("[OTA_005] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

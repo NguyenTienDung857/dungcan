@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_003.can
  *
@@ -120,6 +120,7 @@ testcase OTA_003()
   int pmdRecordingOk;
   long networkSleepOk;
 
+  Send_Value_To_COM(10303);
   write("===========================================================");
   write("[OTA_003] Start test case OTA_003");
   write("===========================================================");
@@ -180,7 +181,8 @@ testcase OTA_003()
     if (swVerIsZero != 1)
     {
       testStepFail("Version", "Sau update_to_00.py van chua ve ban 0");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -224,16 +226,18 @@ testcase OTA_003()
     if (swVerIsOne != 1)
     {
       testStepFail("Version", "AppState=3 nhung SW version khong phai ban 1");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
       
+      Send_Value_To_COM(44);
       return;
     }
 
     pmdRecordingOk = WaitFor_RecSta_PMD_Recording(300000);
     write("[OTA_003] Cho Network Sleep toi da 10 phut");
     networkSleepOk = WaitForNetworkSleep(600);
+    testWaitForTimeout(30000);
 
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
     
 
     if (pmdRecordingOk == 1 && networkSleepOk == 1)
@@ -248,19 +252,20 @@ testcase OTA_003()
   else if (appStateResult == 4)
   {
     write("[OTA_003] AppState = 4 -> FAIL");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
    
     testStepFail("Result", "AppState = 4 -> FAIL");
   }
   else
   {
     write("[OTA_003] Timeout 30 phut, khong thay AppState doi sang 3/4");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
   
     testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
   }
 
   write("[OTA_003] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

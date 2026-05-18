@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 //Precondition: Simulation Setup -> Block CGW_CCU; ccNC/ccIC switch OFF; All recording setting OFF; Enter AVN mode
 //Add signals to graphic: BLTN_CAM_RecSta_OWD; Lamp_TrnSigLmpLftOnReq/Lamp_TrnSigLmpRtOnReq
 includes 
@@ -11,7 +11,7 @@ variables
   byte i;
   byte lamp_Lft_value = 0x0;
   byte lamp_Rt_value = 0x0;
-  int flag_RecSet_error = 0;
+
   dword speed_value  = 0x0;
   byte spd_UnitTyp_value = 0x2;
   byte gear_Pos_value = 0x0;
@@ -20,7 +20,7 @@ variables
   char arr_EV_modeType[2] = {'E','V'};
   char answer[3];
   // CAN FD Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   message PDC_FD_04_200ms _PDC_FD_04_200ms;
   message TCU_01_10ms _TCU_01_10ms;

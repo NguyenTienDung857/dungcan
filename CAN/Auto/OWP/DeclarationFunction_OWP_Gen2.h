@@ -117,6 +117,75 @@
  */
 
 // =============================================================================
+// GEN 2.0 COMPATIBILITY: PMD / PMDR UNSUPPORTED SIGNALS
+// =============================================================================
+//
+// The active Gen 2.0 HS DBC in this project does not contain the PMD/PMDR
+// signals used by later copied tests. These accessors keep legacy OWP helpers
+// compile-safe and make the missing feature explicit in the CANoe output.
+// =============================================================================
+
+byte Gen20_PMD_Set_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_Set_PMD is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMDEV_Set_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_Set_PMDEV is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMDTime_Set_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_Set_PMDTime is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMD_RecSta_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_RecSta_PMD is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMD_RecSet_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_RecSet_PMD is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMDR_RanSet_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_RanSet_PMDR is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMDR_MaxRanSet_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_MaxRanSet_PMDR is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMDR_NvalueSet_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_Ran_PMDR_NvalueSet is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMD_Count_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_PMD_Count is not available in the active DBC");
+  return 0x0;
+}
+
+byte Gen20_PMD_Range_Value()
+{
+  write("  [GEN2.0] BLTN_CAM_PMD_RanSet is not available in the active DBC");
+  return 0x0;
+}
+
+// =============================================================================
 // SECTION 1: KEY / SMK CONTROL
 // =============================================================================
 //
@@ -898,21 +967,8 @@ void Turn_OFF_PEV()
  */
 void Turn_ON_PMD()
 {
-  int retry = 0;
   write("=== Turn ON PMD via panel ===");
-
-  while ($BLTN_CAM_RecSet_PMD != 0x2 && retry < 10)
-  {
-    @panel::LED_Ctrl_SetPMD = 1;
-    testWaitForTimeout(2000);
-    write("  Attempt %d: RecSet_PMD=0x%X", retry + 1, $BLTN_CAM_RecSet_PMD);
-    retry++;
-  }
-
-  if ($BLTN_CAM_RecSet_PMD == 0x2)
-    write(">>> SUCCESS: PMD = ON (0x2) <<<");
-  else
-    write(">>> FAILED: Could not set PMD to ON <<<");
+  write(">>> [GEN2.0 UNSUPPORTED] PMD panel/signal is not present in the active DBC <<<");
 }
 
 /*
@@ -930,21 +986,8 @@ void Turn_ON_PMD()
  */
 void Turn_OFF_PMD()
 {
-  int retry = 0;
   write("=== Turn OFF PMD via panel ===");
-
-  while ($BLTN_CAM_RecSet_PMD == 0x2 && retry < 15)
-  {
-    @panel::LED_Ctrl_SetPMD = 1;
-    testWaitForTimeout(2000);
-    write("  Attempt %d: RecSet_PMD=0x%X", retry + 1, $BLTN_CAM_RecSet_PMD);
-    retry++;
-  }
-
-  if ($BLTN_CAM_RecSet_PMD == 0x1)
-    write(">>> SUCCESS: PMD = OFF (0x1) <<<");
-  else
-    write(">>> FAILED: Could not set PMD to OFF <<<");
+  write(">>> [GEN2.0 UNSUPPORTED] PMD panel/signal is not present in the active DBC <<<");
 }
 
 // =============================================================================
@@ -1137,34 +1180,14 @@ int Check_RecSet_PEV_OFF()
  */
 int Check_RecSet_PMD_ON()
 {
-  byte val = $BLTN_CAM_RecSet_PMD;
-  write("  BLTN_CAM_RecSet_PMD = 0x%X", val);
-  if (val == 0x2)
-  {
-    write(">>> PASS: RecSet_PMD = ON <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: RecSet_PMD is NOT ON <<<");
-    return 0;
-  }
+  write("  [GEN2.0 UNSUPPORTED] BLTN_CAM_RecSet_PMD is not present in the active DBC");
+  return 0;
 }
 
 int Check_RecSet_PMD_OFF()
 {
-  byte val = $BLTN_CAM_RecSet_PMD;
-  write("  BLTN_CAM_RecSet_PMD = 0x%X", val);
-  if (val == 0x1)
-  {
-    write(">>> PASS: RecSet_PMD = OFF <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: RecSet_PMD is NOT OFF <<<");
-    return 0;
-  }
+  write("  [GEN2.0 UNSUPPORTED] BLTN_CAM_RecSet_PMD is not present in the active DBC");
+  return 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -1409,34 +1432,14 @@ int Check_RecSta_PEV_OFF()
  */
 int Check_RecSta_PMD_Recording()
 {
-  byte val = $BLTN_CAM_RecSta_PMD;
-  write("  BLTN_CAM_RecSta_PMD = 0x%X", val);
-  if (val == 0x1)
-  {
-    write(">>> PASS: RecSta_PMD = Recording <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: RecSta_PMD is NOT Recording <<<");
-    return 0;
-  }
+  write("  [GEN2.0 UNSUPPORTED] BLTN_CAM_RecSta_PMD is not present in the active DBC");
+  return 0;
 }
 
 int Check_RecSta_PMD_OFF()
 {
-  byte val = $BLTN_CAM_RecSta_PMD;
-  write("  BLTN_CAM_RecSta_PMD = 0x%X", val);
-  if (val == 0x0)
-  {
-    write(">>> PASS: RecSta_PMD = OFF <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: RecSta_PMD is NOT OFF <<<");
-    return 0;
-  }
+  write("  [GEN2.0 UNSUPPORTED] BLTN_CAM_RecSta_PMD is not present in the active DBC");
+  return 0;
 }
 
 /*
@@ -1728,29 +1731,7 @@ int WaitFor_RecSta_PEV_Recording(long timeout_ms)
  */
 int WaitFor_RecSta_PMD_Recording(long timeout_ms)
 {
-  long elapsed = 0;
-  long log_interval;
-
-  write("=== Waiting for PMD Recording (max %d seconds) ===", timeout_ms / 1000);
-
-  log_interval = (timeout_ms / 6 / 2000) * 2000;
-  if (log_interval < 2000)
-    log_interval = 2000;
-
-  while (elapsed < timeout_ms)
-  {
-    if ($BLTN_CAM_RecSta_PMD == 0x1)
-    {
-      write(">>> DETECTED: PMD Recording ON after %d seconds <<<", elapsed / 1000);
-      return 1;
-    }
-    if (elapsed == 0 || elapsed % log_interval == 0)
-      write("  [%d s] RecSta_PMD=0x%X", elapsed / 1000, $BLTN_CAM_RecSta_PMD);
-
-    testWaitForTimeout(2000);
-    elapsed += 2000;
-  }
-  write(">>> TIMEOUT: PMD Recording NOT detected <<<");
+  write("=== Waiting for PMD Recording skipped: Gen 2.0 active DBC has no BLTN_CAM_RecSta_PMD ===");
   return 0;
 }
 
@@ -2576,18 +2557,8 @@ int Set_PEV_Sensitivity(int level)
  */
 int Check_PMD_Range(int expected_level)
 {
-  byte val = $BLTN_CAM_PMD_RanSet;
-  write("  BLTN_CAM_PMD_RanSet = 0x%X", val);
-  if (val == expected_level)
-  {
-    write(">>> PASS: PMD Range = Lv.%d <<<", expected_level);
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: PMD Range = 0x%X, expected Lv.%d <<<", val, expected_level);
-    return 0;
-  }
+  write("  [GEN2.0 UNSUPPORTED] BLTN_CAM_PMD_RanSet is not present in the active DBC; expected Lv.%d", expected_level);
+  return 0;
 }
 
 /*
@@ -2600,33 +2571,14 @@ int Check_PMD_Range(int expected_level)
  */
 int Set_PMD_Range(int level)
 {
-  int retry = 0;
   write("=== Setting PMD Range to Lv.%d ===", level);
   if (level < 1 || level > 5)
   {
     write(">>> ERROR: Invalid level %d (must be 1~5) <<<", level);
     return 0;
   }
-  @sysvar::panel::TrackBar_PMD_RanSet = level;
-  testWaitForTimeout(3000);
-
-  while (Check_PMD_Range(level) == 0 && retry < 15)
-  {
-    write("  Retry %d/15: Re-setting PMD Range...", retry + 1);
-    @sysvar::panel::TrackBar_PMD_RanSet = level;
-    testWaitForTimeout(3000);
-    retry++;
-  }
-
-  if ($BLTN_CAM_PMD_RanSet == level)
-  {
-    return 1;
-  }
-  else
-  {
-    write(">>> FAILED: Could not set PMD Range after %d retries <<<", retry);
-    return 0;
-  }
+  write(">>> [GEN2.0 UNSUPPORTED] PMD range control is not present in the active DBC <<<");
+  return 0;
 }
 
 // ---------------------------------------------------------------------------

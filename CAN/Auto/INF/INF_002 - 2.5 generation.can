@@ -1,0 +1,393 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: INF_002 - 2.5 generation
+  
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+*/
+
+variables
+{
+  long wait_owd_timeout_ms = 60000;
+  long wait_owp_timeout_ms = 60000;
+  long wait_pmd_timeout_ms = 120000;
+  int wait_dev_timeout_s = 60;
+  int wait_pev_timeout_s = 60;
+
+  int setup_passed = 0;
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+  int step8_passed = 0;
+
+}
+
+
+// ============================================================================
+// Setup Step
+// ============================================================================
+testcase INF_002_Setup()
+{
+  SetTestStep("Setup - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== SETUP: Init and Set ALL Stamps to ON (0x2) ===");
+  write("=================================================================");
+  testStep("Setup", "Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Set all stamps ON");
+
+  write("Setup: Set_SMK_IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+
+  write("Setup: Click_USM_Reset...");
+  Click_USM_Reset();
+
+  write("Setup: Click_Rec_Reset...");
+  Click_Rec_Reset();
+  
+  write("Setup: Enter_BLTN_CAM...");
+  Enter_BLTN_CAM();
+  testWaitForTimeout(3000);
+
+  setup_passed = Send_All_Stm_NvalueSet(0x2);
+
+  if (setup_passed == 1)
+  {
+    testStepPass("Setup", "All stamps set to ON successfully - PASS");
+  }
+  else
+  {
+    testStepFail("Setup", "Failed to set all stamps to ON - FAIL");
+    Log_Error_Details();
+  }
+
+  Exit_BLTN_CAM();
+  testWaitForTimeout(2000);
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 1: KEY OFF -> KEY ON -> Wait OWD -> wait 5s -> KEY OFF
+// ============================================================================
+testcase INF_002_1()
+{
+  SetTestStep("Bước 1 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 1: KEY OFF, KEY ON, Wait OWD, Wait 5s, KEY OFF ===");
+  write("=================================================================");
+  testStep("Step1", "Wait for OWD Recording");
+
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  KEY_ON();
+  
+  if (WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms) == 1)
+  {
+    testWaitForTimeout(5000);
+    KEY_OFF();
+    testWaitForTimeout(5000);
+    step1_passed = 1;
+    testStepPass("Step1", "OWD Recording started successfully - PASS");
+  }
+  else
+  {
+    step1_passed = 0;
+    testStepFail("Step1", "Timeout waiting for OWD Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 2: KEY ON -> KEY OFF -> Wait OWP -> Wait 5s
+// ============================================================================
+testcase INF_002_2()
+{
+  SetTestStep("Bước 2 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 2: KEY ON, KEY OFF, Wait OWP, Wait 5s ===");
+  write("=================================================================");
+  testStep("Step2", "Wait for OWP Recording");
+
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms) == 1)
+  {
+    testWaitForTimeout(5000);
+    step2_passed = 1;
+    testStepPass("Step2", "OWP Recording started successfully - PASS");
+  }
+  else
+  {
+    step2_passed = 0;
+    testStepFail("Step2", "Timeout waiting for OWP Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 3: KEY OFF -> KEY ON -> Wait OWD -> Wait DEV -> Wait 10s
+// ============================================================================
+testcase INF_002_3()
+{
+  SetTestStep("Bước 3 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 3: KEY OFF, KEY ON, Wait OWD, Wait DEV, Wait 10s ===");
+  write("=================================================================");
+  testStep("Step3", "Wait for OWD and DEV Recording");
+
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  KEY_ON();
+
+  if (WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms) == 1)
+  {
+    if (WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s) == 1)
+    {
+      testWaitForTimeout(10000);
+      step3_passed = 1;
+      testStepPass("Step3", "OWD and DEV Recording checked successfully - PASS");
+    }
+    else
+    {
+      step3_passed = 0;
+      testStepFail("Step3", "Timeout waiting for DEV Recording - FAIL");
+      Log_Error_Details();
+    }
+  }
+  else
+  {
+    step3_passed = 0;
+    testStepFail("Step3", "Timeout waiting for OWD Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 4: KEY ON -> KEY OFF -> Wait OWP -> Wait PEV -> Wait 10s
+// ============================================================================
+testcase INF_002_4()
+{
+  SetTestStep("Bước 4 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 4: KEY ON, KEY OFF, Wait OWP, Wait PEV, Wait 10s ===");
+  write("=================================================================");
+  testStep("Step4", "Wait for OWP and PEV Recording");
+
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms) == 1)
+  {
+    if (WaitFor_RecSta_PEV_Recording(wait_pev_timeout_s) == 1)
+    {
+      testWaitForTimeout(10000);
+      step4_passed = 1;
+      testStepPass("Step4", "OWP and PEV Recording checked successfully - PASS");
+    }
+    else
+    {
+      step4_passed = 0;
+      testStepFail("Step4", "Timeout waiting for PEV Recording - FAIL");
+      Log_Error_Details();
+    }
+  }
+  else
+  {
+    step4_passed = 0;
+    testStepFail("Step4", "Timeout waiting for OWP Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 5: KEY OFF -> KEY ON -> Wait OWD -> Click Evt Switch -> Wait 10s
+// ============================================================================
+testcase INF_002_5()
+{
+  SetTestStep("Bước 5 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 5: KEY OFF, KEY ON, Wait OWD, Click Evt Switch, Wait 10s ===");
+  write("=================================================================");
+  testStep("Step5", "Wait for OWD and Trigger MAR/DEV using Evt Switch");
+
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  KEY_ON();
+
+  if (WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms) == 1)
+  {
+    Click_Evt_Switch();
+    testWaitForTimeout(10000);
+    step5_passed = 1;
+    testStepPass("Step5", "OWD Start and Click Evt Switch - PASS");
+  }
+  else
+  {
+    step5_passed = 0;
+    testStepFail("Step5", "Timeout waiting for OWD Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 6: KEY ON -> KEY OFF -> Wait OWP -> Click Evt Switch -> Wait 10s
+// ============================================================================
+testcase INF_002_6()
+{
+  SetTestStep("Bước 6 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 6: KEY ON, KEY OFF, Wait OWP, Click Evt Switch, Wait 10s ===");
+  write("=================================================================");
+  testStep("Step6", "Wait for OWP and Trigger PEV using Evt Switch");
+
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  KEY_OFF();
+
+  if (WaitFor_RecSta_OWP_Recording(wait_owp_timeout_ms) == 1)
+  {
+    Click_Evt_Switch();
+    testWaitForTimeout(10000);
+    step6_passed = 1;
+    testStepPass("Step6", "OWP Start and Click Evt Switch - PASS");
+  }
+  else
+  {
+    step6_passed = 0;
+    testStepFail("Step6", "Timeout waiting for OWP Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+// ============================================================================
+// Step 8: KEY OFF -> KEY ON -> Turn ON PMD -> KEY OFF -> Wait PMD -> Wait 5s
+// ============================================================================
+testcase INF_002_8()
+{
+  SetTestStep("Bước 8 - INF_002");
+  StartTestTimer();
+
+  write("=================================================================");
+  write("=== STEP 8: KEY OFF, KEY ON, Turn ON PMD, KEY OFF, Wait PMD, Wait 5s ===");
+  write("=================================================================");
+  testStep("Step8", "Turn ON PMD and Wait for PMD Recording");
+
+  KEY_OFF();
+  testWaitForTimeout(5000);
+
+  KEY_ON();
+  testWaitForTimeout(5000);
+
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+
+  KEY_OFF();
+
+  if (WaitFor_RecSta_PMD_Recording(wait_pmd_timeout_ms) == 1)
+  {
+    testWaitForTimeout(5000);
+    step8_passed = 1;
+    testStepPass("Step8", "PMD Recording checked successfully - PASS");
+  }
+  else
+  {
+    step8_passed = 0;
+    testStepFail("Step8", "Timeout waiting for PMD Recording - FAIL");
+    Log_Error_Details();
+  }
+
+  StopTestTimer();
+}
+
+
+// ============================================================================
+// Summary
+// ============================================================================
+void MainTest()
+{
+  testReportFileName("TestReports\\INF_002 - 2.5 generation_report");
+
+  INF_002_Setup();
+  INF_002_1();
+  INF_002_2();
+  INF_002_3();
+  INF_002_4();
+  INF_002_5();
+  INF_002_6();
+  INF_002_8();
+
+  write("");
+  write("========================================");
+  write("=== INF_002 TEST SUMMARY ===");
+  write("========================================");
+
+  if (setup_passed == 1)  write("  Setup : PASS");
+  else                    write("  Setup : FAIL");
+
+  if (step1_passed == 1)  write("  Step 1: PASS");
+  else                    write("  Step 1: FAIL");
+
+  if (step2_passed == 1)  write("  Step 2: PASS");
+  else                    write("  Step 2: FAIL");
+
+  if (step3_passed == 1)  write("  Step 3: PASS");
+  else                    write("  Step 3: FAIL");
+
+  if (step4_passed == 1)  write("  Step 4: PASS");
+  else                    write("  Step 4: FAIL");
+
+  if (step5_passed == 1)  write("  Step 5: PASS");
+  else                    write("  Step 5: FAIL");
+
+  if (step6_passed == 1)  write("  Step 6: PASS");
+  else                    write("  Step 6: FAIL");
+
+  if (step8_passed == 1)  write("  Step 8: PASS");
+  else                    write("  Step 8: FAIL");
+
+  write("========================================");
+}

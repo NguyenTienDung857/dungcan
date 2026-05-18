@@ -1,10 +1,10 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_012.can
  *
  * Muc tieu test:
  * - Dam bao SW version ve ban 0 (neu chua la ban 0 thi chay update_to_00.py).
- * - Chay case_12.py de kich hoat OTA flow.
+ * - Chay case_012.py de kich hoat OTA flow.
  * - Khi nhan AppState = 12: thuc hien KEY ON/OFF 5 lan nhanh trong 3 giay.
  * - Sau do doi toi da 30 phut de nhan AppState ket qua:
  *   + AppState = 3 -> PASS neu Check_SWVerMinor3(1) dat.
@@ -26,8 +26,8 @@ variables
 
   char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
   char gUpdateTo00Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_00.py\"";
-  char gCase12Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_12.py\"";
-  char gSyscallCmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_12.py\"";
+  char gCase012Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_012.py\"";
+  char gSyscallCmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_012.py\"";
 
   int gAppStatePrev = -1;
   int gRunRequest = 0;
@@ -59,12 +59,13 @@ testcase BAS_KEY_ON_OFF_5X_IMMEDIATE_WHEN_APPSTATE_1()
   for (i = 1; i <= 5; i++)
   {
     KEY_ON();
-    testWaitForTimeout(500);
+    testWaitForTimeout(300);
 
     KEY_OFF();
-    testWaitForTimeout(500);
+    testWaitForTimeout(300);
   }
-
+KEY_ON(); // Ket thuc bang KEY ON de dam bao xe o trang thai ON sau khi kich hoat AppState 11.
+   write("[OTA_012][ACTION] Hoan tat KEY ON/OFF 5 lan nhanh trong 3 giay");
   write("[OTA_012] Da KEY ON/OFF 5 lan nhanh trong 3 giay.");
   testStepPass("Action", "Da KEY ON/OFF 5 lan nhanh trong 3 giay sau khi AppState=12.");
 }
@@ -94,6 +95,7 @@ void MainTest()
   int appStateResult;
   int swVerIsOne;
 
+  Send_Value_To_COM(11212);
   write("[OTA_012] ========== BAT DAU MAIN TEST ==========");
   Set_SMK_IGN();
   
@@ -136,8 +138,9 @@ void MainTest()
     if (swVerIsZeroAfterSetup != 1)
     {
       write("[OTA_012][STEP1] Sau update_to_00.py version van khong phai ban 0 -> FAIL");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
       testStepFail("Step 1", "Sau update_to_00.py version van khong phai ban 0");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -148,12 +151,12 @@ void MainTest()
     testStepPass("Step 1", "SW version da la ban 0 ngay tu dau");
   }
 
-  write("[OTA_012] Buoc 2: Chay case_12.py");
+  write("[OTA_012] Buoc 2: Chay case_012.py");
   OTA_Reset_AppStateWaitContext();
   gAppStatePrev = gOTA_AppStateWaitStart;
   gRunRequest = 0;
 
-  snprintf(gSyscallCmd, 256 - 1, "%s", gCase12Cmd);
+  snprintf(gSyscallCmd, 256 - 1, "%s", gCase012Cmd);
   OTA_Run_Python_Command();
 
   write("[OTA_012] Buoc 3: Doi AppState=12 de trigger KEY ON/OFF 5 lan nhanh");
@@ -178,8 +181,9 @@ void MainTest()
           $SMK_TrmnlCtrlGrpStaBDC,
           $BLTN_CAM_RecSta_OWD,
           $BLTN_CAM_SWVerMinor3);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
     testStepFail("Trigger", "Khong nhan duoc AppState=12 de chay KEY ON/OFF.");
+    Send_Value_To_COM(44);
     return;
   }
 
@@ -202,7 +206,7 @@ void MainTest()
           $SMK_TrmnlCtrlGrpStaBDC,
           $BLTN_CAM_RecSta_OWD,
           $BLTN_CAM_SWVerMinor3);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
     if (swVerIsOne == 1)
     {
       testStepPass("Result", "AppState=3 va version=1 -> PASS");
@@ -220,7 +224,7 @@ void MainTest()
           $SMK_TrmnlCtrlGrpStaBDC,
           $BLTN_CAM_RecSta_OWD,
           $BLTN_CAM_SWVerMinor3);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
     testStepFail("Result", "AppState=4 -> FAIL");
   }
   else
@@ -231,10 +235,11 @@ void MainTest()
           $SMK_TrmnlCtrlGrpStaBDC,
           $BLTN_CAM_RecSta_OWD,
           $BLTN_CAM_SWVerMinor3);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_OWD;PythonCom::AppState");
     testStepFail("Result", "Timeout 30 phut, khong nhan duoc AppState=3/4");
   }
   
   write("[OTA_012] ========== KET THUC MAIN TEST ==========");
+  Send_Value_To_COM(44);
 }
 

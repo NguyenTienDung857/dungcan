@@ -1,0 +1,228 @@
+/* * Module: DIA_22F1C1_DVRS_Test.can
+ * Target ECU: DVRS
+ * Phục vụ mục đích: Gửi liên tục 22 F1 C1 cho đến khi ECU phản hồi hoặc bị dừng.
+ */
+
+variables
+{
+  char gEcuName[20] = "DVRS";
+  diagRequest DVRS.* gReq;
+  int gStopByKeyZ = 0;
+}
+
+on key 'z'
+{
+  gStopByKeyZ = 1;
+  write("[DIA_22F1C1] Stop requested by key 'z'.");
+}
+
+on key 'Z'
+{
+  gStopByKeyZ = 1;
+  write("[DIA_22F1C1] Stop requested by key 'Z'.");
+}
+
+int WaitDiagResponseWithStop(long totalTimeoutMs)
+{
+  long waitResult;
+  long waitedMs;
+  long sliceMs;
+
+  waitedMs = 0;
+
+  while (waitedMs < totalTimeoutMs)
+  {
+    if (gStopByKeyZ)
+    {
+      return -1;
+    }
+
+    sliceMs = totalTimeoutMs - waitedMs;
+    if (sliceMs > 200)
+    {
+      sliceMs = 200;
+    }
+
+    waitResult = TestWaitForDiagResponse(gReq, sliceMs);
+    if (waitResult == 1)
+    {
+      return 1;
+    }
+
+    waitedMs += sliceMs;
+  }
+
+  return 0;
+}
+
+void MainTest()
+{
+  TC_DIA_Read_F1C1_Loop();
+}
+
+testcase TC_DIA_Read_F1C1_Loop()
+{
+  long result;
+  long respCode;
+  long respSize;
+  long i;
+  byte respByte;
+  byte sidByte;
+  char dataStr[500];
+  char tempStr[10];
+  diagResponse DVRS.* gResp;
+  
+  int attemptCount = 0;
+  int timeoutMs = 3000;
+  int delayBetweenReqs = 300;
+  int positiveCount = 0;
+  int nrcCount = 0;
+  int timeoutCount = 0;
+  int stopCount = 0;
+  int stoppedByPositive = 0;
+  
+  testCaseTitle("DIA_Read_F1C1_Continuous", "DVRS Read 0xF1C1 Continuous Loop until key Z");
+  testCaseDescription("Gui lien tuc DID 0xF1C1 den DVRS, chi dung khi nhan phim Z/z, va tao summary report.");
+
+  DiagSetTarget(gEcuName);
+  gStopByKeyZ = 0;
+  testStep("Start", "Loop started. Press key Z to stop test.");
+
+  while (!gStopByKeyZ)
+  {
+    attemptCount++;
+    write("Attempt %d: Sending 22 F1 C1...", attemptCount);
+    
+    DiagResize(gReq, 3);
+    DiagSetPrimitiveByte(gReq, 0, 0x22);
+    DiagSetPrimitiveByte(gReq, 1, 0xF1);
+    DiagSetPrimitiveByte(gReq, 2, 0xC1);
+    
+    DiagSendRequest(gReq);
+    
+    result = WaitDiagResponseWithStop(timeoutMs);
+    
+    if (result == -1)
+    {
+      stopCount++;
+      break;
+    }
+
+    if (result == 1)
+    {
+      while (1)
+      {
+        DiagGetLastResponse(gReq, gResp);
+        respSize = DiagGetPrimitiveSize(gResp);
+        sidByte = 0x00;
+        if (respSize > 1)
+        {
+          sidByte = DiagGetPrimitiveByte(gResp, 1);
+        }
+        else if (respSize > 0)
+        {
+          sidByte = DiagGetPrimitiveByte(gResp, 0);
+        }
+
+        if (sidByte == 0x62)
+        {
+          positiveCount++;
+
+          snprintf(dataStr, elCount(dataStr), "Data[%d bytes]: ", respSize);
+
+          for (i = 0; i < respSize && i < 50; i++)
+          {
+            respByte = DiagGetPrimitiveByte(gResp, i);
+            snprintf(tempStr, elCount(tempStr), "%02X ", respByte);
+            strncat(dataStr, tempStr, elCount(dataStr) - strlen(dataStr) - 1);
+          }
+
+          testStepPass("PositiveResp", "Attempt %d | Detect SID 0x62 (byte 2) | %s", attemptCount, dataStr);
+          testStepPass("Result", "Detected SID 0x62 at byte 2. Stop loop and mark test success.");
+          stoppedByPositive = 1;
+          break;
+        }
+
+        respCode = DiagGetLastResponseCode(gReq);
+
+        if (respCode == -1)
+        {
+          positiveCount++;
+          DiagGetLastResponse(gReq, gResp);
+          respSize = DiagGetPrimitiveSize(gResp);
+
+          snprintf(dataStr, elCount(dataStr), "Data[%d bytes]: ", respSize);
+
+          for (i = 0; i < respSize && i < 50; i++)
+          {
+            respByte = DiagGetPrimitiveByte(gResp, i);
+            snprintf(tempStr, elCount(tempStr), "%02X ", respByte);
+            strncat(dataStr, tempStr, elCount(dataStr) - strlen(dataStr) - 1);
+          }
+
+          testStepPass("PositiveResp", "Attempt %d | DID 0xF1C1 | %s", attemptCount, dataStr);
+          testStepPass("Result", "Positive response received. Stop loop and mark test success.");
+          stoppedByPositive = 1;
+          break;
+        }
+
+        if (respCode == 0x78)
+        {
+          write("Lan thu %d: Nhan NRC 0x78 (response pending), tiep tuc cho phan hoi cuoi cung...", attemptCount);
+          result = WaitDiagResponseWithStop(timeoutMs);
+
+          if (result == -1)
+          {
+            stopCount++;
+            break;
+          }
+
+          if (result == 0)
+          {
+            timeoutCount++;
+            write("Lan thu %d: Timeout khi dang cho phan hoi cuoi cung sau NRC 0x78.", attemptCount);
+            testStep("Timeout", "Attempt %d | No final response after NRC 0x78 within %d ms", attemptCount, timeoutMs);
+            TestWaitForTimeout(delayBetweenReqs);
+            break;
+          }
+
+          continue;
+        }
+
+        nrcCount++;
+        write("Lan thu %d: ECU phan hoi loi NRC 0x%02X. Tiep tuc gui...", attemptCount, respCode);
+        testStep("NegativeResp", "Attempt %d | NRC 0x%02X", attemptCount, respCode);
+        TestWaitForTimeout(delayBetweenReqs);
+        break;
+      }
+
+      if (stoppedByPositive || gStopByKeyZ)
+      {
+        break;
+      }
+    }
+    else
+    {
+      timeoutCount++;
+      write("Lan thu %d: Timeout khong co phan hoi. ECU dang ban hoac khong tra loi. Tiep tuc...", attemptCount);
+      testStep("Timeout", "Attempt %d | No response within %d ms", attemptCount, timeoutMs);
+      TestWaitForTimeout(delayBetweenReqs);
+    }
+  }
+
+  testStepPass(
+    "Summary",
+    "StoppedByKey=%d | StoppedByPositive=%d | Attempts=%d | Positive=%d | NRC=%d | Timeout=%d",
+    gStopByKeyZ,
+    stoppedByPositive,
+    attemptCount,
+    positiveCount,
+    nrcCount,
+    timeoutCount
+  );
+
+  if (!gStopByKeyZ && stopCount == 0)
+  {
+    testStep("Info", "Loop ended without key Z (unexpected external stop).");
+  }
+}

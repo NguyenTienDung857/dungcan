@@ -1,0 +1,221 @@
+/*@!Encoding:65001*/
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
+//Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
+//               - Add signal: BLTN_CAM_Set_PMD, BLTN_CAM_RecSet_OWP,
+//                             BLTN_CAM_RecSet_PEV, BLTN_CAM_State,
+//                             SMK_TrmnlCtrlGrpStaBDC
+
+/*
+  Test Case: OWP_018 - 2.5 (OWP_018)
+  Title: [PMD ON -> PMD OFF -> Pop-up Check + OWP/PMD State Verify]
+
+  Step 1:  Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+           Turn_OFF_OWP, Turn_OFF_PEV, Turn_ON_PMD,
+           Check Set_PMD_ON, Check RecSet_OWP_OFF
+  Step 2:  Turn_OFF_PMD,
+           Log "check thuc te xem hien pop-up khong"
+  Step 3:  Check Set_PMD_OFF, Check RecSet_OWP_OFF
+*/
+
+variables
+{
+  // Result tracking
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+
+  // Message Declaration for CAN FD
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
+}
+
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase OWP_018_Init()
+{
+  Send_Value_To_COM(21800);
+  write("========================================");
+  write("=== START TEST OWP_018 - 2.5 ===");
+  write("========================================");
+  write("===START TEST===");
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset,
+//         Turn_OFF_OWP, Turn_OFF_PEV, Turn_ON_PMD,
+//         Check Set_PMD_ON, Check RecSet_OWP_OFF
+// ============================================================================
+testcase OWP_018_1()
+{
+  int pmd_on_result;
+  int owp_off_result;
+  Send_Value_To_COM(21801);
+  SetTestStep("Bước 1 - OWP_018");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 1: Init, Turn OFF OWP/PEV, Turn ON PMD, Check States ===");
+  testStep("Step1", "Set_SMK_IGN, USM/Rec Reset, OWP/PEV OFF, PMD ON, Check");
+
+  // 1.1: Set_SMK_IGN
+  write("Step 1.1: Set_SMK_IGN (KEY ON with CGWNM)...");
+  Set_SMK_IGN();
+  testWaitForTimeout(3000);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  // 1.2: Click USM Reset
+  write("Step 1.2: USM Reset...");
+  Click_USM_Reset();
+
+  // 1.3: Click Rec Reset
+  write("Step 1.3: Rec Reset...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  // 1.4: Turn OFF OWP
+  write("Step 1.4: Turn OFF OWP...");
+  Turn_OFF_OWP();
+  testWaitForTimeout(2000);
+
+  // 1.5: Turn OFF PEV
+  write("Step 1.5: Turn OFF PEV...");
+  Turn_OFF_PEV();
+  testWaitForTimeout(2000);
+
+  // 1.6: Turn ON PMD
+  write("Step 1.6: Turn ON PMD...");
+  Turn_ON_PMD();
+  testWaitForTimeout(3000);
+
+  // 1.7: Check Set_PMD_ON
+  write("Step 1.7: Check Set_PMD_ON...");
+  pmd_on_result = Check_Set_PMD_ON();
+
+  // 1.8: Check RecSet_OWP_OFF
+  write("Step 1.8: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  if (pmd_on_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=ON, RecSet_OWP=OFF <<<");
+    step1_passed = 1;
+    testStepPass("Step1", "Set_PMD ON, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_ON=%d, RecSet_OWP_OFF=%d <<<", pmd_on_result, owp_off_result);
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "Set_PMD_ON=%d, RecSet_OWP_OFF=%d - FAIL", pmd_on_result, owp_off_result);
+  }
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 2: Turn_OFF_PMD, log "check thuc te xem hien pop-up khong"
+// ============================================================================
+testcase OWP_018_2()
+{
+  Send_Value_To_COM(21802);
+  SetTestStep("Bước 2 - OWP_018");
+  StartTestTimer();
+  write("");
+  write("=== STEP 2: Turn OFF PMD, Check pop-up ===");
+  testStep("Step2", "Turn OFF PMD, Check pop-up manually");
+
+  // 2.1: Turn OFF PMD
+  write("Step 2.1: Turn OFF PMD...");
+  Turn_OFF_PMD();
+  testWaitForTimeout(3000);
+
+  // 2.2: Log pop-up check
+  write("");
+  write("*************************************************************");
+  write("*** [MANUAL VERIFICATION REQUIRED]                        ***");
+  write("*** CHECK THUC TE XEM CO HIEN POP-UP KHONG!               ***");
+  write("*** Hay kiem tra man hinh thiet bi de xac nhan.             ***");
+  write("*************************************************************");
+  write("");
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_State");
+
+  step2_passed = 1;
+  testStepPass("Step2", "PMD OFF, log popup check - PASS");
+  write("=== FINISH STEP 2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// STEP 3: Check Set_PMD_OFF, Check RecSet_OWP_OFF
+// ============================================================================
+testcase OWP_018_3()
+{
+  int pmd_off_result;
+  int owp_off_result;
+  Send_Value_To_COM(21803);
+  SetTestStep("Bước 3 - OWP_018");
+  StartTestTimer();
+
+  write("");
+  write("=== STEP 3: Check Set_PMD_OFF, Check RecSet_OWP_OFF ===");
+  testStep("Step3", "Check Set_PMD OFF, RecSet_OWP OFF");
+
+  // 3.1: Check Set_PMD_OFF
+  write("Step 3.1: Check Set_PMD_OFF...");
+  pmd_off_result = Check_Set_PMD_OFF();
+
+  // 3.2: Check RecSet_OWP_OFF
+  write("Step 3.2: Check RecSet_OWP_OFF...");
+  owp_off_result = Check_RecSet_OWP_OFF();
+
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_Set_PMD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  if (pmd_off_result == 1 && owp_off_result == 1)
+  {
+    write(">>> [PASS] Set_PMD=OFF, RecSet_OWP=OFF <<<");
+    step3_passed = 1;
+    testStepPass("Step3", "Set_PMD OFF, RecSet_OWP OFF - PASS");
+  }
+  else
+  {
+    write(">>> [FAIL] Set_PMD_OFF=%d, RecSet_OWP_OFF=%d <<<", pmd_off_result, owp_off_result);
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "Set_PMD_OFF=%d, RecSet_OWP_OFF=%d - FAIL", pmd_off_result, owp_off_result);
+  }
+
+  write("=== FINISH STEP 3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// Summary
+// ============================================================================
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWP_018 - 2.5 generation_report");
+
+  OWP_018_Init();
+
+  OWP_018_1();
+  OWP_018_2();
+  OWP_018_3();
+
+}

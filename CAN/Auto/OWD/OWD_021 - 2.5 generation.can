@@ -1,59 +1,16 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
+includes { #include "../DeclarationFunction_Gen2.5.h" }
 //Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
 //Add signal to graphic 2: BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR
 variables {
   // Global Variable Declaration
-  int flag_RecSet_error = 0;
   int step1_passed = 0;
   byte value_Bfr = 0;
   byte value_Aft = 0;
   // Message Declaration for CAN FD
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
-  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
-  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
-}
-
-void Turn_OFF_RecSet(){
-  if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-    @panel::Switch_CGWNM = 1;
-  
-    KEY_ON();
-    testWaitForTimeout(3000);
-
-    do {
-      Enter_BLTN_CAM();
-      testWaitForTimeout(3000);
-      
-      if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2){
-        write("OWD Off"); @panel::LED_Ctrl_SetOWD = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_OWP) == 0x2){
-        write("OWP Off"); @panel::LED_Ctrl_SetOWP = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_DEV) == 0x2){
-        write("DEV Off"); @panel::LED_Ctrl_SetDEV = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-        write("PEV Off"); @panel::LED_Ctrl_SetPEV = 1; testWaitForTimeout(1000);
-      } 
-
-      Exit_BLTN_CAM();
-      
-      flag_RecSet_error++;
-      
-    } while((getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2) && (flag_RecSet_error <= 15));
-    
-    flag_RecSet_error = 0; 
-    
-    testWaitForTimeout(3000); 
-    KEY_OFF();
-  }
-  else {
-    write("Notifications: All recording setting are turned OFF.");
-  }
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
 }
 
 void BLTN_CAM_Settings(int Choose_Option){
@@ -77,68 +34,40 @@ void BLTN_CAM_Settings(int Choose_Option){
       
     write("Bfr_time is not match");
     
-    write("Stop test"); stop();
+    write("Stop test"); //stop();
     
   }
   else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
     
     write("Aft_time is not match");
     
-    write("Stop test"); stop();
+    write("Stop test"); //stop();
     
   }
 }
 
-void KEY_ON(){
-  setSignal(SMK_TrmnlCtrlGrpStaBDC,0x1); // Power ON
-}
-
-void KEY_OFF(){
-   setSignal(SMK_TrmnlCtrlGrpStaBDC,0x0); // Power OFF
-}
-
-void Enter_BLTN_CAM(){
-  // CAN FD
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode
-  output(_HU_BLTN_CAM_02_200ms);
-}
-
-void Exit_BLTN_CAM(){
-  // CAN FD 
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-  output(_HU_BLTN_CAM_02_200ms);  
-}
-
-void CaptureGraphics(char filename[]){
-  char filepath[512];
-  snprintf(filepath, elcount(filepath), "Screenshots\\%s", filename);
-  write(">>> Capturing screenshot: %s <<<", filepath);
-  testWaitForTimeout(3000);
-  testReportAddWindowCapture("Graphics 2","BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR","Screenshot",filepath);
-  write(">>> Screenshot captured <<<");
-}
-
-void Rec_Reset(){
-  @panel::Switch_CGWNM = 1; 
-  
-  KEY_ON();
-  
-  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1){
-    @panel::Button_RecReset = 1; 
-    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State,500);
-  }
-  
-  KEY_OFF();
-  
-  @panel::Switch_CGWNM = 0; 
+testcase OWD_021_Init(){
+  Send_Value_To_COM(12100);
+  write("Start test OWD_021 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_021_1(){
+  Send_Value_To_COM(12101);
+  SetTestStep("Bước 1 - OWD_021");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_021_1");
+  testStep("Step1", "MAR recording time check: BfrTime=-10s, AftTime=+10s -> MAR starts after Evt Switch, check duration 9~11s");
   write("Start test OWD_021_1");
-  
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
   @panel::Switch_CGWNM = 1;
-  
+
   KEY_ON();
   testWaitForTimeout(3000);
   
@@ -169,13 +98,15 @@ testcase OWD_021_1(){
   }
   else{
     write("Error: MAR recording hasn't started");
+    write(">>> FAIL REASON: MAR recording has not started within timeout <<<");
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     step1_passed = 0;
   }  
   
   testWaitForTimeout(10000);
   
-  CaptureGraphics("OWD_021_01.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -183,29 +114,22 @@ testcase OWD_021_1(){
 
   @panel::Switch_CGWNM = 0;
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_021_1: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_021_1: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
   testStep("TEST SUMMARY","--- OWD_021_1 ---");
   testStep("","Step 1: Start test OWD_021_1 ... PASS");
   if (step1_passed) { testStep("","Step 2: Check MAR recording ... PASS"); } else { testStep("","Step 2: Check MAR recording ... FAIL"); }
   testStep("","Step 3: Screenshot ... PASS");
   write("Finish OWD_021_1");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_021_2(){
+  Send_Value_To_COM(12102);
+  SetTestStep("Bước 2 - OWD_021");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_021_2");
+  testStep("Step2", "MAR NOT triggered in BLTN_CAM mode: Evt Switch in Build-in Cam -> expect RecSta_MAR stays 0x0 (OFF)");
   write("Start test OWD_021_2");
   
   @panel::Switch_CGWNM = 1;
@@ -229,6 +153,8 @@ testcase OWD_021_2(){
   
   if (testWaitForSignalChange(BLTN_CAM_RecSta_MAR,10000) == 1){
     write("MAR recording is started");
+    write(">>> FAIL REASON: MAR recording started unexpectedly without Clock ON <<<");
+    Log_Error_Details();
     testStepFail("Fail", "Test-case is NG");
     step1_passed = 0;
   }
@@ -238,54 +164,22 @@ testcase OWD_021_2(){
     step1_passed = 1;
   }  
 
-  CaptureGraphics("OWD_021_02.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSta_MAR"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
   KEY_OFF(); write("Run KEY_OFF()");
 
   @panel::Switch_CGWNM = 0;
-
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_021_2: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_021_2: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
-  testStep("TEST SUMMARY","--- OWD_021_2 ---");
-  testStep("","Step 1: Start test OWD_021_2 ... PASS");
-  if (step1_passed) { testStep("","Step 2: Check MAR recording ... PASS"); } else { testStep("","Step 2: Check MAR recording ... FAIL"); }
-  testStep("","Step 3: Screenshot ... PASS");
-  write("Finish OWD_021_2");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
+
 
 void MainTest(){
   testReportFileName("TestReports\\OWD_021 - 2.5 generation_report");
-  write("Run Turn_OFF_RecSet()"); Turn_OFF_RecSet();
   
-  write("Run Rec_Reset()"); Rec_Reset();
-  
-  TestWaitForValueInput("Please enter the ID testcase number: (1/2/3)",300000);
-  
-  switch (testGetValueInput()){
-    
-    case (1): OWD_021_1(); break;
-    
-    case (2): OWD_021_2(); break;
-    
-    case (3):
-      OWD_021_1();
-      
-      OWD_021_2();
-      
-      break;
-  }
+  OWD_021_Init();
+  OWD_021_1();
+  OWD_021_2();
 }

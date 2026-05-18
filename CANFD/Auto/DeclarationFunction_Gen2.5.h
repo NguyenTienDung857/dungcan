@@ -92,7 +92,7 @@
   CHECK                           SET                       CLICK              WAIT                             OTHER
   ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Check_BLTN_CAM_UI_Mode()        KEY_ON()                 Click_USM_Reset()   Wait_For_BLTN_CAM_Mode()
-  Check_RecSet_OWD_ON()           KEY_OFF()                Click_Rec_Reset()   WaitFor_RecSta_OWD_Recording()
+  Check_RecSet_OWD_ON()           KEY_OFF()                Click_USM_Reset()   WaitFor_RecSta_OWD_Recording()
   Check_RecSet_OWD_OFF()          Set_SMK_IGN()            Click_Evt_Switch()  WaitFor_RecSta_OWP_Recording()   Send_MEV_Rec_Req()
   Check_RecSta_OWD_Recording()    Set_SMK_ACC()            Click_TML_Start()   WaitFor_RecSta_OWD_OFF()         Reset_MEV_Rec_Req()
   Check_RecSta_OWD_OFF()          Set_PowerAutoCut_Mode()  Click_TML_Stop()    WaitFor_RecSta_OWP_OFF()         Get_AIN_Voltage()
@@ -100,7 +100,7 @@
   Check_RecSet_OWP_OFF()          Turn_ON_OWD()                                WaitFor_RecSta_PEV_Recording()   Enable_DrivingInfo()
   Check_RecSta_OWP_Recording()    Turn_OFF_OWD()                               WaitFor_RecSta_DEV_OFF()         Disable_DrivingInfo()
   Check_RecSta_OWP_OFF()          Turn_ON_OWP()                                WaitFor_RecSta_PEV_OFF()         Standard_Init()
-  Check_RecSet_DEV_ON()           Turn_OFF_OWP()                               WaitFor_RecSta_MAR_Recording()
+  Check_RecSet_DEV_ON()           Turn_OFF_OWP()                               WaitFor_RecSta_MAR_Recording()   Set_Dealer_Mode()
   Check_RecSet_DEV_OFF()          Turn_ON_DEV()                                WaitFor_RecSta_TML_OFF()         Set_Factory_Mode()
   Check_RecSta_DEV_Recording()    Turn_OFF_DEV()                               WaitFor_RecSta_TML_Recording()   Set_Customer_Mode()
   Check_RecSta_DEV_OFF()          Turn_ON_PEV()                                Wait_For_FRS_Reset()             CaptureGraphics()
@@ -139,6 +139,8 @@
   Check_SWVerMinor3               Set_Attach_Rear
                                   Set_Detach_Rear
                                   Set_SDcard
+                                  TurnOff_Output_CH2
+                                  TurnOn_Output_CH2
 */
 
 variables
@@ -193,7 +195,7 @@ variables
 void KEY_ON()
 {
   SET_NM_ON();
-  testWaitForTimeout(500);
+  // testWaitForTimeout(500);
   setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x2);
 }
 
@@ -2408,6 +2410,18 @@ int Verify_PowerAutoCut_Mode(byte expected_mode)
  * Return: 1 = success, 0 = timeout
  */
 int Set_Factory_Mode() { return Set_PowerAutoCut_Mode(0x0, 30000); }
+
+/*
+ * Set_Dealer_Mode()
+ * -----------------
+ * Shortcut to set ICU to Dealer Mode (0x1) with 30-second timeout.
+ * Dealer mode is used for dealer service/diagnostics.
+ *
+ * Keywords: dealer mode, service mode, diagnostics, ICU dealer
+ * Calls: Set_PowerAutoCut_Mode(0x1, 30000)
+ * Return: 1 = success, 0 = timeout
+ */
+int Set_Dealer_Mode() { return Set_PowerAutoCut_Mode(0x1, 30000); }
 
 /*
  * Set_Customer_Mode()

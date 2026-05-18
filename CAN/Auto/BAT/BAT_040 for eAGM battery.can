@@ -675,3 +675,32 @@ testcase BAT_040_5(){
   testStep("Notification","Finish BAT_040_5");
   write("Finish BAT_040_5");
 }
+
+void MainTest(){
+  testWaitForValueInput("Enter the testcase ID (1/2/3/4/5/6):",300000);
+
+  switch(testGetValueInput()){
+    case(1): BAT_040_1();break; //Test case BAT_040_1
+
+    case(2): BAT_040_2();break; //Test case BAT_040_2
+
+    case(3): BAT_040_3();break; //Test case BAT_040_3
+
+    case(4): BAT_040_4();break; //Test case BAT_040_4
+
+    case(5): BAT_040_5();break; //Test case BAT_040_5
+
+    case(6):
+      BAT_040_1();
+
+      BAT_040_2();
+
+      BAT_040_3();
+
+      BAT_040_4();
+
+      BAT_040_5();
+
+      break;
+  }
+}

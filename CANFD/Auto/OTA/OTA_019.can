@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 /*
  * FILE OVERVIEW: OTA_019.can
  *
@@ -6,7 +6,7 @@
  * - Setup dieu kien OTA voi PMD ON.
  * - Kiem tra SW version co phai ban 1 khong.
  * - Neu khong phai ban 1: chay update_to_01.py de dua ve ban 1.
- * - Sau khi dam bao version = 1, chay case_19.py o luong chinh.
+ * - Sau khi dam bao version = 1, chay case_019.py o luong chinh.
  * - Luon lang nghe AppState toi da 30 phut:
  *   + AppState = 3 -> tiep tuc check version 0.
  *   + AppState = 4 -> FAIL.
@@ -21,7 +21,7 @@ variables
 {
   char gWorkingDir[256] = "D:\\project\\CANoe\\CANFD\\Auto\\OTA\\";
   char gUpdateTo01Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\update_to_01.py\"";
-  char gCase19Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_19.py\"";
+  char gCase019Cmd[256] = "\"python\" \"D:\\project\\CANoe\\CANFD\\Auto\\OTA\\case_019.py\"";
 
   int gAppStatePrev = -1;
 }
@@ -76,6 +76,7 @@ testcase OTA_019()
   int mainAppStateResult;
   int swVerIsZeroAfterMain;
 
+  Send_Value_To_COM(11919);
   write("===========================================================");
   write("[OTA_019] Start test case OTA_019");
   write("===========================================================");
@@ -135,7 +136,8 @@ testcase OTA_019()
     if (swVerIsOneAfterSetup != 1)
     {
       testStepFail("Version", "Sau update_to_01.py van chua ve ban 1");
-      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+      CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
+      Send_Value_To_COM(44);
       return;
     }
 
@@ -146,13 +148,13 @@ testcase OTA_019()
     testStepPass("Version", "Da la ban 1 ngay tu dau");
   }
 
-  testStep("Step 3", "Luong chinh: chay case_19.py");
+  testStep("Step 3", "Luong chinh: chay case_019.py");
   OTA_Reset_AppStateWaitContext();
   gAppStatePrev = gOTA_AppStateWaitStart;
 
-  write("[OTA_019] AppState truoc khi chay case_19.py = %d", gOTA_AppStateWaitStart);
+  write("[OTA_019] AppState truoc khi chay case_019.py = %d", gOTA_AppStateWaitStart);
 
-  Run_Python_Update(gCase19Cmd, "Luong chinh - chay case_19.py");
+  Run_Python_Update(gCase019Cmd, "Luong chinh - chay case_019.py");
 
   testStep("Step 4", "Lang nghe AppState toi da 30 phut, dung khi thay 3 hoac 4");
   mainAppStateResult = Wait_AppState_3_Or_4_Changed(1800000);
@@ -161,7 +163,7 @@ testcase OTA_019()
   {
     write("[OTA_019] AppState = 3");
     swVerIsZeroAfterMain = Check_SWVerMinor3(0);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
 
     if (swVerIsZeroAfterMain == 1)
     {
@@ -176,7 +178,7 @@ testcase OTA_019()
   {
     write("[OTA_019] AppState = 4 -> FAIL");
     swVerIsZeroAfterMain = Check_SWVerMinor3(0);
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
 
     if (swVerIsZeroAfterMain == 1)
     {
@@ -190,11 +192,12 @@ testcase OTA_019()
   else
   {
     write("[OTA_019] Timeout 30 phut, khong thay AppState doi sang 3/4");
-    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSta_OWD;BLTN_CAM_SWVerMinor3");
+    CaptureGraphics("OTA", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_SWVerMinor3;BLTN_CAM_RecSta_PMD;PythonCom::AppState");
     testStepFail("Result", "Timeout 30 phut, khong thay AppState doi sang 3/4");
   }
 
   write("[OTA_019] Ket thuc testcase");
+  Send_Value_To_COM(44);
 }
 
 void MainTest()

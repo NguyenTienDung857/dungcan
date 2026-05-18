@@ -10,14 +10,14 @@
   
   void Enter_BLTN_CAM(){
     // CAN FD
-    _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode  
-    output(_HU_BLTN_CAM_02_200ms);
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode  
+    output(_HU_BLTN_CAM_PE_00_200ms);
   }
   
   void Exit_BLTN_CAM(){
     // CAN FD
-    _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-    output(_HU_BLTN_CAM_02_200ms);  
+    _HU_BLTN_CAM_PE_00_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
+    output(_HU_BLTN_CAM_PE_00_200ms);  
   }
   
   void Set_All_Recording_OFF(){

@@ -1,0 +1,369 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_014 - 2.5 generation
+  Title: [PEV Notification Setting Test 2]
+
+  Step 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_OWP, Set_PEV_AppNoti ON. 
+          Set EV before/after time. Key Off, Wait for OWP, PEV recording. Check PEV Rec=0x2.
+  Step 2: Wait 6 mins for PEV_Recorded = 0x0.
+  Step 3: SET_NM_OFF, KEY_OFF, Wait OWP recording, wait network sleep 6 min. SET_NM_ON, Wait PEV recording, check 0x1.
+  Step 4: Wait 10 mins for PEV_Recorded = 0x0.
+  Step 5: KEY_ON, Turn_ON_PMD, KEY_OFF, Wait PMD recording 6 mins. Wait PEV recording.
+  Step 6: Wait 10 mins for PEV_Recorded = 0x0.
+  Step 7: KEY_OFF, Wait network sleep 6 mins. SET_NM_ON, Wait PMD OFF, Wait PEV recording.
+  Step 8: Wait 10 mins for PEV_Recorded = 0x0.
+*/
+
+includes {
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[2048] = "";
+}
+
+// ============================================================================
+// CCS_014_1: Step 1
+// ============================================================================
+testcase CCS_014_1()
+{
+  Send_Value_To_COM(31401);
+  SetTestStep("Buoc 1 - CCS_014");
+  StartTestTimer();
+  testStep("Step 1", "Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_OWP, Set_PEV_AppNoti ON. Set EV before/after time. Key Off, Wait for OWP, PEV recording. Check PEV Rec=0x2.");
+  
+  write("=== START CCS_014_1 ===");
+  
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+  
+  Turn_ON_OWP();
+  Set_PEV_AppNoti(0x2);
+  
+  // Set the recording time for the corresponding event (Bfr -10s, Aft +10s)
+  Set_EV_BeforeTime(3); // 3 corresponds to 10s based on header
+  Set_EV_AfterTime(10); // 10s
+  
+  KEY_OFF();
+  
+  WaitFor_RecSta_OWP_Recording(60000); 
+  WaitFor_RecSta_PEV_Recording(60); 
+  Check_RecSta_PEV_Recording();
+  
+  testWaitForTimeout(12000); // Wait 12s
+  
+    if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+      testStepPass("CCS_014_1", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+    } else {
+      snprintf(failReason, elcount(failReason), "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_PEV_Recorded);
+      testStepFail("CCS_014_1", failReason);
+    }
+  
+  write("BLTN_CAM_PEV_Count: %d", $BLTN_CAM_PEV_Count);
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_2: Step 2
+// ============================================================================
+testcase CCS_014_2()
+{
+  long i;
+  int is_ok = 0;
+  Send_Value_To_COM(31402);
+  SetTestStep("Buoc 2 - CCS_014");
+  StartTestTimer();
+  testStep("Step 2", "Wait 6 mins for PEV_Recorded = 0x0.");
+  write("=== START CCS_014_2 ===");
+  
+  // Poll up to 6 minutes until BLTN_CAM_PEV_Recorded = 0x0
+  for (i = 0; i < 360; i++) {
+     if ($BLTN_CAM_PEV_Recorded == 0x0) {
+         is_ok = 1;
+         CaptureGraphics("CSS", "BLTN_CAM_PEV_Recorded;SMK_TrmnlCtrlGrpStaBDC");
+         break;
+     }
+     testWaitForTimeout(1000);
+  }
+  
+  if (is_ok) {
+     testStepPass("CCS_014_2", "BLTN_CAM_PEV_Recorded resolved to 0x0");
+  } else {
+     testStepFail("CCS_014_2", "Fail reason: Timeout waiting for BLTN_CAM_PEV_Recorded == 0x0 within 6 mins. Cause: expected condition was not satisfied.");
+  }
+    write("Run CaptureGraphics()");
+    CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_3: Step 3
+// ============================================================================
+testcase CCS_014_3()
+{
+  Send_Value_To_COM(31403);
+  SetTestStep("Buoc 3 - CCS_014");
+  StartTestTimer();
+  testStep("Step 3", "SET_NM_OFF, KEY_OFF, Wait OWP recording, wait network sleep 6 min. SET_NM_ON, Wait PEV recording, check 0x1.");
+  write("=== START CCS_014_3 ===");
+  
+  SET_NM_OFF();
+  KEY_OFF();
+  
+  WaitFor_RecSta_OWP_Recording(60000);
+  WaitForNetworkSleep(480); // 8 mins
+  
+  SET_NM_ON();
+  WaitFor_RecSta_PEV_Recording(60);
+  SET_NM_ON();
+  
+  if ($BLTN_CAM_RecSta_PEV == 0x1) {
+      testStepPass("CCS_014_3_A", "BLTN_CAM_RecSta_PEV is 0x1");
+  } else {
+      snprintf(failReason, elcount(failReason), "Fail reason: BLTN_CAM_RecSta_PEV != 0x1 (Actual: 0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_RecSta_PEV);
+      testStepFail("CCS_014_3_A", failReason);
+  }
+
+  testWaitForTimeout(12000);
+
+  if ($BLTN_CAM_RecSta_PEV == 0x1) {
+      testStepPass("CCS_014_3_B", "BLTN_CAM_RecSta_PEV is 0x1 after 12s");
+  } else {
+      testStepFail("CCS_014_3_B", "Fail reason: BLTN_CAM_RecSta_PEV goes off after 12s. Cause: expected condition was not satisfied.");
+  }
+  
+    if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+      testStepPass("CCS_014_3_C", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+    } else {
+      snprintf(failReason, elcount(failReason), "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_PEV_Recorded);
+      testStepFail("CCS_014_3_C", failReason);
+    }
+  
+  write("BLTN_CAM_PEV_Count: %d", $BLTN_CAM_PEV_Count);
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_4: Step 4
+// ============================================================================
+testcase CCS_014_4()
+{
+  long i;
+  int is_ok = 0;
+  Send_Value_To_COM(31404);
+  SetTestStep("Buoc 4 - CCS_014");
+  StartTestTimer();
+  testStep("Step 4", "Wait 10 mins for PEV_Recorded = 0x0.");
+  write("=== START CCS_014_4 ===");
+  
+  // Poll up to 10 minutes until BLTN_CAM_PEV_Recorded = 0x0
+  for(i = 0; i < 600; i++) {
+     if ($BLTN_CAM_PEV_Recorded == 0x0) {
+         is_ok = 1;
+         break;
+     }
+     testWaitForTimeout(1000);
+  }
+  
+  if (is_ok) {
+      testStepPass("CCS_014_4", "BLTN_CAM_PEV_Recorded resolved to 0x0 within 10 mins");
+  } else {
+      testStepFail("CCS_014_4", "Fail reason: Timeout waiting for BLTN_CAM_PEV_Recorded == 0x0. Cause: expected condition was not satisfied.");
+  }
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_5: Step 5
+// ============================================================================
+testcase CCS_014_5()
+{
+  Send_Value_To_COM(31405);
+  SetTestStep("Buoc 5 - CCS_014");
+  StartTestTimer();
+  testStep("Step 5", "KEY_ON, Turn_ON_PMD, KEY_OFF, Wait PMD recording 6 mins. Wait PEV recording.");
+  write("=== START CCS_014_5 ===");
+  
+  Set_SMK_IGN(); // "key on" typically maps to IGN on
+  Turn_ON_PMD();
+  KEY_OFF();
+  
+  WaitFor_RecSta_PMD_Recording(60000); // 1 min timeout
+  WaitFor_RecSta_PEV_Recording(60);
+  Check_RecSta_PEV_Recording();
+  
+  testWaitForTimeout(12000);
+  
+    if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+      testStepPass("CCS_014_5", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+    } else {
+      snprintf(failReason, elcount(failReason), "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_PEV_Recorded);
+      testStepFail("CCS_014_5", failReason);
+    }
+  
+  write("BLTN_CAM_PEV_Count: %d", $BLTN_CAM_PEV_Count);
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_6: Step 6
+// ============================================================================
+testcase CCS_014_6()
+{
+  long i;
+  int is_ok = 0;
+  Send_Value_To_COM(31406);
+  SetTestStep("Buoc 6 - CCS_014");
+  StartTestTimer();
+  testStep("Step 6", "Wait 10 mins for PEV_Recorded = 0x0.");
+  write("=== START CCS_014_6 ===");
+  
+  for(i = 0; i < 600; i++) {
+     if ($BLTN_CAM_PEV_Recorded == 0x0) {
+         is_ok = 1;
+         break;
+     }
+     testWaitForTimeout(1000);
+  }
+  
+  if (is_ok) {
+      testStepPass("CCS_014_6", "BLTN_CAM_PEV_Recorded resolved to 0x0 within 10 mins");
+  } else {
+      testStepFail("CCS_014_6", "Fail reason: Timeout waiting for BLTN_CAM_PEV_Recorded == 0x0. Cause: expected condition was not satisfied.");
+  }
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_7: Step 7
+// ============================================================================
+testcase CCS_014_7()
+{
+  Send_Value_To_COM(31407);
+  SetTestStep("Buoc 7 - CCS_014");
+  StartTestTimer();
+  testStep("Step 7", "KEY_OFF, Wait network sleep 6 mins. SET_NM_ON, Wait PMD OFF, Wait PEV recording.");
+  write("=== START CCS_014_7 ===");
+  
+  KEY_OFF();
+  WaitForNetworkSleep(480);
+  
+  SET_NM_ON();
+  
+  WaitFor_RecSta_PMD_OFF(60000);
+  WaitFor_RecSta_PEV_Recording(60);
+  Check_RecSta_PEV_Recording();
+  
+  testWaitForTimeout(12000);
+  
+    if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+      testStepPass("CCS_014_7", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+    } else {
+      snprintf(failReason, elcount(failReason), "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.", $BLTN_CAM_PEV_Recorded);
+      testStepFail("CCS_014_7", failReason);
+    }
+  
+  write("BLTN_CAM_PEV_Count: %d", $BLTN_CAM_PEV_Count);
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_7 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_014_8: Step 8
+// ============================================================================
+testcase CCS_014_8()
+{
+  long i;
+  int is_ok = 0;
+  Send_Value_To_COM(31408);
+  SetTestStep("Buoc 8 - CCS_014");
+  StartTestTimer();
+  testStep("Step 8", "Wait 10 mins for PEV_Recorded = 0x0.");
+  write("=== START CCS_014_8 ===");
+  
+  for(i = 0; i < 600; i++) {
+     if ($BLTN_CAM_PEV_Recorded == 0x0) {
+         is_ok = 1;
+         break;
+     }
+     testWaitForTimeout(1000);
+  }
+  
+  if (is_ok) {
+      testStepPass("CCS_014_8", "BLTN_CAM_PEV_Recorded resolved to 0x0 within 10 mins");
+  } else {
+      testStepFail("CCS_014_8", "Fail reason: Timeout waiting for BLTN_CAM_PEV_Recorded == 0x0. Cause: expected condition was not satisfied.");
+  }
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PMD;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;BLTN_CAM_Set_EV_BfrTime;BLTN_CAM_Set_EV_AftTime;SMK_TrmnlCtrlGrpStaBDC");
+  
+  write("=== FINISH CCS_014_8 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// MAIN TEST FUNCTION - Run all test cases sequentially
+// ============================================================================
+void MainTest()
+{
+  write("\n");
+  write("===============================================================");
+  write("  CCS_014 - PEV_Notification Setting Test 2 (2.5 generation)");
+  write("===============================================================");
+  write("\n");
+
+  CCS_014_1();
+  testWaitForTimeout(2000);
+  CCS_014_2();
+  testWaitForTimeout(2000);
+  CCS_014_3();
+  testWaitForTimeout(2000);
+  CCS_014_4();
+  testWaitForTimeout(2000);
+  CCS_014_5();
+  testWaitForTimeout(2000);
+  CCS_014_6();
+  testWaitForTimeout(2000);
+  CCS_014_7();
+  testWaitForTimeout(2000);
+  CCS_014_8();
+}
+

@@ -23,6 +23,17 @@ YYYY-MM-DD | category | short title
 
 ## preference
 
+2026-05-15 | preference | OTA Python case filenames use three-digit numbering
+- Facts: The user asked to rename older OTA Python case files such as
+  `case_11.py` to the uniform `case_0xx.py` style.
+- Evidence: `case_9.py`, `case_9_2.py`, `case_10.py`, `case_10_2.py`,
+  `case_11.py`, `case_12.py`, `case_15.py`, and `case_19.py` were renamed to
+  `case_009.py`, `case_009_2.py`, `case_010.py`, `case_010_2.py`,
+  `case_011.py`, `case_012.py`, `case_015.py`, and `case_019.py`.
+- Use next time: New OTA Python runner files should use `case_###.py`; for
+  secondary runner variants, keep the padded main case number, for example
+  `case_009_2.py`.
+
 2026-05-08 | preference | Do not create wrapper helpers for header calls
 - Facts: The user corrected `OWD_008` because local helpers were wrapping
   shared header helpers or hiding simple capture/logging behind test-specific
@@ -99,6 +110,92 @@ YYYY-MM-DD | category | short title
   helper is clearly needed.
 
 ## context
+
+2026-05-16 | context | BAS 2.0 runs should be fully prompt-free
+- Facts: `BAS_016`, `BAS_017`, and `BAS_018` 2.0 automation should not ask for
+  recorded-file deletion confirmation, ACC/IGN confirmation, test ID, or
+  battery type.
+- Evidence: The 2026-05-16 BAS cleanup removed `testWaitForMessageBox` from
+  the three BAS 2.0 files and changed local Gen2 `Set_Battery()` to auto-use
+  eAGM/SOC `ICU_BS2SoC = 0x50`.
+- Use next time: Keep BAS 2.0 pass/fail based on CAN-visible mode, key,
+  parking recording, battery, profile, and setting signals. Do not restore
+  operator prompts for video deletion or battery selection.
+
+2026-05-15 | context | OTA case 010/012 AppState handoff waits for SecurityAccess
+- Facts: `Auto/OTA/case_010.py` and `Auto/OTA/case_012.py` send their
+  mid-run `PythonCom::AppState` only after detecting `activate-rule`, then a
+  later `securityAccess` output line, then waiting 5 seconds.
+- Evidence: The prior `routineControl` trigger was replaced by
+  `securityAccess` detection for AppState 10 and AppState 12 handoffs.
+- Use next time: For these OTA cases, preserve the
+  `activate-rule -> securityAccess -> 5s -> AppState` ordering unless the user
+  asks for a different H-OTA synchronization point.
+
+2026-05-15 | context | OTA CAPL captures include AppState
+- Facts: OTA `.can` screenshot signal lists now include
+  `PythonCom::AppState` for direct `CaptureGraphics("OTA", "...")` calls and
+  the local `gCaptureSignals` variables in OTA_009, OTA_010, and OTA_011.
+- Evidence: Static scan found no direct OTA `CaptureGraphics(...)` list or
+  OTA `gCaptureSignals` definition missing `PythonCom::AppState`.
+- Use next time: Preserve `PythonCom::AppState` when changing OTA CAPL capture
+  signal lists so reports show the Python handoff/result state.
+
+2026-05-15 | context | OTA Python runners tee console output to Log_python
+- Facts: OTA Python runners now import `start_python_log(...)` from
+  `Auto/OTA/python_run_log.py` and call it at the start of
+  `open_hota_and_file()`.
+- Evidence: Each run writes stdout/stderr to
+  `Auto/OTA/Log_python/<script_name>_YYYYMMDD_HHMMSS.log` while keeping the
+  popup/console output visible.
+- Use next time: For new OTA Python runners, include the same
+  `start_python_log(script_dir, script_name)` startup call so run logs stay
+  consistent.
+
+2026-05-15 | context | OTA Python auto-discovers H-OTA config filename
+- Facts: OTA Python runners should not hardcode a specific
+  `ReprogramConfig_*.hcfg-r` filename. Each runner keeps only the selected
+  config folder number (`0`, `1`, `2`, or `3`) and calls
+  `find_hota_config_file(...)` from `Auto/OTA/hota_config.py`.
+- Evidence: Added `Auto/OTA/hota_config.py` and updated all 31
+  `Auto/OTA/*.py` runner scripts. Static scan found no hardcoded
+  `ReprogramConfig_0_1_1_*` filename in Python and 31 helper call sites.
+- Use next time: For OTA Python H-OTA file selection, keep using the helper so
+  future `.hcfg-r` filename changes do not require editing every runner.
+
+2026-05-15 | context | OTA_021-OTA_024 ERT scripts split to case files
+- Facts: `Auto/OTA/case_021.py` through `case_024.py` are exact copies of
+  `update_to_00_ERT.py` through `update_to_03_ERT.py` respectively. The matching
+  `OTA_021.can` through `OTA_024.can` main Step 3 flows call the new case files.
+- Evidence: SHA-256 hashes matched for all four source/copy pairs, and a static
+  scan showed the `.can` files reference `case_021.py` through `case_024.py`.
+- Use next time: For later OTA ERT case splits, keep setup update scripts
+  unchanged and only redirect the main testcase Python syscall to the new
+  `case_xxx.py` copy requested by the user.
+
+2026-05-13 | context | BAS 2.0 sequential run and BAS window captures
+- Facts: `Auto/BAS/BAS_016 - 2.0 generation.can`,
+  `Auto/BAS/BAS_017 - 2.0 generation.can`, and
+  `Auto/BAS/BAS_018 - 2.0 generation.can` now run all cases sequentially from
+  `MainTest()` instead of prompting for a case ID. BAS signal screenshots use
+  `CaptureGraphics("BAS", "...")`.
+- Evidence: The user corrected that the graphic window name for screenshots is
+  `BAS`, and requested the case-selection prompt be removed.
+- Use next time: For BAS 2.0 files, capture related signals on window `BAS`.
+  These files include `Auto/BAS/DeclarationFunction_Gen2.h`, so keep the
+  Gen2.5-compatible `CaptureGraphics(char window[], char signalList[])` helper
+  available in the BAS local header instead of including both headers with
+  overlapping common function names.
+
+2026-05-13 | context | Dealer PowerAutoCut shortcut helper
+- Facts: `Auto/DeclarationFunction_Gen2.5.h` now has `Set_Dealer_Mode()`.
+  It calls `Set_PowerAutoCut_Mode(0x1, 30000)` to set
+  `ICU_PowerAutoCutModSta` to Dealer Mode with the same 30-second timeout style
+  as `Set_Factory_Mode()` and `Set_Customer_Mode()`.
+- Evidence: User requested a helper based on `Set_Factory_Mode()` for
+  `ICU_PowerAutoCutMode = 0x1 (Dealer mode)`.
+- Use next time: Call `Set_Dealer_Mode()` from tests instead of directly
+  calling `Set_PowerAutoCut_Mode(0x1, 30000)`.
 
 2026-05-12 | context | OWP_006 OWP/PEV/PMD B+ interruption rewrite
 - Facts: `Auto/OWP/OWP_006 - 2.5 generation.can` now implements the user's
@@ -285,6 +382,73 @@ YYYY-MM-DD | category | short title
 
 ## pattern
 
+2026-05-15 | pattern | OTA CAN COM start/end markers
+- Facts: OTA `.can` primary test flows use one start marker
+  `Send_Value_To_COM(1xx00)`, where `xx` comes from the OTA file number, and
+  close with `Send_Value_To_COM(44)`.
+- Evidence: `Auto/OTA/OTA_001.can` through `OTA_024.can` now use markers such
+  as `10100`, `10800`, `12100`, and `12400`; `OTA_012.can` places the markers
+  in `MainTest()` because it has no `testcase OTA_012()`.
+- Use next time: For new or rewritten OTA `.can` files, add the start marker
+  after local declarations in the primary flow, and add `Send_Value_To_COM(44)`
+  before every early `return;` plus the final end of that flow.
+
+2026-05-15 | pattern | OTA CAN captures use related signal groups
+- Facts: OTA `.can` screenshot captures should include common context signals
+  (`SMK_TrmnlCtrlGrpStaBDC`, `BLTN_CAM_SWVerMinor3`) plus the file's
+  feature-specific result evidence signals.
+- Evidence: `Auto/OTA/OTA_001.can` through `OTA_024.can` capture lists were
+  narrowed after the user asked to remove `BLTN_CAM_HU_UI_Mode`,
+  `BLTN_CAM_State`, OWD/OWP/PEV RecSet signals, PMD Set, and PEV AppNoti from
+  screenshots. On 2026-05-16, `NM_State_BLTN_CAM_FD` was also removed from OTA
+  `.can` screenshot lists. OWD files keep OWD RecSta, OWP files keep OWP
+  RecSta, PMD files keep PMD RecSta, `OTA_004` keeps OWP/PEV RecSta plus PEV
+  recorded evidence. On 2026-05-16, `ICU_PowerAutoCutModSta` was also removed
+  from the OTA shared capture lists because the OTA cases do not use it for
+  pass/fail logic.
+- Use next time: When copying or creating an OTA `.can` file, update the
+  `CaptureGraphics("OTA", ...)` signal list from the actual helpers and direct
+  result signals used by that test. Do not add UI mode, BLTN_CAM_State, RecSet,
+  PMD Set, PEV AppNoti, `NM_State_BLTN_CAM_FD`, or
+  `ICU_PowerAutoCutModSta` to OTA screenshot lists unless the user asks for
+  them.
+
+2026-05-15 | pattern | OTA Python artifacts include script source
+- Facts: OTA Python screenshots and LOGASC outputs should carry the running
+  Python script stem in the artifact filename so the source script is visible
+  from the generated file name. After final screenshot capture, H-OTA Studio
+  should be closed before ASC scanning so the log file is flushed to disk.
+- Evidence: All `Auto/OTA/*.py` scripts use `script_name` for screenshot names
+  and now rename current-run `LOGASC/*.asc` files to
+  `<original>_<script_name>_YYYYMMDD_HHMMSS.asc` after closing H-OTA Studio and
+  waiting 30 seconds.
+- Use next time: When adding or copying OTA Python runners, keep screenshot
+  names as `<script_name>_<timestamp>_...png`, scan all current-run `.asc`
+  files rather than only `baocao.asc`, close H-OTA after final screenshots, and
+  use `<original>_<script_name>_<timestamp>.asc` for renamed ASC logs.
+
+2026-05-15 | pattern | OTA Python header comments must match script logic
+- Facts: Several OTA Python scripts had copied top comments that did not match
+  the actual UI automation flow, for example `case_15.py` selected OEUK
+  Vehicle but its header did not say so.
+- Evidence: `Auto/OTA/*.py` headers were refreshed to describe wireless vs
+  wired ERT, activation, rollback, OEUK Vehicle, and AppState marker behavior
+  such as case 9/10/11/12.
+- Use next time: After copying or splitting an OTA Python runner, update the
+  top-of-file flow comments from the actual code markers, not only from the
+  source script name.
+
+2026-05-15 | pattern | OTA main Python case split
+- Facts: For OTA testcase files, the setup/update prerequisite script can stay
+  named by the update direction, while the main testcase Python runner should
+  be copied to a case-specific `case_<ID>.py` file when the user asks for a
+  case split.
+- Evidence: `OTA_001`, `OTA_006`, `OTA_016`, and `OTA_020` now keep setup
+  scripts separate from their main `case_<ID>.py` runner.
+- Use next time: For similar OTA requests, create the requested `case_<ID>.py`
+  as an exact copy of the named source script, then update only the main-flow
+  command/log/testStep strings in the matching `.can` file.
+
 2026-04-29 | pattern | New test workflow
 - Facts: Reliable workflow is read status/memory, inspect target module samples,
   inspect `Auto/DeclarationFunction_Gen2.5.h`, inspect relevant `system_space`
@@ -303,6 +467,19 @@ YYYY-MM-DD | category | short title
 - Use next time: Include those calls when the surrounding test family uses them.
 
 ## mistake
+
+2026-05-16 | mistake | Do not wait inside OTA AppState sysvar events
+- Facts: CANoe reports `09-0020 Wait call ignored, because this procedure
+  cannot be suspended` when `testWaitForTimeout(...)` or helpers containing
+  waits run inside `on sysvar_update PythonCom::AppState`.
+- Evidence: `Auto/OTA/OTA_004.can` AppState 12 handling used
+  `testWaitForTimeout(...)` inside the sysvar event after `KEY_OFF()`, so the
+  wait was ignored and the COM8 retry loop ran immediately. The fix keeps the
+  sysvar event to AppState latch + `KEY_OFF()` only; the testcase then calls
+  `WaitFor_RecSta_PEV_Recording(10)` and waits 12 seconds between retries.
+- Use next time: Keep sysvar events non-blocking. For AppState-triggered OTA
+  delays/retries, use `msTimer` state machines or move the blocking wait logic
+  into a testcase.
 
 2026-05-06 | mistake | PMD and OWP waits must start from KEY OFF
 - Facts: The user corrected `OWP_023` and `OWP_025` because a setup flow had

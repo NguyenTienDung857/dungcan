@@ -1,0 +1,471 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "..\DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: OWD_008
+  Title: B+ OFF/ON interruption during OWD, DEV, TML, event, and rear camera detach flows
+
+  Verification items:
+    - Step 1: KEY OFF/ON setup, SMK IGN, USM/Rec reset, wait OWD recording, B+ OFF.
+    - Step 2: B+ ON, wait 10s, wait OWD and DEV recording, B+ OFF.
+    - Step 3: B+ ON, wait 10s, wait OWD recording, click Evt Switch, B+ OFF.
+    - Step 4: B+ ON, wait 10s, wait OWD recording, click TML Start, B+ OFF.
+    - Step 5: B+ ON, wait 10s, wait OWD recording, TML Start, wait DEV, Evt Switch, B+ OFF.
+    - Step 6: B+ ON, wait 10s, wait OWD recording, detach rear, B+ OFF, wait 5s, B+ ON.
+
+  Preconditions:
+    - ACC and IGN and ccNC/ccIC switch OFF, AVN mode.
+    - Helper functions from DeclarationFunction_Gen2.5.h are used first.
+*/
+
+variables
+{
+  long wait_owd_timeout_ms = 60000;
+  int wait_dev_timeout_s = 60;
+
+  int step1_passed = 0;
+  int step2_passed = 0;
+  int step3_passed = 0;
+  int step4_passed = 0;
+  int step5_passed = 0;
+  int step6_passed = 0;
+
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01  _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02   _HU_CLOCK_PE_02;
+}
+
+testcase OWD_008_Init()
+{
+  Send_Value_To_COM(10800);
+  write("========================================");
+  write("=== START TEST OWD_008 ===");
+  write("=== B+ OFF/ON OWD flow ===");
+  write("========================================");
+  testStep("Notification", "Start test OWD_008");
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_008_1()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 1: KEY OFF/ON, SMK IGN, reset, wait OWD recording, B+ OFF
+  //============================================================================
+  Send_Value_To_COM(10801);
+  SetTestStep("Buoc 1 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: Setup + wait OWD recording + B+ OFF             ===");
+  write("=================================================================");
+  testStep("Step1", "KEY OFF/ON, SMK IGN, USM reset, Rec reset, wait OWD, wait 5s, B+ OFF");
+
+  write("[1.2] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(2000);
+
+  write("[1.3] Set SMK to IGN...");
+  Set_SMK_IGN();
+  testWaitForTimeout(2000);
+
+  write("[1.4] Click USM Reset...");
+  Click_USM_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.5] Click Rec Reset...");
+  Click_Rec_Reset();
+  testWaitForTimeout(2000);
+
+  write("[1.6] Wait for OWD recording...");
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[1.6] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step 1 did not detect OWD recording <<<");
+  }
+
+  write("[1.7] Waiting 5 seconds before B+ OFF...");
+  testWaitForTimeout(5000);
+
+  write("[1.8] Set B+ OFF...");
+  Set_BPlus_Off();
+
+
+
+  write("[1.10] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step1_passed = 1;
+    testStepPass("Step1", "Step 1 PASS - OWD recording detected before B+ OFF");
+  }
+  else
+  {
+    step1_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step1", "Step 1 FAIL - OWD recording was not detected before B+ OFF");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+}
+
+testcase OWD_008_2()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  //============================================================================
+  // STEP 2: B+ ON, wait 10s, wait OWD, wait DEV, B+ OFF
+  //============================================================================
+  Send_Value_To_COM(10802);
+  SetTestStep("Buoc 2 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 2: B+ ON + OWD + DEV + B+ OFF                     ===");
+  write("=================================================================");
+  testStep("Step2", "B+ ON, wait 10s, wait OWD recording, wait DEV recording, B+ OFF");
+
+  write("[2.1] Set B+ ON...");
+  Set_BPlus_On();
+
+  write("[2.2] Waiting 10 seconds after B+ ON...");
+  testWaitForTimeout(10000);
+
+  write("[2.3] Wait for OWD recording...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[2.3] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result_owd != 1)
+  {
+    write(">>> FAIL REASON: Step 2 did not detect OWD recording <<<");
+  }
+
+  write("[2.4] Wait for DEV recording...");
+  result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+  if(result_dev != 1)
+  {
+    write(">>> FAIL REASON: Step 2 did not detect DEV recording <<<");
+    write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  }
+
+  write("[2.5] Set B+ OFF...");
+  Set_BPlus_Off();
+
+  
+
+  write("[2.7] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step2_passed = 1;
+    testStepPass("Step2", "Step 2 PASS - OWD and DEV recording detected before B+ OFF");
+  }
+  else
+  {
+    step2_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step2", "Step 2 FAIL - OWD or DEV recording was not detected before B+ OFF");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+}
+
+testcase OWD_008_3()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 3: B+ ON, wait 10s, wait OWD, click Evt Switch, B+ OFF
+  //============================================================================
+  Send_Value_To_COM(10803);
+  SetTestStep("Buoc 3 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 3: B+ ON + OWD + Evt Switch + B+ OFF              ===");
+  write("=================================================================");
+  testStep("Step3", "B+ ON, wait 10s, wait OWD recording, click Evt Switch, B+ OFF");
+
+  write("[3.1] Set B+ ON...");
+  Set_BPlus_On();
+
+  write("[3.2] Waiting 10 seconds after B+ ON...");
+  testWaitForTimeout(10000);
+
+  write("[3.3] Wait for OWD recording...");
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[3.3] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step 3 did not detect OWD recording <<<");
+  }
+
+  write("[3.4] Click Evt Switch...");
+  Click_Evt_Switch();
+  testWaitForTimeout(1000);
+
+  write("[3.5] Set B+ OFF...");
+  Set_BPlus_Off();
+
+  
+
+  write("[3.7] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step3_passed = 1;
+    testStepPass("Step3", "Step 3 PASS - OWD recording detected before Evt Switch and B+ OFF");
+  }
+  else
+  {
+    step3_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step3", "Step 3 FAIL - OWD recording was not detected before Evt Switch");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+}
+
+testcase OWD_008_4()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 4: B+ ON, wait 10s, wait OWD, click TML Start, B+ OFF
+  //============================================================================
+  Send_Value_To_COM(10804);
+  SetTestStep("Buoc 4 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 4: B+ ON + OWD + TML Start + B+ OFF               ===");
+  write("=================================================================");
+  testStep("Step4", "B+ ON, wait 10s, wait OWD recording, click TML Start, B+ OFF");
+
+  write("[4.1] Set B+ ON...");
+  Set_BPlus_On();
+
+  write("[4.2] Waiting 10 seconds after B+ ON...");
+  testWaitForTimeout(10000);
+
+  write("[4.3] Wait for OWD recording...");
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[4.3] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step 4 did not detect OWD recording <<<");
+  }
+
+  write("[4.4] Click TML Start...");
+  Click_TML_Start();
+  testWaitForTimeout(1000);
+
+  write("[4.5] Set B+ OFF...");
+  Set_BPlus_Off();
+
+
+  write("[4.7] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step4_passed = 1;
+    testStepPass("Step4", "Step 4 PASS - OWD recording detected before TML Start and B+ OFF");
+  }
+  else
+  {
+    step4_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step4", "Step 4 FAIL - OWD recording was not detected before TML Start");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+}
+
+testcase OWD_008_5()
+{
+  int result_owd = 0;
+  int result_dev = 0;
+
+  //============================================================================
+  // STEP 5: B+ ON, wait 10s, wait OWD, TML Start, wait DEV, Evt Switch, B+ OFF
+  //============================================================================
+  Send_Value_To_COM(10805);
+  SetTestStep("Buoc 5 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 5: B+ ON + OWD + TML + DEV + Evt + B+ OFF         ===");
+  write("=================================================================");
+  testStep("Step5", "B+ ON, wait 10s, wait OWD, TML Start, wait DEV, Evt Switch, B+ OFF");
+
+  write("[5.1] Set B+ ON...");
+  Set_BPlus_On();
+
+  write("[5.2] Waiting 10 seconds after B+ ON...");
+  testWaitForTimeout(10000);
+
+  write("[5.3] Wait for OWD recording...");
+  result_owd = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[5.3] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result_owd != 1)
+  {
+    write(">>> FAIL REASON: Step 5 did not detect OWD recording <<<");
+  }
+
+  write("[5.4] Click TML Start...");
+  Click_TML_Start();
+  testWaitForTimeout(1000);
+
+  write("[5.5] Wait for DEV recording...");
+  result_dev = WaitFor_RecSta_DEV_Recording(wait_dev_timeout_s);
+  if(result_dev != 1)
+  {
+    write(">>> FAIL REASON: Step 5 did not detect DEV recording <<<");
+    write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  }
+
+  write("[5.6] Click Evt Switch...");
+  Click_Evt_Switch();
+  testWaitForTimeout(1000);
+
+  write("[5.7] Set B+ OFF...");
+  Set_BPlus_Off();
+
+  write("[5.8] Signal snapshot before pass/fail...");
+  write("  BLTN_CAM_State      = 0x%X", $BLTN_CAM_State);
+  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
+  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  write("[5.9] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result_owd == 1 && result_dev == 1)
+  {
+    step5_passed = 1;
+    testStepPass("Step5", "Step 5 PASS - OWD and DEV recording detected before B+ OFF");
+  }
+  else
+  {
+    step5_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step5", "Step 5 FAIL - OWD or DEV recording was not detected before B+ OFF");
+  }
+
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+}
+
+testcase OWD_008_6()
+{
+  int result = 0;
+
+  //============================================================================
+  // STEP 6: B+ ON, wait 10s, wait OWD, detach rear, B+ OFF, wait 5s, B+ ON
+  //============================================================================
+  Send_Value_To_COM(10806);
+  SetTestStep("Buoc 6 - OWD_008");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 6: B+ ON + OWD + detach rear + B+ OFF/ON          ===");
+  write("=================================================================");
+  testStep("Step6", "B+ ON, wait 10s, wait OWD, detach rear, B+ OFF, wait 5s, B+ ON");
+
+  write("[6.1] Set B+ ON...");
+  Set_BPlus_On();
+
+  write("[6.2] Waiting 10 seconds after B+ ON...");
+  testWaitForTimeout(10000);
+
+  write("[6.3] Wait for OWD recording...");
+  result = WaitFor_RecSta_OWD_Recording(wait_owd_timeout_ms);
+  write("[6.3] BLTN_CAM_RecSta_OWD = 0x%X, expected 0x1", $BLTN_CAM_RecSta_OWD);
+  if(result != 1)
+  {
+    write(">>> FAIL REASON: Step 6 did not detect OWD recording <<<");
+  }
+
+  write("[6.4] Detach rear camera...");
+  Set_Detach_Rear();
+
+  write("[6.5] Set B+ OFF...");
+  Set_BPlus_Off();
+
+  write("[6.6] Waiting 5 seconds after B+ OFF...");
+  testWaitForTimeout(5000);
+
+  write("[6.7] Set B+ ON...");
+ 
+
+  write("[6.8] Signal snapshot before pass/fail...");
+  write("  BLTN_CAM_State      = 0x%X", $BLTN_CAM_State);
+  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
+  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
+  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
+  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
+  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
+
+  write("[6.9] Capturing signal evidence...");
+  CaptureGraphics("OWD", "BLTN_CAM_State;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;SMK_TrmnlCtrlGrpStaBDC");
+
+  if(result == 1)
+  {
+    step6_passed = 1;
+    testStepPass("Step6", "Step 6 PASS - OWD recording detected before rear detach and B+ OFF/ON");
+  }
+  else
+  {
+    step6_passed = 0;
+    Log_Error_Details();
+    testStepFail("Step6", "Step 6 FAIL - OWD recording was not detected before rear detach");
+  }
+  Set_Attach_Rear();
+  StopTestTimer();
+  Send_Value_To_COM(44);
+  Set_BPlus_On();
+  testWaitForTimeout(6000);
+  Enter_BLTN_CAM();
+
+  
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\OWD_008 - 2.5 generation_report");
+
+  OWD_008_Init();
+  OWD_008_1();
+  OWD_008_2();
+  OWD_008_3();
+  OWD_008_4();
+  OWD_008_5();
+  OWD_008_6();
+}

@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 //Precondition: Simulation Setup -> Block CGW_CCU; ccNC/ccIC switch OFF; All recording setting OFF; Enter AVN mode
 //Add signal: BLTN_CAM_RecSta_OWD; VCU_GearPosSta;VCU_GearPosStaDisp
 //Note: Set the time range in graphic to 12s
@@ -9,8 +9,7 @@ includes
 variables
 { // Global Variable Declaration
   byte i;
-  int flag_RecSet_error = 0;
-  byte KEY_STATE;
+
   byte GearPos_value = 0x0;
   byte Mode_state = 0x2;
   byte Bat_value = 0x50;
@@ -22,7 +21,7 @@ variables
   char arr_EV_modeType[2] = {'E','V'};  
   char answer[3]; 
   // Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   message TCU_01_10ms _TCU_01_10ms;
   message HTCU_05_10ms _HTCU_05_10ms;
@@ -30,7 +29,6 @@ variables
   message VCU_01_10ms _VCU_01_10ms;
   message PDC_FD_10_200ms _PDC_FD_10_200ms;
   message PDC_FD_11_200ms _PDC_FD_11_200ms;
-  message BDC_FD_SMK_03_200ms _BDC_FD_SMK_03_200ms;  
   // Timer Declaration 
   msTimer send_PDC_FD_11_200ms_timer;
   msTimer send_TCU_01_10ms_timer;
@@ -38,13 +36,6 @@ variables
   msTimer send_HTCU_05_10ms_timer;
   msTimer send_VCU_01_10ms_timer;
   msTimer send_ICU_ModState_timer;
-  msTimer send_BDC_FD_SMK_03_200ms_timer;
-}
-
-on timer send_BDC_FD_SMK_03_200ms_timer {
-  _BDC_FD_SMK_03_200ms.SMK_TrmnlCtrlGrpStaBDC = KEY_STATE;
-  output(_BDC_FD_SMK_03_200ms);
-  send_BDC_FD_SMK_03_200ms_timer.set(200);
 }
 
 on timer send_VCU_01_10ms_timer {

@@ -1,15 +1,15 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
+includes { #include "../DeclarationFunction_Gen2.5.h" }
 
 //Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
 //Add signal to graphic 2: BLTN_CAM_RecSta_TML
 variables { 
   // Global Variable Declaration
-  int flag_RecSet_error = 0;
   int step1_passed = 0;
   // Message Declaration for CAN FD
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
-  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
-  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
+  message HU_BLTN_CAM_PE_00_200ms _HU_BLTN_CAM_PE_00_200ms;
+  message HU_BLTN_CAM_E_01 _HU_BLTN_CAM_E_01;
+  message HU_CLOCK_PE_02 _HU_CLOCK_PE_02;
 }
 
 void BLTN_CAM_Settings(int Choose_Option){
@@ -77,32 +77,6 @@ void BLTN_CAM_Settings(int Choose_Option){
   }
 }
 
-void KEY_ON(){
-  setSignal(SMK_TrmnlCtrlGrpStaBDC,0x1); // Power ON
-}
-
-void KEY_OFF(){
-   setSignal(SMK_TrmnlCtrlGrpStaBDC,0x0); // Power OFF
-}
-
-void Enter_BLTN_CAM(){
-  // CAN FD
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode
-  output(_HU_BLTN_CAM_02_200ms);
-}
-
-void Exit_BLTN_CAM(){
-  // CAN FD 
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-  output(_HU_BLTN_CAM_02_200ms); 
-}
-
-void CaptureGraphics(char filename[]){
-  char filepath[512];
-  snprintf(filepath, elcount(filepath), "D:\\project\\CAN FD\\[CANoe] CANFD\\Screenshots\\%s", filename);
-  testWaitForTimeout(3000);
-  testReportAddWindowCapture("Graphics 2","BLTN_CAM_RecSta_TML","Sreenshot",filepath);
-}
 
 void Clock_Down(long CD_time){
   write("=== START COUNTDOWN CLOCK ===");
@@ -110,50 +84,6 @@ void Clock_Down(long CD_time){
     write("Remaining time: %02d:%02d", CD_time/60,CD_time%60);
     testWaitForTimeout(60000);
     CD_time--;
-  }
-}
-
-void Turn_OFF_RecSet(){
-  if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-    @panel::Switch_CGWNM = 1;
-  
-    KEY_ON();
-    testWaitForTimeout(3000);
-
-      
-    do {
-      Enter_BLTN_CAM();
-      testWaitForTimeout(3000);
-      
-      if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2){
-        write("OWD Off"); @panel::LED_Ctrl_SetOWD = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_OWP) == 0x2){
-        write("OWP Off"); @panel::LED_Ctrl_SetOWP = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_DEV) == 0x2){
-        write("DEV Off"); @panel::LED_Ctrl_SetDEV = 1; testWaitForTimeout(1000);
-      } 
-      
-      else if (getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-        write("PEV Off"); @panel::LED_Ctrl_SetPEV = 1; testWaitForTimeout(1000);
-      } 
-
-      Exit_BLTN_CAM();
-      
-      flag_RecSet_error++;
-      
-    } while((getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2) && (flag_RecSet_error <= 15));
-    
-    flag_RecSet_error = 0; 
-    
-    testWaitForTimeout(3000); 
-    KEY_OFF();
-  }
-  else {
-    write("Notifications: All recording setting are turned OFF.");
   }
 }
 
@@ -189,28 +119,30 @@ void Setup_Function(int Choose_TMLInterval){
   else{
     write("Error: TML recording hasn't started");
 
-    stop();
+    //stop();
   }  
 }
 
-void Rec_Reset(){
-  @panel::Switch_CGWNM = 1; 
-  
-  KEY_ON();
-  
-  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1){
-    @panel::Button_RecReset = 1; 
-    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State,500);
-  }
-  
-  KEY_OFF();
-  
-  @panel::Switch_CGWNM = 0; 
+
+testcase OWD_025_Init(){
+  Send_Value_To_COM(12500);
+  write("Start test OWD_025 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_025_1_2(){
+  Send_Value_To_COM(12501);
+  SetTestStep("Bước 1_2 - OWD_025");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_025_1_2");
+  testStep("Step1_2", "TML recording: Interval=1s (1FPS), duration 20 mins -> check RecSta_TML = 0x1 (Recording)");
   write("=== START TEST OWD_025_1_2 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
 
   write("Run Setup_Function()"); Setup_Function(1);
 
@@ -218,41 +150,36 @@ testcase OWD_025_1_2(){
     testStepPass("Pass", "TML recording started successfully");
     step1_passed = 1;
   } else {
+    write(">>> FAIL REASON: TML recording did not start <<<");
+    Log_Error_Details();
     testStepFail("Fail", "TML recording did not start");
     step1_passed = 0;
   }
 
   Clock_Down(20);
   
-   write("Run CaptureGraphics()"); CaptureGraphics("OWD_025_01.jpg");
+   write("Run CaptureGraphics()"); CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML");
 
   @panel::Switch_Clock = 0;
 
   write("KEY_OFF()"); KEY_OFF();
-
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_025_1_2: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_025_1_2: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
 
   testStep("TEST SUMMARY","--- OWD_025_1_2 ---");
   testStep("","Step 1: Start test OWD_025_1_2 ... PASS");
   testStep("","Step 2: TML recording ... PASS");
   testStep("","Step 3: Screenshot ... PASS");
   write("=== FINISH TEST OWD_025_1_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_025_3_4(){
+  Send_Value_To_COM(12503);
+  SetTestStep("Bước 3_4 - OWD_025");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_025_3_4");
+  testStep("Step3_4", "TML recording: Interval=2s (0.5FPS), duration 40 mins -> check RecSta_TML = 0x1 (Recording)");
   write("=== START TEST OWD_025_3_4 ===");
 
    write("Run Setup_Function()"); Setup_Function(2);
@@ -261,41 +188,36 @@ testcase OWD_025_3_4(){
     testStepPass("Pass", "TML recording started successfully");
     step1_passed = 1;
   } else {
+    write(">>> FAIL REASON: TML recording did not start <<<");
+    Log_Error_Details();
     testStepFail("Fail", "TML recording did not start");
     step1_passed = 0;
   }
 
   Clock_Down(40);
   
-   write("Run CaptureGraphics()"); CaptureGraphics("OWD_025_02.jpg");
+   write("Run CaptureGraphics()"); CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML");
 
   @panel::Switch_Clock = 0;
 
   write("KEY_OFF()"); KEY_OFF();
-
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_025_3_4: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_025_3_4: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
 
   testStep("TEST SUMMARY","--- OWD_025_3_4 ---");
   testStep("","Step 1: Start test OWD_025_3_4 ... PASS");
   testStep("","Step 2: TML recording ... PASS");
   testStep("","Step 3: Screenshot ... PASS");
   write("=== FINISH TEST OWD_025_3_4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_025_5_6(){
+  Send_Value_To_COM(12505);
+  SetTestStep("Bước 5_6 - OWD_025");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_025_5_6");
+  testStep("Step5_6", "TML recording: Interval=5s (0.2FPS), duration 100 mins -> check RecSta_TML = 0x1 (Recording)");
   write("=== START TEST OWD_025_5_6 ===");
 
    write("Run Setup_Function()"); Setup_Function(3);
@@ -304,63 +226,32 @@ testcase OWD_025_5_6(){
     testStepPass("Pass", "TML recording started successfully");
     step1_passed = 1;
   } else {
+    write(">>> FAIL REASON: TML recording did not start <<<");
+    Log_Error_Details();
     testStepFail("Fail", "TML recording did not start");
     step1_passed = 0;
   }
 
   Clock_Down(100);
   
-   write("Run CaptureGraphics()"); CaptureGraphics("OWD_025_03.jpg");
+   write("Run CaptureGraphics()"); CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML");
 
   @panel::Switch_Clock = 0;
 
   write("KEY_OFF()"); KEY_OFF();
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_025_5_6: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_025_5_6: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
-  testStep("TEST SUMMARY","--- OWD_025_5_6 ---");
-  testStep("","Step 1: Start test OWD_025_5_6 ... PASS");
-  testStep("","Step 2: TML recording ... PASS");
   testStep("","Step 3: Screenshot ... PASS");
   write("=== FINISH TEST OWD_025_5_6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
-void Maintest(){
+
+void MainTest(){
   testReportFileName("TestReports\\OWD_025 - 2.5 generation_report");
-  write("Run Turn_OFF_RecSet()"); Turn_OFF_RecSet();
-  
-  write("Run Rec_Reset()"); Rec_Reset();
-  
-  TestWaitForValueInput("Please enter the ID testcase number:",300000);
-  
-  switch (testGetValueInput()){
-    
-    case (1): OWD_025_1_2(); break;
-    
-    case (2): OWD_025_3_4(); break;
-      
-    case (3): OWD_025_5_6(); break;
-      
-    case (4):
-      OWD_025_1_2();
-      
-      OWD_025_3_4();
-      
-      OWD_025_5_6();
-      
-      break;
-  }
-}
 
+  OWD_025_Init();
+  OWD_025_1_2();
+  OWD_025_3_4();
+  OWD_025_5_6();
+}

@@ -28,7 +28,7 @@ testcase HU_002(){
   }
 }
 
-void Maintest(){
+void MainTest(){
   write("===START TEST===");
 
   HU_002();  

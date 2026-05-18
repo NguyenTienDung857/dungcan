@@ -1,4 +1,4 @@
-﻿/*@!Encoding:65001*/
+/*@!Encoding:65001*/
 
 //Precondition: Simulation Setup -> Block CGW_CCU; ccNC/ccIC switch OFF; Enter AVN mode
 //Add these signals to graphics: BLTN_CAM_RecSta_OWD;CLU_DisSpdVal;CLU_SpdUnitTyp 
@@ -9,7 +9,7 @@ includes
 variables
 {
   // CAN FD Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
+
   message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
   message CLU_01_20ms _CLU_01_20ms;
   message TCU_01_10ms _TCU_01_10ms;
@@ -19,7 +19,7 @@ variables
   message HTCU_05_10ms _HTCU_05_10ms;  
   // Global Variable Declaration
   byte i;
-  int flag_RecSet_error = 0;
+
   dword speed_value  = 0x0;
   byte spd_UnitTyp_value = 0x2;
   byte gear_Pos_value = 0x0;

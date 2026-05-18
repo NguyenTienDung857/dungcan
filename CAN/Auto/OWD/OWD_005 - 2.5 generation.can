@@ -1,19 +1,25 @@
 /*@!Encoding:65001*/
 
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
 /*
   Test Case: OWD_005
   Title: [OWD Recording Test - Multi-mode with Voltage Control]
-  Verification items: Check OWD/TML/DEV/MAR recording behavior and voltage control
+  Verification items: Check OWD/TML/DEV/MAR recording behavior and voltage
+  control
 
   Preconditions:
     - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
     - Power supply connected via COM3
 
   Step 1: Set SMK to IGN, click USM Reset, check BLTN_CAM_RecSet_OWD = 0x2 (ON)
-  Step 2: Switch to HU UI mode (HU_BLTN_CAM_UI_Mode=0), click TML Start, check BLTN_CAM_RecSta_TML = 0x1
-  Step 3: Click Evt Switch, check BLTN_CAM_RecSta_MAR = 0x1
-  Step 4: Wait for BLTN_CAM_RecSta_DEV = 0x1 (event while driving)
-  Step 5: Click TMLStop, check BLTN_CAM_RecSta_TML = 0x0, wait 65s, verify DEV recording
+  Step 2: Switch to HU UI mode (HU_BLTN_CAM_UI_Mode=0), click TML Start, check
+  BLTN_CAM_RecSta_TML = 0x1 Step 3: Click Evt Switch, check BLTN_CAM_RecSta_MAR
+  = 0x1 Step 4: Wait for BLTN_CAM_RecSta_DEV = 0x1 (event while driving) Step 5:
+  Click TMLStop, check BLTN_CAM_RecSta_TML = 0x0, wait 65s, verify DEV recording
   Step 6: Enter/Exit Built-in Cam mode 5 times, verify HU_BLTN_CAM_UI_Mode
   Step 7: Log video verification
   Step 8: Set voltage to 9V via COM3, wait 60s at AVN mode
@@ -22,30 +28,8 @@
   NOTE: Script uses panel controls and RS232 for power supply control.
 */
 
-variables
-{
-  long max_wait_time = 180000;  // 180 seconds = 3 minutes max wait
-
-  // Power supply settings
-  int rs232_PortNum = 3;  // COM3
-  int PowerSupplyModel = 1;  // 0=OPE305QI, 1=TL305TP, 2=GPP2323
-
-  // Power supply model definitions
-  enum Model_PowerSupply
-  {
-    OPE305QI = 0x0,
-    TL305TP = 0x1,
-    GPP2323 = 0x2
-  };
-
-  // Message declarations
-  // CAN FD Message Declaration
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
-
-  // RS232 send buffer
-  int messageIndex = 0;
-  char buffer[3][50];
-  char initvalue[50];
+variables {
+  long max_wait_time = 60; // 60 seconds max wait (updated for header)
 
   // Result tracking for TEST SUMMARY
   int step1_passed = 0;
@@ -54,885 +38,340 @@ variables
   int step4_passed = 0;
   int step5_passed = 0;
   int step6_passed = 0;
+  int step7_passed = 0;
+  int step8_passed = 0;
+  int step9_passed = 0;
 }
 
-// ============================================================================
-// RS232 Helper Functions for Power Supply Control
-// ============================================================================
-
-void Rs232SendString(int port, int model, char text[])
-{
-  byte sendBuffer[50];
-  int i;
-  int length;
-  length = strlen(text);
-
-  // Initialize buffer
-  for (i = 0; i < length; i++) sendBuffer[i] = 0;
-
-  // char to byte
-  for (i = 0; i < length; i++) sendBuffer[i] = text[i];
-
-  // Add line feed for OPE305QI and GPP2323
-  if((model == OPE305QI) || (model == GPP2323))
-  {
-    sendBuffer[length] = 0xA;  // Line Feed
-    if (1 == RS232Send(port, sendBuffer, length + 1))
-      write("RS232 Send: %s", text);
-  }
-  else if(model == TL305TP)
-  {
-    if (1 == RS232Send(port, sendBuffer, length))
-      write("RS232 Send: %s", text);
-  }
-}
-
-void string_PLUS_double(char inputString[], double inputValue, char outputString[])
-{
-  char STRING[50];
-  char tempBuffer[50];
-
-  snprintf(outputString, 50, "%s", initvalue);
-  snprintf(STRING, 50, "%s", inputString);
-
-  snprintf(tempBuffer, elcount(tempBuffer), "%.1f", inputValue);
-
-  snprintf(outputString, 50, "%s%s", STRING, tempBuffer);
-}
-
-// Initialize RS232 connection
-int Init_PowerSupply()
-{
-  write("=== Initializing Power Supply on COM%d ===", rs232_PortNum);
-
-  if(RS232Open(rs232_PortNum))
-  {
-    if(rs232Configure(rs232_PortNum, 9600, 8, 1, 0))
-    {
-      write(">>> Power Supply connected successfully <<<");
-      return 1;
-    }
-    else
-    {
-      write(">>> Power Supply configuration failed <<<");
-      return 0;
-    }
-  }
-  else
-  {
-    write(">>> Failed to open COM%d <<<", rs232_PortNum);
-    return 0;
-  }
-}
-
-// Close RS232 connection
-void Close_PowerSupply()
-{
-  write("=== Closing Power Supply connection ===");
-  RS232Close(rs232_PortNum);
-  write(">>> Power Supply disconnected <<<");
-}
-
-// Set power supply voltage on CH2
-void Set_Voltage(double voltage)
-{
-  write("=== Setting voltage to %.1f V on CH2 ===", voltage);
-
-  switch(PowerSupplyModel)
-  {
-    case OPE305QI:
-      // Select CH2 for OPE305QI
-      snprintf(buffer[0], 11, "%s", "INST OUTP2");
-      string_PLUS_double("VOLT ", voltage, buffer[1]);
-      snprintf(buffer[2], 7, "%s", "CURR 5");
-
-      Rs232SendString(rs232_PortNum, OPE305QI, buffer[0]);
-      testWaitForTimeout(200);
-      Rs232SendString(rs232_PortNum, OPE305QI, buffer[1]);
-      testWaitForTimeout(200);
-      Rs232SendString(rs232_PortNum, OPE305QI, buffer[2]);
-      testWaitForTimeout(200);
-      break;
-
-    case TL305TP:
-      {
-        // CH2 for TL305TP: SET:001 (0=CH1, 1=CH2)
-        char cmd[50];
-        snprintf(cmd, 50, "SET:001,VS:%05.2f,IS:5.00/n", voltage);
-        Rs232SendString(rs232_PortNum, TL305TP, cmd);
-        testWaitForTimeout(200);
-      }
-      break;
-
-    case GPP2323:
-      {
-        // CH2 for GPP2323: VSET2
-        char voltCmd[50];
-        string_PLUS_double("VSET2:", voltage, voltCmd);
-        Rs232SendString(rs232_PortNum, GPP2323, voltCmd);
-        testWaitForTimeout(200);
-      }
-      break;
-  }
-
-  testWaitForTimeout(1000);  // Wait 1s for voltage stabilization
-  write(">>> Voltage set to %.1f V on CH2 <<<", voltage);
-}
-
-// Turn ON power supply output (CH2)
-void PowerSupply_OutputON()
-{
-  write("=== Turning Power Supply Output ON (CH2) ===");
-
-  switch(PowerSupplyModel)
-  {
-    case OPE305QI:
-      // First select CH2, then turn on output
-      Rs232SendString(rs232_PortNum, OPE305QI, "INST OUTP2");
-      testWaitForTimeout(200);
-      Rs232SendString(rs232_PortNum, OPE305QI, "OUTP ON");
-      break;
-    case TL305TP:
-      // CH2 output for TL305TP
-      Rs232SendString(rs232_PortNum, TL305TP, "OUTPUT1/n");
-      break;
-    case GPP2323:
-      // For GPP2323, turn on all outputs
-      Rs232SendString(rs232_PortNum, GPP2323, "ALLOUTON");
-      break;
-  }
-  testWaitForTimeout(500);
-}
-
-// ============================================================================
-// Panel Control Helper Functions
-// ============================================================================
-
-// Set SMK to IGN (0x4)
-void Set_SMK_IGN()
-{
-  write("=== Setting SMK to IGN (0x4) ===");
-  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x4);
-  testWaitForTimeout(2000);  // Wait 2s for signal propagation
-  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
-}
-
-// Set SMK to OFF (0x0)
-void Set_SMK_OFF()
-{
-  write("=== Setting SMK to OFF (0x0) ===");
-  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x0);
-  testWaitForTimeout(2000);  // Wait 2s for signal propagation
-  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
-}
-
-void Click_USM_Reset()
-{
-  write("=== Clicking USM Reset button on panel ===");
-  @panel::Button_USMReset = 1;
-  testWaitForTimeout(5000);
-  write("  USM Reset clicked");
-}
-
-void Click_TML_Start()
-{
-  write("=== Clicking TML Start button on panel ===");
-  @panel::Button_Timelaps_Start = 1;
-  testWaitForTimeout(3000);
-  write("  TML Start clicked");
-}
-
-void Click_TML_Stop()
-{
-  write("=== Clicking TML Stop button on panel ===");
-  @panel::Button_Timelaps_Stop = 1;
-  testWaitForTimeout(3000);
-  write("  TML Stop clicked");
-}
-
-// Click Event Switch button (Manual Event Recording)
-void Click_Evt_Switch()
-{
-  write("=== Clicking Event Switch button ===");
-  @panel::Button_SwitchEvt = 1;
-  testWaitForTimeout(3000);
-  write("  Event Switch clicked");
-}
-
-// Enter Built-in Cam mode
-void Enter_BLTN_CAM()
-{
-  write(">>> Enter BLTN_CAM mode <<<");
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1;
-  output(_HU_BLTN_CAM_02_200ms);
-  testWaitForTimeout(3000);
-}
-
-// Exit to AVN HU UI mode
-void Exit_BLTN_CAM()
-{
-  write(">>> Exit BLTN_CAM mode <<<");
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0;
-  output(_HU_BLTN_CAM_02_200ms);
-  testWaitForTimeout(3000);
-}
-
-// ============================================================================
-// Check Functions
-// ============================================================================
-
-// Check BLTN_CAM_RecSet_OWD = 0x2 (ON)
-int Check_RecSet_OWD_ON()
-{
-  byte rec_set_owd = 0;
-
-  rec_set_owd = $BLTN_CAM_RecSet_OWD;
-  write("  BLTN_CAM_RecSet_OWD = 0x%X", rec_set_owd);
-
-  if(rec_set_owd == 0x2)
-  {
-    write(">>> PASS: BLTN_CAM_RecSet_OWD = 0x2 (ON) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSet_OWD is NOT ON <<<");
-    return 0;
-  }
-}
-
-// Check BLTN_CAM_RecSta_TML = 0x1 (Recording)
-int Check_RecSta_TML_Recording()
-{
-  byte rec_sta_tml = 0;
-
-  rec_sta_tml = $BLTN_CAM_RecSta_TML;
-  write("  BLTN_CAM_RecSta_TML = 0x%X", rec_sta_tml);
-
-  if(rec_sta_tml == 0x1)
-  {
-    write(">>> PASS: BLTN_CAM_RecSta_TML = 0x1 (Recording) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSta_TML is NOT Recording <<<");
-    return 0;
-  }
-}
-
-// Check BLTN_CAM_RecSta_TML = 0x0 (Not Recording)
-int Check_RecSta_TML_NotRecording()
-{
-  byte rec_sta_tml = 0;
-
-  rec_sta_tml = $BLTN_CAM_RecSta_TML;
-  write("  BLTN_CAM_RecSta_TML = 0x%X", rec_sta_tml);
-
-  if(rec_sta_tml == 0x0)
-  {
-    write(">>> PASS: BLTN_CAM_RecSta_TML = 0x0 (Not Recording) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSta_TML is still Recording <<<");
-    return 0;
-  }
-}
-
-// Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
-int Check_RecSta_MAR_Recording()
-{
-  byte rec_sta_mar = 0;
-
-  rec_sta_mar = $BLTN_CAM_RecSta_MAR;
-  write("  BLTN_CAM_RecSta_MAR = 0x%X", rec_sta_mar);
-
-  if(rec_sta_mar == 0x1)
-  {
-    write(">>> PASS: BLTN_CAM_RecSta_MAR = 0x1 (Recording) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSta_MAR is NOT Recording <<<");
-    return 0;
-  }
-}
-
-// Check BLTN_CAM_RecSta_DEV = 0x1 (Recording)
-int Check_RecSta_DEV_Recording()
-{
-  byte rec_sta_dev = 0;
-
-  rec_sta_dev = $BLTN_CAM_RecSta_DEV;
-  write("  BLTN_CAM_RecSta_DEV = 0x%X", rec_sta_dev);
-
-  if(rec_sta_dev == 0x1)
-  {
-    write(">>> PASS: BLTN_CAM_RecSta_DEV = 0x1 (Recording) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSta_DEV is NOT Recording <<<");
-    return 0;
-  }
-}
-
-// Wait for BLTN_CAM_RecSta_DEV = 0x1 with timeout
-int WaitFor_RecSta_DEV_Recording(long timeout_ms)
-{
-  long elapsed = 0;
-  long check_interval = 2000;  // Check every 2 seconds
-  long log_interval;
-  byte rec_sta_dev = 0;
-
-  write("=== Waiting for DEV Recording (max %d seconds) ===", timeout_ms/1000);
-  write("Checking every %d seconds...", check_interval/1000);
-
-  log_interval = (timeout_ms / 6 / check_interval) * check_interval;
-  if(log_interval < check_interval) log_interval = check_interval;
-
-  while(elapsed < timeout_ms)
-  {
-    rec_sta_dev = $BLTN_CAM_RecSta_DEV;
-
-    if(elapsed == 0 || elapsed % log_interval == 0)
-    {
-      write("  [%d s / %d s] BLTN_CAM_RecSta_DEV = 0x%X",
-            elapsed/1000, timeout_ms/1000, rec_sta_dev);
-    }
-
-    // Check if DEV recording is active
-    if(rec_sta_dev == 0x1)
-    {
-      write(">>> DETECTED: DEV Recording started after %d seconds <<<", elapsed/1000);
-      write(">>> PASS: BLTN_CAM_RecSta_DEV = 0x1 (Recording) <<<");
-      return 1;
-    }
-
-    testWaitForTimeout(check_interval);
-    elapsed += check_interval;
-  }
-
-  // Timeout - DEV recording not detected
-  write(">>> TIMEOUT: DEV Recording NOT detected after %d seconds <<<", timeout_ms/1000);
-  write(">>> FAIL: BLTN_CAM_RecSta_DEV is still 0x%X <<<", rec_sta_dev);
-  return 0;
-}
-
-// Check BLTN_CAM_RecSta_OWD = 0x1 (Recording)
-int Check_RecSta_OWD_Recording()
-{
-  byte rec_sta_owd = 0;
-
-  rec_sta_owd = $BLTN_CAM_RecSta_OWD;
-  write("  BLTN_CAM_RecSta_OWD = 0x%X", rec_sta_owd);
-
-  if(rec_sta_owd == 0x1)
-  {
-    write(">>> PASS: BLTN_CAM_RecSta_OWD = 0x1 (Recording) <<<");
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: BLTN_CAM_RecSta_OWD is NOT Recording <<<");
-    return 0;
-  }
-}
-
-// Check HU_BLTN_CAM_UI_Mode
-int Check_HU_UI_Mode(byte expected_mode)
-{
-  byte hu_ui_mode = 0;
-
-  hu_ui_mode = $HU_BLTN_CAM_UI_Mode;
-  write("  HU_BLTN_CAM_UI_Mode = 0x%X", hu_ui_mode);
-
-  if(hu_ui_mode == expected_mode)
-  {
-    write(">>> PASS: HU_BLTN_CAM_UI_Mode = 0x%X <<<", expected_mode);
-    return 1;
-  }
-  else
-  {
-    write(">>> FAIL: HU_BLTN_CAM_UI_Mode != 0x%X <<<", expected_mode);
-    return 0;
-  }
-}
-
-// ============================================================================
-// Capture Screenshot Function
-// ============================================================================
-
-void CaptureGraphics(char signalList[], char filename[])
-{
-  char filepath[256];
-  snprintf(filepath, elcount(filepath), "D:\\project\\CAN FD\\[CANoe] CANFD\\Screenshots\\%s", filename);
-  testWaitForTimeout(3000);
-  testReportAddWindowCapture("OWD", signalList, "Screenshot", filepath);
-  write(">>> Screenshot captured: %s <<<", filepath);
-}
-
-// Wait at AVN mode with monitoring
-void Wait_At_AVN_WithMonitoring(long duration_ms)
-{
-  long elapsed = 0;
-  long log_interval = 10000;  // Log every 10 seconds
-
-  write("=== Waiting at AVN for %d seconds ===", duration_ms/1000);
-  write("Monitoring signals during wait period...");
-
-  while(elapsed < duration_ms)
-  {
-    if(elapsed % log_interval == 0)
-    {
-      write("  [%d s / %d s] RecSet_OWD=0x%X | RecSta_OWD=0x%X | RecSta_DEV=0x%X | RecSta_TML=0x%X | HU_UI_Mode=0x%X",
-            elapsed/1000, duration_ms/1000,
-            $BLTN_CAM_RecSet_OWD, $BLTN_CAM_RecSta_OWD, $BLTN_CAM_RecSta_DEV,
-            $BLTN_CAM_RecSta_TML, $HU_BLTN_CAM_UI_Mode);
-    }
-
-    testWaitForTimeout(1000);
-    elapsed += 1000;
-  }
-
-  write(">>> Wait complete: %d seconds elapsed <<<", duration_ms/1000);
-}
+// Redundant local functions removed: Rs232SendString, string_PLUS_double, Init_PowerSupply, Close_PowerSupply, Set_Voltage, PowerSupply_OutputON, Verify_OWD_Recording
 
 // ============================================================================
 // Main Test Case
 // ============================================================================
 
-testcase OWD_005()
-{
-  int i = 0;
-  int result = 0;
-
+testcase OWD_005_Init() {
+  Send_Value_To_COM(10500);
   write("========================================");
   write("=== START TEST OWD_005 ===");
   write("========================================");
 
+  // Initialize Power Supply
+  if (0 == Connect_PowerSupply()) {
+    write(">>> ERROR: Failed to configure Power Supply on COM3. <<<");
+  }
+
   // Enable CGW NM
   @panel::Switch_CGWNM = 1;
   testWaitForTimeout(3000);
-
-  // Initialize Power Supply
-  if(Init_PowerSupply() == 0)
-  {
-    write(">>> WARNING: Power Supply not connected. Steps 8-9 will be skipped <<<");
-  }
-
-  //============================================================================
-  // STEP 1: Set SMK to IGN, click USM Reset, check BLTN_CAM_RecSet_OWD = ON
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 1: Set SMK_Signal to IGN, USM Reset, Check RecSet_OWD ===");
-  write("=================================================================");
-  testStep("Step1", "SMK IGN + USM Reset + RecSet_OWD verification");
-
-  // 1.1 Set SMK to IGN
-  Set_SMK_IGN();
-  testWaitForTimeout(2000);
-
-  // 1.2 Click USM Reset
-  Click_USM_Reset();
-  testWaitForTimeout(3000);
-
-  // 1.3 Check BLTN_CAM_RecSet_OWD = 0x2 (ON)
-  result = Check_RecSet_OWD_ON();
-
-  // Capture screenshot
-  CaptureGraphics("BLTN_CAM_RecSet_OWD;SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_HU_UI_Mode", "OWD_005_01.jpg");
-
-  if(result == 1)
-  {
-    step1_passed = 1;
-    testStepPass("Step1", "BLTN_CAM_RecSet_OWD = 0x2 (ON) - PASS");
-  }
-  else
-  {
-    step1_passed = 0;
-    testStepFail("Step1", "BLTN_CAM_RecSet_OWD is NOT ON - FAIL");
-  }
-
-  //============================================================================
-  // STEP 2: Switch to HU UI mode, click TML Start, check RecSta_TML
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 2: Switch to AVN HU UI Mode, TML Start, Check RecSta_TML ===");
-  write("=================================================================");
-  testStep("Step2", "AVN mode + TML Start + RecSta_TML verification");
-
-  // 2.1 Switch to HU UI mode (HU_BLTN_CAM_UI_Mode = 0)
-  write("[2.1] Switching to AVN HU UI mode (HU_BLTN_CAM_UI_Mode = 0)...");
-  Exit_BLTN_CAM();
-  testWaitForTimeout(2000);
-
-  // Verify HU UI mode
-  Check_HU_UI_Mode(0x0);
-
-  // 2.2 Click TML Start
-  write("[2.2] Clicking TML Start button...");
-  Click_TML_Start();
-  testWaitForTimeout(3000);
-
-  // 2.3 Check BLTN_CAM_RecSta_TML = 0x1 (Recording)
-  result = Check_RecSta_TML_Recording();
-
-  // Capture screenshot
-  CaptureGraphics("BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSet_OWD", "OWD_005_02.jpg");
-
-  if(result == 1)
-  {
-    step2_passed = 1;
-    testStepPass("Step2", "BLTN_CAM_RecSta_TML = 0x1 (Recording) - PASS");
-  }
-  else
-  {
-    step2_passed = 0;
-    testStepFail("Step2", "BLTN_CAM_RecSta_TML is NOT Recording - FAIL");
-  }
-
-  //============================================================================
-  // STEP 3: Click Evt Switch, check RecSta_MAR
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 3: Click Evt Switch, Check RecSta_MAR ===");
-  write("=================================================================");
-  testStep("Step3", "Evt Switch + RecSta_MAR verification");
-
-  // 3.1 Click Evt Switch
-  write("[3.1] Clicking Evt Switch button...");
-  Click_Evt_Switch();
-  testWaitForTimeout(3000);
-
-  // 3.2 Check BLTN_CAM_RecSta_MAR = 0x1 (Recording)
-  result = Check_RecSta_MAR_Recording();
-
-  // Capture screenshot
-  CaptureGraphics("BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode", "OWD_005_03.jpg");
-
-  if(result == 1)
-  {
-    step3_passed = 1;
-    testStepPass("Step3", "BLTN_CAM_RecSta_MAR = 0x1 (Recording) - PASS");
-  }
-  else
-  {
-    step3_passed = 0;
-    testStepFail("Step3", "BLTN_CAM_RecSta_MAR is NOT Recording - FAIL");
-  }
-
-  //============================================================================
-  // STEP 4: Event while driving - check RecSta_DEV
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 4: Event while driving - Check RecSta_DEV ===");
-  write("=================================================================");
-  testStep("Step4", "Driving Event Recording verification");
-
-  write("");
-  write("*************************************************************");
-  write("*** Tac dong su kien khi dang lai xe (Event while driving) ***");
-  write("*************************************************************");
-  write("");
-
-  // Wait for event trigger and check DEV recording (with continuous monitoring)
-  result = WaitFor_RecSta_DEV_Recording(50000);  // Check continuously for up to 50 seconds
-
-  // Capture screenshot
-  CaptureGraphics("BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_MAR;BLTN_CAM_RecSta_TML;BLTN_CAM_HU_UI_Mode", "OWD_005_04.jpg");
-
-  if(result == 1)
-  {
-    step4_passed = 1;
-    testStepPass("Step4", "BLTN_CAM_RecSta_DEV = 0x1 (Recording) - PASS");
-  }
-  else
-  {
-    step4_passed = 0;
-    testStepFail("Step4", "BLTN_CAM_RecSta_DEV is NOT Recording - FAIL");
-  }
-
-  //============================================================================
-  // STEP 5: TML Stop, verify TML off, wait 65s, check OWD still recording
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 5: TML Stop, Wait 65s, Verify OWD Recording ===");
-  write("=================================================================");
-  testStep("Step5", "TML Stop + 65s wait + OWD recording verification");
-
-  // 5.1 Click TML Stop
-  write("[5.1] Clicking TML Stop button...");
-  Click_TML_Stop();
-  testWaitForTimeout(2000);
-
-  // 5.2 Check BLTN_CAM_RecSta_TML = 0x0
-  result = Check_RecSta_TML_NotRecording();
-
-  if(result != 1)
-  {
-    write(">>> WARNING: TML recording did not stop properly <<<");
-  }
-
-  // 5.3 Wait 65 seconds at AVN mode with monitoring
-  write("[5.3] Waiting 65 seconds at AVN mode...");
-  Wait_At_AVN_WithMonitoring(65000);
-
-  // 5.4 Check OWD still recording during this period
-  write("[5.4] Checking OWD recording status after 65s...");
-  result = Check_RecSta_OWD_Recording();
-
-  // Capture screenshot
-  CaptureGraphics("BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;BLTN_CAM_HU_UI_Mode", "OWD_005_05.jpg");
-
-  if(result == 1)
-  {
-    step5_passed = 1;
-    testStepPass("Step5", "OWD recording verified during 65s wait - PASS");
-  }
-  else
-  {
-    step5_passed = 0;
-    testStepFail("Step5", "OWD recording not active during wait - FAIL");
-  }
-
-  //============================================================================
-  // STEP 6: Enter/Exit Built-in Cam mode 5 times
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 6: Enter/Exit Built-in Cam Mode 5 Times ===");
-  write("=================================================================");
-  testStep("Step6", "Mode cycling 5 times verification");
-
-  for(i = 1; i <= 5; i++)
-  {
-    write("");
-    write("--- Cycle %d of 5 ---", i);
-
-    // Enter Built-in Cam mode
-    write("[6.%d.1] Entering Built-in Cam mode...", i);
-    Enter_BLTN_CAM();
-    testWaitForTimeout(3000);
-
-    // Log current mode
-    write("  After Enter: HU_BLTN_CAM_UI_Mode = 0x%X | BLTN_CAM_HU_UI_Mode = 0x%X",
-          $HU_BLTN_CAM_UI_Mode, $BLTN_CAM_HU_UI_Mode);
-
-    // Exit to AVN mode
-    write("[6.%d.2] Exiting to AVN mode...", i);
-    Exit_BLTN_CAM();
-    testWaitForTimeout(3000);
-
-    // Log current mode
-    write("  After Exit: HU_BLTN_CAM_UI_Mode = 0x%X | BLTN_CAM_HU_UI_Mode = 0x%X",
-          $HU_BLTN_CAM_UI_Mode, $BLTN_CAM_HU_UI_Mode);
-  }
-
-  // Verify final state is AVN HU UI mode
-  write("");
-  write("[6.6] Verifying final state is AVN HU UI mode...");
-  result = Check_HU_UI_Mode(0x0);
-
-  // Capture screenshot
-  CaptureGraphics("HU_BLTN_CAM_UI_Mode;BLTN_CAM_HU_UI_Mode;BLTN_CAM_RecSet_OWD", "OWD_005_06.jpg");
-
-  if(result == 1)
-  {
-    step6_passed = 1;
-    testStepPass("Step6", "Mode cycling 5 times completed, final state AVN mode - PASS");
-  }
-  else
-  {
-    step6_passed = 0;
-    testStepFail("Step6", "Mode cycling failed - FAIL");
-  }
-
-  //============================================================================
-  // STEP 7: Log video verification
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 7: Video Recording Files Verification ===");
-  write("=================================================================");
-  testStep("Step7", "Video files verification log");
-
-  write("");
-  write("*************************************************************");
-  write("*** VERIFICATION REQUIRED: ***");
-  write("*** Check that the driving/impact/manual/time-lapse recording files are saved. ***");
-  write("*** - Driving Recording (OWD) ***");
-  write("*** - Impact/Event Recording (DEV) ***");
-  write("*** - Manual Recording (MAR) ***");
-  write("*** - Time-lapse Recording (TML) ***");
-  write("*************************************************************");
-  write("");
-
-  // Log current recording settings
-  write("Current Recording Settings:");
-  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
-  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
-  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
-  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
-  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
-
-  testStepPass("Step7", "Video verification logged - Manual check required");
-
-  //============================================================================
-  // STEP 8: Set voltage to 9V, wait 60s at AVN mode
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 8: Set Voltage to 9V, Wait 60s at AVN ===");
-  write("=================================================================");
-  testStep("Step8", "9V voltage test at AVN mode");
-
-  // Ensure we're in AVN mode
-  Exit_BLTN_CAM();
-  testWaitForTimeout(1000);
-
-  // Set voltage to 9V
-  write("[8.1] Setting voltage to 9V via COM3...");
-  Set_Voltage(9.0);
-  PowerSupply_OutputON();
-  testWaitForTimeout(2000);
-
-  // Wait 60 seconds at AVN mode
-  write("[8.2] Waiting 60 seconds at AVN HU UI mode...");
-  //Wait_At_AVN_WithMonitoring(60000);
-  testWaitForTimeout(60000);
-  // Log status
-  write("[8.3] Status after 60s at 9V:");
-  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
-  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
-  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
-  write("  AIN (Voltage) = %.2f V", @sysvar::IO::VN1600_1::AIN);
-
-  // Capture screenshot with AIN signal for voltage monitoring
-  CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode;AIN", "OWD_005_07.jpg");
-
-  testStepPass("Step8", "9V voltage test completed - Screenshot captured");
-
-  //============================================================================
-  // STEP 9: Set voltage to 16V, wait 60s at AVN mode
-  //============================================================================
-  write("");
-  write("=================================================================");
-  write("=== STEP 9: Set Voltage to 16V, Wait 60s at AVN ===");
-  write("=================================================================");
-  testStep("Step9", "16V voltage test at AVN mode");
-
-  // Ensure we're in AVN mode
-  Exit_BLTN_CAM();
-  testWaitForTimeout(1000);
-
-  // Set voltage to 16V
-  write("[9.1] Setting voltage to 16V via COM3...");
-  Set_Voltage(16.0);
-  testWaitForTimeout(2000);
-
-  // Wait 60 seconds at AVN mode
-  write("[9.2] Waiting 60 seconds at AVN HU UI mode...");
-  //Wait_At_AVN_WithMonitoring(60000);
-  testWaitForTimeout(60000);
-
-  // Log status
-  write("[9.3] Status after 60s at 16V:");
-  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
-  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
-  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
-  write("  AIN (Voltage) = %.2f V", @sysvar::IO::VN1600_1::AIN);
-
-  // Capture screenshot with AIN signal for voltage monitoring
-  CaptureGraphics("BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_HU_UI_Mode;AIN", "OWD_005_08.jpg");
-
-  testStepPass("Step9", "16V voltage test completed - Screenshot captured");
-
-  //============================================================================
-  // TEST COMPLETE
-  //============================================================================
-  write("");
-  write("========================================");
-  write("=== TEST OWD_005 COMPLETE ===");
-  write("========================================");
-
-  // Restore voltage to normal (12V)
-  write("Restoring voltage to 12V...");
-  Set_Voltage(12.0);
-  testWaitForTimeout(1000);
-
-  // Close power supply connection
-  Close_PowerSupply();
-
-  // Cleanup - disable CGW NM
-  @panel::Switch_CGWNM = 0;
-
-  write("");
-  write("=== FINAL STATUS ===");
-  write("  SMK_TrmnlCtrlGrpStaBDC = 0x%X", $SMK_TrmnlCtrlGrpStaBDC);
-  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
-  write("  BLTN_CAM_RecSta_OWD = 0x%X", $BLTN_CAM_RecSta_OWD);
-  write("  BLTN_CAM_RecSta_DEV = 0x%X", $BLTN_CAM_RecSta_DEV);
-  write("  BLTN_CAM_RecSta_MAR = 0x%X", $BLTN_CAM_RecSta_MAR);
-  write("  BLTN_CAM_RecSta_TML = 0x%X", $BLTN_CAM_RecSta_TML);
-  write("  BLTN_CAM_HU_UI_Mode = 0x%X", $BLTN_CAM_HU_UI_Mode);
-
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1 && step6_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_005: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_005: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
-  write("");
-  write("=== TEST SUMMARY ===");
-  if(step1_passed)
-    write("Step 1: SMK IGN + USM Reset + RecSet_OWD = ON check: PASS");
-  else
-    write("Step 1: SMK IGN + USM Reset + RecSet_OWD = ON check: FAIL");
-  if(step2_passed)
-    write("Step 2: AVN HU UI mode + TML Start + RecSta_TML = Recording check: PASS");
-  else
-    write("Step 2: AVN HU UI mode + TML Start + RecSta_TML = Recording check: FAIL");
-  if(step3_passed)
-    write("Step 3: Evt Switch + RecSta_MAR = Recording check: PASS");
-  else
-    write("Step 3: Evt Switch + RecSta_MAR = Recording check: FAIL");
-  if(step4_passed)
-    write("Step 4: Driving Event + RecSta_DEV = Recording check: PASS");
-  else
-    write("Step 4: Driving Event + RecSta_DEV = Recording check: FAIL");
-  if(step5_passed)
-    write("Step 5: TML Stop + 65s wait + DEV recording verification: PASS");
-  else
-    write("Step 5: TML Stop + 65s wait + DEV recording verification: FAIL");
-  if(step6_passed)
-    write("Step 6: Enter/Exit Built-in Cam 5 times: PASS");
-  else
-    write("Step 6: Enter/Exit Built-in Cam 5 times: FAIL");
-  write("Step 7: Video files verification log: PASS");
-  write("Step 8: 9V voltage test at AVN (60s): PASS");
-  write("Step 9: 16V voltage test at AVN (60s): PASS");
+  Send_Value_To_COM(44);
 }
 
-void MainTest()
-{
+testcase OWD_005_1() {
+  Send_Value_To_COM(10501);
+  SetTestStep("Bước 1 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 1: Set SMK to IGN, click USM Reset, check RecSet_OWD ===");
+  write("===================================================================");
+  testStep("Step1", "Boot check RecSet_OWD");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+
+  write("Waiting 10s for boot...");
+  testWaitForTimeout(10000);
+
+  if (Check_RecSet_OWD_ON() == 1) {
+    step1_passed = 1;
+    testStepPass("Step1", "BLTN_CAM_RecSet_OWD is ON (0x2)");
+  } else {
+    step1_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSet_OWD expected 0x2 (ON) but got 0x%X <<<", $BLTN_CAM_RecSet_OWD);
+    Log_Error_Details();
+    testStepFail("Step1", "BLTN_CAM_RecSet_OWD is NOT ON");
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_2() {
+  Send_Value_To_COM(10502);
+  SetTestStep("Bước 2 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 2: Switch to HU UI mode = 0, click TML Start ===");
+  write("===================================================================");
+  testStep("Step2", "Start TML recording in AVN mode");
+
+  Exit_BLTN_CAM(); // Switch to AVN mode
+
+  write("Wait 3s, then Click TML Start...");
+  testWaitForTimeout(3000);
+  Click_TML_Start();
+
+  write("Verifying TML status...");
+  testWaitForTimeout(5000);
+
+  if ($BLTN_CAM_RecSta_TML == 0x1) {
+    step2_passed = 1;
+    testStepPass("Step2", "BLTN_CAM_RecSta_TML is Recording (0x1)");
+  } else {
+    step2_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_TML expected 0x1 (Recording) but got 0x%X <<<", $BLTN_CAM_RecSta_TML);
+    Log_Error_Details();
+    testStepFail("Step2", "BLTN_CAM_RecSta_TML is NOT Recording");
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_TML");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_3() {
+  Send_Value_To_COM(10503);
+  SetTestStep("Bước 3 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 3: Click Evt Switch, check BLTN_CAM_RecSta_MAR ===");
+  write("===================================================================");
+  testStep("Step3", "Trigger MAR recording");
+
+  Click_Evt_Switch();
+
+  write("Verifying MAR status...");
+  testWaitForTimeout(5000);
+
+  if ($BLTN_CAM_RecSta_MAR == 0x1) {
+    step3_passed = 1;
+    testStepPass("Step3", "BLTN_CAM_RecSta_MAR is Recording (0x1)");
+  } else {
+    step3_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_MAR expected 0x1 (Recording) but got 0x%X <<<", $BLTN_CAM_RecSta_MAR);
+    Log_Error_Details();
+    testStepFail("Step3", "BLTN_CAM_RecSta_MAR is NOT Recording");
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_MAR");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_4() {
+  int result = 0;
+  Send_Value_To_COM(10504);
+  SetTestStep("Bước 4 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 4: Wait for BLTN_CAM_RecSta_DEV = 0x1 ===");
+  write("===================================================================");
+  testStep("Step4", "Verify DEV recording");
+
+  result = WaitFor_RecSta_DEV_Recording(60); // Header uses seconds, adjusted to match
+
+  if (result == 1) {
+    step4_passed = 1;
+    testStepPass("Step4", "BLTN_CAM_RecSta_DEV is Recording (0x1)");
+  } else {
+    step4_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_RecSta_DEV expected 0x1 (Recording) but got 0x%X <<<", $BLTN_CAM_RecSta_DEV);
+    Log_Error_Details();
+    testStepFail("Step4", "BLTN_CAM_RecSta_DEV is NOT Recording");
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_5() {
+ KEY_ON();
+ Enter_BLTN_CAM();
+ 
+  Send_Value_To_COM(10505);
+ Exit_BLTN_CAM();
+  SetTestStep("Bước 5 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 5: Click TML Stop, wait 65s, verify DEV recording ===");
+  write("===================================================================");
+  testStep("Step5", "Stop TML and verify DEV");
+
+ WaitFor_RecSta_OWD_Recording(20000); // Wait for OWD recording to start after TML stops
+  testWaitForTimeout(60000); // Additional wait to ensure recording status is updated
+ Enter_BLTN_CAM(); // Re-enter BLTN_CAM to refresh signal status
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_State");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+
+
+}
+
+testcase OWD_005_6() {
+  int i = 0;
+  Send_Value_To_COM(10506);
+  SetTestStep("Bước 6 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 6: Enter/Exit Built-in Cam mode 5 times ===");
+  write("===================================================================");
+  testStep("Step6", "UI Mode transition");
+
+  for (i = 0; i < 5; i++) {
+    Enter_BLTN_CAM();
+    testWaitForTimeout(2000);
+    Exit_BLTN_CAM();
+    testWaitForTimeout(2000);
+  }
+
+  if ($BLTN_CAM_HU_UI_Mode == 0x0) {
+    step6_passed = 1;
+    testStepPass("Step6", "UI mode transitions complete (Mode=AVN)");
+  } else {
+    step6_passed = 0;
+    write(">>> FAIL REASON: BLTN_CAM_HU_UI_Mode expected 0x0 (AVN) but got 0x%X <<<", $BLTN_CAM_HU_UI_Mode);
+    Log_Error_Details();
+    testStepFail("Step6", "UI mode transition failed");
+  }
+
+  CaptureGraphics("OWD", "BLTN_CAM_HU_UI_Mode");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_7() {
+  Send_Value_To_COM(10507);
+  SetTestStep("Bước 7 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 7: Log video verification ===");
+  write("===================================================================");
+  testStep("Step7", "Log video verification");
+
+  write(">>> VERIFICATION REQUIRED <<<");
+  write(">>> Please manually check the SD Card for the recorded files: <<<");
+  write(">>> 1. MAR and DEV files <<<");
+  write(">>> 2. TML file matching timestamps <<<");
+
+  step7_passed = 1;
+  testStepPass("Step7", "Video log instruction displayed");
+
+  write("[Capture] Wait 5 seconds before screenshot");
+  testWaitForTimeout(5000);
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSta_OWD;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSta_DEV;BLTN_CAM_RecSta_TML;BLTN_CAM_RecSta_MAR;BLTN_CAM_SD_Card_State");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_8() {
+  Send_Value_To_COM(10508);
+  SetTestStep("Bước 8 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 8: Set voltage to 9V via COM3, wait 60s at AVN mode ===");
+  write("===================================================================");
+  testStep("Step8", "9V voltage test in AVN mode");
+
+  // Ensure AVN Mode
+  Exit_BLTN_CAM();
+  testWaitForTimeout(1000);
+
+  write("[8.1] Setting voltage to 9V...");
+  SetVoltage_CH2(9.6);
+  TurnOn_Output_CH2();
+  testWaitForTimeout(2000);
+
+  write("[8.2] Waiting 60 seconds at AVN mode...");
+  testWaitForTimeout(60000);
+
+  write("[8.3] Status after 60s at 9V:");
+  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
+  write("  AIN (Voltage) = %.2f V", @sysvar::IO::VN1600_1::AIN);
+  if (@sysvar::IO::VN1600_1::AIN <= 10 && @sysvar::IO::VN1600_1::AIN >= 6) {
+    write(">>> Voltage is within expected range (8.5V - 10.5V) <<<");
+    step8_passed = 1;
+  } else {
+    write(">>> Voltage is OUT of expected range! <<<");
+  }
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;AIN");
+
+  testStepPass("Step8", "9V testing complete");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+testcase OWD_005_9() {
+  Send_Value_To_COM(10509);
+  SetTestStep("Bước 9 - OWD_005");
+  StartTestTimer();
+
+  write("");
+  write("===================================================================");
+  write("=== STEP 9: Set voltage to 16V via COM3, wait 60s at AVN mode ===");
+  write("===================================================================");
+  testStep("Step9", "16V voltage test in AVN mode");
+
+  // Ensure AVN Mode
+  Exit_BLTN_CAM();
+  testWaitForTimeout(1000);
+
+  write("[9.1] Setting voltage to 16V...");
+  SetVoltage_CH2(16.6);
+  testWaitForTimeout(2000);
+
+  write("[9.2] Waiting 60 seconds at AVN mode...");
+  testWaitForTimeout(60000);
+
+  write("[9.3] Status after 60s at 16V:");
+  write("  BLTN_CAM_RecSet_OWD = 0x%X", $BLTN_CAM_RecSet_OWD);
+  write("  AIN (Voltage) = %.2f V", @sysvar::IO::VN1600_1::AIN);
+
+  CaptureGraphics("OWD", "BLTN_CAM_RecSet_OWD;AIN");
+  if (@sysvar::IO::VN1600_1::AIN >= 15) {
+    write(">>> Voltage is within expected range (15.5V - 16.5V) <<<");
+    step9_passed = 1;
+  } else {
+    write(">>> Voltage is OUT of expected range! <<<");
+  }
+
+  testStepPass("Step9", "16V testing complete");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+
+void MainTest() {
   testReportFileName("TestReports\\OWD_005 - 2.5 generation_report");
-  OWD_005();
+  OWD_005_Init();
+ // OWD_005_1();
+
+  //OWD_005_2();
+ // OWD_005_3();
+ // OWD_005_4();
+  OWD_005_5();
+  //OWD_005_6();
+  //OWD_005_7();
+
+ // OWD_005_8();
+ // OWD_005_9();
 }

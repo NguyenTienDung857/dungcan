@@ -1,25 +1,23 @@
 # =============================================================================
-# update_to_03.py — Tự động hóa quy trình OTA update lên phiên bản 03
+# case_007.py - case 007 runner: wireless update to version 03
 # =============================================================================
-# CÁC BƯỚC THỰC HIỆN:
-#   1. Kiểm tra quyền Administrator; nếu chưa có thì tự relaunch để xin quyền cao hơn.
-#   2. Kill các tiến trình H-OTA Studio cũ để chạy lại từ trạng thái sạch.
-#   3. Mở ứng dụng từ shortcut C:\H-OTA Studio.lnk.
-#   4. Tìm cửa sổ H-OTA, đưa lên foreground và maximize.
-#   5. Gửi phím tắt Ctrl+O để mở hộp thoại Open.
-#   6. Nạp file cấu hình OTA tại 3\ReprogramConfig_0_1_1_113.hcfg-r.
-#   7. Bấm TesterMode.
-#   8. Chọn Gateway Type là "CCU1 : EthDiag".
-#   9. Chọn Wireless-Rules và bấm Apply.
-#  10. Bấm Start ở Action Rule để bắt đầu chạy.
-#  11. Đọc Output pane liên tục, in ra các dòng log mới phát sinh.
-#  12. Chờ popup kết quả tối đa 20 phút; phân loại kết quả SUCCESS/FAIL/UNKNOWN.
-#  13. Nếu SUCCESS → set CANoe PythonCom::AppState = 3;
-#      nếu FAIL/UNKNOWN → set CANoe PythonCom::AppState = 4.
-#  14. Chụp ảnh cửa sổ H-OTA và từng màn hình monitor, lưu vào Report/.
-#  15. Đổi tên LOGASC/baocao.asc thành update_to_03_YYYYMMDD_HHMMSS.ase
-#      nếu file đó được cập nhật trong lần chạy hiện tại.
-#  16. In kết quả cuối cùng ra terminal, hoặc báo TIMEOUT nếu không thấy popup.
+# TEST FLOW:
+#   1. Ensure Administrator rights; relaunch elevated when needed.
+#   2. Kill old H-OTA Studio processes for a clean start.
+#   3. Launch H-OTA Studio from H-OTA Studio.lnk next to this script.
+#   4. Find the H-OTA/ReprogramEditor window, foreground it, and maximize it.
+#   5. Send Ctrl+O and load the only *.hcfg-r file from H-OTA config folder 3.
+#   6. Click TesterMode.
+#   7. Set Gateway Type to "CCU1 : EthDiag".
+#   8. Select Wireless-Rules and click Apply for Scenario Units.
+#   9. Click Start in Action Rule.
+#   10. Mirror new Output pane lines to the terminal while waiting.
+#   11. Wait for the final H-OTA result popup.
+#   12. If popup text contains success, set PythonCom::AppState = 3;
+#      otherwise set PythonCom::AppState = 4.
+#   13. Capture the H-OTA window and every monitor into Report/.
+#   14. Close H-OTA Studio after screenshots, then wait 30s and rename any current-run LOGASC\*.asc to
+#      LOGASC\<original>_<script_name>_YYYYMMDD_HHMMSS.asc.
 # =============================================================================
 
 import subprocess
@@ -27,6 +25,8 @@ import time
 import sys
 import ctypes
 import os
+from hota_config import find_hota_config_file
+from python_run_log import start_python_log
 import re
 from datetime import datetime
 import win32gui
@@ -203,45 +203,84 @@ def notify_canoe_app_state(value=1, variable_name="PythonCom::AppState"):
         return False
 
 
-def rename_recent_baocao_file(script_name, script_dir, run_started_at, wait_seconds=3):
-    """Waits a bit, then renames LOGASC/baocao.asc if it was updated in current run."""
-    print(f"Waiting {wait_seconds}s before checking LOGASC\\baocao.asc...")
+def terminate_current_hota_process():
+    """Force-closes H-OTA Studio so LOGASC files are flushed to disk."""
+    try:
+        subprocess.run(
+            ["taskkill", "/F", "/IM", "H-OTA Studio.exe", "/T"],
+            capture_output=True,
+            check=False,
+        )
+        print("H-OTA Studio process was closed to flush LOGASC files.")
+        return True
+    except Exception as e:
+        print(f"Warning: Could not close H-OTA Studio process: {e}")
+        return False
+
+
+def rename_recent_asc_files(script_name, script_dir, run_started_at, wait_seconds=30):
+    """Waits after screenshots, then renames current-run LOGASC/*.asc files."""
+    print(f"Waiting {wait_seconds}s before checking LOGASC\\*.asc files...")
     time.sleep(wait_seconds)
 
     logasc_dir = os.path.join(script_dir, "LOGASC")
-    source_path = os.path.join(logasc_dir, "baocao.asc")
-
-    if not os.path.exists(source_path):
-        print(f"No file to rename: {source_path}")
+    if not os.path.isdir(logasc_dir):
+        print(f"No LOGASC folder found: {logasc_dir}")
         return False
+
+    cutoff_time = run_started_at - 5
+    asc_files = []
 
     try:
-        modified_at = os.path.getmtime(source_path)
+        for file_name in os.listdir(logasc_dir):
+            if not file_name.lower().endswith(".asc"):
+                continue
+
+            source_path = os.path.join(logasc_dir, file_name)
+            if not os.path.isfile(source_path):
+                continue
+
+            try:
+                created_at = os.path.getctime(source_path)
+                modified_at = os.path.getmtime(source_path)
+            except Exception as e:
+                print(f"Could not read file timestamp for {source_path}: {e}")
+                continue
+
+            if created_at >= cutoff_time or modified_at >= cutoff_time:
+                asc_files.append((source_path, file_name, max(created_at, modified_at)))
     except Exception as e:
-        print(f"Could not read file timestamp for {source_path}: {e}")
+        print(f"Could not list LOGASC folder {logasc_dir}: {e}")
         return False
 
-    # Allow a small tolerance for timestamp jitter around start moment.
-    if modified_at < (run_started_at - 5):
-        print("Found baocao.asc but it was not updated in this run. Skipping rename.")
+    if not asc_files:
+        print("No current-run .asc files found in LOGASC. Skipping rename.")
         return False
 
     rename_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    target_path = os.path.join(logasc_dir, f"baocao_{rename_ts}.asc")
+    renamed_any = False
 
-    suffix = 1
-    while os.path.exists(target_path):
-        target_path = os.path.join(logasc_dir, f"baocao_{rename_ts}_{suffix}.asc")
-        suffix += 1
+    for source_path, file_name, _file_time in sorted(asc_files, key=lambda item: item[2]):
+        source_base = os.path.splitext(file_name)[0]
+        target_path = os.path.join(
+            logasc_dir, f"{source_base}_{script_name}_{rename_ts}.asc"
+        )
 
-    try:
-        os.replace(source_path, target_path)
-        print(f"Renamed LOGASC file: {source_path} -> {target_path}")
-        return True
-    except Exception as e:
-        print(f"Could not rename {source_path}: {e}")
-        return False
+        suffix = 1
+        while os.path.exists(target_path):
+            target_path = os.path.join(
+                logasc_dir, f"{source_base}_{script_name}_{rename_ts}_{suffix}.asc"
+            )
+            suffix += 1
 
+        try:
+            os.replace(source_path, target_path)
+            print(f"Renamed LOGASC file: {source_path} -> {target_path}")
+            renamed_any = True
+        except Exception as e:
+            print(f"Could not rename {source_path}: {e}")
+
+    return renamed_any
 
 def get_runtime_base_dir():
     """Returns folder containing script in dev mode or exe in frozen mode."""
@@ -313,6 +352,11 @@ def capture_hota_and_monitor_screenshots(main_hwnd, report_dir, script_name):
 
 
 def open_hota_and_file():
+    script_dir = get_runtime_base_dir()
+    script_name = os.path.splitext(os.path.basename(__file__))[0]
+    python_log_path = start_python_log(script_dir, script_name)
+    print(f"Python log file: {python_log_path}")
+
     if not is_admin():
         print("This script needs Administrator privileges. Requesting elevation...")
         if relaunch_as_admin():
@@ -380,7 +424,7 @@ def open_hota_and_file():
     script_name = os.path.splitext(os.path.basename(__file__))[0]
     report_dir = os.path.join(script_dir, "Report")
     os.makedirs(report_dir, exist_ok=True)
-    file_path = os.path.join(script_dir, r"3\ReprogramConfig_0_1_1_113.hcfg-r")
+    file_path = find_hota_config_file(script_dir, "3")
 
     print("Waiting for Open dialog...")
     app = Application(backend="win32").connect(handle=main_hwnd)
@@ -632,15 +676,18 @@ def open_hota_and_file():
                     except Exception as e:
                         print(f"Error reading popup content: {e}")
 
+                    print("Closing H-OTA Studio after screenshots to flush LOGASC files...")
+                    terminate_current_hota_process()
+
                     print("========================================")
                     print(f"  H-OTA RESULT: {result}")
                     print("========================================")
 
-                    rename_recent_baocao_file(
+                    rename_recent_asc_files(
                         script_name=script_name,
                         script_dir=script_dir,
                         run_started_at=start_time,
-                        wait_seconds=3,
+                        wait_seconds=30,
                     )
 
                 else:

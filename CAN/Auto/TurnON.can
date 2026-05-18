@@ -1,0 +1,139 @@
+/*@!Encoding:65001*/
+
+includes
+{
+  #include "DeclarationFunction_Gen2.5.h"
+}
+
+/*
+  Test Case: TurnON
+  Title: KEY ON and turn ON OWD, OWP, DEV, PEV settings
+
+  Verification items:
+    - Step 1: KEY_ON(), Turn_ON_OWD(), Turn_ON_OWP(), Turn_ON_DEV(),
+              Turn_ON_PEV().
+    - Step 1 expected: SMK = IGN, OWD/OWP/DEV/PEV settings are ON.
+
+  Preconditions:
+    - CANoe simulation and Built-in Cam panels are available.
+
+  NOTE: Uses shared helpers from DeclarationFunction_Gen2.5.h.
+*/
+
+variables
+{
+  char failReason[512];
+
+  int step1_passed = 0;
+
+  int actualSMK = 0;
+  int actualOWD = 0;
+  int actualOWP = 0;
+  int actualDEV = 0;
+  int actualPEV = 0;
+}
+
+// ============================================================================
+// Test Cases
+// ============================================================================
+
+testcase TurnON_Init()
+{
+  Send_Value_To_COM(9110);
+  write("========================================");
+  write("=== START TEST TurnON ===");
+  write("=== KEY ON + Turn ON recording sets  ===");
+  write("========================================");
+  testStep("Notification", "Start test TurnON");
+  Send_Value_To_COM(44);
+}
+
+testcase TurnON_1()
+{
+  int smkOn = 0;
+  int owdOn = 0;
+  int owpOn = 0;
+  int devOn = 0;
+  int pevOn = 0;
+
+  //============================================================================
+  // STEP 1: KEY ON, turn ON OWD/OWP/DEV/PEV, then verify setting signals.
+  //============================================================================
+  Send_Value_To_COM(9111);
+  SetTestStep("Buoc 1 - TurnON");
+  StartTestTimer();
+
+  write("");
+  write("=================================================================");
+  write("=== STEP 1: KEY ON + Turn ON OWD/OWP/DEV/PEV               ===");
+  write("=================================================================");
+  testStep("Step1", "KEY ON, then Turn_ON_OWD/OWP/DEV/PEV and verify ON settings");
+
+  write("[1.1] KEY ON...");
+  KEY_ON();
+  testWaitForTimeout(3000);
+  actualSMK = $SMK_TrmnlCtrlGrpStaBDC;
+  write("      SMK_TrmnlCtrlGrpStaBDC = 0x%X, expected 0x2 (IGN)", actualSMK);
+
+  write("[1.2] Running Turn_ON_OWD()...");
+  Turn_ON_OWD();
+
+  write("[1.3] Running Turn_ON_OWP()...");
+  Turn_ON_OWP();
+
+  write("[1.4] Running Turn_ON_DEV()...");
+  Turn_ON_DEV();
+
+  write("[1.5] Running Turn_ON_PEV()...");
+  Turn_ON_PEV();
+
+  write("[1.6] Reading actual recording setting signals...");
+  actualOWD = $BLTN_CAM_RecSet_OWD;
+  actualOWP = $BLTN_CAM_RecSet_OWP;
+  actualDEV = $BLTN_CAM_RecSet_DEV;
+  actualPEV = $BLTN_CAM_RecSet_PEV;
+
+  smkOn = (actualSMK == 0x2);
+  owdOn = Check_RecSet_OWD_ON();
+  owpOn = Check_RecSet_OWP_ON();
+  devOn = Check_RecSet_DEV_ON();
+  pevOn = Check_RecSet_PEV_ON();
+
+  write("      BLTN_CAM_RecSet_OWD = 0x%X, expected 0x2 (ON)", actualOWD);
+  write("      BLTN_CAM_RecSet_OWP = 0x%X, expected 0x2 (ON)", actualOWP);
+  write("      BLTN_CAM_RecSet_DEV = 0x%X, expected 0x2 (ON)", actualDEV);
+  write("      BLTN_CAM_RecSet_PEV = 0x%X, expected 0x2 (ON)", actualPEV);
+
+  write("[1.7] Capturing evidence...");
+  CaptureGraphics("OWP", "SMK_TrmnlCtrlGrpStaBDC;BLTN_CAM_RecSet_OWD;BLTN_CAM_RecSet_OWP;BLTN_CAM_RecSet_DEV;BLTN_CAM_RecSet_PEV;BLTN_CAM_State");
+
+  if (smkOn == 1 && owdOn == 1 && owpOn == 1 && devOn == 1 && pevOn == 1)
+  {
+    step1_passed = 1;
+    write(">>> Step 1: PASS - all requested settings are ON after KEY ON <<<");
+    testStepPass("Step1", "TurnON PASS: OWD/OWP/DEV/PEV are ON");
+  }
+  else
+  {
+    step1_passed = 0;
+    write(">>> Step 1: FAIL - one or more requested settings are not ON <<<");
+    snprintf(failReason, elcount(failReason),
+             "TurnON FAIL: SMK=0x%X expected 0x2, OWD=0x%X OWP=0x%X DEV=0x%X PEV=0x%X expected ON 0x2.",
+             actualSMK, actualOWD, actualOWP, actualDEV, actualPEV);
+    Log_Error_Details();
+    testStepFail("Step1", failReason);
+  }
+
+  write("=== FINISH STEP 1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+void MainTest()
+{
+  testReportFileName("TestReports\\TurnON_report");
+  Set_Attach_Font();
+  Set_Attach_Rear();
+  TurnON_Init();
+  TurnON_1();
+}

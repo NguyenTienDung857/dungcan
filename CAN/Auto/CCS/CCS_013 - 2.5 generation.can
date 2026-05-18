@@ -1,0 +1,166 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_013 - 2.5 generation
+  Title: [Parking Event Notification Setting Test]
+
+  Preconditions: - Block CCU, ACC and IGN and ccNC/ccIC switch OFF state
+
+  Step 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Set_PEV_AppNoti ON,
+          check BLTN_CAM_Set_PEV_AppNoti = 0x2 (ON).
+  Step 2: Check BLTN_CAM_Set_PEV_AppNoti = 0x0 (Default).
+*/
+
+includes {
+
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[2048] = "";
+  int i;
+}
+
+// ============================================================================
+// CCS_013_1: Step 1 - Init + Set_PEV_AppNoti ON + check 0x2
+// ============================================================================
+testcase CCS_013_1()
+{
+  int pev_appnoti_ok;
+
+  Send_Value_To_COM(31301);
+  SetTestStep("Buoc 1 - CCS_013");
+  StartTestTimer();
+  testStep("Step 1", "Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Set_PEV_AppNoti ON, check BLTN_CAM_Set_PEV_AppNoti = 0x2 (ON).");
+
+  write("=== START CCS_013_1 ===");
+  write("=== STEP 1 ===");
+
+  write("Calling Set_SMK_IGN...");
+  Set_SMK_IGN();
+
+  write("Calling Click_USM_Reset...");
+  Click_USM_Reset();
+
+  write("Calling Click_Rec_Reset...");
+  Click_Rec_Reset();
+
+  write("Calling Set_PEV_AppNoti ON...");
+  Set_PEV_AppNoti(0x2);
+  testWaitForTimeout(3000);
+
+  write("Checking BLTN_CAM_Set_PEV_AppNoti...");
+  pev_appnoti_ok = Check_PEV_AppNoti(0x2);
+
+  if (pev_appnoti_ok == 1)
+  {
+    testStepPass("CCS_013_1_Pass",
+                 "BLTN_CAM_Set_PEV_AppNoti = 0x2 (ON) confirmed");
+    passed_tests++;
+  }
+  else
+  {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Step 1 NG (PEV_AppNoti=0x%X, expected=0x2). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_Set_PEV_AppNoti);
+    testStepFail("CCS_013_1_Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names,
+            "CCS_013_1 (PEV_AppNoti 0x2 check), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  CaptureGraphics("CSS",
+                  "BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_013_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_013_2: Step 2 - Check PEV_AppNoti = 0x0 (Default)
+// ============================================================================
+testcase CCS_013_2()
+{
+  int pev_appnoti_ok;
+
+  Send_Value_To_COM(31302);
+  SetTestStep("Buoc 2 - CCS_013");
+  StartTestTimer();
+  testStep("Step 2", "Check BLTN_CAM_Set_PEV_AppNoti = 0x0 (Default).");
+
+  write("=== START CCS_013_2 ===");
+  write("=== STEP 2 ===");
+
+  write("Waiting 2 seconds for signal stabilization...");
+  testWaitForTimeout(2000);
+
+  write("Checking BLTN_CAM_Set_PEV_AppNoti for default value...");
+  pev_appnoti_ok = Check_PEV_AppNoti(0x0);
+
+  if (pev_appnoti_ok == 1)
+  {
+    testStepPass("CCS_013_2_Pass",
+                 "BLTN_CAM_Set_PEV_AppNoti = 0x0 (Default) confirmed");
+    passed_tests++;
+  }
+  else
+  {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Step 2 NG (PEV_AppNoti=0x%X, expected=0x0). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_Set_PEV_AppNoti);
+    testStepFail("CCS_013_2_Fail", failReason);
+    failed_tests++;
+    strncat(failed_test_names,
+            "CCS_013_2 (PEV_AppNoti 0x0 check), ",
+            elcount(failed_test_names));
+  }
+
+  total_tests++;
+
+  CaptureGraphics("CSS",
+                  "BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_013_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// MAIN TEST FUNCTION - Run all test cases sequentially
+// ============================================================================
+void MainTest()
+{
+  write("\n");
+  write("===============================================================");
+  write("  CCS_013 - PEV_Notification Setting Test (2.5 generation)");
+  write("===============================================================");
+  write("\n");
+
+  CCS_013_1();
+  testWaitForTimeout(2000);
+
+  CCS_013_2();
+  testWaitForTimeout(2000);
+
+  write("\n");
+  write("===============================================================");
+  write("  TEST SUMMARY");
+  write("===============================================================");
+  write("  Total Tests:  %d", total_tests);
+  write("  Passed:       %d", passed_tests);
+  write("  Failed:       %d", failed_tests);
+  if (failed_tests > 0)
+    write("  Failed Tests: %s", failed_test_names);
+  write("===============================================================");
+  write("\n");
+}
+

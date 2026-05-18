@@ -3,39 +3,51 @@
     "Component": "CommandLineParser",
     "Description": "Long paths are not supported by this system. This might cause issues if a path is too long. To prevent this set the registry key 'HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\FileSystem\\LongPathsEnabled' to the DWORD value 1.",
     "Severity": "Info",
-    "TimeNs": 1778485407428853700
+    "TimeNs": 1778561152410780300
 },
 {
     "Component": "CommandLineParser",
     "Description": "Using lockfile \"C:/Users/tiend/AppData/Local/Temp/dppfdoh156royonjgj4i1pyn9zn1bx9z/lock\".",
     "Severity": "Debug",
-    "TimeNs": 1778485407429969700
+    "TimeNs": 1778561152411720400
+},
+{
+    "Component": "CommandLineParser",
+    "Description": "Deleting old temp file \"C:/Users/tiend/AppData/Local/Temp/dppfdoh156royonjgj4i1pyn9zn1bx9z/arguments\".",
+    "Severity": "Debug",
+    "TimeNs": 1778561152411850900
+},
+{
+    "Component": "CommandLineParser",
+    "Description": "Deleting old temp file \"C:/Users/tiend/AppData/Local/Temp/dppfdoh156royonjgj4i1pyn9zn1bx9z/cwd\".",
+    "Severity": "Debug",
+    "TimeNs": 1778561152411986400
 },
 {
     "Component": "CommandLineParser",
     "Description": "schema base dir: \"C:/Program Files/Vector CANoe 17/Exec64/Schemas/venvironment.yaml-schemas\"",
     "Severity": "Debug",
-    "TimeNs": 1778485407430745100
+    "TimeNs": 1778561152412738800
 },
 {
     "Component": "ConfigurationParser",
     "Description": "Can't find schema at 'C:/Program Files/Vector CANoe 17/Exec64/Schemas/venvironment.yaml-schemas/v3.0.0/venvironment-schema.json'",
     "Location": "in: SchemaManager\n",
     "Severity": "Error",
-    "TimeNs": 1778485407493282500
+    "TimeNs": 1778561152483074400
 },
 {
     "Component": "ConfigurationParser",
     "Description": "Aborted due to previous error",
     "Location": "in: \"D:/project/CANoe/CANFD/venvironment.yaml\"\n",
     "Severity": "Error",
-    "TimeNs": 1778485407493286200
+    "TimeNs": 1778561152483079800
 },
 {
     "Component": "ConfigurationParser",
     "Description": "Aborted due to previous error",
     "Location": "in: \"D:/project/CANoe/CANFD/venvironment.yaml\"\n",
     "Severity": "Error",
-    "TimeNs": 1778485407493289800
+    "TimeNs": 1778561152483084400
 }
 ]

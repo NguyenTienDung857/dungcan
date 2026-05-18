@@ -1,0 +1,435 @@
+/*@!Encoding:65001*/
+/*
+  Test Case: CCS_017 - 2.5 generation
+  Title: [PEV Notification Setting Test 5]
+
+  Step 1: Set_SMK_IGN, Click_USM_Reset, Click_Rec_Reset, Turn_ON_OWP, Set_PEV_AppNoti ON,
+          KEY_OFF, Wait OWP recording.
+          Set_BglrAlrm(0x4 ArmWait), Wait PEV recording.
+          Set_BglrAlrm(0x2 Arm), check RecSta_PEV=0x1.
+          Wait 10s, then check BLTN_CAM_PEV_Recorded = 0x2.
+
+  Step 2: WaitFor_RecSta_PEV_Recording then wait 10s, repeat 4 rounds.
+          Check RecSta_PEV = 0x1.
+          Check RecSta_OWP = 0x1.
+          Log request to manually check all created videos.
+
+  Step 3: Wait OWP recording, Set_BglrAlrm(0x2 Arm), Wait PEV recording,
+          Set_BglrAlrm(0x1 Disarm), check RecSta_PEV=0x1.
+          Wait 12s, then check BLTN_CAM_PEV_Recorded = 0x2.
+
+  Step 4: Same as Step 2 (4 rounds of WaitFor_RecSta_PEV_Recording + 10s).
+          Check RecSta_PEV = 0x1.
+          Check RecSta_OWP = 0x1.
+          Log request to manually check all created videos.
+
+  Step 5: Set_BglrAlrm(0x2 Arm), Wait PEV recording,
+          wait 5 minutes, then Set_BglrAlrm(0x9 Alarm).
+          Check RecSta_PEV=0x1 and BLTN_CAM_PEV_Recorded = 0x2.
+
+  Step 6: Set_BglrAlrm(0x1 Disarm), then Set_BglrAlrm(0x4 ArmWait),
+          after 30 seconds Set_BglrAlrm(0x2 Arm).
+          Wait PEV recording, check RecSta_PEV=0x1 and BLTN_CAM_PEV_Recorded = 0x2.
+
+  Note:
+  - WaitFor_RecSta_PEV_Recording uses timeout = 60s.
+  - BLTN_CAM_PEV_Recorded checks use WaitFor_PEV_Recorded_Value(..., 30000).
+*/
+
+includes {
+#include "..\DeclarationFunction_Gen2.5.h"
+}
+
+variables {
+  char failReason[512];
+  int total_tests = 0;
+  int passed_tests = 0;
+  int failed_tests = 0;
+  char failed_test_names[2048] = "";
+}
+
+// ============================================================================
+// CCS_017_1: Step 1
+// ============================================================================
+testcase CCS_017_1()
+{
+  int is_ok;
+
+  Send_Value_To_COM(31701);
+  SetTestStep("Buoc 1 - CCS_017");
+  StartTestTimer();
+  testStep("Step 1", "Init -> ArmWait -> Arm, then verify RecSta_PEV and PEV_Recorded=0x2");
+
+  write("=== START CCS_017_1 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
+
+  Turn_ON_OWP();
+  Set_PEV_AppNoti(0x2);
+  KEY_OFF();
+
+  is_ok = WaitFor_RecSta_OWP_Recording(60000);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_1_A", "OWP recording started within 60s");
+  } else {
+    testStepFail("CCS_017_1_A", "Fail reason: Timeout waiting OWP recording start within 60s. Cause: expected condition was not satisfied.");
+  }
+
+  Set_BglrAlrm(0x4); // ArmWait
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_1_B", "PEV recording detected in ArmWait state");
+  } else {
+    testStepFail("CCS_017_1_B", "Fail reason: Timeout waiting RecSta_PEV=0x1 in ArmWait state. Cause: expected condition was not satisfied.");
+  }
+
+  Set_BglrAlrm(0x2); // Arm
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_1_C", "RecSta_PEV is 0x1 after switching to Arm");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1) after Arm. Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_1_C", failReason);
+  }
+
+  testWaitForTimeout(10000);
+  if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+    testStepPass("CCS_017_1_D", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_PEV_Recorded);
+    testStepFail("CCS_017_1_D", failReason);
+  }
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_017_2: Step 2
+// ============================================================================
+testcase CCS_017_2()
+{
+  int round;
+  int is_ok;
+
+  Send_Value_To_COM(31702);
+  SetTestStep("Buoc 2 - CCS_017");
+  StartTestTimer();
+  testStep("Step 2", "4 rounds: WaitFor_RecSta_PEV_Recording + wait 10s, then check RecSta_PEV and RecSta_OWP");
+
+  write("=== START CCS_017_2 ===");
+
+  for (round = 1; round <= 4; round++) {
+    is_ok = WaitFor_RecSta_PEV_Recording(60);
+    if (is_ok == 1) {
+      testStepPass("CCS_017_2_WAIT", "Round wait PEV recording passed");
+    } else {
+      snprintf(failReason,
+               elcount(failReason),
+               "Fail reason: Round %d timeout waiting BLTN_CAM_RecSta_PEV = 0x1 within 60s. Cause: expected condition was not satisfied.",
+               round);
+      testStepFail("CCS_017_2_WAIT", failReason);
+    }
+
+    if (round < 4) {
+      testWaitForTimeout(10000);
+    }
+  }
+
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_2_A", "BLTN_CAM_RecSta_PEV = 0x1");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_2_A", failReason);
+  }
+
+  if (Check_RecSta_OWP_Recording() == 1) {
+    testStepPass("CCS_017_2_B", "BLTN_CAM_RecSta_OWP = 0x1");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_OWP = 0x%X (expected 0x1). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_OWP);
+    testStepFail("CCS_017_2_B", failReason);
+  }
+
+  write("*************************************************************");
+  write("*** PLEASE CHECK ALL VIDEOS CREATED ***");
+  write("*************************************************************");
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_017_3: Step 3
+// ============================================================================
+testcase CCS_017_3()
+{
+  int is_ok;
+
+  Send_Value_To_COM(31703);
+  SetTestStep("Buoc 3 - CCS_017");
+  StartTestTimer();
+  testStep("Step 3", "Wait OWP, Arm -> Wait PEV, then Disarm and verify PEV conditions");
+
+  write("=== START CCS_017_3 ===");
+
+  is_ok = WaitFor_RecSta_OWP_Recording(60000);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_3_A", "OWP recording confirmed");
+  } else {
+    testStepFail("CCS_017_3_A", "Fail reason: Timeout waiting OWP recording start within 60s. Cause: expected condition was not satisfied.");
+  }
+
+  Set_BglrAlrm(0x2); // Arm
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_3_B", "PEV recording detected after Arm");
+  } else {
+    testStepFail("CCS_017_3_B", "Fail reason: Timeout waiting RecSta_PEV=0x1 after Arm. Cause: expected condition was not satisfied.");
+  }
+
+  Set_BglrAlrm(0x1); // Disarm
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_3_C", "BLTN_CAM_RecSta_PEV = 0x1 after Disarm");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1) after Disarm. Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_3_C", failReason);
+  }
+
+  testWaitForTimeout(12000);
+  if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+    testStepPass("CCS_017_3_D", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_PEV_Recorded);
+    testStepFail("CCS_017_3_D", failReason);
+  }
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_017_4: Step 4
+// ============================================================================
+testcase CCS_017_4()
+{
+  int round;
+  int is_ok;
+
+  Send_Value_To_COM(31704);
+  SetTestStep("Buoc 4 - CCS_017");
+  StartTestTimer();
+  testStep("Step 4", "Repeat Step 2 sequence and verify RecSta signals");
+
+  write("=== START CCS_017_4 ===");
+
+  for (round = 1; round <= 4; round++) {
+    is_ok = WaitFor_RecSta_PEV_Recording(60);
+    if (is_ok == 1) {
+      testStepPass("CCS_017_4_WAIT", "Round wait PEV recording passed");
+    } else {
+      snprintf(failReason,
+               elcount(failReason),
+               "Fail reason: Round %d timeout waiting BLTN_CAM_RecSta_PEV = 0x1 within 60s. Cause: expected condition was not satisfied.",
+               round);
+      testStepFail("CCS_017_4_WAIT", failReason);
+    }
+
+    if (round < 4) {
+      testWaitForTimeout(10000);
+    }
+  }
+
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_4_A", "BLTN_CAM_RecSta_PEV = 0x1");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_4_A", failReason);
+  }
+
+  if (Check_RecSta_OWP_Recording() == 1) {
+    testStepPass("CCS_017_4_B", "BLTN_CAM_RecSta_OWP = 0x1");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_OWP = 0x%X (expected 0x1). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_OWP);
+    testStepFail("CCS_017_4_B", failReason);
+  }
+
+  write("*************************************************************");
+  write("*** PLEASE CHECK ALL VIDEOS CREATED ***");
+  write("*************************************************************");
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_017_5: Step 5
+// ============================================================================
+testcase CCS_017_5()
+{
+  int is_ok;
+
+  Send_Value_To_COM(31705);
+  SetTestStep("Buoc 5 - CCS_017");
+  StartTestTimer();
+  testStep("Step 5", "Arm -> Wait PEV -> wait 5 minutes -> Alarm, then verify PEV conditions");
+
+  write("=== START CCS_017_5 ===");
+
+  Set_BglrAlrm(0x2); // Arm
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_5_A", "PEV recording detected after Arm");
+  } else {
+    testStepFail("CCS_017_5_A", "Fail reason: Timeout waiting RecSta_PEV=0x1 after Arm. Cause: expected condition was not satisfied.");
+  }
+
+  testWaitForTimeout(300000); // 5 minutes
+  Set_BglrAlrm(0x9); // Alarm
+
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_5_B", "BLTN_CAM_RecSta_PEV = 0x1 after Alarm");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1) after Alarm. Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_5_B", failReason);
+  }
+
+  if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+    testStepPass("CCS_017_5_C", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_PEV_Recorded);
+    testStepFail("CCS_017_5_C", failReason);
+  }
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// CCS_017_6: Step 6
+// ============================================================================
+testcase CCS_017_6()
+{
+  int is_ok;
+
+  Send_Value_To_COM(31706);
+  SetTestStep("Buoc 6 - CCS_017");
+  StartTestTimer();
+  testStep("Step 6", "Disarm -> ArmWait -> wait 30s -> Arm, then verify PEV conditions");
+
+  write("=== START CCS_017_6 ===");
+
+  Set_BglrAlrm(0x1); // Disarm
+  Set_BglrAlrm(0x4); // ArmWait
+  testWaitForTimeout(30000);
+  Set_BglrAlrm(0x2); // Arm
+
+  is_ok = WaitFor_RecSta_PEV_Recording(60);
+  if (is_ok == 1) {
+    testStepPass("CCS_017_6_A", "PEV recording detected within 60s");
+  } else {
+    testStepFail("CCS_017_6_A", "Fail reason: Timeout waiting BLTN_CAM_RecSta_PEV = 0x1 within 60s. Cause: expected condition was not satisfied.");
+  }
+
+  if (Check_RecSta_PEV_Recording() == 1) {
+    testStepPass("CCS_017_6_B", "BLTN_CAM_RecSta_PEV = 0x1");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: BLTN_CAM_RecSta_PEV = 0x%X (expected 0x1). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_RecSta_PEV);
+    testStepFail("CCS_017_6_B", failReason);
+  }
+
+  if (WaitFor_PEV_Recorded_Value(0x2, 30000) == 1) {
+    testStepPass("CCS_017_6_C", "BLTN_CAM_PEV_Recorded reached 0x2 within 30s");
+  } else {
+    snprintf(failReason,
+             elcount(failReason),
+             "Fail reason: Timeout 30s waiting BLTN_CAM_PEV_Recorded == 0x2 (Actual: 0x%X). Cause: expected condition was not satisfied.",
+             $BLTN_CAM_PEV_Recorded);
+    testStepFail("CCS_017_6_C", failReason);
+  }
+
+  write("Run CaptureGraphics()");
+  CaptureGraphics("CSS", "BAlarm_BglrAlrmCurrentSta;BLTN_CAM_RecSta_OWP;BLTN_CAM_RecSta_PEV;BLTN_CAM_PEV_Recorded;BLTN_CAM_PEV_Count;BLTN_CAM_Set_PEV_AppNoti;SMK_TrmnlCtrlGrpStaBDC");
+
+  write("=== FINISH CCS_017_6 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
+}
+
+// ============================================================================
+// MAIN TEST FUNCTION - Run all test cases sequentially
+// ============================================================================
+void MainTest()
+{
+  write("\n");
+  write("===============================================================");
+  write("  CCS_017 - PEV Notification Setting Test 5 (2.5 generation)");
+  write("===============================================================");
+  write("\n");
+
+  CCS_017_1();
+  testWaitForTimeout(2000);
+  CCS_017_2();
+  testWaitForTimeout(2000);
+  CCS_017_3();
+  testWaitForTimeout(2000);
+  CCS_017_4();
+  testWaitForTimeout(2000);
+  CCS_017_5();
+  testWaitForTimeout(2000);
+  CCS_017_6();
+}
+

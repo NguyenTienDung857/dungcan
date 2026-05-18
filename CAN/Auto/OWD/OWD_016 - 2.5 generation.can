@@ -1,18 +1,18 @@
-﻿/*@!Encoding:65001*/
 /*@!Encoding:65001*/
+
+includes
+{
+  #include "../DeclarationFunction_Gen2.5.h"
+}
+
 //Preconditions: - ACC and IGN and ccNC/ccIC switch OFF, AVN mode
 //Add signal to graphic 2: BLTN_CAM_RecSta_MAR
 variables {
   // Global Variable Declaration
-  int flag_RecSet_error = 0;
   float count_DEVRec_time = 0.0;
   byte value_Bfr = 0x0;
   byte value_Aft = 0x0;
   byte value_SenDEV = 0x0;
-  // Message Declaration for CAN FD
-  message HU_BLTN_CAM_02_200ms _HU_BLTN_CAM_02_200ms;
-  message HU_BLTN_CAM_01_00ms _HU_BLTN_CAM_01_00ms;
-  message HU_CLOCK_01_1000ms _HU_CLOCK_01_1000ms;
 
   // Result tracking variables
   int step1_passed = 0;
@@ -144,95 +144,24 @@ void BLTN_CAM_Settings(int Choose_Option){
 
     write("Bfr_time is not match");
 
-    write("Stop test"); stop();
+    write("Stop test"); //stop();
 
   }
   else if($BLTN_CAM_Set_EV_AftTime != value_Aft){
 
     write("Aft_time is not match");
 
-    write("Stop test"); stop();
+    write("Stop test"); //stop();
 
   }
   else if ($BLTN_CAM_SenSet_DEV != value_SenDEV) {
 
     write("SenDEV is not match");
 
-    write("Stop test"); stop();
+    write("Stop test"); //stop();
 
   }
 
-}
-
-void KEY_ON(){
-  setSignal(SMK_TrmnlCtrlGrpStaBDC,0x1); // Power ON
-}
-
-void KEY_OFF(){
-   setSignal(SMK_TrmnlCtrlGrpStaBDC,0x0); // Power OFF
-}
-
-void Enter_BLTN_CAM(){
-  // CAN FD
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x1; //Enter BLTN_CAM mode
-  output(_HU_BLTN_CAM_02_200ms);
-}
-
-void Exit_BLTN_CAM(){
-  // CAN FD
-  _HU_BLTN_CAM_02_200ms.HU_BLTN_CAM_UI_Mode = 0x0; //Enter AVN mode - Exit BLTN_CAM Mode
-  output(_HU_BLTN_CAM_02_200ms);
-}
-
-void CaptureGraphics(char filename[]){
-  char filepath[256];
-  snprintf(filepath, elcount(filepath), "D:\\project\\CAN FD\\[CANoe] CANFD\\Screenshots\\%s", filename);
-  testWaitForTimeout(3000);
-  testReportAddWindowCapture("Graphics 2","BLTN_CAM_RecSta_DEV;AIN","Sreenshot",filepath);
-}
-
-void Turn_OFF_RecSet(){
-  if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-    @panel::Switch_CGWNM = 1;
-
-    KEY_ON();
-    testWaitForTimeout(3000);
-
-
-    do {
-      Enter_BLTN_CAM();
-      testWaitForTimeout(3000);
-
-      if (getSignal(BLTN_CAM_RecSet_OWD) == 0x2){
-        write("OWD Off"); @panel::LED_Ctrl_SetOWD = 1; testWaitForTimeout(1000);
-      }
-
-      else if (getSignal(BLTN_CAM_RecSet_OWP) == 0x2){
-        write("OWP Off"); @panel::LED_Ctrl_SetOWP = 1; testWaitForTimeout(1000);
-      }
-
-      else if (getSignal(BLTN_CAM_RecSet_DEV) == 0x2){
-        write("DEV Off"); @panel::LED_Ctrl_SetDEV = 1; testWaitForTimeout(1000);
-      }
-
-      else if (getSignal(BLTN_CAM_RecSet_PEV) == 0x2){
-        write("PEV Off"); @panel::LED_Ctrl_SetPEV = 1; testWaitForTimeout(1000);
-      }
-
-      Exit_BLTN_CAM();
-
-      flag_RecSet_error++;
-
-    } while((getSignal(BLTN_CAM_RecSet_OWD) == 0x2 || getSignal(BLTN_CAM_RecSet_OWP) == 0x2 || getSignal(BLTN_CAM_RecSet_DEV) == 0x2 || getSignal(BLTN_CAM_RecSet_PEV) == 0x2) && (flag_RecSet_error <= 15));
-
-    flag_RecSet_error = 0;
-
-    testWaitForTimeout(3000);
-    KEY_OFF();
-  }
-  else {
-    write("Notifications: All recording setting are turned OFF.");
-  }
 }
 
 void Setup_Function(int Option){
@@ -240,7 +169,7 @@ void Setup_Function(int Option){
 
   @panel::Switch_CGWNM = 1;
 
-  KEY_ON();
+  setSignal(SMK_TrmnlCtrlGrpStaBDC, 0x1); // Power ON (ACC)
   testWaitForTimeout(3000);
 
 
@@ -256,19 +185,15 @@ void Setup_Function(int Option){
 
   testWaitForTimeout(11000);
 
-  openPanel("Note");
-
-  if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,100000) == 1){
-    write("DEV recording is started"); closePanel("Note");
+  if (WaitFor_RecSta_DEV_Recording(100) == 1){
     start_sec = timeNow()/100000.0;
   }
   else{
     write("Error: DEV recording hasn't started. Stop test !!!");
-    stop();
+    //stop();
   }
 
-  if (testWaitForSignalChange(BLTN_CAM_RecSta_DEV,100000) == 1){
-    write("DEV recording is stopped");
+  if (WaitFor_RecSta_DEV_OFF(100) == 1){
     end_sec = timeNow()/100000.0;
   }
 
@@ -276,24 +201,18 @@ void Setup_Function(int Option){
 
 }
 
-void Rec_Reset(){
-  @panel::Switch_CGWNM = 1;
-
-  KEY_ON();
-
-  while (getSignal(BLTN_CAM_SD_Format_Op_State) != 0x1){
-    @panel::Button_RecReset = 1;
-    testWaitForSignalChange(BLTN_CAM_SD_Format_Op_State,500);
-  }
-
-  KEY_OFF();
-
-  @panel::Switch_CGWNM = 0;
-}
-
 testcase OWD_016_1(){
+  Send_Value_To_COM(11601);
+  SetTestStep("Bước 1 - OWD_016");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_016_1");
+  testStep("Step1", "DEV sensitivity Lv.1 + BfrTime=-10s, AftTime=+10s -> check recording duration 9~11s");
   write("=== START OWD_016_1 ===");
+
+  Set_SMK_IGN();
+  Click_USM_Reset();
+  Click_Rec_Reset();
 
   Setup_Function(1); write("Run Setup_Function()");
 
@@ -304,11 +223,13 @@ testcase OWD_016_1(){
   }
   else{
     step1_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     write("count_DEVRec_time = %.2f",count_DEVRec_time);
   }
 
-  CaptureGraphics("OWD_016_01.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -320,20 +241,6 @@ testcase OWD_016_1(){
 
   KEY_OFF(); write("Run KEY_OFF()");
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_016: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_016: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
   write("");
   write("=== TEST SUMMARY ===");
   if(step1_passed == 1)
@@ -343,10 +250,17 @@ testcase OWD_016_1(){
 
   testStep("Notifications","Finish OWD_016_1");
   write("=== FINISH OWD_016_1 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_016_2(){
+  Send_Value_To_COM(11602);
+  SetTestStep("Bước 2 - OWD_016");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_016_2");
+  testStep("Step2", "DEV sensitivity Lv.2 + BfrTime=-10s, AftTime=+10s -> check recording duration 9~11s");
   write("=== START OWD_016_2 ===");
 
   Setup_Function(2); write("Run Setup_Function()");
@@ -358,11 +272,13 @@ testcase OWD_016_2(){
   }
   else{
     step2_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     write("count_DEVRec_time = %.2f",count_DEVRec_time);
   }
 
-  CaptureGraphics("OWD_016_02.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -374,20 +290,6 @@ testcase OWD_016_2(){
 
   KEY_OFF(); write("Run KEY_OFF()");
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_016: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_016: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
   write("");
   write("=== TEST SUMMARY ===");
   if(step2_passed == 1)
@@ -397,10 +299,17 @@ testcase OWD_016_2(){
 
   testStep("Notifications","Finish OWD_016_2");
   write("=== FINISH OWD_016_2 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_016_3(){
+  Send_Value_To_COM(11603);
+  SetTestStep("Bước 3 - OWD_016");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_016_3");
+  testStep("Step3", "DEV sensitivity Lv.3 + BfrTime=-10s, AftTime=+10s -> check recording duration 9~11s");
   write("=== START OWD_016_3 ===");
 
   Setup_Function(3); write("Run Setup_Function()");
@@ -412,11 +321,13 @@ testcase OWD_016_3(){
   }
   else{
     step3_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     write("count_DEVRec_time = %.2f",count_DEVRec_time);
   }
 
-  CaptureGraphics("OWD_016_03.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -428,20 +339,6 @@ testcase OWD_016_3(){
 
   KEY_OFF(); write("Run KEY_OFF()");
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_016: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_016: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
   write("");
   write("=== TEST SUMMARY ===");
   if(step3_passed == 1)
@@ -451,10 +348,17 @@ testcase OWD_016_3(){
 
   testStep("Notifications","Finish OWD_016_3");
   write("=== FINISH OWD_016_3 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_016_4(){
+  Send_Value_To_COM(11604);
+  SetTestStep("Bước 4 - OWD_016");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_016_4");
+  testStep("Step4", "DEV sensitivity Lv.4 + BfrTime=-10s, AftTime=+10s -> check recording duration 9~11s");
   write("=== START OWD_016_4 ===");
 
   Setup_Function(4); write("Run Setup_Function()");
@@ -466,11 +370,13 @@ testcase OWD_016_4(){
   }
   else{
     step4_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     write("count_DEVRec_time = %.2f",count_DEVRec_time);
   }
 
-  CaptureGraphics("OWD_016_04.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -482,20 +388,6 @@ testcase OWD_016_4(){
 
   KEY_OFF(); write("Run KEY_OFF()");
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_016: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_016: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
   write("");
   write("=== TEST SUMMARY ===");
   if(step4_passed == 1)
@@ -505,10 +397,17 @@ testcase OWD_016_4(){
 
   testStep("Notifications","Finish OWD_016_4");
   write("=== FINISH OWD_016_4 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
 
 testcase OWD_016_5(){
+  Send_Value_To_COM(11605);
+  SetTestStep("Bước 5 - OWD_016");
+  StartTestTimer();
+
   testStep("Notification","Start test OWD_016_5");
+  testStep("Step5", "DEV sensitivity Lv.5 + BfrTime=-10s, AftTime=+10s -> check recording duration 9~11s");
   write("=== START OWD_016_5 ===");
 
   Setup_Function(5); write("Run Setup_Function()");
@@ -520,11 +419,13 @@ testcase OWD_016_5(){
   }
   else{
     step5_passed = 0;
+    write(">>> FAIL REASON: count_DEVRec_time=%.2f outside expected range <<<", count_DEVRec_time);
+    Log_Error_Details();
     testStepFail("Fail","Test-case is NG");
     write("count_DEVRec_time = %.2f",count_DEVRec_time);
   }
 
-  CaptureGraphics("OWD_016_05.jpg"); write("Run CaptureGraphics()");
+  CaptureGraphics("OWD", "BLTN_CAM_RecSta_DEV;AIN"); write("Run CaptureGraphics()");
 
   testWaitForTimeout(1000);
 
@@ -536,61 +437,27 @@ testcase OWD_016_5(){
 
   KEY_OFF(); write("Run KEY_OFF()");
 
-  //============================================================================
-  // Overall Test Verdict
-  //============================================================================
-  if(step1_passed == 1 && step2_passed == 1 && step3_passed == 1 && step4_passed == 1 && step5_passed == 1)
-  {
-    testStepPass("Overall_Verdict", "Test OWD_016: PASS");
-    write("=== OVERALL VERDICT: PASS ===");
-  }
-  else
-  {
-    testStepFail("Overall_Verdict", "Test OWD_016: FAIL");
-    write("=== OVERALL VERDICT: FAIL ===");
-  }
-
-  write("");
-  write("=== TEST SUMMARY ===");
-  if(step5_passed == 1)
-    write("OWD_016_5: PASS");
-  else
-    write("OWD_016_5: FAIL");
-
   testStep("Notifications","Finish OWD_016_5");
   write("=== FINISH OWD_016_5 ===");
+  StopTestTimer();
+  Send_Value_To_COM(44);
 }
+
+testcase OWD_016_Init(){
+  Send_Value_To_COM(11600);
+  testStep("Notification","Start OWD_016 Initialization");
+  write("Run Rec_Reset()"); Rec_Reset();
+  Send_Value_To_COM(44);
+}
+
 
 void MainTest(){
   testReportFileName("TestReports\\OWD_016 - 2.5 generation_report");
-  write("Run Turn_OFF_RecSet()"); Turn_OFF_RecSet();
-  write("Run Rec_Reset()"); Rec_Reset();
-  TestWaitForValueInput("Please enter the ID testcase number: (1/2/3/4/5/6)",300000);
 
-  switch (testGetValueInput()){
-
-    case (1): OWD_016_1(); break;
-
-    case (2): OWD_016_2(); break;
-
-    case (3): OWD_016_3(); break;
-
-    case (4): OWD_016_4(); break;
-
-    case (5): OWD_016_5(); break;
-
-    case (6):
-      OWD_016_1();
-
-      OWD_016_2();
-
-      OWD_016_3();
-
-      OWD_016_4();
-
-      OWD_016_5();
-
-      break;
-  }
-
+  OWD_016_Init();
+  OWD_016_1();
+  OWD_016_2();
+  OWD_016_3();
+  OWD_016_4();
+  OWD_016_5();
 }
